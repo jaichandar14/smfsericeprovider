@@ -1,0 +1,114 @@
+<resources>
+    <string name="app_name">ServiceManagment</string>
+    <string name="get_started">Get Started</string>
+
+    <string name="signuptext">"New User?<font color='#3aa8c1'>Sign Up</font>"</string>
+    <string name="signin">Sign in</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="new_user">New User?</string>
+    <string name="mobile">Mobile</string>
+    <string name="colonen">|</string>
+    <string name="phonenumber">PhoneNumber</string>
+    <string name="or">OR</string>
+    <string name="perter_gmail_com">perter@gmail.com</string>
+    <string name="emailid">Emailid</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_upsmall">Sign up</string>
+
+    <string name="firstname">FirstName</string>
+    <string name="peter">Peter</string>
+    <string name="lastname">LastName</string>
+    <string name="aji">Aji</string>
+    <string name="email">Email</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="otp_verification">OTP verification</string>
+    <string name="code_verification">CODE verification</string>
+    <string name="enter_otp_sent_to_your_number">Enter OTP Sent to your number</string>
+    <string name="enter_otp_sent_to_your_email">Enter OTP Sent to your number</string>
+    <string name="enter_code_sent_to_your_eMail">Enter code Sent to your Email</string>
+    <string name="please_enter_your_verification_code_sent_your_mobile">Please enter your verification code sent your mobile</string>
+    <string name="please_enter_your_verification_code_sent_your_email">Please enter your verification code sent your email</string>
+    <string name="otp_expries_in">OTP expries in</string>
+    <string name="code_expries_in">CODE expries in</string>
+    <string name="did_t_receive_otp">Did\'t receive OTP?</string>
+    <string name="did_t_receive_code">Did\'t receive CODE?</string>
+    <string name="_00_30">00:30</string>
+    <string name="submit">Submit</string>
+    <string name="Press_back_again_to_exit">Press back again to exit</string>
+    <string name="business_registration">Business registration</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="services">SERVICES</string>
+    <string name="active">Active</string>
+    <string name="_4">4</string>
+    <string name="new_request">New request</string>
+    <string name="_0_pending_items">0 pending items</string>
+    <string name="status">Status</string>
+    <string name="_0_status">0 status</string>
+    <string name="actions">Actions</string>
+
+    <string name="sole_properitor">Sole Properitor</string>
+    <string name="partnership">Partnership</string>
+    <string name="llc">LLC</string>
+    <string name="all_services">All services</string>
+    <string name="branches">Branch</string>
+    <string name="New_Request">New Request</string>
+    <string name="fork_amp_spoon_catering"><![CDATA[Fork & Spoon - Catering]]></string>
+    <string name="saras_birthday1">Saras Birthday</string>
+    <string name="quote">Quote:</string>
+    <string name="__2500">$2500</string>
+    <string name="ca4215254265">CA4215254265</string>
+    <string name="bid_cut_off">Bid cut_off</string>
+    <string name="mar">MAR</string>
+    <string name="event_date">Event date</string>
+    <string name="service_date">Service Date</string>
+    <string name="aug_26">Aug 26</string>
+    <string name="_12_aug">12 Aug</string>
+    <string name="_0_new_request">0 New request</string>
+    <string name="catering_fork_spoon"><![CDATA[Catering-Fork & Spoon]]></string>
+    <string name="fork_amp_spoon"><![CDATA[Fork & spoon]]></string>
+    <string name="cost_estimation">Cost Estimation</string>
+    <string name="saras_birthday">Saras Birthday</string>
+    <string name="_2500">$2500</string>
+    <string name="ca457845264162">CA457845264162</string>
+    <string name="view_quote">View quote</string>
+    <string name="bid_accepted">Bid accepted</string>
+
+    <string name="quote_send_to_the_customer_quote_value_2500">Quote send to the customer -Quote Value $2500</string>
+    <string name="won_reject_lostbid">Won/Reject/LostBid</string>
+    <string name="service_status">Service status</string>
+
+    <string name="_9_aug_2022">9 Aug 2022</string>
+    <string name="cut_off_date">Cut off date</string>
+    <string name="service_date_">Service date</string>
+    <string name="i_have_quotes_details">I have Quotes Details</string>
+    <string name="will_provide_quotes_later">Will provide Quotes later</string>
+    <string name="if_you_want">If you want to accept the bid you can proceed later within bid cut off time</string>
+    <string name="comments_is_mandatory_for_thr_option">Comments is mandatory for the option "Others"</string>
+    <string name="cost_is_mandatory">Cost is mandatory !</string>
+    <string name="you_rejected_a_catering_1000045">You Rejected a Catering #1000045</string>
+    <string name="change_in_mind">Change in Mind ?</string>
+    <string name="amount">Amount</string>
+    <string-array name="all_services">
+        <item>@string/all_services</item>
+        <item>@string/sole_properitor</item>
+        <item>@string/partnership</item>
+        <item>@string/llc</item>
+
+    </string-array>
+    <string-array name="branches">
+        <item>@string/branches</item>
+        <item>@string/sole_properitor</item>
+        <item>@string/partnership</item>
+        <item>@string/llc</item>
+
+    </string-array>
+
+    <string-array name="currency_type">
+        <item>USD($)</item>
+        <item>GBP(\u00a3)</item>
+        <item>INR(\u20B9)</item>
+    </string-array>
+
+
+</resources>

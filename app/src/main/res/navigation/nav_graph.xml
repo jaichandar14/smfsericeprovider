@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.smf.events.ui.splash.SplashFragment"
+        android:label="SplashFragment">
+        <action
+            android:id="@+id/action_splashFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_businessRegistrationFragment"
+            app:destination="@id/businessRegistrationFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.smf.events.ui.signin.SignInFragment"
+        android:label="SignInFragment">
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_eMailOTPFragment"
+            app:destination="@id/eMailOTPFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_verificationCodeFrgment"
+            app:destination="@id/verificationCodeFrgment" />
+        <action
+            android:id="@+id/action_signInFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.smf.events.ui.signup.SignUpFragment"
+        android:label="SignUpFragment">
+        <action
+            android:id="@+id/action_signUpFragment_to_verificationCodeFrgment"
+            app:destination="@id/verificationCodeFrgment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/verificationCodeFrgment"
+        android:name="com.smf.events.ui.mobileverificationcode.MobileVerificationCodeFrgment"
+        android:label="fragment_verification_code_frgment"
+        tools:layout="@layout/fragment_mobile_verification_code_frgment">
+        <action
+            android:id="@+id/action_verificationCodeFrgment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/eMailOTPFragment"
+        android:name="com.smf.events.ui.emailotp.EmailOTPFragment"
+        android:label="PhoneOTPFragment">
+
+        <action
+            android:id="@+id/action_phoneOTPFragment_to_emailVerificationCodeFragment"
+            app:destination="@id/emailVerificationCodeFragment" />
+
+        <argument
+            android:name="userName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_eMailOTPFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailVerificationCodeFragment"
+        android:name="com.smf.events.ui.emailverificationcode.EmailVerificationCodeFragment"
+        android:label="EmailVerificationCodeFragment">
+        <action
+            android:id="@+id/action_emailVerificationCodeFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/businessRegistrationFragment"
+        android:name="com.smf.events.ui.businessregistration.BusinessRegistrationFragment"
+        android:label="BusinessRegistrationFragment" />
+    <fragment
+        android:id="@+id/dashBoardFragment"
+        android:name="com.smf.events.ui.dashboard.DashBoardFragment"
+        android:label="DashBoardFragment">
+        <action
+            android:id="@+id/action_dashBoardFragment_to_quoteBriefFragment"
+            app:destination="@id/quoteBriefFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/quoteBriefFragment"
+        android:name="com.smf.events.ui.quotebrief.QuoteBriefFragment"
+        android:label="QuoteBriefFragment">
+        <action
+            android:id="@+id/action_quoteBriefFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
+</navigation>

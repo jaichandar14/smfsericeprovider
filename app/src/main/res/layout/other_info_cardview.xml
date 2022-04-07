@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/linearlayoutotherinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/other_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/other_info_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="10dp"
+                android:gravity="center_vertical"
+                android:text="Other Information"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/add_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic__add_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/other_info_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/other_info_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/expandable_layout_other_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/expandablelayoutotherinfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="15dp"
+                android:textSize="18dp"
+
+                >
+
+                <TextView
+                    android:id="@+id/awardtilte_tx"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Award/Certification title"
+                    android:textSize="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/et_awardtilte"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shapes"
+                    android:hint="enter Tilte"
+                    android:padding="10dp"
+                    android:textSize="22sp"
+                    app:layout_constraintTop_toBottomOf="@+id/awardtilte_tx" />
+
+                <LinearLayout
+
+                    android:id="@+id/datelayout"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_awardtilte"
+                    android:background="@drawable/shapes"
+                    android:weightSum="3"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/et_datefrom"
+                        android:textSize="15sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Date"
+                        android:layout_weight="2" />
+
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_calendar_today_24" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tx_about"
+                    android:text="About"
+                    android:textSize="15sp"
+                    app:layout_constraintTop_toBottomOf="@+id/datelayout" />
+
+                <EditText
+                    android:id="@+id/et_aboutotherinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shapes"
+                    app:layout_constraintTop_toBottomOf="@+id/tx_about"
+                    android:maxLength="1000"
+                    android:textSize="22sp"
+                    android:lines="3"
+                    android:padding="10dp"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/btn_uploaddoc"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Document "
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="5dp"
+                    android:padding="2dp"
+                    android:backgroundTint="#90A8A7A7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_aboutotherinfo" />
+
+                <TextView
+                    app:layout_constraintTop_toBottomOf="@+id/btn_uploaddoc"
+                    android:id="@+id/awardtilte_tx2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Award/Certification title"
+                    android:textSize="15dp" />
+
+                <EditText
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/et_awardtilte2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shapes"
+                    android:hint="enter Tilte"
+                    android:padding="10dp"
+                    android:textSize="22sp"
+                    app:layout_constraintTop_toBottomOf="@+id/awardtilte_tx2" />
+
+                <LinearLayout
+
+                    android:id="@+id/datelayout2"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_awardtilte2"
+                    android:background="@drawable/shapes"
+                    android:weightSum="3"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/et_datefrom2"
+                        android:textSize="15sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Date"
+                        android:layout_weight="2" />
+
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_calendar_today_24" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tx_about2"
+                    android:text="About"
+                    android:textSize="15sp"
+                    app:layout_constraintTop_toBottomOf="@+id/datelayout2" />
+
+                <EditText
+                    android:id="@+id/et_aboutotherinfo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shapes"
+                    app:layout_constraintTop_toBottomOf="@+id/tx_about2"
+                    android:maxLength="1000"
+                    android:textSize="22sp"
+                    android:lines="3"
+                    android:padding="10dp"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/upload_btn2"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Document "
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="5dp"
+                    android:padding="2dp"
+                    android:backgroundTint="#90A8A7A7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/et_aboutotherinfo2" />
+
+                <LinearLayout
+                    android:id="@+id/addmore_linerlayout"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/upload_btn2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:weightSum="3">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic__add_icon"
+                        android:layout_weight="2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add More"
+                        android:padding="2dp"
+                        android:textSize="15sp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+                <!--            3-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_more_layout3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/upload_btn2">
+
+                    <TextView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:id="@+id/awardtilte_tx3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Award/Certification title"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/et_awardtilte3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        android:hint="enter Tilte"
+                        android:padding="10dp"
+                        android:textSize="22sp"
+                        app:layout_constraintTop_toBottomOf="@+id/awardtilte_tx3" />
+
+                    <LinearLayout
+
+                        android:id="@+id/datelayout3"
+                        android:layout_marginTop="12dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_awardtilte3"
+                        android:background="@drawable/shapes"
+                        android:weightSum="3"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/et_datefrom3"
+                            android:textSize="15sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Date"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_gravity="end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_calendar_today_24" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tx_about3"
+                        android:text="About"
+                        android:textSize="15sp"
+                        app:layout_constraintTop_toBottomOf="@+id/datelayout3" />
+
+                    <EditText
+                        android:id="@+id/et_aboutotherinfo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        app:layout_constraintTop_toBottomOf="@+id/tx_about3"
+                        android:maxLength="1000"
+                        android:textSize="22sp"
+                        android:lines="3"
+                        android:padding="10dp"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/upload_btn3"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload Document "
+                        android:paddingLeft="5dp"
+                        android:paddingEnd="5dp"
+                        android:padding="2dp"
+                        android:backgroundTint="#90A8A7A7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_aboutotherinfo3" />
+
+                    <LinearLayout
+                        android:id="@+id/addmore_linerlayout3"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/upload_btn3"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:weightSum="3">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic__add_icon"
+                            android:layout_weight="2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add More"
+                            android:padding="2dp"
+                            android:textSize="15sp"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--4-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_more_layout4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/add_more_layout3">
+
+                    <TextView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:id="@+id/awardtilte_tx4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Award/Certification title"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/et_awardtilte4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        android:hint="enter Tilte"
+                        android:padding="10dp"
+                        android:textSize="22sp"
+                        app:layout_constraintTop_toBottomOf="@+id/awardtilte_tx4" />
+
+                    <LinearLayout
+
+                        android:id="@+id/datelayout4"
+                        android:layout_marginTop="12dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_awardtilte4"
+                        android:background="@drawable/shapes"
+                        android:weightSum="3"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/et_datefrom4"
+                            android:textSize="15sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Date"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_gravity="end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_calendar_today_24" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tx_about4"
+                        android:text="About"
+                        android:textSize="15sp"
+                        app:layout_constraintTop_toBottomOf="@+id/datelayout4" />
+
+                    <EditText
+                        android:id="@+id/et_aboutotherinfo4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        app:layout_constraintTop_toBottomOf="@+id/tx_about4"
+                        android:maxLength="1000"
+                        android:textSize="22sp"
+                        android:lines="3"
+                        android:padding="10dp"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/upload_btn4"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload Document "
+                        android:paddingLeft="5dp"
+                        android:paddingEnd="5dp"
+                        android:padding="2dp"
+                        android:backgroundTint="#90A8A7A7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_aboutotherinfo4" />
+
+                    <LinearLayout
+                        android:id="@+id/addmore_linerlayout4"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/upload_btn4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:weightSum="3">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic__add_icon"
+                            android:layout_weight="2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add More"
+                            android:padding="2dp"
+                            android:textSize="15sp"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--5-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_more_layout5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/add_more_layout4">
+
+                    <TextView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:id="@+id/awardtilte_tx5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Award/Certification title"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/et_awardtilte5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        android:hint="enter Tilte"
+                        android:padding="10dp"
+                        android:textSize="22sp"
+                        app:layout_constraintTop_toBottomOf="@+id/awardtilte_tx5" />
+
+                    <LinearLayout
+
+                        android:id="@+id/datelayout5"
+                        android:layout_marginTop="12dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_awardtilte5"
+                        android:background="@drawable/shapes"
+                        android:weightSum="3"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/et_datefrom5"
+                            android:textSize="15sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Date"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_gravity="end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_calendar_today_24" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tx_about5"
+                        android:text="About"
+                        android:textSize="15sp"
+                        app:layout_constraintTop_toBottomOf="@+id/datelayout5" />
+
+                    <EditText
+                        android:id="@+id/et_aboutotherinfo5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        app:layout_constraintTop_toBottomOf="@+id/tx_about5"
+                        android:maxLength="1000"
+                        android:textSize="22sp"
+                        android:lines="3"
+                        android:padding="10dp"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/upload_btn5"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload Document "
+                        android:paddingLeft="5dp"
+                        android:paddingEnd="5dp"
+                        android:padding="2dp"
+                        android:backgroundTint="#90A8A7A7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_aboutotherinfo5" />
+
+                    <LinearLayout
+                        android:id="@+id/addmore_linerlayout5"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/upload_btn5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:weightSum="3">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic__add_icon"
+                            android:layout_weight="2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add More"
+                            android:padding="2dp"
+                            android:textSize="15sp"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--6-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_more_layout6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/add_more_layout5">
+
+                    <TextView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:id="@+id/awardtilte_tx6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Award/Certification title"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/et_awardtilte6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        android:hint="enter Tilte"
+                        android:padding="10dp"
+                        android:textSize="22sp"
+                        app:layout_constraintTop_toBottomOf="@+id/awardtilte_tx6" />
+
+                    <LinearLayout
+
+                        android:id="@+id/datelayout6"
+                        android:layout_marginTop="12dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_awardtilte6"
+                        android:background="@drawable/shapes"
+                        android:weightSum="3"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/et_datefrom6"
+                            android:textSize="15sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Date"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_gravity="end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_calendar_today_24" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tx_about6"
+                        android:text="About"
+                        android:textSize="15sp"
+                        app:layout_constraintTop_toBottomOf="@+id/datelayout6" />
+
+                    <EditText
+                        android:id="@+id/et_aboutotherinfo6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        app:layout_constraintTop_toBottomOf="@+id/tx_about6"
+                        android:maxLength="1000"
+                        android:textSize="22sp"
+                        android:lines="3"
+                        android:padding="10dp"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/upload_btn6"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload Document "
+                        android:paddingLeft="5dp"
+                        android:paddingEnd="5dp"
+                        android:padding="2dp"
+                        android:backgroundTint="#90A8A7A7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_aboutotherinfo6" />
+
+                    <LinearLayout
+                        android:id="@+id/addmore_linerlayout6"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/upload_btn6"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:weightSum="3">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic__add_icon"
+                            android:layout_weight="2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add More"
+                            android:padding="2dp"
+                            android:textSize="15sp"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--7-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/add_more_layout7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/add_more_layout6">
+
+                    <TextView
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:id="@+id/awardtilte_tx7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Award/Certification title"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/et_awardtilte7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        android:hint="enter Tilte"
+                        android:padding="10dp"
+                        android:textSize="22sp"
+                        app:layout_constraintTop_toBottomOf="@+id/awardtilte_tx7" />
+
+                    <LinearLayout
+
+                        android:id="@+id/datelayout7"
+                        android:layout_marginTop="12dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_awardtilte7"
+                        android:background="@drawable/shapes"
+                        android:weightSum="3"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/et_datefrom7"
+                            android:textSize="15sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Date"
+                            android:layout_weight="2" />
+
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_gravity="end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_calendar_today_24" />
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tx_about7"
+                        android:text="About"
+                        android:textSize="15sp"
+                        app:layout_constraintTop_toBottomOf="@+id/datelayout7" />
+
+                    <EditText
+                        android:id="@+id/et_aboutotherinfo7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shapes"
+                        app:layout_constraintTop_toBottomOf="@+id/tx_about7"
+                        android:maxLength="1000"
+                        android:textSize="22sp"
+                        android:lines="3"
+                        android:padding="10dp"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/upload_btn7"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload Document "
+                        android:paddingLeft="5dp"
+                        android:paddingEnd="5dp"
+                        android:padding="2dp"
+                        android:backgroundTint="#90A8A7A7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_aboutotherinfo7" />
+
+                    <LinearLayout
+                        android:id="@+id/addmore_linerlayout7"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/upload_btn7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:weightSum="3">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic__add_icon"
+                            android:layout_weight="2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add More"
+                            android:padding="2dp"
+                            android:textSize="15sp"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/save_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/buttoncolor"
+                    android:text="Save"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.9"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/back_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/buttoncolor"
+                    android:text="Back"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gray"
+                    app:layout_constraintBottom_toBottomOf="@+id/save_btn"
+                    app:layout_constraintEnd_toStartOf="@+id/save_btn"
+                    app:layout_constraintHorizontal_bias="0.8"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/save_btn" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
