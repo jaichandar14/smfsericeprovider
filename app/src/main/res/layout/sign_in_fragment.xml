@@ -13,199 +13,199 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".signup.SignUp"
         android:orientation="vertical"
-        android:padding="@dimen/size_20dp">
+        android:padding="@dimen/size_20dp"
+        tools:context=".signup.SignUp">
 
         <LinearLayout
             android:id="@+id/signinLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/size_20dp">
+            android:layout_marginTop="@dimen/size_20dp"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="1dp"
-                android:text="@string/signin"
                 android:fontFamily="@font/poppins_regular"
-                android:textColor="@color/black"
+                android:text="@string/signin"
+                android:textColor="@color/button_blue"
                 android:textSize="@dimen/size_22sp" />
+
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="@dimen/size_15dp"
-            app:layout_constraintTop_toBottomOf="@+id/signinLayout"
             android:id="@+id/numberlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/size_15dp"
+            app:layout_constraintTop_toBottomOf="@+id/signinLayout">
 
             <TextView
-                android:textSize="@dimen/size_14sp"
-                android:layout_marginTop="1dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
                 android:fontFamily="@font/poppins_medium"
-                android:text="@string/mobile" />
+                android:text="@string/mobile"
+                android:textSize="@dimen/size_14sp" />
+
         </LinearLayout>
 
         <LinearLayout
-            app:layout_constraintTop_toBottomOf="@+id/numberlayout"
             android:id="@+id/phnumerlayout"
             android:layout_width="match_parent"
+            android:layout_height="@dimen/size_50dp"
+            android:background="@drawable/shapes"
             android:orientation="horizontal"
             android:weightSum="3"
-            android:background="@drawable/shapes"
-            android:layout_height="@dimen/size_50dp"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/numberlayout">
 
             <com.hbb20.CountryCodePicker
                 android:id="@+id/cppSignIn"
                 android:layout_width="@dimen/dp_0"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                app:ccp_autoDetectCountry="true"
+                android:layout_weight="1"
                 android:gravity="center"
-                app:ccp_textSize="@dimen/size_14sp"
                 app:ccpDialog_backgroundColor="@color/white"
+                app:ccpDialog_textColor="@color/buttoncolor"
                 app:ccp_arrowColor="@color/black"
                 app:ccp_arrowSize="@dimen/size_80dp"
-                app:ccpDialog_textColor="@color/buttoncolor"
-                app:ccp_showNameCode="true" />
+                app:ccp_autoDetectCountry="true"
+                app:ccp_showNameCode="true"
+                app:ccp_textSize="@dimen/size_14sp" />
 
             <TextView
-                android:layout_gravity="center"
-                android:textSize="@dimen/size_30sp"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/size_40dp"
-                android:text="@string/colonen" />
+                android:layout_gravity="center"
+                android:text="@string/colonen"
+                android:textSize="@dimen/size_30sp" />
 
             <EditText
-                android:layout_marginStart="@dimen/size_5dp"
-                android:background="@drawable/empty_shapes"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/size_2dp"
                 android:id="@+id/editTextMobileNumber"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="@dimen/size_40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/size_5dp"
+                android:layout_marginEnd="@dimen/size_2dp"
                 android:layout_weight="2"
-                android:textColor="#F0333333"
+                android:autofillHints="123456789"
+                android:background="@drawable/empty_shapes"
                 android:hint="@string/phonenumber"
-                android:maxLength="10"
                 android:inputType="numberDecimal"
-                android:autofillHints="123456789" />
+                android:maxLength="10"
+                android:textColor="#F0333333" />
 
         </LinearLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_marginTop="@dimen/size_10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/size_10dp"
             app:layout_constraintTop_toBottomOf="@id/phnumerlayout">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/or"
                 android:fontFamily="@font/poppins_medium"
-                android:gravity="center" />
+                android:gravity="center"
+                android:text="@string/or" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <LinearLayout
-            android:layout_marginTop="@dimen/size_30dp"
-            app:layout_constraintTop_toBottomOf="@+id/phnumerlayout"
             android:id="@+id/layout1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/size_30dp"
             android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/phnumerlayout"
             tools:ignore="MissingConstraints">
 
             <TextView
-                android:textSize="@dimen/size_14sp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/poppins_medium"
-                android:text="@string/emailid" />
+                android:text="@string/emailid"
+                android:textSize="@dimen/size_14sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/mailidLayout"
-            app:layout_constraintTop_toBottomOf="@+id/layout1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_50dp"
+            android:background="@drawable/shapes"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/shapes">
+            app:layout_constraintTop_toBottomOf="@+id/layout1">
 
             <EditText
-                android:layout_marginTop="@dimen/size_5dp"
-                android:layout_marginEnd="@dimen/size_5dp"
-                android:layout_marginStart="@dimen/size_5dp"
-                android:layout_gravity="center"
-                android:background="@drawable/empty_shapes"
                 android:id="@+id/editTextEmail"
-                android:textSize="@dimen/size_14sp"
-                android:inputType="textEmailAddress"
-                android:hint="@string/perter_gmail_com"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/size_40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/size_5dp"
+                android:layout_marginTop="@dimen/size_5dp"
+                android:layout_marginEnd="@dimen/size_5dp"
+                android:autofillHints="@gmail"
+                android:background="@drawable/empty_shapes"
+                android:hint="@string/perter_gmail_com"
+                android:inputType="textEmailAddress"
                 android:textColor="#F0333333"
-                android:autofillHints="@gmail" />
+                android:textSize="@dimen/size_14sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/signinbtnlayout"
-            android:layout_marginTop="@dimen/size_25dp"
-            app:layout_constraintTop_toBottomOf="@+id/mailidLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/size_25dp"
             android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/mailidLayout"
             tools:ignore="MissingConstraints">
 
             <Button
                 android:id="@+id/signinbtn"
-                android:backgroundTint="@color/buttoncolor"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:fontFamily="@font/poppins_regular"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/button_blue"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
                 android:text="@string/sign_in" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="invisible"
-            android:layout_marginTop="25dp"
-            app:layout_constraintTop_toBottomOf="@+id/signinbtnlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="25dp"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:visibility="invisible"
+            android:weightSum="2"
+            app:layout_constraintTop_toBottomOf="@+id/signinbtnlayout">
 
             <TextView
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:gravity="end"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/new_user"
-
-                />
+                android:text="@string/new_user" />
 
             <TextView
-                android:layout_weight="1"
                 android:id="@+id/signupaccbtn"
-                android:layout_gravity="center"
-                android:gravity="start"
-                android:textColor="@color/lightblue"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/sign_upsmall" />
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/sign_upsmall"
+                android:textColor="@color/lightblue" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

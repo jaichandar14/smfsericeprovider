@@ -32,8 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/otp_verification"
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/button_blue"
                 android:textSize="@dimen/size_22sp" />
 
             <LinearLayout
@@ -85,6 +85,7 @@
                     android:inputType="number"
                     app:hideLineWhenFilled="false"
                     app:itemCount="4"
+
                     app:itemHeight="@dimen/size_50dp"
                     app:itemRadius="@dimen/size_10dp"
                     app:itemSpacing="@dimen/size_20dp"
@@ -141,21 +142,21 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="Resend"
-                    android:textColor="@color/lightblue" />
+                    android:textColor="@color/button_blue" />
             </LinearLayout>
 
 
         </LinearLayout>
 
         <Button
-
             android:id="@+id/submitBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/size_100dp"
-            android:backgroundTint="@color/buttoncolor"
+            android:backgroundTint="@color/button_blue"
             android:fontFamily="@font/poppins_regular"
             android:text="@string/submit"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

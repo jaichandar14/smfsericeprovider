@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#090909</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="red">#680707</color>
+    <color name="red">#A71919</color>
     <color name="green">#366A02</color>
     <color name="buttoncolor">#8D656464</color>
     <color name="background_gray">#90B5B3B3</color>
@@ -16,4 +16,9 @@
     <color name="dark_gray">#9F9F9F</color>
     <color name="blue">#2196F3</color>
     <color name="lite_gray">#E1E1E1</color>
+    // 2350
+    <color name="button_blue">#556cd4</color>
+    // 2350
+    <color name="fade_gray">#EBE1E1E1</color>
+
 </resources>

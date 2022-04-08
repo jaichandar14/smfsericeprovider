@@ -58,7 +58,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/size_10dp"
-                    android:buttonTint="@color/buttoncolor"
+                    android:buttonTint="@color/button_blue"
                     android:checked="true"
                     android:fontFamily="@font/poppins_regular"
                     android:text="@string/i_have_quotes_details"
@@ -69,7 +69,7 @@
                     android:id="@+id/quotelater"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:buttonTint="@color/buttoncolor"
+                    android:buttonTint="@color/button_blue"
                     android:checked="false"
                     android:fontFamily="@font/poppins_regular"
                     android:text="@string/will_provide_quotes_later"
@@ -261,7 +261,7 @@
                     android:layout_marginTop="18dp"
                     android:layout_marginRight="@dimen/size_5dp"
                     android:layout_weight="1.5"
-                    android:background="@drawable/custom_button_round_corner"
+                    android:background="@drawable/custom_cancel_button_round_corner"
                     android:text="Cancel" />
 
                 <androidx.appcompat.widget.AppCompatButton
