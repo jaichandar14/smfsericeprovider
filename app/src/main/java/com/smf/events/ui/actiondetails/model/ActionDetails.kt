@@ -10,6 +10,8 @@ data class ActionDetails(
     val serviceDate: String,
     val bidRequestedDate: String,
     val biddingCutOffDate: String,
+    // 2354
+    val currencyType: String?,
     val costingType: String,
     val cost: String?,
     val latestBidValue: String?,

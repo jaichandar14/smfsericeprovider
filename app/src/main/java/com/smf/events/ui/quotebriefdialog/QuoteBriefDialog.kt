@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.R
@@ -16,7 +15,6 @@ import com.smf.events.databinding.QuoteBriefDialogBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotebrief.model.QuoteBrief
-import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog.Companion.currencyType
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -105,22 +103,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
-
-//        if (response.data.currencyType == null) {
-//
-//        } else {
-//            var currencyType = when (response.data.currencyType) {
-//                "USD($)" -> "$"
-//                "GBP(\u00a3)" -> "\u00a3"
-//                "INR(\u20B9)" -> "₹"
-//                else -> {}
-//            }
-//        }
-
-        var currencyType = "$"
-        Log.d(TAG, "setBidSubmitQuoteBrief: $currencyType")
-
-
+       // 2354
+        val currencyType = setCurrencyType(response)
         if (response.data.costingType == "Bidding") {
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.latestBidValue}"
         } else {
@@ -139,6 +123,23 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.customerRating?.text = "NA"
 
 
+    }
+
+    // 2354 - Method For Setting CurrencyType
+    private fun setCurrencyType(response: QuoteBrief): String{
+        val currencyType = if (response.data.currencyType == null) {
+            "$"
+        } else {
+            when (response.data.currencyType) {
+                "USD($)" -> "$"
+                "GBP(\u00a3)" -> "\u00a3"
+                "INR(\u20B9)" -> "₹"
+                else -> {
+                    "$"
+                }
+            }
+        }
+        return currencyType
     }
 
     //Setting Bid Pending Quote

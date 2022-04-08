@@ -72,15 +72,9 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
 
         @SuppressLint("SetTextI18n")
         fun onBind(actionDetails: ActionDetails) {
-            if (actionDetails.costingType == "Bidding") {
-                if (actionDetails.latestBidValue.isNullOrEmpty()) {
-                    amount.text = "$"
-                } else {
-                    amount.text = "$${actionDetails.latestBidValue}"
-                }
-            } else {
-                amount.text = "$${actionDetails.cost}"
-            }
+            // 2354
+            val currencyType = setCurrencyType(actionDetails)
+            setCost(actionDetails, currencyType)
             eventName.text = actionDetails.eventName
             eventType.text = "${actionDetails.branchName} - ${actionDetails.serviceName}"
             code.text = actionDetails.eventServiceDescriptionId.toString()
@@ -118,27 +112,61 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
 
         }
 
+        //2354 - Method For Setting Quote Amount
+        private fun setCost(actionDetails: ActionDetails, currencyType: String) {
+            if (actionDetails.costingType == "Bidding") {
+                if (actionDetails.latestBidValue.isNullOrEmpty()) {
+                    amount.text = ""
+                } else {
+                    amount.text = "$currencyType${actionDetails.latestBidValue}"
+                }
+            } else {
+                amount.text = "$currencyType${actionDetails.cost}"
+            }
+        }
+
+        //2354 - Method For Setting CurrencyType
+        private fun setCurrencyType(actionDetails: ActionDetails): String {
+            val currencyType = if (actionDetails.currencyType == null) {
+                "$"
+            } else {
+                when(actionDetails.currencyType) {
+                    "USD($)" -> "$"
+                    "GBP(\u00a3)" -> "\u00a3"
+                    "INR(\u20B9)" -> "₹"
+                    else -> {
+                        "$"
+                    }
+                }
+            }
+            return currencyType
+        }
+
         //Rejecting the Bids
         private fun bidRejection(position: ActionDetails) {
             var bidRequestId: Int = position.bidRequestId
             position.branchName
-            BidRejectionDialogFragment.newInstance(bidRequestId,
+            BidRejectionDialogFragment.newInstance(
+                bidRequestId,
                 position.serviceName,
-                position.eventServiceDescriptionId.toString())
-                .show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    BidRejectionDialogFragment.TAG)
+                position.eventServiceDescriptionId.toString()
+            )
+                .show(
+                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    BidRejectionDialogFragment.TAG
+                )
 
         }
 
         //Submitting Bids
-        fun bidSubmitted(position: ActionDetails) {
+        private fun bidSubmitted(position: ActionDetails) {
             var bidRequestId: Int = position.bidRequestId
             var costingType: String = position.costingType
             var bidStatus: String = position.bidStatus
             var cost: String? = position.cost
             var latestBidValue: String? = position.latestBidValue
             var branchName: String = position.branchName
-            var serviceName: String =position.serviceName
+            var serviceName: String = position.serviceName
 
             val sharedPreferences =
                 context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
