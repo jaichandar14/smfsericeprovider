@@ -144,7 +144,7 @@ class ActionDetailsFragment :
     }
 
     // Method For postQuoteDetails Api Call
-    fun postQuoteDetails(
+    private fun postQuoteDetails(
         bidRequestId: Int,
         costingType: String,
         bidStatus: String,

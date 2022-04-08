@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class ActionDetailsViewModel @Inject constructor(
-    val actionDetailsRepository: ActionDetailsRepository,
+    private val actionDetailsRepository: ActionDetailsRepository,
     application: Application,
 ) : BaseViewModel(application) {
 
@@ -29,6 +29,8 @@ class ActionDetailsViewModel @Inject constructor(
                     myList[i].serviceDate,
                     myList[i].bidRequestedDate,
                     myList[i].biddingCutOffDate,
+                    // 2354
+                    myList[i].currencyType,
                     myList[i].costingType,
                     myList[i].cost,
                     myList[i].latestBidValue,
@@ -47,7 +49,8 @@ class ActionDetailsViewModel @Inject constructor(
     //Method For put QuoteDetails
     fun postQuoteDetails(idToken: String, bidRequestId: Int, biddingQuote: BiddingQuotDto) =
         liveData(
-            Dispatchers.IO) {
+            Dispatchers.IO
+        ) {
             emit(actionDetailsRepository.postQuoteDetails(idToken, bidRequestId, biddingQuote))
         }
 
