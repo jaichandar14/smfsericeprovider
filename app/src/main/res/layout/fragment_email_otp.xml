@@ -85,7 +85,6 @@
                     android:inputType="number"
                     app:hideLineWhenFilled="false"
                     app:itemCount="4"
-
                     app:itemHeight="@dimen/size_50dp"
                     app:itemRadius="@dimen/size_10dp"
                     app:itemSpacing="@dimen/size_20dp"
@@ -101,7 +100,6 @@
             </LinearLayout>
 
             <LinearLayout
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -119,6 +117,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="@string/_00_30" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -130,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="@string/did_t_receive_otp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -142,9 +142,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="Resend"
-                    android:textColor="@color/button_blue" />
-            </LinearLayout>
+                    android:textColor="@color/button_blue"/>
 
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -163,6 +163,6 @@
 
         </Button>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

@@ -20,5 +20,6 @@
     <color name="button_blue">#556cd4</color>
     // 2350
     <color name="fade_gray">#EBE1E1E1</color>
+    <color name="fade_black">#F0333333</color>
 
 </resources>

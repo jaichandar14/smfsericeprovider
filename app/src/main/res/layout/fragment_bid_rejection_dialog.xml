@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="bidRejectionDialogViewModel"
             type="com.smf.events.ui.bidrejectiondialog.BidRejectionDialogViewModel" />

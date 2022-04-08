@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="signinViewModel"
             type="com.smf.events.ui.signin.SignInViewModel" />
@@ -96,7 +95,7 @@
                 android:hint="@string/phonenumber"
                 android:inputType="numberDecimal"
                 android:maxLength="10"
-                android:textColor="#F0333333" />
+                android:textColor="@color/fade_black" />
 
         </LinearLayout>
 
