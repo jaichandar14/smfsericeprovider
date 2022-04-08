@@ -47,7 +47,7 @@
                 android:src="@drawable/backarrow" />
         </RelativeLayout>
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardview"
+            android:id="@+id/card_view"
             app:layout_constraintTop_toBottomOf="@+id/linear_catering"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -678,7 +678,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_20dp"
             android:background="@color/white"
-            app:layout_constraintTop_toBottomOf="@+id/cardview"
+            app:layout_constraintTop_toBottomOf="@+id/card_view"
             app:layout_constraintStart_toStartOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

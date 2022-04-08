@@ -32,8 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/otp_verification"
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/button_blue"
                 android:textSize="@dimen/size_22sp" />
 
             <LinearLayout
@@ -100,7 +100,6 @@
             </LinearLayout>
 
             <LinearLayout
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -118,6 +117,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="@string/_00_30" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -129,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="@string/did_t_receive_otp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -141,27 +142,27 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="Resend"
-                    android:textColor="@color/lightblue" />
-            </LinearLayout>
+                    android:textColor="@color/button_blue"/>
 
+            </LinearLayout>
 
         </LinearLayout>
 
         <Button
-
             android:id="@+id/submitBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/size_100dp"
-            android:backgroundTint="@color/buttoncolor"
+            android:backgroundTint="@color/button_blue"
             android:fontFamily="@font/poppins_regular"
             android:text="@string/submit"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
         </Button>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

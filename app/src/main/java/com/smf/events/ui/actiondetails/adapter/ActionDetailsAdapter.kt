@@ -66,8 +66,6 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
         var cutoffMonthText: TextView = view.findViewById(R.id.cutoff_month_text)
         var progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
         var progressDateNumber: TextView = view.findViewById(R.id.progress_date_number)
-        var unlikeButtonFade: ImageView = view.findViewById(R.id.unlike_imageView_fade)
-        var likeButtonFade: ImageView = view.findViewById(R.id.like_imageView_fade)
         var changeOfMind: TextView = view.findViewById(R.id.change_of_mind)
 
         @SuppressLint("SetTextI18n")
@@ -205,8 +203,6 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
         private fun buttonVisibility(holder: ActionDetailsViewHolder) {
             holder.likeButton.visibility = View.INVISIBLE
             holder.unlikeButton.visibility = View.INVISIBLE
-            holder.likeButtonFade.visibility = View.VISIBLE
-            holder.unlikeButtonFade.visibility = View.VISIBLE
             holder.changeOfMind.visibility = View.VISIBLE
         }
     }

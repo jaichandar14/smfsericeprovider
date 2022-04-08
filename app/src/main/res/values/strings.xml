@@ -89,6 +89,17 @@
     <string name="you_rejected_a_catering_1000045">You Rejected a Catering #1000045</string>
     <string name="change_in_mind">Change in Mind ?</string>
     <string name="amount">Amount</string>
+    <string name="bid_proposal_date">Bid proposal date</string>
+    <string name="_9_aug_2021">9 Aug 2021</string>
+    <string name="payment_status">Payment status</string>
+    <string name="serviced_by">Serviced by</string>
+    <string name="na">NA</string>
+    <string name="address">Address</string>
+    <string name="customer_rating">Customer Rating</string>
+    <string name="review_comment">Review Comment</string>
+    <string name="comments">Comments</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/event_details_card_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/event_details_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/size_8dp"
-    app:cardElevation="@dimen/size_10dp"
     android:layout_marginStart="@dimen/size_5dp"
-    android:layout_marginEnd="@dimen/size_5dp"
     android:layout_marginTop="@dimen/size_5dp"
+    android:layout_marginEnd="@dimen/size_5dp"
     android:layout_marginBottom="@dimen/size_15dp"
-    android:background="@drawable/event_detail_cardview_background">
+    android:background="@drawable/event_detail_cardview_background"
+    app:cardCornerRadius="@dimen/size_8dp"
+    app:cardElevation="@dimen/size_10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -76,11 +76,11 @@
             android:id="@+id/event_type_text"
             android:layout_width="@dimen/size_200dp"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/size_2dp"
             android:layout_marginStart="@dimen/size_12dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:paddingTop="@dimen/size_2dp"
             android:text="@string/fork_amp_spoon_catering"
             android:textSize="@dimen/size_15sp"
-            android:fontFamily="@font/poppins_semibold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -138,13 +138,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="22"
+                android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@+id/progress_bar"
                 app:layout_constraintStart_toStartOf="@+id/progress_bar"
                 app:layout_constraintTop_toTopOf="@+id/progress_bar" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -152,9 +151,9 @@
             android:id="@+id/date_title_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_20dp"
             android:layout_marginStart="@dimen/size_12dp"
+            android:layout_marginTop="@dimen/size_20dp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_type_text">
@@ -169,10 +168,10 @@
             <TextView
                 android:layout_width="@dimen/size_100dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_10dp"
                 android:fontFamily="@font/poppins_regular"
                 android:text="@string/service_date"
-                android:textSize="@dimen/size_15sp"
-                android:layout_marginStart="@dimen/size_10dp"/>
+                android:textSize="@dimen/size_15sp" />
 
         </LinearLayout>
 
@@ -180,9 +179,9 @@
             android:id="@+id/date_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_2dp"
             android:layout_marginStart="@dimen/size_12dp"
+            android:layout_marginTop="@dimen/size_2dp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date_title_text_layout">
@@ -203,28 +202,29 @@
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/_12_aug"
                 android:textSize="@dimen/size_18sp" />
+
             <TextView
-                android:visibility="invisible"
-                android:paddingStart="@dimen/size_5dp"
                 android:id="@+id/change_of_mind"
                 android:layout_width="@dimen/size_150dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/blue"
                 android:layout_marginStart="@dimen/size_8dp"
                 android:fontFamily="@font/poppins_medium"
+                android:paddingStart="@dimen/size_5dp"
                 android:text="@string/change_in_mind"
-                android:textSize="@dimen/size_14sp" />
+                android:textColor="@color/blue"
+                android:textSize="@dimen/size_14sp"
+                android:visibility="invisible" />
 
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/new_req_layout"
-            android:paddingBottom="@dimen/size_10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/size_12dp"
-            android:layout_marginRight="@dimen/size_12dp"
             android:layout_marginTop="@dimen/size_8dp"
+            android:layout_marginRight="@dimen/size_12dp"
+            android:paddingBottom="@dimen/size_10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date_text_layout">
@@ -254,29 +254,14 @@
                 app:layout_constraintStart_toEndOf="@+id/right_arrow"
                 app:layout_constraintTop_toTopOf="@+id/right_arrow" />
 
-
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/unlike_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_button_round_corner"
+                android:background="@drawable/icon_image_view_background"
                 android:backgroundTint="@color/red"
                 android:padding="@dimen/size_5dp"
                 android:src="@drawable/unlike_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
-                app:layout_constraintEnd_toStartOf="@+id/like_imageView"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
-                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
-            <androidx.appcompat.widget.AppCompatImageView
-                android:visibility="invisible"
-                android:id="@+id/unlike_imageView_fade"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_button_round_corner"
-                android:padding="@dimen/size_5dp"
-                android:src="@drawable/unlike_icon"
-                android:backgroundTint="#EBE1E1E1"
                 app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
                 app:layout_constraintEnd_toStartOf="@+id/like_imageView"
                 app:layout_constraintHorizontal_bias="0.9"
@@ -287,7 +272,7 @@
                 android:id="@+id/like_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_button_round_corner"
+                android:background="@drawable/icon_image_view_background"
                 android:backgroundTint="@color/green"
                 android:padding="@dimen/size_5dp"
                 android:src="@drawable/like_icon"
@@ -297,27 +282,13 @@
                 app:layout_constraintStart_toEndOf="@+id/ner_request_text"
                 app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
 
-            <ImageView
-                android:visibility="invisible"
-                android:id="@+id/like_imageView_fade"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_button_round_corner"
-                android:padding="@dimen/size_5dp"
-                android:src="@drawable/like_icon"
-                android:backgroundTint="#EBE1E1E1"
-                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
-                app:layout_constraintEnd_toStartOf="@+id/right_arrow_imageView"
-                app:layout_constraintHorizontal_bias="0.93"
-                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
-                app:layout_constraintTop_toTopOf="@+id/ner_request_text"/>
-
 
             <ImageView
                 android:id="@+id/right_arrow_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_button_round_corner"
+                android:background="@drawable/icon_image_view_background"
+                android:backgroundTint="@color/fade_gray"
                 android:padding="@dimen/size_5dp"
                 android:src="@drawable/right_arrow_forward"
                 app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
@@ -328,9 +299,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.cardview.widget.CardView>
