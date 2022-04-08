@@ -70,7 +70,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
         // token CallBackInterface
@@ -121,8 +120,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
         mDataBinding?.customerRating?.text = "NA"
-
-
     }
 
     // 2354 - Method For Setting CurrencyType
@@ -164,7 +161,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
         mDataBinding?.customerRating?.text = "NA"
-
 
     }
 
@@ -218,7 +214,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                 }
             })
     }
-
 
     //Call Back From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
