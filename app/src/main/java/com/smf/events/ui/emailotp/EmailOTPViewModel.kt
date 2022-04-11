@@ -98,7 +98,6 @@ class EmailOTPViewModel @Inject constructor(
             {
                 Log.e("AuthDemo", "Failed to fetch user attributes", it)
                 viewModelScope.launch {
-
                     toastMessage = "Invalid OTP"
                     callBackInterface!!.awsErrorResponse()
                 }
