@@ -50,16 +50,16 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         getViewModel().setCallBackInterface(this)
         // Submit Button Listener
         submitBtnClicked()
-        // Resend Text Listener
-        resendBtnClicked()
         //Auto suubmit pin
         autoSubmit()
+        //2351 Android-OTP expires Validation Method
+        getViewModel().otpTimerValidation(mDataBinding, userName)
     }
 
     // Method For set UserName And SharedPreferences
-    private fun setUserNameAndSharedPref(){
+    private fun setUserNameAndSharedPref() {
         userName = args.userName
-        getSharedPreferences= requireActivity().applicationContext.getSharedPreferences(
+        getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
             "MyUser",
             Context.MODE_PRIVATE
         )
@@ -72,13 +72,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             getViewModel().confirmSignIn(code, mDataBinding!!)
         }
 
-    }
-
-    // Method for ResendingOTP
-    private fun resendBtnClicked() {
-        mDataBinding?.otpResend?.setOnClickListener {
-            getViewModel().reSendOTP(userName)
-        }
     }
 
     //AutoSubmitted when we Enter 4 digit
@@ -106,7 +99,15 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     //AWS Error response
     override fun awsErrorResponse() {
+        mDataBinding?.linearLayout?.visibility = View.VISIBLE
+        mDataBinding?.progressBar?.visibility = View.INVISIBLE
         showToast(getViewModel().toastMessage)
+    }
+
+    //2351 Android-OTP expires Validation
+    override fun navigatingPage() {
+        //Navigating from emailOtpScreen to Sign in Screen
+        findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
     }
 
     //Login api call to Fetch RollId and SpRegId

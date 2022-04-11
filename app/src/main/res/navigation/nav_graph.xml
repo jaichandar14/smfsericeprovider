@@ -72,6 +72,9 @@
         <action
             android:id="@+id/action_eMailOTPFragment_to_dashBoardFragment"
             app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_eMailOTPFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
     </fragment>
     <fragment
         android:id="@+id/emailVerificationCodeFragment"
