@@ -2,7 +2,11 @@ package com.smf.events.ui.emailotp
 
 import android.app.Application
 import android.content.Context
+import android.os.CountDownTimer
 import android.util.Log
+import android.view.View
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -10,6 +14,7 @@ import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.core.Amplify
+import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentEmailOtpBinding
@@ -27,7 +32,8 @@ class EmailOTPViewModel @Inject constructor(
 
     // Custom Confirm SignIn Function
     fun confirmSignIn(otp: String, mDataBinding: FragmentEmailOtpBinding) {
-
+        mDataBinding.linearLayout.visibility = View.INVISIBLE
+        mDataBinding.progressBar.visibility = View.VISIBLE
         Amplify.Auth.confirmSignIn(otp,
             {
                 // Aws method for Fetching Id Token
@@ -46,6 +52,10 @@ class EmailOTPViewModel @Inject constructor(
                     if (errMsg.isEmpty()) {
                         toastMessage = "Enter OTP"
                         callBackInterface!!.awsErrorResponse()
+                    } else {
+                        toastMessage = "Multiple Entry of Invalid Otp"
+                        callBackInterface!!.awsErrorResponse()
+                        callBackInterface!!.navigatingPage()
                     }
                 }
             })
@@ -62,7 +72,6 @@ class EmailOTPViewModel @Inject constructor(
             { Log.e("AuthQuickStart", "Failed to fetch session", it) }
         )
     }
-
 
     // Method for save IdToken
     private fun setTokenToSharedPref(token: String?) {
@@ -118,10 +127,14 @@ class EmailOTPViewModel @Inject constructor(
             })
     }
 
+    //2351 Android-OTP expires Validation
     // OTP Resend SignIn Method
-    fun reSendOTP(userName: String) {
+    fun reSendOTP(userName: String, mDataBinding: FragmentEmailOtpBinding) {
         Amplify.Auth.signIn(userName, null, {
             Log.d("TAG", "reSendOTP: called code resented successfully")
+            viewModelScope.launch {
+                otpTimerValidation(mDataBinding, userName)
+            }
         },
             {
                 Log.e("AuthQuickstart", "Failed to sign in", it)
@@ -144,7 +157,35 @@ class EmailOTPViewModel @Inject constructor(
     interface CallBackInterface {
         suspend fun callBack(status: String)
         fun awsErrorResponse()
+        fun navigatingPage()
     }
 
+    //2351 Android-OTP expires Validation Method
+    fun otpTimerValidation(mDataBinding: FragmentEmailOtpBinding?, userName: String) {
+        var counter = 30
+        var countTime: TextView = mDataBinding!!.otpTimer
+        mDataBinding.otpResend.setTextColor(ContextCompat.getColor(
+            getApplication(), R.color.buttoncolor))
+        mDataBinding.otpResend.isClickable = false
+        object : CountDownTimer(30000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (counter < 10) {
+                    countTime.text = " 00:0${counter}"
+                } else {
+                    countTime.text = " 00:${counter}"
+                }
+                counter--
+            }
 
+            override fun onFinish() {
+                mDataBinding.otpResend.setTextColor(ContextCompat.getColor(
+                    getApplication(), R.color.button_blue))
+                mDataBinding.otpResend.isClickable = true
+                countTime.text = " 00:00"
+                mDataBinding.otpResend.setOnClickListener {
+                    reSendOTP(userName, mDataBinding)
+                }
+            }
+        }.start()
+    }
 }

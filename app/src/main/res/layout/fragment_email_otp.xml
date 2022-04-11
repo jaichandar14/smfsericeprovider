@@ -18,6 +18,15 @@
         android:paddingEnd="@dimen/size_20dp"
         android:paddingTop="@dimen/size_40dp">
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout"
+            app:layout_constraintTop_toTopOf="parent" />
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
@@ -142,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
                     android:text="Resend"
-                    android:textColor="@color/button_blue"/>
+                    android:textColor="@color/buttoncolor"/>
 
             </LinearLayout>
 
