@@ -18,6 +18,7 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionDetailsBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
@@ -44,10 +45,12 @@ class ActionDetailsFragment :
     var bidStatus: String = ""
     lateinit var idToken: String
     var spRegId: Int = 0
-    private lateinit var getSharedPreferences: SharedPreferences
 
     @Inject
     lateinit var tokens: Tokens
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -113,7 +116,7 @@ class ActionDetailsFragment :
 
     // Method For ActionDetails RecyclerView
     private fun myActionsStatusRecycler() {
-        actionDetailsAdapter = ActionDetailsAdapter(requireContext(), bidStatus)
+        actionDetailsAdapter = ActionDetailsAdapter(requireContext(), bidStatus, sharedPreference)
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
@@ -266,12 +269,8 @@ class ActionDetailsFragment :
     private fun actionDetailsVariableSetUp() {
         val args = arguments
         bidStatus = args?.getString("bidStatus").toString()
-        getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
-        spRegId = getSharedPreferences.getInt("spRegId", 0)
+        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
+        spRegId = sharedPreference.getSharedPreferences().getInt("spRegId", 0)
         serviceCategoryIdAndServiceOnBoardingIdSetup(args)
     }
 

@@ -3,6 +3,7 @@ package com.smf.events.ui.actiondetails.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import java.time.Month
 
-class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
+class ActionDetailsAdapter(
+    val context: Context,
+    var bidStatus: String,
+    val sharedPreference: SharedPreference
+) :
     RecyclerView.Adapter<ActionDetailsAdapter.ActionDetailsViewHolder>() {
 
     private var myEventsList = ArrayList<ActionDetails>()
@@ -205,9 +211,7 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
 
         // 2401 - Method For Update Request Id
         private fun updateBidRequestId(bidRequestId: Int) {
-            val sharedPreferences =
-                context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            val editor: SharedPreferences.Editor = sharedPreference.getSharedPreferences().edit()
             editor.putInt("bidRequestId", bidRequestId)
             editor.apply()
         }
