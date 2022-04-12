@@ -14,6 +14,7 @@ import com.smf.events.R
 import com.smf.events.helper.AppConstants
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
+import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import java.time.Month
 
@@ -29,16 +30,13 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.event_details_card_view, parent, false)
-
         return ActionDetailsViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ActionDetailsViewHolder, position: Int) {
-
         holder.onBind(myEventsList[position])
         holder.details(myEventsList[position], holder)
     }
-
 
     override fun getItemCount(): Int {
         return myEventsList.size
@@ -53,7 +51,6 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
     }
 
     inner class ActionDetailsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         var eventName: TextView = view.findViewById(R.id.event_title_text)
         var amount: TextView = view.findViewById(R.id.amount_text)
         var code: TextView = view.findViewById(R.id.code_text)
@@ -88,9 +85,8 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             if (bidStatus == AppConstants.BID_REJECTED) {
                 //Button Visibility
                 holder.buttonVisibility(holder)
-                //Change of Mind For Submitting and quotel ater the Rejected  Bid
-                holder.changeOfMind.setOnClickListener { holder.bidSubmitted(position) }
-
+                //Change in Mind For Submitting and quote after the Rejected Bid
+                holder.changeOfMind.setOnClickListener { costingType(position, holder) }
             }
             if (bidStatus == AppConstants.BID_SUBMITTED) {
                 //Button Visibility
@@ -106,11 +102,24 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             holder.unlikeButton.setOnClickListener {
                 holder.bidRejection(position)
             }
-
-
         }
 
-        //2354 - Method For Setting Quote Amount
+        // 2401 - Based On Costing Type Redirection To Other Dialogs
+        private fun costingType(position: ActionDetails, holder: ActionDetailsViewHolder) {
+            if (position.costingType != "Bidding") {
+                // Update Latest bidRequestId To Shared Preference
+                updateBidRequestId(position.bidRequestId)
+                // Create Common Info Dialog
+                CommonInfoDialog.newInstance(position).show(
+                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    CommonInfoDialog.TAG
+                )
+            } else {
+                holder.bidSubmitted(position)
+            }
+        }
+
+        // 2354 - Method For Setting Quote Amount
         private fun setCost(actionDetails: ActionDetails, currencyType: String) {
             if (actionDetails.costingType == "Bidding") {
                 if (actionDetails.latestBidValue.isNullOrEmpty()) {
@@ -128,7 +137,7 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             val currencyType = if (actionDetails.currencyType == null) {
                 "$"
             } else {
-                when(actionDetails.currencyType) {
+                when (actionDetails.currencyType) {
                     "USD($)" -> "$"
                     "GBP(\u00a3)" -> "\u00a3"
                     "INR(\u20B9)" -> "₹"
@@ -165,12 +174,8 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             var latestBidValue: String? = position.latestBidValue
             var branchName: String = position.branchName
             var serviceName: String = position.serviceName
-
-            val sharedPreferences =
-                context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putInt("bidRequestId", bidRequestId)
-            editor.apply()
+            // Update Latest bidRequestId To Shared Preference
+            updateBidRequestId(bidRequestId)
 
             if (costingType != "Bidding") {
                 callBackInterface?.callBack(
@@ -191,12 +196,20 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
                     latestBidValue,
                     branchName,
                     serviceName
+                ).show(
+                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    QuoteDetailsDialog.TAG
                 )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        QuoteDetailsDialog.TAG
-                    )
             }
+        }
+
+        // 2401 - Method For Update Request Id
+        private fun updateBidRequestId(bidRequestId: Int) {
+            val sharedPreferences =
+                context.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.putInt("bidRequestId", bidRequestId)
+            editor.apply()
         }
 
         //Button visibility
@@ -237,5 +250,4 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             branchName: String,
         )
     }
-
 }
