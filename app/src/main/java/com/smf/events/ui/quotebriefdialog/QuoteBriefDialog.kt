@@ -13,6 +13,7 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.QuoteBriefDialogBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import dagger.android.support.AndroidSupportInjection
@@ -24,13 +25,16 @@ import javax.inject.Inject
 
 class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
     Tokens.IdTokenCallBackInterface {
+
+    var bidRequestId: Int? = 0
+    lateinit var idToken: String
+    var expand = false
+    lateinit var bidStatus: String
+
     companion object {
         const val TAG = "CustomDialogFragment"
 
-        fun newInstance(
-
-        ): QuoteBriefDialog {
-
+        fun newInstance(): QuoteBriefDialog {
             return QuoteBriefDialog()
         }
     }
@@ -39,11 +43,10 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     lateinit var factory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var sharedPreference: SharedPreference
+
+    @Inject
     lateinit var tokens: Tokens
-    var bidRequestId: Int? = 0
-    lateinit var idToken: String
-    var expand = false
-    lateinit var bidStatus: String
 
     override fun getViewModel(): QuoteBriefDialogViewModel =
         ViewModelProvider(this, factory).get(QuoteBriefDialogViewModel::class.java)
@@ -67,7 +70,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     override fun onStart() {
         super.onStart()
         apiTokenValidationQuoteBrief()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -161,7 +163,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
         mDataBinding?.customerRating?.text = "NA"
-
     }
 
     //Date Formatted for setting details
@@ -178,19 +179,14 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     //Setting IDToken
     private fun setIdTokenAndBidReqId() {
-        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        bidRequestId = getSharedPreferences?.getInt("bidRequestId", 0)
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        bidRequestId = sharedPreference.getSharedPreferences().getInt("bidRequestId", 0)
+        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
     }
 
     //Get Api Call for getting the Quote Brief
     private fun quoteBriefApiCall(idToken: String) {
         getViewModel().getQuoteBrief(idToken, bidRequestId!!)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
-
                 when (apiResponse) {
                     is ApisResponse.Success -> {
 
@@ -204,7 +200,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                             "BID SUBMITTED" -> setBidSubmitQuoteBrief(apiResponse.response)
                             "PENDING FOR QUOTE" -> setPendingQuoteBrief(apiResponse.response)
                         }
-
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")

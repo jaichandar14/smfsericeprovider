@@ -27,6 +27,7 @@ import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
@@ -50,6 +51,7 @@ class QuoteDetailsDialog(
     var serviceName: String
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
+
     lateinit var biddingQuote: BiddingQuotDto
     lateinit var file: File
     var fileName: String? = null
@@ -57,6 +59,7 @@ class QuoteDetailsDialog(
     var fileContent: String? = null
     lateinit var idToken: String
     var currencyTypeList = ArrayList<String>()
+    var latestBidValueQuote: Int = 0
 
     companion object {
         const val TAG = "CustomDialogFragment"
@@ -81,15 +84,17 @@ class QuoteDetailsDialog(
                 serviceName
             )
         }
-
     }
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var sharedPreference: SharedPreference
+
+    @Inject
     lateinit var tokens: Tokens
-    var latestBidValueQuote: Int = 0
+
     override fun getViewModel(): QuoteDetailsDialogViewModel =
         ViewModelProvider(this, factory).get(QuoteDetailsDialogViewModel::class.java)
 
@@ -106,7 +111,6 @@ class QuoteDetailsDialog(
         super.onCreate(savedInstanceState)
         //getting IdToken
         setIdToken()
-
     }
 
     override fun onStart() {
@@ -241,7 +245,6 @@ class QuoteDetailsDialog(
             })
     }
 
-
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
             when (caller) {
@@ -293,7 +296,6 @@ class QuoteDetailsDialog(
                     }
                 }
             }
-
         view?.findViewById<Button>(R.id.btn_file_upload)?.setOnClickListener {
             try {
                 var gallaryIntent = Intent(Intent.ACTION_GET_CONTENT);
@@ -306,9 +308,7 @@ class QuoteDetailsDialog(
                     Toast.LENGTH_SHORT
                 ).show();
             }
-
         }
-
     }
 
     private fun convertToString(uri: Uri) {
@@ -331,7 +331,6 @@ class QuoteDetailsDialog(
             } else {
                 Toast.makeText(activity, "upload file below 100kb", Toast.LENGTH_SHORT).show()
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d("error", "onActivityResult: $e")
@@ -352,12 +351,7 @@ class QuoteDetailsDialog(
 
     //Setting Id Token
     private fun setIdToken() {
-        val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-
+        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
     }
 }
 

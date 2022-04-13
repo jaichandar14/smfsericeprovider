@@ -10,9 +10,12 @@ import javax.inject.Singleton
 @Singleton
 class SharedPreference @Inject constructor(var application: Application) {
 
+    private var sharedPreference: SharedPreferences =
+        application.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+
     // 2401 - Method For Get Singleton SharedPreferences Object
     fun getSharedPreferences(): SharedPreferences {
-        return application.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
+        return sharedPreference
     }
 
 }

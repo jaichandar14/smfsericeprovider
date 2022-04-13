@@ -1,6 +1,5 @@
 package com.smf.events.helper
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
@@ -18,7 +17,6 @@ class Tokens @Inject constructor() {
 
     // Method for verify token validity
     fun checkTokenExpiry(application: SMFApp, caller: String, idToken: String) {
-
         val newTime = Date().time / 1000
         val splitToken = idToken.split('.')
         val decodedBytes = Base64.getDecoder().decode(splitToken[1])
@@ -26,7 +24,6 @@ class Tokens @Inject constructor() {
         val tokenObj = JSONObject(decodeToken)
         val tokenObjExp = tokenObj.getString("exp").toLong()
         val newTimeMin = newTime + 1 * 60
-
         if (newTimeMin < tokenObjExp) {
             Log.d("TAG", "checkTokenExpiry refereshTokentime inside if block")
             tokenNotExpired(idToken, myLambFunc, caller)
@@ -34,7 +31,6 @@ class Tokens @Inject constructor() {
             Log.d("TAG", "checkTokenExpiry refereshTokentime else block")
             fetchNewIdToken(application, myLambFunc, caller)
         }
-
     }
 
     //Method for fetching token
@@ -48,13 +44,9 @@ class Tokens @Inject constructor() {
                 val session = it as AWSCognitoAuthSession
                 val idToken =
                     AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
-
                 updateTokenToShardPreferences(application, idToken, myFunc, caller)
-
             },
             { Log.e("AuthQuickStart", "Failed to fetch session", it) })
-
-
     }
 
     // Method For Update New IdToken to Shared Preference
@@ -64,16 +56,12 @@ class Tokens @Inject constructor() {
         myFunc: suspend (String, String) -> Unit,
         caller: String
     ) {
-        val sharedPreferences =
-            application.applicationContext.getSharedPreferences(
-                "MyUser",
-                Context.MODE_PRIVATE
-            )
+        val sharedPreferences = SharedPreference(application).getSharedPreferences()
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editor.putString("IdToken", idToken)
         editor.apply()
         GlobalScope.launch {
-            myFunc("Bearer ${sharedPreferences?.getString("IdToken", "")}", caller)
+            myFunc("Bearer ${sharedPreferences.getString("IdToken", "")}", caller)
         }
     }
 
@@ -99,18 +87,13 @@ class Tokens @Inject constructor() {
                     "AuthQuickstart",
                     "checkTokenExpiry refereshTokentime Signed out successfully"
                 )
-                val sharedPreferences =
-                    application.applicationContext.getSharedPreferences(
-                        "MyUser",
-                        Context.MODE_PRIVATE
-                    )
+                val sharedPreferences = SharedPreference(application).getSharedPreferences()
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                 editor.putString("IdToken", "")
                 editor.apply()
                 GlobalScope.launch {
                     myFunc("", "signOut")
                 }
-
             },
             { Log.e("AuthQuickstart", "Sign out failed", it) }
         )
