@@ -119,7 +119,7 @@ class BidRejectionDialogFragment(
                 } else {
                     apiTokenValidationQuoteDetailsDialog("BidReject")
                 }
-            }else {
+            } else {
                 apiTokenValidationQuoteDetailsDialog("BidReject")
             }
         }
