@@ -12,10 +12,7 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentViewOrderDetailsDialogBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.DateFormatter
-import com.smf.events.helper.ListHelper
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.ui.vieworderdetails.adaptor.ViewOrderDetailsAdaptor
 import com.smf.events.ui.vieworderdetails.model.EventServiceBudgetDto
 import com.smf.events.ui.vieworderdetails.model.EventServiceDateDto
@@ -51,6 +48,9 @@ class ViewOrderDetailsDialogFragment(
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     @Inject
     lateinit var tokens: Tokens
@@ -154,7 +154,6 @@ class ViewOrderDetailsDialogFragment(
         for (i in myList.indices) {
             questionList.add(myList[i].questionMetadata?.question.toString())
             answerList.add(myList[i].questionMetadata?.answer.toString())
-
         }
         val slots = serviceDetails?.preferredSlots as ArrayList
         slots.forEach {
@@ -174,11 +173,7 @@ class ViewOrderDetailsDialogFragment(
 
     //Setting IDToken
     private fun setIdToken() {
-        val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
     }
 
     // 2402 - Api Token Validation For Quote Brief Api Call
