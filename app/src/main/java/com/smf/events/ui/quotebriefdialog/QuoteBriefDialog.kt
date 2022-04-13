@@ -1,5 +1,6 @@
 package com.smf.events.ui.quotebriefdialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -13,13 +14,13 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.QuoteBriefDialogBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.DateFormatter
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Month
 import javax.inject.Inject
 
 
@@ -33,7 +34,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     companion object {
         const val TAG = "CustomDialogFragment"
-
         fun newInstance(): QuoteBriefDialog {
             return QuoteBriefDialog()
         }
@@ -76,11 +76,11 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
         // token CallBackInterface
         tokens.setCallBackInterface(this)
-        //Back Button Pressed
+        // Back Button Pressed
         mDataBinding?.btnBack?.setOnClickListener {
             backButtonClickListener()
         }
-        //Expandable view
+        // Expandable view
         getViewModel().expandableView(mDataBinding, expand)
 
 //        //state progress three completed
@@ -89,7 +89,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 //        getViewModel()?.progress4Completed(mDataBinding)
     }
 
-    //Back Button Pressed
+    // Back Button Pressed
     private fun backButtonClickListener() {
         parentFragmentManager.setFragmentResult(
             "1", // Same request key DashBoardFragment used to register its listener
@@ -98,13 +98,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         dismiss()
     }
 
-    //Setting Bid Submitted Quote
+    // Setting Bid Submitted Quote
     private fun setBidSubmitQuoteBrief(response: QuoteBrief) {
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.txJobTitle?.text = response.data.eventName
-       // 2354
+        // 2354
         val currencyType = setCurrencyType(response)
         if (response.data.costingType == "Bidding") {
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.latestBidValue}"
@@ -112,10 +112,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.cost}"
         }
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text = dateFormat(response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text = dateFormat(response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text = dateFormat(response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text = dateFormat(response.data.serviceDate)
+        mDataBinding?.txEventdateValue?.text = DateFormatter.getDateFormat(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text =
+            DateFormatter.getDateFormat(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text =
+            DateFormatter.getDateFormat(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text =
+            DateFormatter.getDateFormat(response.data.serviceDate)
         mDataBinding?.paymentStatusValue?.text = "NA"
         mDataBinding?.servicedBy?.text = "NA"
         mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
@@ -125,7 +128,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     }
 
     // 2354 - Method For Setting CurrencyType
-    private fun setCurrencyType(response: QuoteBrief): String{
+    private fun setCurrencyType(response: QuoteBrief): String {
         val currencyType = if (response.data.currencyType == null) {
             "$"
         } else {
@@ -141,7 +144,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         return currencyType
     }
 
-    //Setting Bid Pending Quote
+    // Setting Bid Pending Quote
+    @SuppressLint("SetTextI18n")
     private fun setPendingQuoteBrief(response: QuoteBrief) {
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -153,10 +157,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.check1?.visibility = View.INVISIBLE
         mDataBinding?.check1inprogress?.visibility = View.VISIBLE
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text = dateFormat(response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text = dateFormat(response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text = dateFormat(response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text = dateFormat(response.data.serviceDate)
+        mDataBinding?.txEventdateValue?.text = DateFormatter.getDateFormat(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text =
+            DateFormatter.getDateFormat(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text =
+            DateFormatter.getDateFormat(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text =
+            DateFormatter.getDateFormat(response.data.serviceDate)
         mDataBinding?.paymentStatusValue?.text = "NA"
         mDataBinding?.servicedBy?.text = "NA"
         mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
@@ -165,38 +172,20 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.customerRating?.text = "NA"
     }
 
-    //Date Formatted for setting details
-    private fun dateFormat(input: String): String {
-        var monthCount = input.substring(0, 2)
-        val date = input.substring(3, 5)
-        val year = input.substring(6, 10)
-        if (monthCount[0].digitToInt() == 0) {
-            monthCount = monthCount[1].toString()
-        }
-        val month = Month.of(monthCount.toInt()).toString().substring(0, 3)
-        return "$date $month $year"
-    }
-
-    //Setting IDToken
+    // Setting IDToken
     private fun setIdTokenAndBidReqId() {
         bidRequestId = sharedPreference.getSharedPreferences().getInt("bidRequestId", 0)
         idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
     }
 
-    //Get Api Call for getting the Quote Brief
+    // Get Api Call for getting the Quote Brief
     private fun quoteBriefApiCall(idToken: String) {
         getViewModel().getQuoteBrief(idToken, bidRequestId!!)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-
-                        Log.d("TAG", "Quotedetails Succcess: ${(apiResponse.response)}")
-                        apiResponse.response.data.eventDate
-
                         bidStatus = apiResponse.response.data.bidStatus
-
                         when (bidStatus) {
-
                             "BID SUBMITTED" -> setBidSubmitQuoteBrief(apiResponse.response)
                             "PENDING FOR QUOTE" -> setPendingQuoteBrief(apiResponse.response)
                         }
@@ -210,7 +199,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
             })
     }
 
-    //Call Back From Token Class
+    // Call Back From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             quoteBriefApiCall(idToken)

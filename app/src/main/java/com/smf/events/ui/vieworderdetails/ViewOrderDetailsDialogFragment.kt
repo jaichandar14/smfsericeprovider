@@ -54,6 +54,7 @@ class ViewOrderDetailsDialogFragment(
 
     @Inject
     lateinit var tokens: Tokens
+
     lateinit var idToken: String
     lateinit var listView: ListView
     var preferedSlot = ArrayList<String>()
@@ -83,23 +84,24 @@ class ViewOrderDetailsDialogFragment(
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
         listView = mDataBinding?.quesList!!
-        //2402 - token CallBackInterface
+        // 2402 - token CallBackInterface
         tokens.setCallBackInterface(this)
-        //2402 - Api Token  validation ViewOrderDetails
+        // 2402 - Api Token  validation ViewOrderDetails
         apiTokenValidationViewOrderDetails()
-        //2402 - Back Button pressed
+        // 2402 - Back Button pressed
         backButton()
     }
 
-    //2402 - Back Button pressed
+    // 2402 - Back Button pressed
     private fun backButton() {
         mDataBinding?.btnBack?.setOnClickListener {
             dismiss()
         }
     }
 
-    //2402 - View order details Get Api call
+    // 2402 - View order details Get Api call
     private fun viewOrderDetails(idToken: String) {
         getViewModel().getViewOrderDetails(idToken, eventId, eventServiceDescriptionId)
             .observe(viewLifecycleOwner, { apiResponse ->
@@ -129,7 +131,7 @@ class ViewOrderDetailsDialogFragment(
             })
     }
 
-    //2402 - Setting the orderDetails Method
+    // 2402 - Setting the orderDetails Method
     @SuppressLint("SetTextI18n")
     private fun settingOrderDetails(
         questionnaireDtos: List<QuestionnaireDtos>?,
@@ -169,9 +171,10 @@ class ViewOrderDetailsDialogFragment(
         val myListAdapter = ViewOrderDetailsAdaptor(requireActivity(), questionList, answerList)
         listView.adapter = myListAdapter
         ListHelper.getListViewSize(listView)
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
     }
 
-    //Setting IDToken
+    // 2402 - Setting IDToken
     private fun setIdToken() {
         idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
     }
@@ -184,7 +187,7 @@ class ViewOrderDetailsDialogFragment(
         )
     }
 
-    //Call Back From Token Class
+    // Call Back From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             //2402 - View order details Get Api call

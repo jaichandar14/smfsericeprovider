@@ -5,8 +5,9 @@ import com.smf.events.network.ApiStories
 import com.smf.events.ui.vieworderdetails.model.OrderDetails
 import retrofit2.HttpException
 import javax.inject.Inject
-//2402
+
 class ViewOrderDetailsRepository @Inject constructor(var apiStories: ApiStories) {
+    // 2402
     suspend fun getViewOrderDetails(
         idToken: String,
         eventId: Int,

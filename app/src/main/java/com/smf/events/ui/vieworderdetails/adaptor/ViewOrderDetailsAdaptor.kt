@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.smf.events.R
 
-//2402 View order details  Adaptor
+// 2402 - View order details  Adaptor
 class ViewOrderDetailsAdaptor(
     private val context: Activity,
     private val title: ArrayList<String>,
@@ -16,7 +16,7 @@ class ViewOrderDetailsAdaptor(
 ) : ArrayAdapter<String>(context, R.layout.questions_custom_listview, title) {
     var ques = 1
 
-    //2402 GetView for customList
+    // 2402 - GetView for customList
     @SuppressLint("SetTextI18n")
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         val inflater = context.layoutInflater

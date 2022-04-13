@@ -88,7 +88,7 @@
                             android:id="@+id/tx_job_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="@dimen/size_5dp"
                             android:fontFamily="@font/poppins_medium"
                             android:textColor="@color/black"
                             android:textSize="@dimen/size_18sp"
@@ -348,7 +348,7 @@
                     <View
                         android:id="@+id/view_seperater_1"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/size_1dp"
                         android:layout_margin="@dimen/size_15dp"
                         android:layout_marginTop="@dimen/size_10dp"
                         android:background="@color/buttoncolor"

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.smf.events.ui.actionandstatusdashboard.model.Result
 import kotlinx.parcelize.Parcelize
 
-//2402 View order details  Model Data class
+// 2402 - View order details  Model Data class
 data class OrderDetails(
     val success: Boolean,
     @SerializedName("data")

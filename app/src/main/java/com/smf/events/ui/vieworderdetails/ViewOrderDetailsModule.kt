@@ -5,7 +5,7 @@ import com.smf.events.helper.ViewModelProviderFactory
 import dagger.Module
 import dagger.Provides
 
-//2402
+// 2402
 @Module
 class ViewOrderDetailsModule {
     @Provides
