@@ -18,6 +18,7 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionDetailsBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
@@ -29,7 +30,6 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 
 class ActionDetailsFragment :
     BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(),
@@ -45,10 +45,12 @@ class ActionDetailsFragment :
     var bidStatus: String = ""
     lateinit var idToken: String
     var spRegId: Int = 0
-    private lateinit var getSharedPreferences: SharedPreferences
 
     @Inject
     lateinit var tokens: Tokens
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -60,7 +62,6 @@ class ActionDetailsFragment :
 
     override fun getContentView(): Int = R.layout.fragment_action_details
 
-
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -70,7 +71,6 @@ class ActionDetailsFragment :
         super.onCreate(savedInstanceState)
         //Action Details Local Variable Initialization
         actionDetailsVariableSetUp()
-
     }
 
     override fun onStart() {
@@ -79,7 +79,6 @@ class ActionDetailsFragment :
         tokens.setCallBackInterface(this)
         //Method For Token Validation
         apiTokenValidationBidActions()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,21 +96,32 @@ class ActionDetailsFragment :
         super.onResume()
         // ResultListener For Observe Data From Dialogs
         parentFragmentManager.setFragmentResultListener("1", viewLifecycleOwner,
-            FragmentResultListener { requestKey: String, result: Bundle ->
+            FragmentResultListener { _: String, _: Bundle ->
                 apiTokenValidationBidActions()
+            })
+
+        // 2401 - ResultListener For Observe Data From CommonInfo Dialog
+        parentFragmentManager.setFragmentResultListener("fromCommonInfoDialog", viewLifecycleOwner,
+            FragmentResultListener { _: String, result: Bundle ->
+                postQuoteDetails(
+                    result["bidRequestId"] as Int,
+                    result["costingType"] as String,
+                    result["bidStatus"] as String,
+                    result["cost"] as String?,
+                    result["latestBidValue"] as String?,
+                    result["branchName"] as String
+                )
             })
     }
 
     // Method For ActionDetails RecyclerView
     private fun myActionsStatusRecycler() {
-        actionDetailsAdapter = ActionDetailsAdapter(requireContext(), bidStatus)
+        actionDetailsAdapter = ActionDetailsAdapter(requireContext(), bidStatus, sharedPreference)
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
         actionDetailsAdapter.setCallBackInterface(this)
-
     }
-
 
     // Close Button ClickListener
     private fun clickListeners() {
@@ -121,7 +131,7 @@ class ActionDetailsFragment :
             serviceVendorOnboardingId?.let { it1 -> args.putInt("serviceVendorOnboardingId", it1) }
             var actionAndStatusFragment = ActionsAndStatusFragment()
             actionAndStatusFragment.arguments = args
-
+            // Replace Fragment
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.action_and_status_layout, actionAndStatusFragment)
                 .setReorderingAllowed(true)
@@ -140,7 +150,6 @@ class ActionDetailsFragment :
         branchName: String,
     ) {
         postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
-
     }
 
     // Method For postQuoteDetails Api Call
@@ -156,7 +165,6 @@ class ActionDetailsFragment :
             "MyUser",
             Context.MODE_PRIVATE
         )
-
         val idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
         val biddingQuote = BiddingQuotDto(
             bidRequestId,
@@ -250,7 +258,6 @@ class ActionDetailsFragment :
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-
         withContext(Dispatchers.Main) {
             when (caller) {
                 "bidStatus" -> bidActionsApiCall(idToken)
@@ -262,20 +269,13 @@ class ActionDetailsFragment :
     private fun actionDetailsVariableSetUp() {
         val args = arguments
         bidStatus = args?.getString("bidStatus").toString()
-
-        getSharedPreferences = requireContext().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
-        spRegId = getSharedPreferences.getInt("spRegId", 0)
-
+        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
+        spRegId = sharedPreference.getSharedPreferences().getInt("spRegId", 0)
         serviceCategoryIdAndServiceOnBoardingIdSetup(args)
     }
 
     // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
     private fun serviceCategoryIdAndServiceOnBoardingIdSetup(args: Bundle?) {
-
         if (args?.getInt("serviceCategoryId") == 0) {
             if (args.getInt("serviceVendorOnboardingId") == 0) {
                 serviceCategoryId = null
@@ -287,7 +287,6 @@ class ActionDetailsFragment :
         } else {
             serviceCategoryId = args?.getInt("serviceCategoryId")
             serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
-
         }
     }
 }

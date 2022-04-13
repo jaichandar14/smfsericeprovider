@@ -100,6 +100,8 @@
     <string name="comments">Comments</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    //2401
+    <string name="Do_you_want_to_accept_the_Bid">Do you want to accept the Bid?</string>
     <string name="service_details">Service Details</string>
     <string name="estimation_budget">Estimation Budget</string>
     <string name="service_radius">Service Radius</string>
