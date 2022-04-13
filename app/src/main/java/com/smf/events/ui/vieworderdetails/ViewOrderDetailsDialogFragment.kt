@@ -190,7 +190,7 @@ class ViewOrderDetailsDialogFragment(
     // Call Back From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            //2402 - View order details Get Api call
+            // 2402 - View order details Get Api call
             viewOrderDetails(idToken)
         }
     }
