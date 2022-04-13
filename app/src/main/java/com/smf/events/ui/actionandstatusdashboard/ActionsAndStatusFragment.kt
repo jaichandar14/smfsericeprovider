@@ -16,6 +16,7 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionsAndStatusBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
@@ -39,12 +40,14 @@ class ActionsAndStatusFragment :
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
-    private lateinit var getSharedPreferences: SharedPreferences
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     @Inject
     lateinit var tokens: Tokens
@@ -67,7 +70,6 @@ class ActionsAndStatusFragment :
         setIdTokenAndSpRegId()
         // Set Category Id And ServiceOnBoarding Id
         serviceCategoryIdAndServiceOnBoardingIdSetup()
-
     }
 
     override fun onStart() {
@@ -76,7 +78,6 @@ class ActionsAndStatusFragment :
         tokens.setCallBackInterface(this)
         // Action And Status Api Call
         apiTokenValidationActionAndStatus()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,7 +99,6 @@ class ActionsAndStatusFragment :
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myActionRecyclerView.adapter = actionAdapter
         actionAdapter.setOnClickListener(this)
-
     }
 
     // Method For StatusRecyclerView SetUp
@@ -107,7 +107,6 @@ class ActionsAndStatusFragment :
         myStatusRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myStatusRecyclerView.adapter = statusAdapter
-
     }
 
     // Action Card Click Listener Interface Method
@@ -128,7 +127,6 @@ class ActionsAndStatusFragment :
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")
             }
-
         }
 
     }
@@ -168,7 +166,6 @@ class ActionsAndStatusFragment :
                             apiResponse.response.actionandStatus.statusCount,
                             apiResponse.response.actionandStatus.actionCount
                         )
-
                         recyclerViewListUpdate()
                     }
                     is ApisResponse.Error -> {
@@ -182,23 +179,18 @@ class ActionsAndStatusFragment :
 
     // Method For Update Action And Status Count To RecyclerView List
     private fun recyclerViewListUpdate() {
-
         var listActions1 = getViewModel().getActionsList(actionAndStatusData)
         actionAdapter.refreshItems(listActions1)
-
         val listStatus = getViewModel().getStatusList(actionAndStatusData)
         statusAdapter.refreshItems(listStatus)
-
         mDataBinding?.txPendtingitems?.text =
             "${actionAndStatusData?.actionCount} PendingItems"
         mDataBinding?.txPendingstatus?.text =
             "${actionAndStatusData?.statusCount} Status"
     }
 
-
     // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
     private fun serviceCategoryIdAndServiceOnBoardingIdSetup() {
-
         val args = arguments
         if (args?.getInt("serviceCategoryId") == 0) {
             if (args.getInt("serviceVendorOnboardingId") == 0) {
@@ -211,13 +203,11 @@ class ActionsAndStatusFragment :
         } else {
             serviceCategoryId = args?.getInt("serviceCategoryId")
             serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
-
         }
     }
 
     // Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-
         withContext(Dispatchers.Main) {
             when (caller) {
                 "actionAndStatus" -> actionAndStatusApiCall(idToken)
@@ -231,10 +221,8 @@ class ActionsAndStatusFragment :
         args.putString("bidStatus", bidStatus)
         serviceCategoryId?.let { args.putInt("serviceCategoryId", it) }
         serviceVendorOnboardingId?.let { args.putInt("serviceVendorOnboardingId", it) }
-
         val actionDetailsFragment = ActionDetailsFragment()
         actionDetailsFragment.arguments = args
-
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.action_and_status_layout, actionDetailsFragment)
             .addToBackStack(ActionsAndStatusFragment::class.java.name)
@@ -243,13 +231,9 @@ class ActionsAndStatusFragment :
 
     // Method For Set IdToken And SpRegId From SharedPreferences
     private fun setIdTokenAndSpRegId() {
-        getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        spRegId = getSharedPreferences.getInt("spRegId", 0)
-        idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
-        roleId = getSharedPreferences.getInt("roleId", 0)
+        spRegId = sharedPreference.getSharedPreferences().getInt("spRegId", 0)
+        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
+        roleId = sharedPreference.getSharedPreferences().getInt("roleId", 0)
     }
 
 }

@@ -17,6 +17,7 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentBidRejectionDialogBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import dagger.android.support.AndroidSupportInjection
@@ -32,18 +33,21 @@ class BidRejectionDialogFragment(
 ) : BaseDialogFragment<FragmentBidRejectionDialogBinding, BidRejectionDialogViewModel>(),
     BidRejectionDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
+    lateinit var reason: String
+    lateinit var idToken: String
+    lateinit var serviceProviderBidRequestDto: ServiceProviderBidRequestDto
+
     @Inject
     lateinit var tokens: Tokens
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-    lateinit var reason: String
-    lateinit var idToken: String
-    lateinit var serviceProviderBidRequestDto: ServiceProviderBidRequestDto
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     companion object {
         const val TAG = "CustomDialogFragment"
-
         //take the title and subtitle form the Activity
         fun newInstance(
             bidRequestId: Int?,
@@ -53,7 +57,6 @@ class BidRejectionDialogFragment(
 
             return BidRejectionDialogFragment(bidRequestId, serviceName, code)
         }
-
     }
 
     override fun getViewModel(): BidRejectionDialogViewModel =
@@ -140,7 +143,6 @@ class BidRejectionDialogFragment(
                     }
                 }
             })
-
     }
 
     // Method For Send Data To actionDetails Fragment
@@ -158,17 +160,11 @@ class BidRejectionDialogFragment(
         if (reason != "Other") {
             mDataBinding?.alertMsg?.visibility = View.INVISIBLE
         }
-
     }
 
     // Method For Set setIdToken From Shared Preferences
     private fun setIdToken() {
-        var getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
-
+        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
     }
 
     private fun apiTokenValidationQuoteDetailsDialog(status: String) {
@@ -192,6 +188,5 @@ class BidRejectionDialogFragment(
 
         window.attributes = params
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-
     }
 }

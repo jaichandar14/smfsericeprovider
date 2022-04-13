@@ -14,11 +14,11 @@ import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.SharedPreference
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.*
 import javax.inject.Inject
-
 
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
     EmailOTPViewModel.CallBackInterface {
@@ -29,6 +29,9 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     override fun getViewModel(): EmailOTPViewModel =
         ViewModelProvider(this, factory).get(EmailOTPViewModel::class.java)
@@ -59,10 +62,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     // Method For set UserName And SharedPreferences
     private fun setUserNameAndSharedPref() {
         userName = args.userName
-        getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
+        getSharedPreferences = sharedPreference.getSharedPreferences()
     }
 
     //For confirmSignIn aws
@@ -71,7 +71,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         mDataBinding!!.submitBtn.setOnClickListener {
             getViewModel().confirmSignIn(code, mDataBinding!!)
         }
-
     }
 
     //AutoSubmitted when we Enter 4 digit
