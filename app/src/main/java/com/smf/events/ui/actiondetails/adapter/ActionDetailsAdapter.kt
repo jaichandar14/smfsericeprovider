@@ -167,12 +167,12 @@ class ActionDetailsAdapter(
 
         // Rejecting the Bids
         private fun bidRejection(position: ActionDetails) {
-            var bidRequestId: Int = position.bidRequestId
-            position.branchName
             BidRejectionDialogFragment.newInstance(
-                bidRequestId,
+                position.bidRequestId,
                 position.serviceName,
-                position.eventServiceDescriptionId.toString()
+                position.eventServiceDescriptionId.toString(),
+                // 2405 - Passing bidStatus to BidRejectionDialogFragment
+                bidStatus
             )
                 .show(
                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,

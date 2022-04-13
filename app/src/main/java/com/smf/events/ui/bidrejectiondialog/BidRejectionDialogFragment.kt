@@ -17,6 +17,7 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentBidRejectionDialogBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
@@ -25,11 +26,11 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 class BidRejectionDialogFragment(
     var bidRequestId: Int?,
     var serviceName: String,
     var code: String,
+    var bidStatus: String
 ) : BaseDialogFragment<FragmentBidRejectionDialogBinding, BidRejectionDialogViewModel>(),
     BidRejectionDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
@@ -53,9 +54,10 @@ class BidRejectionDialogFragment(
             bidRequestId: Int?,
             serviceName: String,
             code: String,
+            bidStatus: String
         ): BidRejectionDialogFragment {
 
-            return BidRejectionDialogFragment(bidRequestId, serviceName, code)
+            return BidRejectionDialogFragment(bidRequestId, serviceName, code, bidStatus)
         }
     }
 
@@ -89,6 +91,8 @@ class BidRejectionDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Hide Alert message textView
+        hideAlertText()
         //Reason for rejection
         getViewModel().reasonForReject(mDataBinding)
         //On OK Button CLick
@@ -99,7 +103,14 @@ class BidRejectionDialogFragment(
         mDataBinding!!.quoteTitle.text = "You Rejected a $serviceName #$code"
     }
 
-    // method For OkButton
+    // 2405 - Method for invisible Alert message textView
+    private fun hideAlertText() {
+        if (bidStatus == AppConstants.BID_SUBMITTED) {
+            mDataBinding?.txAlert?.visibility = View.GONE
+        }
+    }
+
+    // 2405 - method For OkButton
     private fun okBtnClick() {
         mDataBinding?.btnOk?.setOnClickListener {
             if (reason == "Other") {
@@ -108,9 +119,7 @@ class BidRejectionDialogFragment(
                 } else {
                     apiTokenValidationQuoteDetailsDialog("BidReject")
                 }
-            } else if (reason == "Reason For Rejection") {
-                showToast("Please Select the reason for rejection")
-            } else {
+            }else {
                 apiTokenValidationQuoteDetailsDialog("BidReject")
             }
         }
@@ -158,7 +167,8 @@ class BidRejectionDialogFragment(
     override fun callBack(status: String) {
         reason = status
         if (reason != "Other") {
-            mDataBinding?.alertMsg?.visibility = View.INVISIBLE
+            // 2405 - Gone alertMsg Visibility
+            mDataBinding?.alertMsg?.visibility = View.GONE
         }
     }
 
@@ -180,12 +190,11 @@ class BidRejectionDialogFragment(
         }
     }
 
-    //Setting Dialog Size
+    // Setting Dialog Size
     private fun dialogFragmentSize() {
         var window: Window? = dialog?.window
         var params: WindowManager.LayoutParams = window!!.attributes
         params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
-
         window.attributes = params
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
     }

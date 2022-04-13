@@ -114,6 +114,7 @@
     <string name="venue_zip_code">Venue ZIP Code</string>
     <string name="bid_cut_off_date">Bid Cut Off Date</string>
     <string name="questions">Questions</string>
+    <string name="reason_for_rejection">Reason For Rejection</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>
