@@ -102,6 +102,18 @@
     <string name="ok">OK</string>
     //2401
     <string name="Do_you_want_to_accept_the_Bid">Do you want to accept the Bid?</string>
+    <string name="service_details">Service Details</string>
+    <string name="estimation_budget">Estimation Budget</string>
+    <string name="service_radius">Service Radius</string>
+    <string name="prefered_time_slot">Prefered Time Slot</string>
+    <string name="usd_1000">USD($)1000</string>
+    <string name="_4am_8am">4am - 8am</string>
+    <string name="_50_100_miles">50-100 Miles</string>
+    <string name="order_details">Order Details</string>
+    <string name="event_dates">Event Date</string>
+    <string name="venue_zip_code">Venue ZIP Code</string>
+    <string name="bid_cut_off_date">Bid Cut Off Date</string>
+    <string name="questions">Questions</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>

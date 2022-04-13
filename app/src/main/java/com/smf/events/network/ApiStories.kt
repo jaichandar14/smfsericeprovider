@@ -1,7 +1,6 @@
 package com.smf.events.network
 
 
-import com.smf.events.helper.EvenTypes
 import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.dashboard.model.ActionAndStatus
@@ -14,6 +13,7 @@ import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
+import com.smf.events.ui.vieworderdetails.model.OrderDetails
 import retrofit2.http.*
 
 interface ApiStories {
@@ -74,20 +74,22 @@ interface ApiStories {
     @GET("epm-service/api/app-services/order-info/{bid-request-Id}")
     suspend fun getQuoteBrief(
         @Header("Authorization") idToken: String,
-        @Path("bid-request-Id") bidRequestId: Int
+        @Path("bid-request-Id") bidRequestId: Int,
     ): QuoteBrief
 
     @PUT("epm-service/api/app-services/bid-request-info")
     suspend fun putBidRejection(
         @Header("Authorization") idToken: String,
-        @Body serviceProviderBidRequestDto: ServiceProviderBidRequestDto
+        @Body serviceProviderBidRequestDto: ServiceProviderBidRequestDto,
     ): NewRequestList
 
-
-
-
-
-
+    //2402 - ViewOrderDetails API
+    @GET("epm-service/api/app-services/order-description/{event-id}/{event-service-desc-id}")
+    suspend fun getViewOrderDetails(
+        @Header("Authorization") idToken: String,
+        @Path("event-id") eventId: Int,
+        @Path("event-service-desc-id") eventServiceDescId: Int,
+    ): OrderDetails
 
 
 }

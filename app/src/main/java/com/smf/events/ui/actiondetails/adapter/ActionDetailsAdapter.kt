@@ -3,7 +3,6 @@ package com.smf.events.ui.actiondetails.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,15 +17,15 @@ import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
+import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
 import java.time.Month
 
 class ActionDetailsAdapter(
     val context: Context,
     var bidStatus: String,
-    val sharedPreference: SharedPreference
+    val sharedPreference: SharedPreference,
 ) :
     RecyclerView.Adapter<ActionDetailsAdapter.ActionDetailsViewHolder>() {
-
     private var myEventsList = ArrayList<ActionDetails>()
 
     override fun onCreateViewHolder(
@@ -100,13 +99,24 @@ class ActionDetailsAdapter(
                 //Change of Mind For Rejection the submitted Bid
                 holder.changeOfMind.setOnClickListener { holder.bidRejection(position) }
             }
-            //Like For Submitting the Bid
+            // Like For Submitting the Bid
             holder.likeButton.setOnClickListener {
                 holder.bidSubmitted(position)
             }
-            //Unlike For Rejecting the Bid
+            // Unlike For Rejecting the Bid
             holder.unlikeButton.setOnClickListener {
                 holder.bidRejection(position)
+            }
+            // 2402 View Order details onCLickArrow Button
+            holder.rightArrowButton.setOnClickListener {
+                ViewOrderDetailsDialogFragment.newInstance(position.eventId,
+                    position.eventServiceDescriptionId,
+                    position.eventDate,
+                    position.eventName)
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        ViewOrderDetailsDialogFragment.TAG
+                    )
             }
         }
 
@@ -138,7 +148,7 @@ class ActionDetailsAdapter(
             }
         }
 
-        //2354 - Method For Setting CurrencyType
+        // 2354 - Method For Setting CurrencyType
         private fun setCurrencyType(actionDetails: ActionDetails): String {
             val currencyType = if (actionDetails.currencyType == null) {
                 "$"
@@ -155,7 +165,7 @@ class ActionDetailsAdapter(
             return currencyType
         }
 
-        //Rejecting the Bids
+        // Rejecting the Bids
         private fun bidRejection(position: ActionDetails) {
             var bidRequestId: Int = position.bidRequestId
             position.branchName
@@ -171,7 +181,7 @@ class ActionDetailsAdapter(
 
         }
 
-        //Submitting Bids
+        // Submitting Bids
         private fun bidSubmitted(position: ActionDetails) {
             var bidRequestId: Int = position.bidRequestId
             var costingType: String = position.costingType
@@ -216,7 +226,7 @@ class ActionDetailsAdapter(
             editor.apply()
         }
 
-        //Button visibility
+        // Button visibility
         private fun buttonVisibility(holder: ActionDetailsViewHolder) {
             holder.likeButton.visibility = View.INVISIBLE
             holder.unlikeButton.visibility = View.INVISIBLE
