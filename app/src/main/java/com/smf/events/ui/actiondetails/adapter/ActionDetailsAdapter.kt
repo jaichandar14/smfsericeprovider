@@ -15,6 +15,7 @@ import com.smf.events.helper.AppConstants
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
+import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
 import java.time.Month
 
 class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
@@ -106,8 +107,17 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             holder.unlikeButton.setOnClickListener {
                 holder.bidRejection(position)
             }
-
-
+            //2402 View Order details onCLickArrow Button
+            holder.rightArrowButton.setOnClickListener {
+                ViewOrderDetailsDialogFragment.newInstance(position.eventId,
+                    position.eventServiceDescriptionId,
+                    position.eventDate,
+                    position.eventName)
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        ViewOrderDetailsDialogFragment.TAG
+                    )
+            }
         }
 
         //2354 - Method For Setting Quote Amount
@@ -128,7 +138,7 @@ class ActionDetailsAdapter(val context: Context, var bidStatus: String) :
             val currencyType = if (actionDetails.currencyType == null) {
                 "$"
             } else {
-                when(actionDetails.currencyType) {
+                when (actionDetails.currencyType) {
                     "USD($)" -> "$"
                     "GBP(\u00a3)" -> "\u00a3"
                     "INR(\u20B9)" -> "₹"

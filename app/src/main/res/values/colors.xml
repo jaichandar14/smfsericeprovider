@@ -21,5 +21,6 @@
     // 2350
     <color name="fade_gray">#EBE1E1E1</color>
     <color name="fade_black">#F0333333</color>
+    <color name="fade_background">#F4F2F2</color>
 
 </resources>
