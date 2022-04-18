@@ -19,4 +19,4 @@ steps:
     testResultsFiles: '**/TEST-*.xml'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
-    tasks: 'assembleDebug'
+    tasks: 'test'
