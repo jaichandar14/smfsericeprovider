@@ -1,6 +1,5 @@
 package com.smf.events.helper
 
-import android.content.SharedPreferences
 import android.util.Log
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.result.AuthSessionResult
@@ -37,7 +36,7 @@ class Tokens @Inject constructor() {
     private fun fetchNewIdToken(
         application: SMFApp,
         myFunc: suspend (String, String) -> Unit,
-        caller: String
+        caller: String,
     ) {
         Amplify.Auth.fetchAuthSession(
             {
@@ -54,14 +53,14 @@ class Tokens @Inject constructor() {
         application: SMFApp,
         idToken: String?,
         myFunc: suspend (String, String) -> Unit,
-        caller: String
+        caller: String,
     ) {
-        val sharedPreferences = SharedPreference(application).getSharedPreferences()
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putString("IdToken", idToken)
-        editor.apply()
+        SharedPreference(application).putString(SharedPreference.ID_Token, idToken)
         GlobalScope.launch {
-            myFunc("Bearer ${sharedPreferences.getString("IdToken", "")}", caller)
+            myFunc("${AppConstants.BEARER} ${
+                SharedPreference(application).getString(SharedPreference.ID_Token)
+            }",
+                caller)
         }
     }
 
@@ -69,7 +68,7 @@ class Tokens @Inject constructor() {
     private fun tokenNotExpired(
         idToken: String,
         myFunc: suspend (String, String) -> Unit,
-        caller: String
+        caller: String,
     ) {
         GlobalScope.launch {
             myFunc(idToken, caller)
@@ -79,7 +78,7 @@ class Tokens @Inject constructor() {
     //Method for SignOut Current User
     private fun signOutCurrentUser(
         application: SMFApp,
-        myFunc: suspend (String, String) -> Unit
+        myFunc: suspend (String, String) -> Unit,
     ) {
         Amplify.Auth.signOut(
             {
@@ -87,10 +86,7 @@ class Tokens @Inject constructor() {
                     "AuthQuickstart",
                     "checkTokenExpiry refereshTokentime Signed out successfully"
                 )
-                val sharedPreferences = SharedPreference(application).getSharedPreferences()
-                val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                editor.putString("IdToken", "")
-                editor.apply()
+                SharedPreference(application).putString(SharedPreference.ID_Token, "")
                 GlobalScope.launch {
                     myFunc("", "signOut")
                 }

@@ -29,6 +29,7 @@ class ActionsAndStatusViewModel @Inject constructor(
         list.add(MyEvents(actionAndStatusData.wonBidStatusCount.toString(), "Won Bid"))
         list.add(MyEvents(actionAndStatusData.bidRejectedActionCount.toString(), "Rejected"))
         list.add(MyEvents(actionAndStatusData.bidSubmittedActionCount.toString(), "Bid Submitted"))
+        list.add(MyEvents(actionAndStatusData.pendingForReview.toString(), "Pending    For Review"))
 
         return list
 

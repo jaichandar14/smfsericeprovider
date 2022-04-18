@@ -82,7 +82,7 @@ class EmailOTPViewModel @Inject constructor(
         editor?.apply()
     }
 
-    //Aws Method for 6 digit Validation Check
+    // Aws Method for 6 digit Validation Check
     private fun emailCodeValidationCheck() {
         Amplify.Auth.fetchUserAttributes(
             { result ->
@@ -127,7 +127,7 @@ class EmailOTPViewModel @Inject constructor(
             })
     }
 
-    //2351 Android-OTP expires Validation
+    // 2351 Android-OTP expires Validation
     // OTP Resend SignIn Method
     fun reSendOTP(userName: String, mDataBinding: FragmentEmailOtpBinding) {
         Amplify.Auth.signIn(userName, null, {
@@ -160,7 +160,7 @@ class EmailOTPViewModel @Inject constructor(
         fun navigatingPage()
     }
 
-    //2351 Android-OTP expires Validation Method
+    // 2351 Android-OTP expires Validation Method
     fun otpTimerValidation(mDataBinding: FragmentEmailOtpBinding?, userName: String) {
         var counter = 30
         var countTime: TextView = mDataBinding!!.otpTimer

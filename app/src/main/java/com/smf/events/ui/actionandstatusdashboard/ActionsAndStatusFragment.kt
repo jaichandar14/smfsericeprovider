@@ -1,7 +1,6 @@
 package com.smf.events.ui.actionandstatusdashboard
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -164,7 +163,8 @@ class ActionsAndStatusFragment :
                             apiResponse.response.actionandStatus.bidTimedOutStatusCount,
                             apiResponse.response.actionandStatus.serviceDoneStatusCount,
                             apiResponse.response.actionandStatus.statusCount,
-                            apiResponse.response.actionandStatus.actionCount
+                            apiResponse.response.actionandStatus.actionCount,
+                            0
                         )
                         recyclerViewListUpdate()
                     }
@@ -184,9 +184,9 @@ class ActionsAndStatusFragment :
         val listStatus = getViewModel().getStatusList(actionAndStatusData)
         statusAdapter.refreshItems(listStatus)
         mDataBinding?.txPendtingitems?.text =
-            "${actionAndStatusData?.actionCount} PendingItems"
+            "${actionAndStatusData.actionCount} PendingItems"
         mDataBinding?.txPendingstatus?.text =
-            "${actionAndStatusData?.statusCount} Status"
+            "${actionAndStatusData.statusCount} Status"
     }
 
     // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
@@ -231,9 +231,9 @@ class ActionsAndStatusFragment :
 
     // Method For Set IdToken And SpRegId From SharedPreferences
     private fun setIdTokenAndSpRegId() {
-        spRegId = sharedPreference.getSharedPreferences().getInt("spRegId", 0)
-        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
-        roleId = sharedPreference.getSharedPreferences().getInt("roleId", 0)
+        spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
 
 }

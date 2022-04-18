@@ -1,7 +1,6 @@
 package com.smf.events.ui.actiondetails
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -165,7 +164,7 @@ class ActionDetailsFragment :
             "MyUser",
             Context.MODE_PRIVATE
         )
-        val idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        val idToken = "${AppConstants.BEARER} ${getSharedPreferences?.getString("IdToken", "")}"
         val biddingQuote = BiddingQuotDto(
             bidRequestId,
             AppConstants.BID_SUBMITTED,
@@ -269,8 +268,8 @@ class ActionDetailsFragment :
     private fun actionDetailsVariableSetUp() {
         val args = arguments
         bidStatus = args?.getString("bidStatus").toString()
-        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
-        spRegId = sharedPreference.getSharedPreferences().getInt("spRegId", 0)
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         serviceCategoryIdAndServiceOnBoardingIdSetup(args)
     }
 

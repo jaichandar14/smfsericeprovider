@@ -2,7 +2,6 @@ package com.smf.events.ui.actiondetails.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -221,9 +220,7 @@ class ActionDetailsAdapter(
 
         // 2401 - Method For Update Request Id
         private fun updateBidRequestId(bidRequestId: Int) {
-            val editor: SharedPreferences.Editor = sharedPreference.getSharedPreferences().edit()
-            editor.putInt("bidRequestId", bidRequestId)
-            editor.apply()
+            sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
         }
 
         // Button visibility

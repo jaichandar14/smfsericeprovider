@@ -176,7 +176,7 @@ class ViewOrderDetailsDialogFragment(
 
     // 2402 - Setting IDToken
     private fun setIdToken() {
-        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
     // 2402 - Api Token Validation For Quote Brief Api Call

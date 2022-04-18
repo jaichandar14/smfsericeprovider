@@ -10,12 +10,48 @@ import javax.inject.Singleton
 @Singleton
 class SharedPreference @Inject constructor(var application: Application) {
 
+    companion object {
+        const val ID_Token = "IdToken"
+        const val BID_REQUEST_ID = "bidRequestId"
+        const val ROLE_ID = "roleId"
+        const val SP_REG_ID = "spRegId"
+    }
+
     private var sharedPreference: SharedPreferences =
         application.applicationContext.getSharedPreferences("MyUser", Context.MODE_PRIVATE)
 
-    // 2401 - Method For Get Singleton SharedPreferences Object
-    fun getSharedPreferences(): SharedPreferences {
-        return sharedPreference
+    private val editor: SharedPreferences.Editor? = sharedPreference.edit()
+
+    // PutString Method
+    fun putString(key: String, value: String?) {
+        editor?.putString(key, value)
+        editor?.apply()
     }
 
+    // GetString Method
+    fun getString(key: String): String? {
+        return sharedPreference.getString(key, "")
+    }
+
+    // PutBoolean Method
+    fun putBoolean(key: String, value: Boolean) {
+        editor?.putBoolean(key, value)
+        editor?.apply()
+    }
+
+    // GetBoolean Method
+    fun getBoolean(key: String?): Boolean {
+        return sharedPreference.getBoolean(key, false)
+    }
+
+    // PutInt Method
+    fun putInt(key: String, value: Int) {
+        editor?.putInt(key, value)
+        editor?.apply()
+    }
+
+    // GetInt Method
+    fun getInt(key: String?): Int {
+        return sharedPreference.getInt(key, 0)
+    }
 }
