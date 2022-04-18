@@ -16,9 +16,7 @@ stages:
     - task: Gradle@2
       inputs:
         gradleWrapperFile: 'gradlew'
-        #gradleOptions: '-Xmx3072m'
         publishJUnitResults: false
-        #testResultsFiles: '**/TEST-*.xml'
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.11'
         tasks: 'lint'
@@ -33,7 +31,7 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: Container
-  - job: BuildJob
+  - job: UnitTests
     dependsOn: LintAnalysis
     steps:
     - task: Gradle@2
@@ -46,4 +44,26 @@ stages:
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.11'
         tasks: 'test'
-  
+  - job: Package
+    dependsOn: UnitTests
+    steps:
+    - task: Gradle@2
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        #gradleOptions: '-Xmx3072m'
+        publishJUnitResults: false
+        #testResultsFiles: '**/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.11'
+        tasks: 'build'
+        sonarQubeRunAnalysis: false
+    - task: CopyFiles@2
+      inputs:
+        Contents: '**/*.apk'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+        OverWrite: true  
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: Container
