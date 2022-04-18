@@ -83,6 +83,7 @@ stages:
         appSlug: 'https://appcenter.ms/users/BPMLinks/apps/SMF-Android-Dev'
         appFile: '$(Pipeline.Workspace)/drop/app/build/outputs/app/debug/app-debug.apk'
         releaseNotesOption: 'input'
+        releaseNotesInput: 'Release_$(Build.BuildNumber)'
         destinationType: 'groups' 
 
            
