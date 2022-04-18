@@ -11,28 +11,28 @@ pool:
 stages:
 - stage: "ContineousIntegration"
   jobs:
-  - job: LintAnalysis
-    steps:
-    - task: Gradle@2
-      inputs:
-        gradleWrapperFile: 'gradlew'
-        publishJUnitResults: false
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.11'
-        tasks: 'lint'
-        sonarQubeRunAnalysis: false
-    - task: CopyFiles@2
-      inputs:
-        Contents: '**/lint-results.html'
-        TargetFolder: '$(build.artifactstagingdirectory)'
-        OverWrite: true
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: Container
+  # - job: LintAnalysis
+  #   steps:
+  #   - task: Gradle@2
+  #     inputs:
+  #       gradleWrapperFile: 'gradlew'
+  #       publishJUnitResults: false
+  #       javaHomeOption: 'JDKVersion'
+  #       jdkVersionOption: '1.11'
+  #       tasks: 'lint'
+  #       sonarQubeRunAnalysis: false
+  #   - task: CopyFiles@2
+  #     inputs:
+  #       Contents: '**/lint-results.html'
+  #       TargetFolder: '$(build.artifactstagingdirectory)'
+  #       OverWrite: true
+  #   - task: PublishBuildArtifacts@1
+  #     inputs:
+  #       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+  #       ArtifactName: 'drop'
+  #       publishLocation: Container
   - job: UnitTests
-    dependsOn: LintAnalysis
+    #dependsOn: LintAnalysis
     steps:
     - task: Gradle@2
       inputs:
