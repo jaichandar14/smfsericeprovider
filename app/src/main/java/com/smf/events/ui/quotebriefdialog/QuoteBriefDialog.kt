@@ -13,10 +13,7 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.QuoteBriefDialogBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.DateFormatter
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
@@ -175,7 +172,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     // Setting IDToken
     private fun setIdTokenAndBidReqId() {
         bidRequestId = sharedPreference.getInt(SharedPreference.BID_REQUEST_ID)
-        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
     // Get Api Call for getting the Quote Brief

@@ -232,7 +232,7 @@ class ActionsAndStatusFragment :
     // Method For Set IdToken And SpRegId From SharedPreferences
     private fun setIdTokenAndSpRegId() {
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
-        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
 

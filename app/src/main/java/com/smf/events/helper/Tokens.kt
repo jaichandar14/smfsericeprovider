@@ -57,7 +57,9 @@ class Tokens @Inject constructor() {
     ) {
         SharedPreference(application).putString(SharedPreference.ID_Token, idToken)
         GlobalScope.launch {
-            myFunc("Bearer ${SharedPreference(application).getString(SharedPreference.ID_Token)}",
+            myFunc("${AppConstants.BEARER} ${
+                SharedPreference(application).getString(SharedPreference.ID_Token)
+            }",
                 caller)
         }
     }

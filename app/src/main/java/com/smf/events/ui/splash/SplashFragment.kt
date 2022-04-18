@@ -10,6 +10,7 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SplashScreenFragmentBinding
+import com.smf.events.helper.SharedPreference
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
@@ -18,6 +19,10 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     @Inject
     lateinit var factory: ViewModelProvider.Factory
     lateinit var idToken: String
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
+
     override fun getViewModel(): SplashScreenViewModel =
         ViewModelProvider(this, factory).get(SplashScreenViewModel::class.java)
 
@@ -40,7 +45,6 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         if (idToken.isNotEmpty()) {
             moveToDashBoardScreen()
         } else {
@@ -66,10 +70,6 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     }
 
     private fun setIdToken() {
-        val getSharedPreferences = requireActivity().applicationContext.getSharedPreferences(
-            "MyUser",
-            Context.MODE_PRIVATE
-        )
-        idToken = getSharedPreferences?.getString("IdToken", "").toString()
+        idToken = "${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 }

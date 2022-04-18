@@ -16,6 +16,7 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
@@ -294,7 +295,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     // Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
-        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
 

@@ -13,6 +13,7 @@ import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import dagger.android.support.AndroidSupportInjection
@@ -88,7 +89,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
         } else if (status == "EMailVerifiedTrueGoToDashBoard") {
-            val idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+            val idToken =
+                "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
             getLoginApiCall(idToken)
         }
     }

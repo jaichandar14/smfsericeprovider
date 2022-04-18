@@ -49,7 +49,6 @@ class BidRejectionDialogFragment(
 
     companion object {
         const val TAG = "CustomDialogFragment"
-
         //take the title and subtitle form the Activity
         fun newInstance(
             bidRequestId: Int?,
@@ -175,7 +174,7 @@ class BidRejectionDialogFragment(
 
     // Method For Set setIdToken From Shared Preferences
     private fun setIdToken() {
-        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
     private fun apiTokenValidationQuoteDetailsDialog(status: String) {

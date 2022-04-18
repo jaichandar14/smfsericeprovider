@@ -351,7 +351,7 @@ class QuoteDetailsDialog(
 
     // Setting Id Token
     private fun setIdToken() {
-        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 }
 

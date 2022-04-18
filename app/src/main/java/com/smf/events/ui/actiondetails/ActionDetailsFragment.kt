@@ -164,7 +164,7 @@ class ActionDetailsFragment :
             "MyUser",
             Context.MODE_PRIVATE
         )
-        val idToken = "Bearer ${getSharedPreferences?.getString("IdToken", "")}"
+        val idToken = "${AppConstants.BEARER} ${getSharedPreferences?.getString("IdToken", "")}"
         val biddingQuote = BiddingQuotDto(
             bidRequestId,
             AppConstants.BID_SUBMITTED,
@@ -268,7 +268,7 @@ class ActionDetailsFragment :
     private fun actionDetailsVariableSetUp() {
         val args = arguments
         bidStatus = args?.getString("bidStatus").toString()
-        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         serviceCategoryIdAndServiceOnBoardingIdSetup(args)
     }
