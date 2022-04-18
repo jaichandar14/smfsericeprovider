@@ -67,3 +67,25 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: Container
+- stage: "ContineousDelivery"
+  jobs: 
+   - job: "Release"
+     steps:
+     - task: DownloadPipelineArtifact@2
+       inputs:
+        itemPattern: '**/app-debug.apk'
+        targetPath: '$(Pipeline.Workspace)'
+        buildType: 'current'  
+     - task: AppCenterDistribute@3
+       inputs:
+        serverEndpoint: 'SMF-Android'
+        symbolsOption: 'Android'
+        appSlug: 'https://appcenter.ms/users/BPMLinks/apps/SMF-Android-Dev'
+        appFile: '$(Pipeline.Workspace)/drop/app/build/outputs/app/debug/app-debug.apk'
+        releaseNotesOption: 'input'
+        destinationType: 'groups' 
+
+           
+           
+           
+           
