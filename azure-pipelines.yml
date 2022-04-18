@@ -9,7 +9,7 @@ trigger:
 pool:
   vmImage: 'macos-latest'
 stages:
-- stage: "Build-ContineousIntegration"
+- stage: "ContineousIntegration"
   jobs:
   - job: LintAnalysis
     steps:
