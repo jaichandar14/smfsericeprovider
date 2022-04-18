@@ -50,9 +50,7 @@ stages:
     - task: Gradle@2
       inputs:
         gradleWrapperFile: 'gradlew'
-        #gradleOptions: '-Xmx3072m'
         publishJUnitResults: false
-        #testResultsFiles: '**/TEST-*.xml'
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.11'
         tasks: 'build'
