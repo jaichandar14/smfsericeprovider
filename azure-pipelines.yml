@@ -80,7 +80,8 @@ stages:
        inputs:
         serverEndpoint: 'SMF-Android'
         symbolsOption: 'Android'
-        appSlug: 'https://appcenter.ms/orgs/BPMLinks/apps/SMF-Android-Dev'
+        #appSlug: 'https://appcenter.ms/orgs/BPMLinks/apps/SMF-Android-Dev'
+        appSlug: 'BPMLinks/SMF-Android-Dev'
         appFile: '$(Pipeline.Workspace)/drop/app/build/outputs/apk/debug/app-debug.apk'
         releaseNotesOption: 'input'
         releaseNotesInput: 'Release_$(Build.BuildNumber)'
