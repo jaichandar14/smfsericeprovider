@@ -109,13 +109,13 @@ class QuoteDetailsDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //getting IdToken
+        // getting IdToken
         setIdToken()
     }
 
     override fun onStart() {
         super.onStart()
-        //Setting the dialog size
+        // Setting the dialog size
         dialogFragmentSize()
         // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
@@ -129,13 +129,13 @@ class QuoteDetailsDialog(
         // Update CurrencyType ArrayList
         currencyTypeList =
             resources.getStringArray(R.array.currency_type).toList() as ArrayList<String>
-        //CurrencyType SetUp
+        // CurrencyType SetUp
         getViewModel().getCurrencyType(mDataBinding, currencyTypeList)
         // Quote ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-        //file uploader
+        // file uploader
         fileUploader()
-        //fetching details based on Biding status
+        // fetching details based on Biding status
         fetchBasedOnStatus(view)
         mDataBinding?.btnCancel?.setOnClickListener {
             btnCancel()
@@ -146,21 +146,21 @@ class QuoteDetailsDialog(
         dismiss()
     }
 
-    //fetching details based on Biding status
+    // fetching details based on Biding status
     private fun fetchBasedOnStatus(view: View) {
         if (bidStatus == AppConstants.PENDING_FOR_QUOTE) {
             mDataBinding!!.quotelater.visibility = View.GONE
-            //I have Quotes Flow
+            // I have Quotes Flow
             getViewModel().iHaveQuoteClicked(view, mDataBinding)
         } else {
-            //QuoteLater Flow
+            // QuoteLater Flow
             getViewModel().quoteLaterIsClicked(view, mDataBinding)
-            //I have Quotes Flow
+            // I have Quotes Flow
             getViewModel().iHaveQuoteClicked(view, mDataBinding)
         }
     }
 
-    //Call back from Quote Details Dialog View Model
+    // Call back from Quote Details Dialog View Model
     override fun callBack(status: String) {
         when (status) {
             "iHaveQuote" ->
@@ -173,12 +173,12 @@ class QuoteDetailsDialog(
         }
     }
 
-    //Call back from Quote Details Dialog View Model For CurrencyType Position
+    // Call back from Quote Details Dialog View Model For CurrencyType Position
     override fun getCurrencyTypePosition(position: Int) {
         currencyType = currencyTypeList[position]
     }
 
-    //Setting the value for put Call
+    // Setting the value for put Call
     private fun putQuoteDetails(bidStatus: String, idToken: String) {
         var bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
         latestBidValueQuote = if (bidValueQuote == "") {
@@ -221,7 +221,7 @@ class QuoteDetailsDialog(
         putQuoteApiCall(idToken)
     }
 
-    //Put call Api For Cost and File Upload
+    // Put call Api For Cost and File Upload
     private fun putQuoteApiCall(idToken: String) {
         getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
@@ -261,7 +261,7 @@ class QuoteDetailsDialog(
         )
     }
 
-    //Setting Dialog Fragment Size
+    // Setting Dialog Fragment Size
     private fun dialogFragmentSize() {
         var window: Window? = dialog?.window
         var params: WindowManager.LayoutParams = window!!.attributes
@@ -349,9 +349,9 @@ class QuoteDetailsDialog(
         return byteBuffer.toByteArray()
     }
 
-    //Setting Id Token
+    // Setting Id Token
     private fun setIdToken() {
-        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
+        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 }
 

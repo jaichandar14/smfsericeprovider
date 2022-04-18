@@ -174,8 +174,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     // Setting IDToken
     private fun setIdTokenAndBidReqId() {
-        bidRequestId = sharedPreference.getSharedPreferences().getInt("bidRequestId", 0)
-        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
+        bidRequestId = sharedPreference.getInt(SharedPreference.BID_REQUEST_ID)
+        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
     // Get Api Call for getting the Quote Brief

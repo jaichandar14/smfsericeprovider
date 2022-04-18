@@ -30,7 +30,7 @@ class BidRejectionDialogFragment(
     var bidRequestId: Int?,
     var serviceName: String,
     var code: String,
-    var bidStatus: String
+    var bidStatus: String,
 ) : BaseDialogFragment<FragmentBidRejectionDialogBinding, BidRejectionDialogViewModel>(),
     BidRejectionDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
@@ -49,12 +49,13 @@ class BidRejectionDialogFragment(
 
     companion object {
         const val TAG = "CustomDialogFragment"
+
         //take the title and subtitle form the Activity
         fun newInstance(
             bidRequestId: Int?,
             serviceName: String,
             code: String,
-            bidStatus: String
+            bidStatus: String,
         ): BidRejectionDialogFragment {
 
             return BidRejectionDialogFragment(bidRequestId, serviceName, code, bidStatus)
@@ -81,11 +82,11 @@ class BidRejectionDialogFragment(
 
     override fun onStart() {
         super.onStart()
-        //Setting Size for the dialog
+        // Setting Size for the dialog
         dialogFragmentSize()
-        //Token Class CallBack Initialization
+        // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        //BidRejectionDialog ViewModel CallBackInterface
+        // BidRejectionDialog ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
     }
 
@@ -93,13 +94,13 @@ class BidRejectionDialogFragment(
         super.onViewCreated(view, savedInstanceState)
         // Hide Alert message textView
         hideAlertText()
-        //Reason for rejection
+        // Reason for rejection
         getViewModel().reasonForReject(mDataBinding)
-        //On OK Button CLick
+        // On OK Button CLick
         okBtnClick()
-        //On cancel button click
+        // On cancel button click
         cancelBtnClick()
-        //Setting Service ID and Service Name
+        // Setting Service ID and Service Name
         mDataBinding!!.quoteTitle.text = "You Rejected a $serviceName #$code"
     }
 
@@ -174,7 +175,7 @@ class BidRejectionDialogFragment(
 
     // Method For Set setIdToken From Shared Preferences
     private fun setIdToken() {
-        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
+        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
     private fun apiTokenValidationQuoteDetailsDialog(status: String) {
@@ -196,6 +197,6 @@ class BidRejectionDialogFragment(
         var params: WindowManager.LayoutParams = window!!.attributes
         params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
         window.attributes = params
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 }

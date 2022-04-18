@@ -2,7 +2,6 @@ package com.smf.events.ui.dashboard
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,7 +20,9 @@ import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
-import com.smf.events.ui.dashboard.model.*
+import com.smf.events.ui.dashboard.model.BranchDatas
+import com.smf.events.ui.dashboard.model.DatasNew
+import com.smf.events.ui.dashboard.model.ServicesData
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
@@ -81,7 +82,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         getViewModel().setCallBackInterface(this)
         // Initialize MyEvent Recycler
         myEventsRecycler()
-        //Id Token Validation
+        // Id Token Validation
         idTokenValidation()
     }
 
@@ -97,7 +98,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             when (caller) {
                 "event_type" -> getAllServiceAndCounts(idToken)
                 "branches" -> getBranches(idToken, serviceCategoryId)
-                else -> {}
+                else -> {
+                }
             }
         }
     }
@@ -133,7 +135,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
     }
 
-    //All Service spinner view clicked
+    // All Service spinner view clicked
     override fun itemClick(position: Int) {
         if (serviceList[position].serviceName == "All Service") {
             var branchSpinner: ArrayList<String> = ArrayList()
@@ -159,7 +161,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
     }
 
-    //Branch spinner view clicked
+    // Branch spinner view clicked
     override fun branchItemClick(
         serviceVendorOnboardingId: Int,
         name: String?,
@@ -203,7 +205,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             .commit()
     }
 
-    //Counts And AllService ApiCall
+    // Counts And AllService ApiCall
     private fun getAllServiceAndCounts(idToken: String) {
         // Getting Service Provider Service Counts Status
         getViewModel().getServiceCount(idToken, spRegId)
@@ -247,7 +249,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             })
     }
 
-    //Branch ApiCall
+    // Branch ApiCall
     private fun getBranches(idToken: String, serviceCategoryId: Int) {
 
         getViewModel().getServicesBranches(idToken, spRegId, serviceCategoryId)
@@ -289,11 +291,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     }
 
-    //Setting IdToken, SpRegId And RollId
+    // Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
-        spRegId = sharedPreference.getSharedPreferences().getInt("spRegId", 0)
-        idToken = "Bearer ${sharedPreference.getSharedPreferences().getString("IdToken", "")}"
-        roleId = sharedPreference.getSharedPreferences().getInt("roleId", 0)
+        spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
+        idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
 
 }

@@ -1,7 +1,6 @@
 package com.smf.events.ui.emailotp
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,7 +24,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     private val args: EmailOTPFragmentArgs by navArgs()
     private lateinit var userName: String
-    private lateinit var getSharedPreferences: SharedPreferences
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -53,19 +51,18 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         getViewModel().setCallBackInterface(this)
         // Submit Button Listener
         submitBtnClicked()
-        //Auto suubmit pin
+        // Auto suubmit pin
         autoSubmit()
-        //2351 Android-OTP expires Validation Method
+        // 2351 Android-OTP expires Validation Method
         getViewModel().otpTimerValidation(mDataBinding, userName)
     }
 
     // Method For set UserName And SharedPreferences
     private fun setUserNameAndSharedPref() {
         userName = args.userName
-        getSharedPreferences = sharedPreference.getSharedPreferences()
     }
 
-    //For confirmSignIn aws
+    // For confirmSignIn aws
     private fun submitBtnClicked() {
         val code = mDataBinding?.otpemail?.text.toString()
         mDataBinding!!.submitBtn.setOnClickListener {
@@ -73,7 +70,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         }
     }
 
-    //AutoSubmitted when we Enter 4 digit
+    // AutoSubmitted when we Enter 4 digit
     private fun autoSubmit() {
         getViewModel().userOtpNumber.observe(viewLifecycleOwner, Observer {
             if (it.length == 4) {
@@ -91,25 +88,25 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
         } else if (status == "EMailVerifiedTrueGoToDashBoard") {
-            val idToken = "Bearer ${getSharedPreferences.getString("IdToken", "")}"
+            val idToken = "Bearer ${sharedPreference.getString(SharedPreference.ID_Token)}"
             getLoginApiCall(idToken)
         }
     }
 
-    //AWS Error response
+    // AWS Error response
     override fun awsErrorResponse() {
         mDataBinding?.linearLayout?.visibility = View.VISIBLE
         mDataBinding?.progressBar?.visibility = View.INVISIBLE
         showToast(getViewModel().toastMessage)
     }
 
-    //2351 Android-OTP expires Validation
+    // 2351 Android-OTP expires Validation
     override fun navigatingPage() {
-        //Navigating from emailOtpScreen to Sign in Screen
+        // Navigating from emailOtpScreen to Sign in Screen
         findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
     }
 
-    //Login api call to Fetch RollId and SpRegId
+    // Login api call to Fetch RollId and SpRegId
     private fun getLoginApiCall(idToken: String) {
         // Getting Service Provider Reg Id and Role Id
         getViewModel().getLoginInfo(idToken)
@@ -132,15 +129,9 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // Method For Set SpRegId And RollID to SharedPreference From Login Api
     private fun setSpRegIdAndRollID(apiResponse: ApisResponse.Success<GetLoginInfo>) {
-        val editor: SharedPreferences.Editor = getSharedPreferences.edit()
-        editor.putInt(
-            "spRegId",
-            apiResponse.response.data.spRegId
-        )
-        editor.putInt(
-            "roleId",
-            apiResponse.response.data.roleId
-        )
-        editor.apply()
+        sharedPreference.putInt(SharedPreference.SP_REG_ID,
+            apiResponse.response.data.spRegId)
+        sharedPreference.putInt(SharedPreference.ROLE_ID,
+            apiResponse.response.data.roleId)
     }
 }
