@@ -23,7 +23,18 @@ stages:
         jdkVersionOption: '1.11'
         tasks: 'lint'
         sonarQubeRunAnalysis: false
+    - task: CopyFiles@2
+      inputs:
+        Contents: '**/lint-results.html'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+        OverWrite: true
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: Container
   - job: BuildJob
+    dependsOn: LintAnalysis
     steps:
     - task: Gradle@2
       inputs:
