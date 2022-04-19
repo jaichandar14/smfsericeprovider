@@ -60,6 +60,13 @@ stages:
         Contents: '**/*.apk'
         TargetFolder: '$(build.artifactstagingdirectory)'
         OverWrite: true  
+    - task: AndroidSigning@3
+      inputs:
+         apkFiles: '**/*.apk'
+         apksignerKeystorePassword: 'smfandroid'
+         apksignerKeystoreAlias: 'smfandroid'
+         apksignerKeyPassword: 'smfandroid'
+         keystoreFile: "smfandroid.jks"
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
