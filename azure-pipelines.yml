@@ -63,10 +63,11 @@ stages:
     # - task: AndroidSigning@3
     #   inputs:
     #      apkFiles: '**/*.apk'
+    #      apksign: true      
     #      apksignerKeystorePassword: 'smfandroid01'
     #      apksignerKeystoreAlias: 'smfandroid01'
     #      apksignerKeyPassword: 'smfandroid01'
-    #      keystoreFile: "smfandroid01.jks"
+    #      apksignerKeystoreFile: "smfandroid01.jks"
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
