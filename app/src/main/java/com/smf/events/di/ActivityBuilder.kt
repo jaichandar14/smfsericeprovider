@@ -22,6 +22,9 @@ import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialogModule
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsModule
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
+import com.smf.events.ui.schedulemanagement.ScheduleManagementModule
+import com.smf.events.ui.schedulemanagement.calendarfragment.CalendarFragment
 import com.smf.events.ui.signin.SignInFragment
 import com.smf.events.ui.signin.SignInModule
 import com.smf.events.ui.signup.SignUpFragment
@@ -43,19 +46,19 @@ abstract class ActivityBuilder {
     abstract fun provideSplashFragment(): SplashFragment
 
     @ContributesAndroidInjector(modules = [SignInModule::class])
-    abstract fun provideSignInFragment():SignInFragment
+    abstract fun provideSignInFragment(): SignInFragment
 
     @ContributesAndroidInjector(modules = [SignUpModule::class])
-    abstract fun provideSignUpFragment():SignUpFragment
+    abstract fun provideSignUpFragment(): SignUpFragment
 
     @ContributesAndroidInjector(modules = [EmailOTPModule::class])
-    abstract fun provideEmailOTPFragment():EmailOTPFragment
+    abstract fun provideEmailOTPFragment(): EmailOTPFragment
 
     @ContributesAndroidInjector(modules = [DashBoardModule::class])
-    abstract fun provideDashBoardFragment():DashBoardFragment
+    abstract fun provideDashBoardFragment(): DashBoardFragment
 
     @ContributesAndroidInjector(modules = [BusinessRegistrationModule::class])
-    abstract fun provideBusinessRegistrationFragment():BusinessRegistrationFragment
+    abstract fun provideBusinessRegistrationFragment(): BusinessRegistrationFragment
 
     @ContributesAndroidInjector(modules = [ActionsAndStatusModule::class])
     abstract fun provideActionsAndStatusFragment(): ActionsAndStatusFragment
@@ -82,4 +85,12 @@ abstract class ActivityBuilder {
     // 2402 - View Order Details Injection
     @ContributesAndroidInjector(modules = [ViewOrderDetailsModule::class])
     abstract fun provideViewOrderDetailsDialog(): ViewOrderDetailsDialogFragment
+
+    // 2458
+    @ContributesAndroidInjector(modules = [ScheduleManagementModule::class])
+    abstract fun provideScheduleManagement(): ScheduleManagementActivity
+
+    //2458
+    @ContributesAndroidInjector(modules = [ScheduleManagementModule::class])
+    abstract fun provideCalendarScheduleManagement(): CalendarFragment
 }
