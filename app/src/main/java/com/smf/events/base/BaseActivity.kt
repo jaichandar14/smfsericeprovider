@@ -1,12 +1,11 @@
 package com.smf.events.base
 
-import android.app.ProgressDialog
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProvider
 
 abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCompatActivity() {
 
@@ -28,13 +27,15 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
         performDataBinding()
     }
 
-    private fun performDataBinding(){
-        mViewDataBinding = DataBindingUtil.setContentView(this, getContentView())
-        mViewModel = getViewModel()
-        mViewDataBinding?.setVariable(getBindingVariable(), mViewModel)
-        mViewDataBinding?.executePendingBindings()
-       // mViewDataBinding?.lifecycleOwner = this@BaseActivity
-
+    private fun performDataBinding() {
+        // 2458
+        getViewModel()?.let { viewModel ->
+            mViewDataBinding = DataBindingUtil.setContentView(this, getContentView())
+            mViewModel = ViewModelProvider(this).get(viewModel::class.java)
+            mViewDataBinding?.setVariable(getBindingVariable(), mViewModel)
+            mViewDataBinding?.executePendingBindings()
+            mViewDataBinding?.lifecycleOwner = this@BaseActivity
+        }
     }
 
     fun showToast(msg: String) {

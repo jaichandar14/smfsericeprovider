@@ -65,7 +65,9 @@
     <dimen name="size_30sp">30sp</dimen>
     <dimen name="size_19sp">19sp</dimen>
     <dimen name="size_40sp">40sp</dimen>
-
+    <dimen name="size_24sp">24sp</dimen>
+    // 2458
+    <dimen name="size_6dp">6dp</dimen>
 
 
 </resources>

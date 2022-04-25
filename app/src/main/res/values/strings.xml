@@ -123,6 +123,13 @@
     <string name="_6pm_9pm">6pm - 9pm</string>
     <string name="_9pm_12am">9pm - 12am</string>
     <string name="available_with_dummy_text">Available dsdssjbjfbjbfjsbfbf sasassasaasasasasasasasasasasasasasasasdsjhdskdbajbjbdjabjbadnadsddadadadadaddaddadadadadadadadadfsmfms</string>
+    <string name="_1">1</string>
+    <string name="s">S</string>
+    <string name="f">F</string>
+    <string name="t">T</string>
+    <string name="w">W</string>
+    <string name="m">M</string>
+    <string name="calendar">Calendar</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>

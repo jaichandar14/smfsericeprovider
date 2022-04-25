@@ -2,6 +2,7 @@ package com.smf.events.ui.dashboard
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -24,6 +25,7 @@ import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
 import com.smf.events.ui.dashboard.model.BranchDatas
 import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.ServicesData
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
@@ -85,6 +87,15 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         myEventsRecycler()
         // Id Token Validation
         idTokenValidation()
+        // 2458 CalendarIcon Onclick method
+        onClickCalendar()
+    }
+
+    private fun onClickCalendar() {
+        mDataBinding?.calander?.setOnClickListener {
+            val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun idTokenValidation() {
