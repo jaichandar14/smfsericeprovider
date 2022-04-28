@@ -15,11 +15,18 @@
         <item name="android:textColor">@color/white</item>
         <item name="colorControlHighlight">@color/gray</item>
         <item name="colorButtonNormal">@color/white</item>
-
     </style>
 
     <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textSize">@dimen/size_20sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    // 2527 - TabLayout Custom Text Appearance
+    <style name="CustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+
 </resources>
