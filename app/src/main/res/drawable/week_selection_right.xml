@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Border -->
+    <item>
+        <shape>
+            <corners
+                android:bottomRightRadius="@dimen/size_10dp"
+                android:topRightRadius="@dimen/size_10dp" />
+            <solid android:color="#999797"></solid>
+        </shape>
+    </item><!-- Body -->
+    <item
+        android:bottom="2dp"
+        android:right="2dp"
+        android:top="2dp">
+        <shape>
+            <corners
+                android:bottomRightRadius="@dimen/size_10dp"
+                android:topRightRadius="@dimen/size_10dp" />
+            <solid android:color="@color/white"></solid>
+        </shape>
+    </item>
+
+</layer-list>
+
+    <!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+    <!--    <item >-->
+    <!--        <shape android:shape="rectangle">-->
+    <!--            <size android:width="@dimen/size_100dp"-->
+    <!--                android:height="@dimen/size_48dp"/>-->
+    <!--            <stroke android:width="@dimen/size_1dp"-->
+    <!--                android:color="@color/background_gray"/>-->
+    <!--            <corners android:bottomRightRadius="@dimen/size_10dp"-->
+    <!--                android:topRightRadius="@dimen/size_10dp"/>-->
+    <!--            <solid android:color="@color/white"/>-->
+    <!--        </shape>-->
+    <!--    </item>-->
+    <!--</selector>-->

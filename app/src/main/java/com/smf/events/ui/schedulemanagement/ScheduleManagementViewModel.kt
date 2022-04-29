@@ -1,6 +1,5 @@
 package com.smf.events.ui.schedulemanagement
 
-import android.R
 import android.annotation.SuppressLint
 import android.app.Application
 import android.view.View
@@ -40,14 +39,12 @@ class ScheduleManagementViewModel @Inject constructor(
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-        val ad: ArrayAdapter<String> =
-            ArrayAdapter<String>(getApplication(), R.layout.simple_spinner_item, allServiceList)
-        // 2458 set simple layout resource file for each item of spinner
-        ad.setDropDownViewResource(
-            R.layout.simple_spinner_dropdown_item
-        )
-        // 2458 Set the ArrayAdapter (ad) data on the Spinner which binds data to spinner
-        mViewDataBinding?.spnAllServices?.adapter = ad
+        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(getApplication(),
+            com.smf.events.R.layout.spinners_list,
+            allServiceList as List<Any?>)
+        arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
+        arrayAdapter.notifyDataSetChanged()
+        mViewDataBinding?.spnAllServices?.adapter = arrayAdapter
     }
 
     // 2458 Method for  Setting Branches
@@ -60,8 +57,8 @@ class ScheduleManagementViewModel @Inject constructor(
         serviceCategoryId: Int,
         i: Int,
     ) {
-        var spin = mDataBinding!!.spnBranches
-        spin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        var spinner = mDataBinding!!.spnBranches
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View,
@@ -74,14 +71,12 @@ class ScheduleManagementViewModel @Inject constructor(
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        var ad: ArrayAdapter<*> =
-            ArrayAdapter<Any?>(
-                getApplication(), R.layout.simple_spinner_item,
-                branchData as List<Any?>
-            )
-        ad.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        ad.notifyDataSetChanged()
-        mDataBinding.spnBranches.adapter = ad
+        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(getApplication(),
+            com.smf.events.R.layout.spinners_list,
+            branchData as List<Any?>)
+        arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
+        arrayAdapter.notifyDataSetChanged()
+        mDataBinding.spnBranches.adapter = arrayAdapter
     }
 
     // 2458 Method for  Setting Years
@@ -90,8 +85,8 @@ class ScheduleManagementViewModel @Inject constructor(
         mDataBinding: FragmentCalendarBinding?,
         calendarUtils: ArrayList<String>,
     ) {
-        var spin = mDataBinding!!.monthYearspn
-        spin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        var spinner = mDataBinding!!.monthYearspn
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View,
@@ -104,14 +99,13 @@ class ScheduleManagementViewModel @Inject constructor(
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        var ad: ArrayAdapter<*> =
-            ArrayAdapter<Any?>(
-                getApplication(), R.layout.simple_spinner_item,
-                calendarUtils as List<Any?>
-            )
-        ad.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        ad.notifyDataSetChanged()
-        mDataBinding.monthYearspn.adapter = ad
+        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(getApplication(),
+            com.smf.events.R.layout.spinners_list,
+            calendarUtils as List<Any?>)
+        arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
+        spinner.adapter = arrayAdapter
+        arrayAdapter.notifyDataSetChanged()
+        mDataBinding.monthYearspn.adapter = arrayAdapter
     }
 
     // 2458 Method For Getting All Service
