@@ -31,6 +31,9 @@ import com.smf.events.ui.signup.SignUpFragment
 import com.smf.events.ui.signup.SignUpModule
 import com.smf.events.ui.splash.SplashFragment
 import com.smf.events.ui.splash.SplashModule
+import com.smf.events.ui.timeslot.TimeSlotsFragment
+import com.smf.events.ui.timeslotsexpandablelist.TimeSlotsExpandableListFragment
+import com.smf.events.ui.timeslotsexpandablelist.TimeSlotsExpandableListModule
 import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
 import com.smf.events.ui.vieworderdetails.ViewOrderDetailsModule
 import dagger.Module
@@ -90,7 +93,15 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [ScheduleManagementModule::class])
     abstract fun provideScheduleManagement(): ScheduleManagementActivity
 
-    //2458
+    // 2458
     @ContributesAndroidInjector(modules = [ScheduleManagementModule::class])
     abstract fun provideCalendarScheduleManagement(): CalendarFragment
+
+    // 2527 - Time Slots Fragment Injection
+    @ContributesAndroidInjector(modules = [ScheduleManagementModule::class])
+    abstract fun provideTimeSlotsFragment(): TimeSlotsFragment
+
+    // 2527 - Time Slots ExpandableList Fragment Injection
+    @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
+    abstract fun provideTimeSlotsExpandableListFragment(): TimeSlotsExpandableListFragment
 }

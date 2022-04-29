@@ -2,43 +2,64 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/expandable_title_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/time_slot_custom_layout"
-    android:padding="@dimen/size_10dp">
+    android:paddingTop="@dimen/size_8dp"
+    android:paddingBottom="@dimen/size_8dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
         android:id="@+id/selected_imageView"
         android:layout_width="@dimen/size_30dp"
         android:layout_height="@dimen/size_30dp"
+        android:layout_marginStart="@dimen/size_10dp"
+        android:contentDescription="@string/icon"
         android:src="@drawable/select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/title_textView"
+        android:id="@+id/title_date_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        android:text="@string/aug_14_wednesday"
-        android:textSize="@dimen/size_16sp"
+        android:text="@string/aug_14"
+        android:textSize="@dimen/size_15sp"
         app:layout_constraintBottom_toBottomOf="@+id/selected_imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintStart_toEndOf="@+id/selected_imageView"
         app:layout_constraintTop_toTopOf="@+id/selected_imageView" />
 
+    <TextView
+        android:id="@+id/title_day_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:paddingStart="@dimen/size_2dp"
+        android:text="@string/wednesday"
+        android:textSize="@dimen/size_15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/title_date_textView"
+        app:layout_constraintStart_toEndOf="@+id/title_date_textView"
+        app:layout_constraintTop_toTopOf="@+id/title_date_textView"
+        tools:ignore="RtlSymmetry" />
+
     <ImageView
+        android:id="@+id/plus_icon"
         android:layout_width="@dimen/size_18dp"
         android:layout_height="@dimen/size_18dp"
-        android:src="@drawable/plus"
+        android:layout_marginEnd="@dimen/size_10dp"
+        android:contentDescription="@string/icon"
         app:layout_constraintBottom_toBottomOf="@+id/selected_imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/title_textView"
+        app:layout_constraintStart_toEndOf="@+id/title_date_textView"
         app:layout_constraintTop_toTopOf="@+id/selected_imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

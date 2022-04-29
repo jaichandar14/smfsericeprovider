@@ -113,7 +113,7 @@
     // 2487
     <string name="icon">Icon</string>
     <string name="available">Available</string>
-    <string name="aug_14_wednesday">Aug 14 - Wednesday</string>
+    <string name="aug_14">Aug 14 - </string>
     <string name="_12am_3am">12am - 3am</string>
     <string name="_3am_6am">3am - 6am</string>
     <string name="_6am_9am">6am - 9am</string>
@@ -130,6 +130,8 @@
     <string name="w">W</string>
     <string name="m">M</string>
     <string name="calendar">Calendar</string>
+    // 2527
+    <string name="wednesday">Wednesday</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>
