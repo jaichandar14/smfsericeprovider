@@ -130,6 +130,9 @@
     <string name="w">W</string>
     <string name="m">M</string>
     <string name="calendar">Calendar</string>
+    // 2528
+    <string name="switch_to_modify_slots_availability">Switch to Modify Slots Availability</string>
+    <string name="switch_to_View_Event_List">             Switch to View Event List</string>
     // 2527
     <string name="wednesday">Wednesday</string>
     <string-array name="all_services">

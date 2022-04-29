@@ -63,3 +63,6 @@ class CalendarUtils @Inject constructor() {
         return daysInMonthArray
     }
 }
+
+data class WeekDetails(var date: LocalDate?, var position: Int?)
+data class WeekArrayDetails(var date: ArrayList<LocalDate>, var position: ArrayList<Int>)
