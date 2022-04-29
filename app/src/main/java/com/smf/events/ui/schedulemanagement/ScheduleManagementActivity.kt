@@ -44,8 +44,9 @@ class ScheduleManagementActivity :
         mViewDataBinding?.switchBtn?.setOnClickListener {
             if (mViewDataBinding?.switchBtn?.isChecked == false)
                 mViewDataBinding?.switchBtnTx?.text =
-                    R.string.switch_to_modify_slots_availability.toString()
-            else mViewDataBinding?.switchBtnTx?.text = R.string.switch_to_View_Event_List.toString()
+                    resources.getString(R.string.switch_to_modify_slots_availability)
+            else mViewDataBinding?.switchBtnTx?.text =
+                resources.getString(R.string.switch_to_View_Event_List)
         }
         val frg = CalendarFragment() //create the fragment instance for the middle fragment
         val manager: FragmentManager =
