@@ -40,6 +40,14 @@ class ScheduleManagementActivity :
 
     // 2458 - Method for Calendar Ui
     private fun calendarUI() {
+        // 2528 - Toggle Button Logic
+        mViewDataBinding?.switchBtn?.setOnClickListener {
+            if (mViewDataBinding?.switchBtn?.isChecked == false)
+                mViewDataBinding?.switchBtnTx?.text =
+                    resources.getString(R.string.switch_to_modify_slots_availability)
+            else mViewDataBinding?.switchBtnTx?.text =
+                resources.getString(R.string.switch_to_View_Event_List)
+        }
         val frg = CalendarFragment() //create the fragment instance for the middle fragment
         val manager: FragmentManager =
             supportFragmentManager //create an instance of fragment manager

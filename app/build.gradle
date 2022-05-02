@@ -8,13 +8,11 @@ plugins {
 
 android {
     compileSdk 31
-
     defaultConfig {
         configurations.all {
             resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
-
-
         }
+        vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         applicationId "com.smf.events"
         minSdk 17

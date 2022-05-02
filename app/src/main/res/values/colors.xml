@@ -23,5 +23,9 @@
     <color name="fade_black">#F0333333</color>
     <color name="fade_background">#F4F2F2</color>
     <color name="calendar_pick">#F3F39B</color>
+    <color name="circle_gray">#999797</color>
+    <color name="circle_outer_border">#C6C6C6</color>
+    <color name="calendar_background">#494444</color>
+    <color name="calendar_border_darl_gray">#605D5D</color>
 
 </resources>

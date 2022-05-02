@@ -25,6 +25,7 @@ import dagger.android.support.AndroidSupportInjection
 import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 // 2458
 class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagementViewModel>(),
@@ -49,6 +50,8 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagemen
     lateinit var idToken: String
     private var monthYearText: TextView? = null
     private var calendarRecyclerView: RecyclerView? = null
+    var dayinWeek: ArrayList<String>? = null
+    var daysPositon: ArrayList<Int>? = null
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -75,7 +78,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagemen
         // 2458 Method for initializing
         initWidgets()
         // 2458 Method For Setting Month View in Calendar
-        setMonthView()
+        setMonthView(dayinWeek, daysPositon)
         // 2458 Method for Setting Year
         getViewModel().year(mDataBinding, resources)
         // 2458 Method for All Service API call
@@ -94,7 +97,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagemen
     }
 
     // 2458 Method For Setting Month View in Calendar
-    private fun setMonthView() {
+    private fun setMonthView(dayinWeek: ArrayList<String>?, daysPositon: ArrayList<Int>?) {
         monthYearText?.text =
             CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDate(it) }
         val thisYear: Int = Calendar.getInstance().get(Calendar.YEAR)
@@ -102,7 +105,8 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagemen
             resources.add(i.toString())
         }
         val daysInMonth: ArrayList<LocalDate>? = calendarUtils.daysInMonthArray()
-        calendarAdapter = CalendarAdapter(daysInMonth, this, mDataBinding, "day")
+        calendarAdapter =
+            CalendarAdapter(daysInMonth, this, mDataBinding, "day", dayinWeek, daysPositon)
         val layoutManager: RecyclerView.LayoutManager =
             GridLayoutManager(context, 7)
         calendarRecyclerView?.layoutManager = layoutManager
@@ -113,7 +117,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagemen
     private fun previousMonthAction() {
         mDataBinding?.previousMonth?.setOnClickListener {
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusMonths(1)
-            setMonthView()
+            setMonthView(dayinWeek, daysPositon)
         }
     }
 
@@ -121,15 +125,20 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagemen
     private fun nextMonthAction() {
         mDataBinding?.nextMonth?.setOnClickListener {
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusMonths(1)
-            setMonthView()
+            setMonthView(dayinWeek, daysPositon)
         }
     }
 
     // 2458 Callback Method for Clicked Date
-    override fun onItemClick(position: Int, date: LocalDate?) {
+    override fun onItemClick(
+        position: Int,
+        date: LocalDate?,
+        dayinWeek: ArrayList<String>,
+        daysPositon: ArrayList<Int>,
+    ) {
         if (date != null) {
             CalendarUtils.selectedDate = date
-            setMonthView()
+            setMonthView(dayinWeek, daysPositon)
         }
     }
 
@@ -247,6 +256,5 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding, ScheduleManagemen
             branchesName = "Branches"
         }
         var serviceName = (serviceList[allServiceposition!!].serviceName)
-
     }
 }

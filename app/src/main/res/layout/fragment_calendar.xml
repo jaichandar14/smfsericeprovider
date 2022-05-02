@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -12,15 +12,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".ui.schedulemanagement.calendarfragment.CalendarFragment">
 
         <TextView
             android:id="@+id/calendar_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/size_15dp"
-            android:layout_marginTop="@dimen/size_10dp"
+            android:layout_marginStart="@dimen/size_5dp"
+            android:layout_marginBottom="@dimen/size_15dp"
             android:fontFamily="@font/poppins_semibold"
             android:text="@string/calendar"
             android:textColor="@color/black"
@@ -29,9 +29,10 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.core.widget.NestedScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,225 +40,222 @@
             app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
+                android:id="@+id/spinner_action"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/size_15dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_10dp"
+                android:layout_marginTop="@dimen/size_10dp"
+                android:layout_marginEnd="@dimen/size_10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/myEvents_layout">
 
                 <LinearLayout
-                    android:id="@+id/spinner_action"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_5dp"
-                    android:layout_marginEnd="@dimen/size_5dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/myEvents_layout">
+                    android:layout_gravity="center"
+                    android:background="@drawable/shapes"
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <Spinner
+                        android:id="@+id/spn_allServices"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/size_40dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/shapes"
-                        android:orientation="vertical">
-
-                        <Spinner
-                            android:id="@+id/spn_allServices"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/size_40dp"
-                            android:background="@drawable/spinner"
-                            android:gravity="center"
-                            android:padding="@dimen/size_5dp"
-                            android:spinnerMode="dropdown"
-                            android:textSize="@dimen/size_40sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/size_40dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/size_20dp"
-                        android:background="@drawable/shapes">
-
-                        <Spinner
-                            android:id="@+id/spn_Branches"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/size_40dp"
-                            android:autofillHints="All Services"
-                            android:background="@drawable/spinner"
-                            android:padding="@dimen/size_5dp"
-                            android:spinnerMode="dropdown"
-                            android:textSize="@dimen/size_30sp" />
-
-                    </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/spinner"
+                        android:gravity="center"
+                        android:spinnerMode="dropdown" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/size_10dp"
-                    android:layout_marginTop="@dimen/size_30dp"
-                    android:layout_marginEnd="@dimen/size_10dp"
-                    android:layout_marginBottom="@dimen/size_25dp"
-                    android:background="@drawable/shape_dailog_curved"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linear_catering"
-                    app:layout_constraintVertical_bias="0.29000002">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/size_20dp"
+                    android:background="@drawable/shapes">
 
-                    <LinearLayout
+                    <Spinner
+                        android:id="@+id/spn_Branches"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/size_10dp"
-                        android:background="@color/white"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="@dimen/size_15dp"
-                        android:paddingBottom="@dimen/size_15dp"
-                        android:weightSum="4">
-
-                        <ImageButton
-                            android:id="@+id/previous_month"
-                            android:layout_width="@dimen/size_6dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight=".3"
-                            android:background="@null"
-                            android:src="@drawable/arrow_left_24"
-                            android:textColor="@color/blue"
-                            android:textSize="@dimen/size_20sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/monthYearTV"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".9"
-                            android:gravity="center"
-                            android:text="Aug"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/size_20sp" />
-
-                        <ImageButton
-                            android:id="@+id/next_month"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="0.5"
-                            android:background="@null"
-                            android:src="@drawable/arrow_right"
-                            android:textColor="@color/blue"
-                            android:textSize="@dimen/size_20sp"
-                            android:textStyle="bold" />
-
-                        <Spinner
-                            android:id="@+id/monthYearspn"
-                            android:layout_width="@dimen/dp_0"
-                            android:layout_height="@dimen/size_40dp"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="@dimen/size_15dp"
-                            android:layout_weight="2.3"
-                            android:background="@drawable/empty_shapes"
-                            android:gravity="end"
-                            android:textAlignment="textEnd"
-                            android:theme="@style/mySpinnerItemStyle" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/size_25dp"
-                        android:layout_marginTop="@dimen/size_15dp"
-                        android:layout_marginEnd="@dimen/size_25dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/s"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/size_16sp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/m"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/size_16sp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/t"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/w"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/t"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/size_16sp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/f"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/size_16sp" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:text="@string/s"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/size_16sp" />
-
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/calendarRecyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/size_250dp"
-                        android:layout_marginStart="@dimen/size_25dp"
-                        android:layout_marginEnd="@dimen/size_25dp" />
+                        android:autofillHints="All Services"
+                        android:background="@drawable/spinner"
+                        android:spinnerMode="dropdown" />
 
                 </LinearLayout>
+
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_10dp"
+                android:layout_marginTop="@dimen/size_35dp"
+                android:layout_marginEnd="@dimen/size_10dp"
+                android:background="@drawable/calendar_background"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linear_catering">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_10dp"
+                    android:layout_marginTop="@dimen/size_5dp"
+                    android:layout_marginEnd="@dimen/size_10dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/size_15dp"
+                    android:weightSum="4">
+
+                    <ImageButton
+                        android:id="@+id/previous_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:src="@drawable/arrow_left_20"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.05"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/monthYearTV"
+                        android:layout_width="@dimen/size_45dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:text="Aug"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_22sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.04"
+                        app:layout_constraintStart_toEndOf="@+id/previous_month"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/next_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:src="@drawable/arrow_forward_20"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.07"
+                        app:layout_constraintStart_toEndOf="@+id/monthYearTV"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/monthYearspn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/empty_shapes"
+                        android:gravity="end"
+                        android:textAlignment="textEnd"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.71"
+                        app:layout_constraintStart_toEndOf="@+id/next_month"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_25dp"
+                    android:layout_marginTop="@dimen/size_15dp"
+                    android:layout_marginEnd="@dimen/size_28dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="@string/s"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_16sp" />
+
+                    <TextView
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="@string/m"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_16sp" />
+
+                    <TextView
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="@string/t"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_16sp" />
+
+                    <TextView
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="@string/w"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_16sp" />
+
+                    <TextView
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="@string/t"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_16sp" />
+
+                    <TextView
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="@string/f"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_16sp" />
+
+                    <TextView
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="@string/s"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_16sp" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/calendarRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_210"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/size_30dp"
+                    android:layout_marginEnd="@dimen/size_30dp" />
+
+            </LinearLayout>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

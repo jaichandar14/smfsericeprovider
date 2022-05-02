@@ -1,14 +1,13 @@
 package com.smf.events.helper
 
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// 2528
 @Singleton
 class CalendarUtils @Inject constructor() {
     companion object {
@@ -40,6 +39,7 @@ class CalendarUtils @Inject constructor() {
         return date.format(formatter)
     }
 
+    // 2528 daysInMonthArray Method
     fun daysInMonthArray(): ArrayList<LocalDate>? {
         val daysInMonthArray = ArrayList<LocalDate>()
         val yearMonth = YearMonth.from(selectedDate)
@@ -62,26 +62,7 @@ class CalendarUtils @Inject constructor() {
         }
         return daysInMonthArray
     }
-
-    fun daysInWeekArray(): ArrayList<LocalDate>? {
-        val days = ArrayList<LocalDate>()
-        var current = selectedDate?.let { sundayForDate(it) }
-        val endDate = current!!.plusWeeks(1)
-        while (current!!.isBefore(endDate)) {
-            days.add(current)
-            current = current.plusDays(1)
-        }
-        return days
-    }
-
-    private fun sundayForDate(current: LocalDate): LocalDate? {
-        var current = current
-        val oneWeekAgo = current.minusWeeks(1)
-        while (current.isAfter(oneWeekAgo)) {
-            if (current.dayOfWeek == DayOfWeek.SUNDAY) return current
-            current = current.minusDays(1)
-        }
-        return null
-    }
-
 }
+
+data class WeekDetails(var date: LocalDate?, var position: Int?)
+data class WeekArrayDetails(var date: ArrayList<LocalDate>, var position: ArrayList<Int>)

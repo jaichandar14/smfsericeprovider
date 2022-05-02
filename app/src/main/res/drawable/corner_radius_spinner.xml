@@ -15,7 +15,6 @@
                 android:gravity="center|end"
                 android:height="@dimen/size_40dp"
                 android:width="@dimen/size_30dp"/>
-
         </layer-list>
     </item>
 </selector>
