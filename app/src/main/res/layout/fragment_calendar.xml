@@ -176,7 +176,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"
@@ -186,7 +186,7 @@
                         android:textSize="@dimen/size_16sp" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"
@@ -196,7 +196,7 @@
                         android:textSize="@dimen/size_16sp" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"
@@ -206,7 +206,7 @@
                         android:textSize="@dimen/size_16sp" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"
@@ -216,7 +216,7 @@
                         android:textSize="@dimen/size_16sp" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"
@@ -226,7 +226,7 @@
                         android:textSize="@dimen/size_16sp" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"
@@ -236,7 +236,7 @@
                         android:textSize="@dimen/size_16sp" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"

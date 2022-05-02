@@ -8,19 +8,18 @@
                 android:topLeftRadius="@dimen/size_10dp" />
             <stroke
                 android:width="@dimen/size_2dp"
-                android:color="#999797" />
+                android:color="@color/circle_gray" />
         </shape>
     </item><!-- Body -->
     <item
-        android:bottom="2dp"
-        android:left="2dp"
-        android:top="2dp">
+        android:bottom="@dimen/size_2dp"
+        android:left="@dimen/size_2dp"
+        android:top="@dimen/size_2dp">
         <shape>
             <corners
                 android:bottomLeftRadius="@dimen/size_20dp"
                 android:topLeftRadius="@dimen/size_20dp" />
             <solid android:color="@color/white"></solid>
-
         </shape>
     </item>
 

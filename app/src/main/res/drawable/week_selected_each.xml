@@ -3,27 +3,14 @@
     <!-- Border -->
     <item>
         <shape>
-            <solid android:color="#999797"></solid>
+            <solid android:color="@color/circle_gray"></solid>
         </shape>
     </item><!-- Body -->
     <item
-        android:bottom="2dp"
-        android:top="2dp">
+        android:bottom="@dimen/size_2dp"
+        android:top="@dimen/size_2dp">
         <shape>
             <solid android:color="@color/white"></solid>
         </shape>
     </item>
-
 </layer-list>
-
-    <!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
-    <!--    <item >-->
-    <!--        <shape android:shape="rectangle">-->
-    <!--            <size android:width="@dimen/size_100dp"-->
-    <!--                android:height="@dimen/size_48dp"/>-->
-    <!--            <stroke android:width="@dimen/size_1dp"-->
-    <!--                android:color="@color/background_gray"/>-->
-    <!--            <solid android:color="@color/white"/>-->
-    <!--        </shape>-->
-    <!--    </item>-->
-    <!--</selector>-->

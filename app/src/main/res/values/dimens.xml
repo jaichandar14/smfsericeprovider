@@ -74,6 +74,4 @@
     //2528
     <dimen name="size_180dp">180dp</dimen>
     <dimen name="size_210">210dp</dimen>
-
-
 </resources>
