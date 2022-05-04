@@ -140,7 +140,7 @@ class ActionsAndStatusFragment :
         }
     }
 
-    // Method For ApiCall For Action And Status Counts
+    // 2560 Method For ApiCall For Action And Status Counts
     private fun actionAndStatusApiCall(idToken: String) {
         getViewModel().getActionAndStatus(
             idToken,
@@ -151,20 +151,18 @@ class ActionsAndStatusFragment :
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+                        // 2560 changed the Api call variable names
                         actionAndStatusData = ActionAndStatusCount(
-                            apiResponse.response.actionandStatus.bidRequestedActionsCount,
-                            apiResponse.response.actionandStatus.bidSubmittedStatusCount,
-                            apiResponse.response.actionandStatus.bidSubmittedActionCount,
-                            apiResponse.response.actionandStatus.bidRejectedStatusCount,
-                            apiResponse.response.actionandStatus.bidRejectedActionCount,
-                            apiResponse.response.actionandStatus.pendingForQuoteActionCount,
-                            apiResponse.response.actionandStatus.wonBidStatusCount,
-                            apiResponse.response.actionandStatus.lostBidStatusCount,
-                            apiResponse.response.actionandStatus.bidTimedOutStatusCount,
-                            apiResponse.response.actionandStatus.serviceDoneStatusCount,
+                            apiResponse.response.actionandStatus.bidRequestedCount,
+                            apiResponse.response.actionandStatus.bidSubmittedCount,
+                            apiResponse.response.actionandStatus.bidRejectedCount,
+                            apiResponse.response.actionandStatus.pendingForQuoteCount,
+                            apiResponse.response.actionandStatus.wonBidCount,
+                            apiResponse.response.actionandStatus.lostBidCount,
+                            apiResponse.response.actionandStatus.bidTimedOutCount,
+                            apiResponse.response.actionandStatus.serviceDoneCount,
                             apiResponse.response.actionandStatus.statusCount,
-                            apiResponse.response.actionandStatus.actionCount,
-                            0
+                            apiResponse.response.actionandStatus.actionCount
                         )
                         recyclerViewListUpdate()
                     }

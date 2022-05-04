@@ -31,14 +31,15 @@ class ActionDetailsRepository @Inject constructor(var apiStories: ApiStories) {
         serviceVendorOnboardingId: Int?,
         bidStatus: String,
     ): ApisResponse<NewRequestList> {
-
+        var bidStatusList = ArrayList<String>()
+        bidStatusList.add(bidStatus)
         return try {
             val getResponse = apiStories.getBidActions(
                 idToken,
                 spRegId,
                 serviceCategoryId,
                 serviceVendorOnboardingId,
-                bidStatus
+                bidStatusList
             )
             ApisResponse.Success(getResponse)
 
