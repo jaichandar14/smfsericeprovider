@@ -37,7 +37,6 @@
     <string name="business_registration">Business registration</string>
     <string name="dashboard">Dashboard</string>
     <string name="services">SERVICES</string>
-    <string name="active">Active</string>
     <string name="_4">4</string>
     <string name="new_request">New request</string>
     <string name="_0_pending_items">0 pending items</string>
@@ -135,6 +134,9 @@
     <string name="switch_to_View_Event_List">             Switch to View Event List</string>
     // 2527
     <string name="wednesday">Wednesday</string>
+    //2560
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>

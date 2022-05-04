@@ -30,20 +30,20 @@ interface ApiStories {
     @GET("epm-service/api/app-services/service-counts/{sp-reg-id}")
     suspend fun getServiceCount(
         @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: Int
+        @Path("sp-reg-id") spRegId: Int,
     ): ServiceCount
 
     @GET("epm-service/api/app-services/services/{sp-reg-id}")
     suspend fun getAllServices(
         @Header("Authorization") idToken: String,
-        @Path("sp-reg-id") spRegId: Int
+        @Path("sp-reg-id") spRegId: Int,
     ): AllServices
 
     @GET("epm-service/api/app-services/service-branches/{sp-reg-id}")
     suspend fun getServicesBranches(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
-        @Query("serviceCategoryId") serviceCategoryId: Int
+        @Query("serviceCategoryId") serviceCategoryId: Int,
     ): Branches
 
     @GET("epm-service/api/app-services/service-provider-bidding-counts/{sp-reg-id}")
@@ -51,23 +51,23 @@ interface ApiStories {
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int?,
-        @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int?
+        @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int?,
     ): ActionAndStatus
 
-    @GET("epm-service/api/app-services/bidding-request-info/{sp-reg-id}")
+    @GET("epm-service/api/app-services/bidding-status-info/{sp-reg-id}")
     suspend fun getBidActions(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int?,
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int?,
-        @Query("bidStatus") bidStatus: String
+        @Query("bidStatus") bidStatus: List<String>,
     ): NewRequestList
 
     @PUT("epm-service/api/app-services/accept-bid/{bid-request-id}")
     suspend fun postQuoteDetails(
         @Header("Authorization") idToken: String,
         @Path("bid-request-id") bidRequestId: Int,
-       @Body biddingQuoteDto: BiddingQuotDto
+        @Body biddingQuoteDto: BiddingQuotDto,
     ): NewRequestList
 
 

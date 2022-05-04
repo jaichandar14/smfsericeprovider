@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_20dp"
             android:fontFamily="@font/poppins_semibold"
-            android:text="@string/actions"
+            android:text="@string/active"
             android:textColor="@color/black"
             android:textSize="@dimen/size_18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,16 +39,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tx_actions" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="@dimen/size_5dp"
+            android:id="@+id/actions_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tx_pendtingitems"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/size_5dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/actions_recyclerview"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
-        </androidx.recyclerview.widget.RecyclerView>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tx_pendtingitems" />
 
         <TextView
             android:id="@+id/tx_status"
@@ -56,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_20dp"
             android:fontFamily="@font/poppins_semibold"
-            android:text="@string/status"
+            android:text="@string/inactive"
             android:textColor="@color/black"
             android:textSize="@dimen/size_18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -74,18 +72,15 @@
             app:layout_constraintTop_toBottomOf="@+id/tx_status" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="@dimen/size_5dp"
-            android:layout_marginEnd="@dimen/size_10dp"
+            android:id="@+id/status_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tx_pendingstatus"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/size_5dp"
+            android:layout_marginEnd="@dimen/size_10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/status_recyclerview"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tx_pendingstatus" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
