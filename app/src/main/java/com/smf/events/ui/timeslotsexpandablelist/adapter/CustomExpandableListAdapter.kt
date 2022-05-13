@@ -5,26 +5,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseExpandableListAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.*
 import com.smf.events.R
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
-import com.smf.events.ui.timeslotsexpandablelist.model.TitleData
 
 class CustomExpandableListAdapter internal constructor(
     private val context: Context,
-    private val titleList: List<TitleData>,
-    private val dataList: HashMap<TitleData, List<List<ListData>>>
+    private val langs: ArrayList<String>,
+    private val topics: HashMap<String, List<ListData>>
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
-        return this.dataList[this.titleList[listPosition]]!![expandedListPosition]
+        return this.topics[this.langs[listPosition]]!![expandedListPosition]
     }
 
     override fun getChildrenCount(listPosition: Int): Int {
-        return this.dataList[this.titleList[listPosition]]!!.size
+        return this.topics[this.langs[listPosition]]!!.size
     }
 
     override fun getChildId(listPosition: Int, expandedListPosition: Int): Long {
@@ -39,83 +35,54 @@ class CustomExpandableListAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertView = convertView
-        val expandedListData = getChild(listPosition, expandedListPosition) as List<ListData>
-        if (convertView == null) {
-            val layoutInflater =
-                this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = layoutInflater.inflate(R.layout.time_slot_list, null)
+        val expandedListData = getChild(listPosition, expandedListPosition) as ListData
+        val layoutInflater =
+            this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        convertView = if (expandedListPosition == 0) {
+            layoutInflater.inflate(R.layout.time_slot_list, null)
+        } else {
+            layoutInflater.inflate(R.layout.time_slot_bottom, null)
         }
-
-        val image12To3am = convertView?.findViewById<ImageView>(R.id.image_view_12_3am)
-        val image3To6am = convertView?.findViewById<ImageView>(R.id.image_view_3_6am)
-        val image6To9am = convertView?.findViewById<ImageView>(R.id.image_view_6_9am)
-        val image9To12pm = convertView?.findViewById<ImageView>(R.id.image_view_9_12pm)
-        val image12To3pm = convertView?.findViewById<ImageView>(R.id.image_view_12_3pm)
-        val image3To6pm = convertView?.findViewById<ImageView>(R.id.image_view_3_6pm)
-        val image6To9pm = convertView?.findViewById<ImageView>(R.id.image_view_6_9pm)
-        val image9To12am = convertView?.findViewById<ImageView>(R.id.image_view_9_12am)
-
+        var image12To3am = convertView?.findViewById<ImageView>(R.id.image_view_12_3am)
         val timeSlot12To3am = convertView?.findViewById<TextView>(R.id.time_slot_12_3am)
-        val timeSlot3To6am = convertView?.findViewById<TextView>(R.id.time_slot_3_6am)
-        val timeSlot6To9am = convertView?.findViewById<TextView>(R.id.time_slot_6_9am)
-        val timeSlot9To12pm = convertView?.findViewById<TextView>(R.id.time_slot_9_12pm)
-        val timeSlot12To3pm = convertView?.findViewById<TextView>(R.id.time_slot_12_3pm)
-        val timeSlot3To6pm = convertView?.findViewById<TextView>(R.id.time_slot_3_6pm)
-        val timeSlot6To9pm = convertView?.findViewById<TextView>(R.id.time_slot_6_9pm)
-        val timeSlot9To12am = convertView?.findViewById<TextView>(R.id.time_slot_9_12am)
-
         val address12To3am = convertView?.findViewById<TextView>(R.id.address_12_3am)
-        val address3To6am = convertView?.findViewById<TextView>(R.id.address_3_6am)
-        val address6To9am = convertView?.findViewById<TextView>(R.id.address_6_9am)
-        val address9To12pm = convertView?.findViewById<TextView>(R.id.address_9_12pm)
-        val address12To3pm = convertView?.findViewById<TextView>(R.id.address_12_3pm)
-        val address3To6pm = convertView?.findViewById<TextView>(R.id.address_3_6pm)
-        val address6To9pm = convertView?.findViewById<TextView>(R.id.address_6_9pm)
-        val address9To12am = convertView?.findViewById<TextView>(R.id.address_9_12am)
+        val view12To3am = convertView?.findViewById<View>(R.id.view_12_3am)
+        address12To3am?.text = null
 
         image12To3am?.setOnClickListener {
-            Log.d("TAG", "getChildView: clicked")
-            timeSlotIconOnClickListener?.onClick(listPosition)
+            Log.d("TAG", "getChildView: clicked $expandedListPosition")
+            timeSlotIconOnClickListener?.onClick(expandedListPosition)
         }
 
-        for (i in expandedListData.indices) {
-            when (expandedListData[i].timeSlot) {
-                "12am-3am" -> {
-                    address12To3am?.text = expandedListData[i].status
-                }
-                "3am-6am" -> {
-                    address3To6am?.text = expandedListData[i].status
-                }
-                "6am-9am" -> {
-                    address6To9am?.text = expandedListData[i].status
-                }
-                "9am-12pm" -> {
-                    address9To12pm?.text = expandedListData[i].status
-                }
-                "12pm-3pm" -> {
-                    address12To3pm?.text = expandedListData[i].status
-                }
-                "3pm-6pm" -> {
-                    address3To6pm?.text = expandedListData[i].status
-                }
-                "6pm-9pm" -> {
-                    address6To9pm?.text = expandedListData[i].status
-                }
-                "9pm-12am" -> {
-                    address9To12am?.text = expandedListData[i].status
-                }
-                else -> {}
+        // Get Booked Event Lists Line By Line
+        val addressText = StringBuffer()
+        for (i in expandedListData.status.indices) {
+            addressText.append(expandedListData.status[i].eventName + " " + "Event")
+            addressText.append("\n\r")
+            addressText.append(expandedListData.status[i].branchName)
+            if (i != (expandedListData.status.size - 1)) {
+                addressText.append("\n\r")
             }
         }
+        address12To3am?.text = addressText
+        timeSlot12To3am?.text = expandedListData.timeSlot
+
+        // Loop For Last ChildView View Invisible
+        if (isLastChild) {
+            view12To3am?.visibility = View.GONE
+        } else {
+            view12To3am?.visibility = View.VISIBLE
+        }
+
         return convertView!!
     }
 
     override fun getGroup(listPosition: Int): Any {
-        return this.titleList[listPosition]
+        return this.langs[listPosition]
     }
 
     override fun getGroupCount(): Int {
-        return this.titleList.size
+        return this.langs.size
     }
 
     override fun getGroupId(listPosition: Int): Long {
@@ -129,11 +96,13 @@ class CustomExpandableListAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertView = convertView
-        val listTitle = getGroup(listPosition) as TitleData
-        if (convertView == null) {
-            val layoutInflater =
-                this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = layoutInflater.inflate(R.layout.time_slot_title, null)
+        val listTitle = getGroup(listPosition) as String
+        val layoutInflater =
+            this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        convertView = if (isExpanded) {
+            layoutInflater.inflate(R.layout.time_slot_title, null)
+        } else {
+            layoutInflater.inflate(R.layout.time_slot_title_collapse, null)
         }
         val titleDateTextView = convertView?.findViewById<TextView>(R.id.title_date_textView)
         val titleDayTextView = convertView?.findViewById<TextView>(R.id.title_day_textView)
@@ -142,8 +111,7 @@ class CustomExpandableListAdapter internal constructor(
         } else {
             convertView?.findViewById<ImageView>(R.id.plus_icon)?.setImageResource(R.drawable.plus)
         }
-        titleDateTextView?.text = listTitle.date
-        titleDayTextView?.text = "- " + listTitle.day
+        titleDateTextView?.text = listTitle
 
         return convertView!!
     }
@@ -165,7 +133,7 @@ class CustomExpandableListAdapter internal constructor(
 
     // Interface For TimeSlot Icon Click
     interface TimeSlotIconClickListener {
-        fun onClick(listPosition: Int)
+        fun onClick(expandedListPosition: Int)
     }
 
 }

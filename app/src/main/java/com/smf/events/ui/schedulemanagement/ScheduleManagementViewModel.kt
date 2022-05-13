@@ -5,11 +5,23 @@ import android.app.Application
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import java.time.DayOfWeek
+
+import com.amplifyframework.auth.AuthUserAttributeKey.locale
+
+import java.time.temporal.WeekFields
+import java.util.*
+
 
 class ScheduleManagementViewModel @Inject constructor(
     private val scheduleManagementRepository: ScheduleManagementRepository,
@@ -18,6 +30,13 @@ class ScheduleManagementViewModel @Inject constructor(
 
     var name: String? = null
     var allServiceposition: Int? = 0
+
+    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+    private var date = MutableLiveData(LocalDateTime.now().format(dateFormatter))
+    val getDate: LiveData<String> = date
+    fun setDate(newDate : String){
+        date.value = newDate
+    }
 
     // 2458 Method for  Setting All Service
     @SuppressLint("ResourceType")

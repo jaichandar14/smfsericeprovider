@@ -19,8 +19,9 @@
             android:layout_height="@dimen/size_1000dp"
             android:childDivider="@color/white"
             android:divider="@color/white"
-            android:dividerHeight="@dimen/size_10dp"
-            android:groupIndicator="@null"/>
+            android:dividerHeight="@dimen/dp_0"
+            android:groupIndicator="@null"
+            android:scrollbars="none" />
 
     </RelativeLayout>
 

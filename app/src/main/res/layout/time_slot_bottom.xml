@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/size_20dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,21 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
-            <View
-                android:id="@+id/view_one"
-                android:layout_width="@dimen/size_3dp"
-                android:layout_height="@dimen/dp_0"
-                android:background="@color/buttoncolor"
-                app:layout_constraintBottom_toTopOf="@+id/image_view_12_3am"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <ImageView
                 android:id="@+id/image_view_12_3am"
                 android:layout_width="@dimen/size_30dp"
                 android:layout_height="@dimen/size_30dp"
-                android:layout_marginTop="@dimen/size_15dp"
                 android:contentDescription="@string/icon"
                 android:src="@drawable/disable"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +47,7 @@
             android:layout_width="@dimen/size_100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/size_10dp"
-            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_marginTop="@dimen/size_5dp"
             android:fontFamily="@font/poppins_medium"
             android:text="@string/_12am_3am"
             android:textSize="@dimen/size_14sp" />
@@ -69,9 +57,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/size_10dp"
-            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_marginTop="@dimen/size_5dp"
             android:fontFamily="@font/poppins_medium"
-            android:paddingBottom="@dimen/size_5dp"
+            android:paddingBottom="@dimen/size_8dp"
             android:text="@string/available"
             android:textSize="@dimen/size_14sp" />
 
