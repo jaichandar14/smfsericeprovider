@@ -4,6 +4,7 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
+import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -34,4 +35,27 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
             ApisResponse.Error(e)
         }
     }
+
+    // 2670 - Method For Get Booked Event Services
+    suspend fun getBookedEventServices(
+        idToken: String, spRegId: Int, serviceCategoryId: Int?,
+        serviceVendorOnBoardingId: Int?,
+        fromDate: String,
+        toDate: String
+    ): ApisResponse<BookedServiceList> {
+        return try {
+            val getResponse = apiStories.getBookedEventServices(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnBoardingId,
+                fromDate,
+                toDate
+            )
+            ApisResponse.Success(getResponse)
+        } catch (e: HttpException) {
+            ApisResponse.Error(e)
+        }
+    }
+
 }

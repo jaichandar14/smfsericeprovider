@@ -31,9 +31,10 @@ import com.smf.events.ui.signup.SignUpFragment
 import com.smf.events.ui.signup.SignUpModule
 import com.smf.events.ui.splash.SplashFragment
 import com.smf.events.ui.splash.SplashModule
-import com.smf.events.ui.timeslot.TimeSlotsFragment
-import com.smf.events.ui.timeslotsexpandablelist.TimeSlotsExpandableListFragment
+import com.smf.events.ui.timeslotsexpandablelist.DayExpandableListFragment
+import com.smf.events.ui.timeslotsexpandablelist.MonthExpandableListFragment
 import com.smf.events.ui.timeslotsexpandablelist.TimeSlotsExpandableListModule
+import com.smf.events.ui.timeslotsexpandablelist.WeekExpandableListFragment
 import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
 import com.smf.events.ui.vieworderdetails.ViewOrderDetailsModule
 import dagger.Module
@@ -97,11 +98,16 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [ScheduleManagementModule::class])
     abstract fun provideCalendarScheduleManagement(): CalendarFragment
 
-    // 2527 - Time Slots Fragment Injection
-    @ContributesAndroidInjector(modules = [ScheduleManagementModule::class])
-    abstract fun provideTimeSlotsFragment(): TimeSlotsFragment
-
     // 2527 - Time Slots ExpandableList Fragment Injection
     @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
-    abstract fun provideTimeSlotsExpandableListFragment(): TimeSlotsExpandableListFragment
+    abstract fun provideTimeSlotsExpandableListFragment(): DayExpandableListFragment
+
+    // 2670 - Time Slots Week ExpandableList Fragment Injection
+    @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
+    abstract fun provideWeekExpandableListFragment(): WeekExpandableListFragment
+
+    // 2670 - Time Slots Month ExpandableList Fragment Injection
+    @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
+    abstract fun provideMonthExpandableListFragment(): MonthExpandableListFragment
+
 }

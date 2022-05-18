@@ -1,7 +1,6 @@
 package com.smf.events.ui.timeslot
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,11 +39,6 @@ class TimeSlotsFragment : Fragment() {
         viewPager = mDataBinding.viewPager
         // 2527 - tabLayout And ViewPager Initialization
         tabLayoutAndViewPagerSetUp()
-        // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getDate.observe(requireActivity(), {
-            Log.d("TAG", "onCreateView viewModel called TimeSlotsFragment: $it")
-        })
-
     }
 
     private fun tabLayoutAndViewPagerSetUp() {
