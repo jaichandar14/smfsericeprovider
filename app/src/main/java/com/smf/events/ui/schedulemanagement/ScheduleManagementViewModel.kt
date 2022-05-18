@@ -11,16 +11,13 @@ import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import javax.inject.Inject
-import kotlin.collections.ArrayList
 import java.time.DayOfWeek
-
-import com.amplifyframework.auth.AuthUserAttributeKey.locale
-
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 import java.util.*
+import javax.inject.Inject
 
 
 class ScheduleManagementViewModel @Inject constructor(
@@ -30,15 +27,52 @@ class ScheduleManagementViewModel @Inject constructor(
 
     var name: String? = null
     var allServiceposition: Int? = 0
-
+    private val now: LocalDate = LocalDate.now()
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
-    private var date = MutableLiveData(LocalDateTime.now().format(dateFormatter))
-    val getDate: LiveData<String> = date
-    fun setDate(newDate : String){
-        date.value = newDate
+
+    // 2670 - CurrentDate LiveData
+    private var currentDate = MutableLiveData(now.format(dateFormatter))
+    val getCurrentDate: LiveData<String> = currentDate
+    fun setCurrentDate(newDate: String) {
+        currentDate.value = newDate
     }
 
-    // 2458 Method for  Setting All Service
+    // 2670 - StartOfCurrentWeekDate LiveData
+    private val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+    private val startOfCurrentWeek: LocalDate =
+        now.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+    private var startOfCurrentWeekDate = MutableLiveData(startOfCurrentWeek.format(dateFormatter))
+    val getStartOfCurrentWeekDate: LiveData<String> = startOfCurrentWeekDate
+    fun setStartOfCurrentWeekDate(newDate: String) {
+        startOfCurrentWeekDate.value = newDate
+    }
+
+    // 2670 - EndOfWeekDate LiveData
+    private val lastDayOfWeek: DayOfWeek = firstDayOfWeek.plus(6)
+    private val endOfWeek: LocalDate = now.with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
+    private var endOfWeekDate = MutableLiveData(endOfWeek.format(dateFormatter))
+    val getEndOfWeekDate: LiveData<String> = endOfWeekDate
+    fun setEndOfWeekDate(newDate: String) {
+        endOfWeekDate.value = newDate
+    }
+
+    // 2670 - MonthBeginDate LiveData
+    private val monthBegin: LocalDate = LocalDate.now().withDayOfMonth(1)
+    private var monthBeginDate = MutableLiveData(monthBegin.format(dateFormatter))
+    val getMonthBeginDate: LiveData<String> = monthBeginDate
+    fun setMonthBeginDate(newDate: String) {
+        monthBeginDate.value = newDate
+    }
+
+    // 2670 - MonthEndDate LiveData
+    private val monthEnd: LocalDate = LocalDate.now().plusMonths(1).withDayOfMonth(1).minusDays(1)
+    private var monthEndDate = MutableLiveData(monthEnd.format(dateFormatter))
+    val getMonthEndDate: LiveData<String> = monthEndDate
+    fun setMonthEndDate(newDate: String) {
+        monthEndDate.value = newDate
+    }
+
+    // 2458 Method for Setting All Service
     @SuppressLint("ResourceType")
     fun allServices(
         mViewDataBinding: FragmentCalendarBinding?,
@@ -58,9 +92,11 @@ class ScheduleManagementViewModel @Inject constructor(
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(getApplication(),
+        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(
+            getApplication(),
             com.smf.events.R.layout.spinners_list,
-            allServiceList as List<Any?>)
+            allServiceList as List<Any?>
+        )
         arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
         arrayAdapter.notifyDataSetChanged()
         mViewDataBinding?.spnAllServices?.adapter = arrayAdapter
@@ -85,14 +121,15 @@ class ScheduleManagementViewModel @Inject constructor(
                 id: Long,
             ) {
                 callBackInterface?.branchItemClick(position, name, allServiceposition)
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(getApplication(),
+        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(
+            getApplication(),
             com.smf.events.R.layout.spinners_list,
-            branchData as List<Any?>)
+            branchData as List<Any?>
+        )
         arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
         arrayAdapter.notifyDataSetChanged()
         mDataBinding.spnBranches.adapter = arrayAdapter
@@ -118,9 +155,11 @@ class ScheduleManagementViewModel @Inject constructor(
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(getApplication(),
+        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(
+            getApplication(),
             com.smf.events.R.layout.spinners_list,
-            calendarUtils as List<Any?>)
+            calendarUtils as List<Any?>
+        )
         arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
         spinner.adapter = arrayAdapter
         arrayAdapter.notifyDataSetChanged()
@@ -135,9 +174,33 @@ class ScheduleManagementViewModel @Inject constructor(
     // 2458 Method For Getting Branches
     fun getServicesBranches(idToken: String, spRegId: Int, serviceCategoryId: Int) =
         liveData(Dispatchers.IO) {
-            emit(scheduleManagementRepository.getServicesBranches(idToken,
-                spRegId,
-                serviceCategoryId))
+            emit(
+                scheduleManagementRepository.getServicesBranches(
+                    idToken,
+                    spRegId,
+                    serviceCategoryId
+                )
+            )
+        }
+
+    // 2670 - Method For Get Booked Event Services
+    fun getBookedEventServices(
+        idToken: String, spRegId: Int, serviceCategoryId: Int?,
+        serviceVendorOnBoardingId: Int?,
+        fromDate: String,
+        toDate: String
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(
+                scheduleManagementRepository.getBookedEventServices(
+                    idToken,
+                    spRegId,
+                    serviceCategoryId,
+                    serviceVendorOnBoardingId,
+                    fromDate,
+                    toDate
+                )
+            )
         }
 
     private var callBackInterface: CallBackInterface? = null

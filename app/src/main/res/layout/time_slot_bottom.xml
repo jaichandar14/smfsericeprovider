@@ -59,7 +59,7 @@
             android:layout_marginStart="@dimen/size_10dp"
             android:layout_marginTop="@dimen/size_5dp"
             android:fontFamily="@font/poppins_medium"
-            android:paddingBottom="@dimen/size_8dp"
+            android:paddingBottom="@dimen/size_12dp"
             android:text="@string/available"
             android:textSize="@dimen/size_14sp" />
 

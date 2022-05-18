@@ -5,22 +5,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseExpandableListAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import com.smf.events.R
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
+import java.time.Month
+import java.util.*
 
 class CustomExpandableListAdapter internal constructor(
     private val context: Context,
-    private val langs: ArrayList<String>,
-    private val topics: HashMap<String, List<ListData>>
+    private val titleDate: ArrayList<String>,
+    private val childData: HashMap<String, List<ListData>>
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
-        return this.topics[this.langs[listPosition]]!![expandedListPosition]
+        return this.childData[this.titleDate[listPosition]]!![expandedListPosition]
     }
 
     override fun getChildrenCount(listPosition: Int): Int {
-        return this.topics[this.langs[listPosition]]!!.size
+        return this.childData[this.titleDate[listPosition]]!!.size
     }
 
     override fun getChildId(listPosition: Int, expandedListPosition: Int): Long {
@@ -43,7 +47,7 @@ class CustomExpandableListAdapter internal constructor(
         } else {
             layoutInflater.inflate(R.layout.time_slot_bottom, null)
         }
-        var image12To3am = convertView?.findViewById<ImageView>(R.id.image_view_12_3am)
+        val image12To3am = convertView?.findViewById<ImageView>(R.id.image_view_12_3am)
         val timeSlot12To3am = convertView?.findViewById<TextView>(R.id.time_slot_12_3am)
         val address12To3am = convertView?.findViewById<TextView>(R.id.address_12_3am)
         val view12To3am = convertView?.findViewById<View>(R.id.view_12_3am)
@@ -57,7 +61,11 @@ class CustomExpandableListAdapter internal constructor(
         // Get Booked Event Lists Line By Line
         val addressText = StringBuffer()
         for (i in expandedListData.status.indices) {
-            addressText.append(expandedListData.status[i].eventName + " " + "Event")
+            if (i == 0) {
+                addressText.append(" " + dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
+            } else {
+                addressText.append(dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
+            }
             addressText.append("\n\r")
             addressText.append(expandedListData.status[i].branchName)
             if (i != (expandedListData.status.size - 1)) {
@@ -78,11 +86,11 @@ class CustomExpandableListAdapter internal constructor(
     }
 
     override fun getGroup(listPosition: Int): Any {
-        return this.langs[listPosition]
+        return this.titleDate[listPosition]
     }
 
     override fun getGroupCount(): Int {
-        return this.langs.size
+        return this.titleDate.size
     }
 
     override fun getGroupId(listPosition: Int): Long {
@@ -105,7 +113,6 @@ class CustomExpandableListAdapter internal constructor(
             layoutInflater.inflate(R.layout.time_slot_title_collapse, null)
         }
         val titleDateTextView = convertView?.findViewById<TextView>(R.id.title_date_textView)
-        val titleDayTextView = convertView?.findViewById<TextView>(R.id.title_day_textView)
         if (isExpanded) {
             convertView?.findViewById<ImageView>(R.id.plus_icon)?.setImageResource(R.drawable.minus)
         } else {
@@ -134,6 +141,21 @@ class CustomExpandableListAdapter internal constructor(
     // Interface For TimeSlot Icon Click
     interface TimeSlotIconClickListener {
         fun onClick(expandedListPosition: Int)
+    }
+
+    // 2670 - Method For Date And Month Arrangement To Display UI
+    private fun dateFormat(input: String): String {
+        var monthCount = input.substring(0, 2)
+        val date = input.substring(3, 5)
+        if (monthCount[0].digitToInt() == 0) {
+            monthCount = monthCount[1].toString()
+        }
+        val month = Month.of(monthCount.toInt()).toString().substring(0, 3).let { month ->
+            month.substring(0, 1) + month.substring(1, 2)
+                .lowercase(Locale.getDefault()) + month.substring(2, 3)
+                .lowercase(Locale.getDefault())
+        }
+        return "$month $date, "
     }
 
 }

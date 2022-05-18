@@ -1,6 +1,5 @@
 package com.smf.events.network
 
-
 import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.dashboard.model.ActionAndStatus
@@ -13,6 +12,7 @@ import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
+import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.vieworderdetails.model.OrderDetails
 import retrofit2.http.*
 
@@ -91,5 +91,15 @@ interface ApiStories {
         @Path("event-service-desc-id") eventServiceDescId: Int,
     ): OrderDetails
 
+    // 2670 - Booked Event Services API
+    @GET("epm-service/api/app-services/booked-service-slots/{sp-reg-id}")
+    suspend fun getBookedEventServices(
+        @Header("Authorization") idToken: String,
+        @Path("sp-reg-id") spRegId: Int,
+        @Query("serviceCategoryId") serviceCategoryId: Int?,
+        @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int?,
+        @Query("fromDate") fromDate: String,
+        @Query("toDate") toDate: String
+    ): BookedServiceList
 
 }
