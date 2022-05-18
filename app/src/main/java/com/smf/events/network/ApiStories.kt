@@ -9,6 +9,7 @@ import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
+import com.smf.events.ui.schedulemanagement.model.EventDates
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
@@ -101,5 +102,16 @@ interface ApiStories {
         @Query("fromDate") fromDate: String,
         @Query("toDate") toDate: String
     ): BookedServiceList
+
+    // 2622 EventDates for Calendar Api
+    @GET("epm-service/api/app-services/calendar-events/{sp-reg-id}")
+    suspend fun getEventDates(
+        @Header("Authorization") idToken: String,
+        @Path("sp-reg-id") spRegId: Int,
+        @Query ("serviceCategoryId") serviceCategoryId:Int?,
+        @Query("serviceVendorOnboardingId") serviceVendorOnboardingId:Int?,
+        @Query ("fromDate") fromDate:String,
+        @Query ("toDate") toDate:String,
+    ): EventDates
 
 }

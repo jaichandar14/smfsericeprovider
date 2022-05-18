@@ -55,6 +55,11 @@ class TimeSlotsFragment : Fragment() {
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewPager.currentItem = tab!!.position
+                when(tab.position){
+                    0->sharedViewModel.setCalendarFormat("Day")
+                    1->sharedViewModel.setCalendarFormat("Week")
+                    2->sharedViewModel.setCalendarFormat("Month")
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {

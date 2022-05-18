@@ -4,6 +4,7 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
+import com.smf.events.ui.schedulemanagement.model.EventDates
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -58,4 +59,20 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
         }
     }
 
+    // 2622 EventDates for Calendar Api
+    suspend fun getEventDates(
+        idToken: String,
+        spRegId: Int,
+        serviceCategoryId: Int?,
+        serviceVendorOnboardingId:Int?,
+        fromDate:String,
+        toDate:String,
+    ): ApisResponse<EventDates> {
+        return try {
+            val getResponse =apiStories.getEventDates(idToken,spRegId, serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate)
+            ApisResponse.Success(getResponse)
+        } catch (e: HttpException) {
+            ApisResponse.Error(e)
+        }
+    }
 }
