@@ -72,6 +72,12 @@ class ScheduleManagementViewModel @Inject constructor(
         monthEndDate.value = newDate
     }
 
+    // 2622 Mutable live data to get the Calendar Format
+    private var calendarFormat = MutableLiveData<String>()
+    val getCalendarFormat: LiveData<String> = calendarFormat
+    fun setCalendarFormat(mCalFormat : String){
+        calendarFormat.value = mCalFormat
+    }
     // 2458 Method for Setting All Service
     @SuppressLint("ResourceType")
     fun allServices(
@@ -201,6 +207,17 @@ class ScheduleManagementViewModel @Inject constructor(
                     toDate
                 )
             )
+        }
+
+    // 2622 EventDates for Calendar Api
+    fun getEventDates(idToken: String, spRegId: Int, serviceCategoryId: Int?,
+                      serviceVendorOnboardingId:Int?,
+                      fromDate:String,
+                      toDate:String,) =
+        liveData(Dispatchers.IO) {
+            emit(scheduleManagementRepository.getEventDates(idToken,
+                spRegId,
+                serviceCategoryId,serviceVendorOnboardingId,fromDate,toDate))
         }
 
     private var callBackInterface: CallBackInterface? = null
