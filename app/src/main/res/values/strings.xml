@@ -154,5 +154,7 @@
         <item>GBP(\u00a3)</item>
         <item>INR(\u20B9)</item>
     </string-array>
+    //2684
+    <string name="no_events_available">No Events Available</string>
 
 </resources>

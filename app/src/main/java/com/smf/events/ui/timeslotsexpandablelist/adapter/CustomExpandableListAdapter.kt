@@ -51,6 +51,8 @@ class CustomExpandableListAdapter internal constructor(
         val timeSlot12To3am = convertView?.findViewById<TextView>(R.id.time_slot_12_3am)
         val address12To3am = convertView?.findViewById<TextView>(R.id.address_12_3am)
         val view12To3am = convertView?.findViewById<View>(R.id.view_12_3am)
+        val layoutLinear12To3am = convertView?.findViewById<View>(R.id.layout_linear_12_3am)
+        val textNoEventsAvailable = convertView?.findViewById<View>(R.id.text_no_events_available)
         address12To3am?.text = null
 
         image12To3am?.setOnClickListener {
@@ -58,28 +60,34 @@ class CustomExpandableListAdapter internal constructor(
             timeSlotIconOnClickListener?.onClick(expandedListPosition)
         }
 
-        // Get Booked Event Lists Line By Line
-        val addressText = StringBuffer()
-        for (i in expandedListData.status.indices) {
-            if (i == 0) {
-                addressText.append(" " + dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
-            } else {
-                addressText.append(dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
-            }
-            addressText.append("\n\r")
-            addressText.append(expandedListData.status[i].branchName)
-            if (i != (expandedListData.status.size - 1)) {
-                addressText.append("\n\r")
-            }
-        }
-        address12To3am?.text = addressText
-        timeSlot12To3am?.text = expandedListData.timeSlot
-
-        // Loop For Last ChildView View Invisible
-        if (isLastChild) {
-            view12To3am?.visibility = View.GONE
+        // Verification For Booked Events Data
+        if (expandedListData.timeSlot == "") {
+            layoutLinear12To3am?.visibility = View.INVISIBLE
+            textNoEventsAvailable?.visibility = View.VISIBLE
         } else {
-            view12To3am?.visibility = View.VISIBLE
+            // Get Booked Event Lists Line By Line
+            val addressText = StringBuffer()
+            for (i in expandedListData.status.indices) {
+                if (i == 0) {
+                    addressText.append(" " + dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
+                } else {
+                    addressText.append(dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
+                }
+                addressText.append("\n\r")
+                addressText.append(expandedListData.status[i].branchName)
+                if (i != (expandedListData.status.size - 1)) {
+                    addressText.append("\n\r")
+                }
+            }
+            address12To3am?.text = addressText
+            timeSlot12To3am?.text = expandedListData.timeSlot
+
+            // Loop For Last ChildView View Invisible
+            if (isLastChild) {
+                view12To3am?.visibility = View.GONE
+            } else {
+                view12To3am?.visibility = View.VISIBLE
+            }
         }
 
         return convertView!!
