@@ -31,6 +31,7 @@ class CalendarAdapter(
     type: String,
     dayinWeek: ArrayList<String>?,
     daysPositon: ArrayList<Int>?,
+    serviceDate: ArrayList<String>?,
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
     var days: ArrayList<LocalDate>? = null
     var onItemListener: OnItemListener? = null
@@ -39,6 +40,8 @@ class CalendarAdapter(
     var dayinWeek: ArrayList<String>? = null
     var positonOfDays: ArrayList<Int>? = null
     var previousDates: ArrayList<Int>? = null
+    var serviceDateList: ArrayList<String>? = null
+    private val TAG = "CalendarAdapter"
 
     init {
         this.onItemListener = onItemListener
@@ -47,6 +50,7 @@ class CalendarAdapter(
         this.daytype = type
         this.dayinWeek = dayinWeek
         this.positonOfDays = daysPositon
+        this.serviceDateList = serviceDate
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -57,7 +61,7 @@ class CalendarAdapter(
         if (days!!.size > 15) //month view
             layoutParams.height = (parent.height * 0.16).toInt() else  // week view
             layoutParams.height = (parent.height * 0.1).toInt()
-        return CalendarViewHolder(view, onItemListener!!, days, daytype)
+        return CalendarViewHolder(view, onItemListener!!, days, daytype, serviceDateList)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -65,12 +69,11 @@ class CalendarAdapter(
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         holder.calendarDWMLogics()
         Log.d("TAG", "onBindViewHoldernew: $positonOfDays")
-        if (daytype=="Week"){
+        if (daytype == "Week") {
             //holder.autoSelectingWeek()
             //  holder.onClikedDates()
             holder.weekSelection(positonOfDays)
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -83,11 +86,13 @@ class CalendarAdapter(
             date: LocalDate?,
             dayinWeek: ArrayList<String>,
             daysPositon: ArrayList<Int>,
+            selectedWeekDates: ArrayList<LocalDate>,
         )
+        // 2685  For Selection of Week
         fun weekSelection(
             pos: ArrayList<Int>,
             selectedDate: LocalDate?,
-            absoluteAdapterPosition: Int
+            absoluteAdapterPosition: Int,
         )
     }
 
@@ -97,6 +102,7 @@ class CalendarAdapter(
         onItemListener: OnItemListener,
         days: ArrayList<LocalDate>?,
         daytype: String?,
+        serviceDateList: ArrayList<String>?,
     ) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private var days: ArrayList<LocalDate>?
@@ -113,7 +119,10 @@ class CalendarAdapter(
         val thisMonth = YearMonth.now().format(formatterMonth)
         var weekAbsPos: Int? = null
         var postionOfDate = ArrayList<Int>()
-        var newDate=ArrayList<Int>()
+        var newDate = ArrayList<Int>()
+        var monthDate = ArrayList<LocalDate>()
+        var selectedWeekDates = ArrayList<LocalDate>()
+
         init {
             parentView = itemView.findViewById(R.id.parentView)
             dayOfMonth = itemView.findViewById(R.id.cellDayText)
@@ -121,19 +130,32 @@ class CalendarAdapter(
             itemView.setOnClickListener(this)
             this.days = days
         }
+
         // 2622 Calendar logics
         fun calendarDWMLogics() {
-            var selectedDatePos=0
+            serviceDateList?.add("06/22/2022")
+            var selectedDatePos = 0
             var date = days?.get(absoluteAdapterPosition)
-            Log.d("TAG", "calendarDWMLogics: $date")
-            if(CalendarUtils.selectedDate==date){
-                selectedDatePos= absoluteAdapterPosition
+            if (CalendarUtils.selectedDate == date) {
+                selectedDatePos = absoluteAdapterPosition
             }
             dayOfMonth.text = date?.dayOfMonth.toString()
             // 2528 setting the color for present and previous month date
             if (daytype == "Day" || daytype == "Week" || daytype == "Month") {
                 if (date?.month?.equals(CalendarUtils.selectedDate?.month)!!) {
                     dayOfMonth.setTextColor(Color.BLACK)
+                    monthDate.add(date)
+                    var serviceDay = ArrayList<String>()
+                    serviceDateList?.forEach {
+                        val currentDayFormatter =
+                            DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                        val currentDay = LocalDate.parse(it, currentDayFormatter).dayOfMonth
+                        val currentMonth = LocalDate.parse(it, currentDayFormatter)
+                            .format(DateTimeFormatter.ofPattern("MMM"))
+                        if (dayOfMonth.text == currentDay.toString() && mViewDataBinding?.monthYearTV?.text == currentMonth) {
+                            dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
+                        }
+                    }
                     // 2622 Current Date Highlighter
                     selDateHighlight(date)
                     var c: Calendar = Calendar.getInstance()
@@ -148,27 +170,22 @@ class CalendarAdapter(
                 }
 
                 if (CalendarUtils.selectedDate == days?.get(absoluteAdapterPosition)) {
-                    Log.d("TAG", "onBindViewHolderWeek0: ${CalendarUtils.selectedDate} ")
-                    Log.d("TAG", "onBindViewHolderWeek1: ${days?.get(absoluteAdapterPosition)} ")
-//                holder.dayOfMonth.setTextColor(Color.WHITE)
-//                holder.dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
                     weekAbsPos = absoluteAdapterPosition
-                    Log.d("TAG", "onBindViewHolderWeek12: ${weekAbsPos} ")
                     var weekArrayDetails = daysInWeekArray(days?.get(weekAbsPos!!),
                         absoluteAdapterPosition)
                     weekArrayDetails.position.forEach {
                         postionOfDate.add(it)
                     }
-                    Log.d("TAG", "onBindViewHolderWeek122: ${postionOfDate.toSet()} ")
-                    onItemListener.weekSelection(postionOfDate.toSet().toList() as ArrayList<Int>,CalendarUtils.selectedDate,selectedDatePos)
+                    onItemListener.weekSelection(postionOfDate.toSet().toList() as ArrayList<Int>,
+                        CalendarUtils.selectedDate,
+                        selectedDatePos)
                     postionOfDate.toSet().toList() as ArrayList<Int>
-//                Log.d("TAG", "onBindViewHolderWeek12: ${days?.get(holder.weekAbsPos!!)} ")
                 }
             }
         }
+
         // 2528 For Selecting Entire Week
         fun weekSelection(previousDates: ArrayList<Int>?) {
-            Log.d("TAG", "weekSelection: ${absoluteAdapterPosition}")
             if (absoluteAdapterPosition == previousDates?.first()) {
                 parentView.setBackgroundResource(R.drawable.week_selector)
             } else if (absoluteAdapterPosition == previousDates?.last()) {
@@ -181,7 +198,6 @@ class CalendarAdapter(
             }
         }
 
-
         // 2458 Clicked Date Method
         override fun onClick(view: View) {
             onClikedDates()
@@ -193,7 +209,6 @@ class CalendarAdapter(
             var weekdetails = dayses.let { sundayForDate(it!!, absoluteAdapterPosition) }
             var current = weekdetails.date
             var currentPosition = weekdetails.position
-            Log.d("TAG", "daysInWeekArray1: ${weekdetails.position}")
             val endDate = current!!.plusWeeks(1)
             var weekPositions = ArrayList<Int>()
             for (i in 0 until 7) {
@@ -239,6 +254,8 @@ class CalendarAdapter(
             var datadayes = weekArrayDetails.date
             var daysPositon = weekArrayDetails.position
             datadayes.forEach {
+                Log.d(TAG, "onClikedDates: $it")
+                selectedWeekDates.add(it)
                 dayinWeek.add(it.dayOfMonth.toString())
                 datadayMonth.add(it.month.toString())
             }
@@ -249,13 +266,13 @@ class CalendarAdapter(
             if (date?.monthValue!! > cmonth + 1) {
                 onItemListener.onItemClick(absoluteAdapterPosition,
                     days?.get(absoluteAdapterPosition),
-                    dayinWeek, daysPositon)
+                    dayinWeek, daysPositon, selectedWeekDates)
             }
             // 2528  Current Date And Month Hiding
             if (mViewDataBinding?.monthYearTV?.text == thisMonth && date.dayOfMonth >= cDay) {
                 onItemListener.onItemClick(absoluteAdapterPosition,
                     days?.get(absoluteAdapterPosition),
-                    dayinWeek, daysPositon)
+                    dayinWeek, daysPositon, selectedWeekDates)
             }
         }
     }

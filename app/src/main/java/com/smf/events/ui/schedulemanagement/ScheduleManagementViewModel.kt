@@ -2,6 +2,7 @@ package com.smf.events.ui.schedulemanagement
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -31,7 +32,7 @@ class ScheduleManagementViewModel @Inject constructor(
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
 
     // 2670 - CurrentDate LiveData
-    private var currentDate = MutableLiveData(now.format(dateFormatter))
+    private var currentDate = MutableLiveData<String>()
     val getCurrentDate: LiveData<String> = currentDate
     fun setCurrentDate(newDate: String) {
         currentDate.value = newDate
@@ -47,6 +48,38 @@ class ScheduleManagementViewModel @Inject constructor(
         startOfCurrentWeekDate.value = newDate
     }
 
+    // Week from and to Date Live Data
+    private var weekDate = MutableLiveData<WeekDates>()
+
+    data class WeekDates(var fromDate: String, var toDate: String)
+
+    val getCurrentWeekDate: LiveData<WeekDates> = weekDate
+    fun setCurrentWeekDate(fromDate: String, toDate: String) {
+        Log.d("TAG", "setCurrentWeekDate: $fromDate  $toDate")
+        weekDate.value = WeekDates(fromDate, toDate)
+    }
+
+    // Month From and To Date Live Data
+    private var monthDates = MutableLiveData<MonthDates>()
+
+    data class MonthDates(
+        var fromDate: String,
+        var toDate: String,
+        var currentDate: String,
+        var monthValue: Int,
+    )
+
+    val getCurrentMonthDate: LiveData<MonthDates> = monthDates
+    fun setCurrentMonthDate(
+        fromDate: String,
+        toDate: String,
+        currentDate: String,
+        monthValue: Int,
+    ) {
+        Log.d("TAG", "setCurrentMonthDate: $fromDate  $toDate")
+        monthDates.value = MonthDates(fromDate, toDate, currentDate, monthValue)
+    }
+
     // 2670 - EndOfWeekDate LiveData
     private val lastDayOfWeek: DayOfWeek = firstDayOfWeek.plus(6)
     private val endOfWeek: LocalDate = now.with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
@@ -56,28 +89,13 @@ class ScheduleManagementViewModel @Inject constructor(
         endOfWeekDate.value = newDate
     }
 
-    // 2670 - MonthBeginDate LiveData
-    private val monthBegin: LocalDate = LocalDate.now().withDayOfMonth(1)
-    private var monthBeginDate = MutableLiveData(monthBegin.format(dateFormatter))
-    val getMonthBeginDate: LiveData<String> = monthBeginDate
-    fun setMonthBeginDate(newDate: String) {
-        monthBeginDate.value = newDate
-    }
-
-    // 2670 - MonthEndDate LiveData
-    private val monthEnd: LocalDate = LocalDate.now().plusMonths(1).withDayOfMonth(1).minusDays(1)
-    private var monthEndDate = MutableLiveData(monthEnd.format(dateFormatter))
-    val getMonthEndDate: LiveData<String> = monthEndDate
-    fun setMonthEndDate(newDate: String) {
-        monthEndDate.value = newDate
-    }
-
     // 2622 Mutable live data to get the Calendar Format
     private var calendarFormat = MutableLiveData<String>()
     val getCalendarFormat: LiveData<String> = calendarFormat
-    fun setCalendarFormat(mCalFormat : String){
+    fun setCalendarFormat(mCalFormat: String) {
         calendarFormat.value = mCalFormat
     }
+
     // 2458 Method for Setting All Service
     @SuppressLint("ResourceType")
     fun allServices(
@@ -194,7 +212,7 @@ class ScheduleManagementViewModel @Inject constructor(
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
-        toDate: String
+        toDate: String,
     ) =
         liveData(Dispatchers.IO) {
             emit(
@@ -210,14 +228,16 @@ class ScheduleManagementViewModel @Inject constructor(
         }
 
     // 2622 EventDates for Calendar Api
-    fun getEventDates(idToken: String, spRegId: Int, serviceCategoryId: Int?,
-                      serviceVendorOnboardingId:Int?,
-                      fromDate:String,
-                      toDate:String,) =
+    fun getEventDates(
+        idToken: String, spRegId: Int, serviceCategoryId: Int?,
+        serviceVendorOnboardingId: Int?,
+        fromDate: String,
+        toDate: String,
+    ) =
         liveData(Dispatchers.IO) {
             emit(scheduleManagementRepository.getEventDates(idToken,
                 spRegId,
-                serviceCategoryId,serviceVendorOnboardingId,fromDate,toDate))
+                serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate))
         }
 
     private var callBackInterface: CallBackInterface? = null

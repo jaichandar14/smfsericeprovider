@@ -24,6 +24,8 @@ import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.schedulemanagement.adapter.CalendarAdapter
 import dagger.android.support.AndroidSupportInjection
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -57,8 +59,11 @@ class CalendarFragment : Fragment(),
     private var calendarRecyclerView: RecyclerView? = null
     var dayinWeek: ArrayList<String>? = null
     var daysPositon: ArrayList<Int>? = null
-    var absoluteAdapterPosition:Int?=null
-
+    var absoluteAdapterPosition: Int? = null
+    var fromDate: String? = null
+    var toDate: String? = null
+    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+    var serviceDate = ArrayList<String>()
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -91,7 +96,6 @@ class CalendarFragment : Fragment(),
         sharedViewModel.year(mDataBinding, resources)
         // 2458 Method for All Service API call
         getAllServices()
-
     }
 
     // 2458 Method for initializing
@@ -103,6 +107,19 @@ class CalendarFragment : Fragment(),
         previousMonthAction()
         // 2458 Method for  nextMonth
         nextMonthAction()
+        // 2685 Method for Setting the MonthDate
+        settingMonthDate()
+    }
+
+    // 2685 Method for Setting the MonthDate
+    private fun settingMonthDate() {
+        val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
+        val toDateMonth: LocalDate =
+            CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
+        sharedViewModel.setCurrentMonthDate(fromDateMonth.format(dateFormatter),
+            toDateMonth.format(dateFormatter),
+            CalendarUtils.selectedDate!!.format(dateFormatter),
+            CalendarUtils.selectedDate!!.monthValue)
     }
 
     // 2622 Method for Calendar Format(Day,week,month) Picker
@@ -114,14 +131,14 @@ class CalendarFragment : Fragment(),
         sharedViewModel.getCalendarFormat.observe(requireActivity(), {
             Log.d("TAG", "onCreateView viewModel called CalendarFragment: $it")
             calendarFormat = it
+            //EventDateAndCounts(serviceCategoryId,serviceVendorOnboardingId,calendarFormat!!)
             // 2458 Method For Setting Month View in Calendar
             setMonthView(dayinWeek, daysPositon)
         })
     }
 
-
-    //2622
-// 2458 Method For Setting Month View in Calendar
+    // 2622
+    // 2458 Method For Setting Month View in Calendar
     private fun setMonthView(dayinWeek: ArrayList<String>?, daysPositon: ArrayList<Int>?) {
         monthYearText?.text =
             CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDate(it) }
@@ -129,7 +146,6 @@ class CalendarFragment : Fragment(),
         for (i in thisYear..2050) {
             resources.add(i.toString())
         }
-        Log.d("TAG", "setMonthViewMonth:$calendarFormat ")
         val daysInMonth: ArrayList<LocalDate>? = calendarUtils.daysInMonthArray()
         var calendarType = String()
         when (calendarFormat) {
@@ -145,7 +161,7 @@ class CalendarFragment : Fragment(),
         }
         calendarAdapter =
             CalendarAdapter(daysInMonth, this, mDataBinding, calendarType, dayinWeek,
-                daysPositon)
+                daysPositon, serviceDate)
         val layoutManager: RecyclerView.LayoutManager =
             GridLayoutManager(context, 7)
         calendarRecyclerView?.layoutManager = layoutManager
@@ -157,18 +173,40 @@ class CalendarFragment : Fragment(),
     private fun previousMonthAction() {
         mDataBinding.previousMonth.setOnClickListener {
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusMonths(1)
-            daysPositon=null
-            Log.d("TAG", "previousMonthAction: ${CalendarUtils.selectedDate}")
+            daysPositon = null
             setMonthView(dayinWeek, daysPositon)
+            val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
+            val todateMonth: LocalDate =
+                CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
+            var currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+            sharedViewModel.setCurrentMonthDate(fromDateMonth.format(dateFormatter),
+                todateMonth.format(dateFormatter),
+                currentDate,
+                CalendarUtils.selectedDate!!.monthValue)
+            eventDateAndCounts(serviceCategoryId,
+                0,
+                calendarFormat!!)
         }
     }
 
+    // 2685
     // 2458 Method for  nextMonth
     private fun nextMonthAction() {
         mDataBinding.nextMonth.setOnClickListener {
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusMonths(1)
-            daysPositon=null
+            daysPositon = null
             setMonthView(dayinWeek, daysPositon)
+            val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
+            val todateMonth: LocalDate =
+                CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
+            var currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+            sharedViewModel.setCurrentMonthDate(fromDateMonth.format(dateFormatter),
+                todateMonth.format(dateFormatter),
+                currentDate,
+                CalendarUtils.selectedDate!!.monthValue)
+            eventDateAndCounts(serviceCategoryId,
+                0,
+                calendarFormat!!)
         }
     }
 
@@ -178,24 +216,27 @@ class CalendarFragment : Fragment(),
         date: LocalDate?,
         dayinWeek: ArrayList<String>,
         daysPositon: ArrayList<Int>,
+        selectedWeekDates: ArrayList<LocalDate>,
     ) {
         if (date != null) {
             CalendarUtils.selectedDate = date
+            var fromDate = selectedWeekDates.first().format(dateFormatter)
+            var toDate = selectedWeekDates.last().format(dateFormatter)
+            sharedViewModel.setCurrentWeekDate(fromDate, toDate)
             setMonthView(dayinWeek, daysPositon)
+            eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, calendarFormat!!)
         }
     }
-
+    // 2685 CallBack Mehod for WeekSelected Date Onclick
     override fun weekSelection(
         pos: ArrayList<Int>,
         selectedDate: LocalDate?,
-        absoluteAdapterPosition: Int
+        absoluteAdapterPosition: Int,
     ) {
         if (selectedDate != null) {
             CalendarUtils.selectedDate = selectedDate
-            Log.d("TAG", "weekSelectioninfrag: $pos")
             daysPositon = pos
-            this.absoluteAdapterPosition=absoluteAdapterPosition
-            // setMonthView(dayinWeek, pos)
+            this.absoluteAdapterPosition = absoluteAdapterPosition
         }
     }
 
@@ -298,6 +339,9 @@ class CalendarFragment : Fragment(),
             serviceCategoryId = (serviceList[position].serviceCategoryId)
             getBranches(idToken, serviceCategoryId)
             branchListSpinner.clear()
+            eventDateAndCounts(serviceCategoryId,
+                0,
+                calendarFormat!!)
         }
     }
 
@@ -315,10 +359,13 @@ class CalendarFragment : Fragment(),
         var serviceName = (serviceList[allServiceposition!!].serviceName)
         Log.d("TAG",
             "branchItemClick: serviceid: ${serviceCategoryId} branchid:${branchListSpinner[serviceVendorOnboardingId].branchId}")
-        EventDateAndCounts(serviceCategoryId, branchListSpinner[serviceVendorOnboardingId].branchId)
+        eventDateAndCounts(serviceCategoryId,
+            branchListSpinner[serviceVendorOnboardingId].branchId,
+            calendarFormat!!)
     }
 
-    private fun EventDateAndCounts(serviceCategoryId: Int?, branchId: Int) {
+    // 2685 Method For Getting the Event Date and Counts from Api
+    private fun eventDateAndCounts(serviceCategoryId: Int?, branchId: Int, calendarFormat: String) {
         var serviceId: Int? = null
         var branchesId: Int? = null
         if (serviceCategoryId == 0) {
@@ -329,21 +376,32 @@ class CalendarFragment : Fragment(),
             serviceId = serviceCategoryId
             branchesId = branchId
         }
+        val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
+        val toDateMonth: LocalDate =
+            CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
+       sharedViewModel.setCurrentDate(CalendarUtils.selectedDate!!.format(dateFormatter))
         sharedViewModel.getEventDates(idToken,
             spRegId,
             serviceId,
             branchesId,
-            "05/20/2022",
-            "05/20/2022").observe(viewLifecycleOwner, { apiresponse ->
+            fromDateMonth.format(dateFormatter),
+            toDateMonth.format(dateFormatter)).observe(viewLifecycleOwner, { apiresponse ->
+            serviceDate.clear()
             when (apiresponse) {
                 is ApisResponse.Success -> {
-                    Log.d("TAG", "check token result: ${apiresponse.response.data.dayCount}")
+                    Log.d("TAG", "Calendar Event List : ${apiresponse.response.data.serviceDates}")
+                    apiresponse.response.data.serviceDates.forEach {
+                        serviceDate.add(it)
+                    }
+                    setMonthView(dayinWeek, daysPositon)
+                    Log.d("TAG", "Calendar Event:$serviceDate ")
                 }
                 is ApisResponse.Error -> {
                     Log.d("TAG", "check token result: ${apiresponse.exception}")
                 }
             }
         })
+
     }
 
 }
