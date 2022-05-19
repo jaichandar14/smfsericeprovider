@@ -14,6 +14,7 @@ import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
 import com.smf.events.helper.*
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
+import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
@@ -46,6 +47,7 @@ class MonthExpandableListFragment : Fragment(),
     private var toDate: String? = null
     private var currentDate: String? = null
     private var monthValue: String? = null
+
     @Inject
     lateinit var sharedPreference: SharedPreference
 
@@ -82,9 +84,9 @@ class MonthExpandableListFragment : Fragment(),
         sharedViewModel.getCurrentMonthDate.observe(requireActivity(),
             { currentMonthDate ->
                 fromDate = currentMonthDate.fromDate
-                toDate=currentMonthDate.toDate
-                currentDate=currentMonthDate.currentDate
-                monthValue= currentMonthDate.monthValue.toString()
+                toDate = currentMonthDate.toDate
+                currentDate = currentMonthDate.currentDate
+                monthValue = currentMonthDate.monthValue.toString()
                 childData.clear()
                 titleDate.clear()
                 // 2670 - Api Call Token Validation
@@ -108,9 +110,9 @@ class MonthExpandableListFragment : Fragment(),
             when (caller) {
                 "bookedEventServices" -> {
                     val currentMonthValue = LocalDateTime.now().monthValue.toString()
-                    currentDate = if (monthValue==currentMonthValue){
+                    currentDate = if (monthValue == currentMonthValue) {
                         currentDate
-                    }else{
+                    } else {
                         fromDate
                     }
                     currentDate?.let { currentDate ->
@@ -156,17 +158,8 @@ class MonthExpandableListFragment : Fragment(),
 
     private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
         val bookedEventDetails = ArrayList<ListData>()
-        for (i in apiResponse.response.data.indices) {
-            bookedEventDetails.add(
-                ListData(
-                    apiResponse.response.data[i].serviceSlot,
-                    apiResponse.response.data[i].bookedEventServiceDtos
-                )
-            )
-        }
-        Log.d("TAG", "setCurrentMonthDate2: ${fromDate}  ${toDate}")
         titleDate.add(
-            "${fromDate?.let { getMonth(it) }}  ${fromDate.let { it?.let { it1 -> dateFormat(it1) } }} - ${
+            "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
                 toDate?.let {
                     dateFormat(
                         it
@@ -174,7 +167,20 @@ class MonthExpandableListFragment : Fragment(),
                 }
             }"
         )
-        childData.put(titleDate[0], bookedEventDetails)
+        if (apiResponse.response.data.isNullOrEmpty()) {
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            childData.put(titleDate[0], bookedEventDetails)
+        } else {
+            for (i in apiResponse.response.data.indices) {
+                bookedEventDetails.add(
+                    ListData(
+                        apiResponse.response.data[i].serviceSlot,
+                        apiResponse.response.data[i].bookedEventServiceDtos
+                    )
+                )
+            }
+            childData.put(titleDate[0], bookedEventDetails)
+        }
 
         // 2558 - ExpandableList Initialization
         initializeExpandableListSetUp()
