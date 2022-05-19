@@ -3,7 +3,6 @@ package com.smf.events.ui.schedulemanagement.adapter
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,15 +32,13 @@ class CalendarAdapter(
     daysPositon: ArrayList<Int>?,
     serviceDate: ArrayList<String>?,
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
-    var days: ArrayList<LocalDate>? = null
-    var onItemListener: OnItemListener? = null
+    private var days: ArrayList<LocalDate>? = null
+    private var onItemListener: OnItemListener? = null
     var mViewDataBinding: FragmentCalendarBinding? = null
     var daytype: String? = null
-    var dayinWeek: ArrayList<String>? = null
-    var positonOfDays: ArrayList<Int>? = null
-    var previousDates: ArrayList<Int>? = null
+    private var dayinWeek: ArrayList<String>? = null
+    private var positonOfDays: ArrayList<Int>? = null
     var serviceDateList: ArrayList<String>? = null
-    private val TAG = "CalendarAdapter"
 
     init {
         this.onItemListener = onItemListener
@@ -61,17 +58,14 @@ class CalendarAdapter(
         if (days!!.size > 15) //month view
             layoutParams.height = (parent.height * 0.16).toInt() else  // week view
             layoutParams.height = (parent.height * 0.1).toInt()
-        return CalendarViewHolder(view, onItemListener!!, days, daytype, serviceDateList)
+        return CalendarViewHolder(view, onItemListener!!, days)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         holder.calendarDWMLogics()
-        Log.d("TAG", "onBindViewHoldernew: $positonOfDays")
         if (daytype == "Week") {
-            //holder.autoSelectingWeek()
-            //  holder.onClikedDates()
             holder.weekSelection(positonOfDays)
         }
     }
@@ -81,6 +75,7 @@ class CalendarAdapter(
     }
 
     interface OnItemListener {
+
         fun onItemClick(
             position: Int,
             date: LocalDate?,
@@ -88,6 +83,7 @@ class CalendarAdapter(
             daysPositon: ArrayList<Int>,
             selectedWeekDates: ArrayList<LocalDate>,
         )
+
         // 2685  For Selection of Week
         fun weekSelection(
             pos: ArrayList<Int>,
@@ -99,43 +95,38 @@ class CalendarAdapter(
     // 2458 Calendar View Holder Class
     inner class CalendarViewHolder(
         itemView: View,
-        onItemListener: OnItemListener,
+        private val onItemListener: OnItemListener,
         days: ArrayList<LocalDate>?,
-        daytype: String?,
-        serviceDateList: ArrayList<String>?,
     ) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private var days: ArrayList<LocalDate>?
-        val parentView: View
-        val dayOfMonth: TextView
-        private val onItemListener: OnItemListener
-        var datadayMonth = ArrayList<String>()
-        var dayinWeek = ArrayList<String>()
-        val currentDateValue = LocalDateTime.now()
-        val formatterDay = DateTimeFormatter.ofPattern("dd")
-        val formatterMonth = DateTimeFormatter.ofPattern("MMM")
-        val formattedDay = currentDateValue.format(formatterDay)
-        val formattedMonth = currentDateValue.format(formatterMonth)
-        val thisMonth = YearMonth.now().format(formatterMonth)
-        var weekAbsPos: Int? = null
-        var postionOfDate = ArrayList<Int>()
-        var newDate = ArrayList<Int>()
-        var monthDate = ArrayList<LocalDate>()
-        var selectedWeekDates = ArrayList<LocalDate>()
+        private val parentView: View = itemView.findViewById(R.id.parentView)
+        private val dayOfMonth: TextView = itemView.findViewById(R.id.cellDayText)
+        private var datadayMonth = ArrayList<String>()
+        private var dayinWeek = ArrayList<String>()
+        private val currentDateValue = LocalDateTime.now()
+        private val formatterDay = DateTimeFormatter.ofPattern("dd")
+        private val formatterMonth = DateTimeFormatter.ofPattern("MMM")
+        private val formattedDay: String = currentDateValue.format(formatterDay)
+        private val formattedMonth = currentDateValue.format(formatterMonth)
+        private val thisMonth = YearMonth.now().format(formatterMonth)
+        private var weekAbsPos: Int? = null
+        private var postionOfDate = ArrayList<Int>()
+        private var monthDate = ArrayList<LocalDate>()
+        private var selectedWeekDates = ArrayList<LocalDate>()
+        private var c: Calendar = Calendar.getInstance()
+        private var cmonth = c.get(Calendar.MONTH)
+        private var cDay = c.get(Calendar.DAY_OF_MONTH)
 
         init {
-            parentView = itemView.findViewById(R.id.parentView)
-            dayOfMonth = itemView.findViewById(R.id.cellDayText)
-            this.onItemListener = onItemListener
             itemView.setOnClickListener(this)
             this.days = days
         }
 
         // 2622 Calendar logics
         fun calendarDWMLogics() {
-            serviceDateList?.add("06/22/2022")
             var selectedDatePos = 0
-            var date = days?.get(absoluteAdapterPosition)
+            val date = days?.get(absoluteAdapterPosition)
             if (CalendarUtils.selectedDate == date) {
                 selectedDatePos = absoluteAdapterPosition
             }
@@ -145,7 +136,6 @@ class CalendarAdapter(
                 if (date?.month?.equals(CalendarUtils.selectedDate?.month)!!) {
                     dayOfMonth.setTextColor(Color.BLACK)
                     monthDate.add(date)
-                    var serviceDay = ArrayList<String>()
                     serviceDateList?.forEach {
                         val currentDayFormatter =
                             DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
@@ -158,8 +148,8 @@ class CalendarAdapter(
                     }
                     // 2622 Current Date Highlighter
                     selDateHighlight(date)
-                    var c: Calendar = Calendar.getInstance()
-                    var cmonth = c.get(Calendar.MONTH) + 1
+                    val c: Calendar = Calendar.getInstance()
+                    val cmonth = c.get(Calendar.MONTH) + 1
                     if (date.monthValue < cmonth) {
                         dayOfMonth.setTextColor(Color.GRAY)
                     } else if (date.dayOfMonth < formattedDay.toInt() && mViewDataBinding?.monthYearTV?.text == formattedMonth) {
@@ -171,7 +161,7 @@ class CalendarAdapter(
 
                 if (CalendarUtils.selectedDate == days?.get(absoluteAdapterPosition)) {
                     weekAbsPos = absoluteAdapterPosition
-                    var weekArrayDetails = daysInWeekArray(days?.get(weekAbsPos!!),
+                    val weekArrayDetails = daysInWeekArray(days?.get(weekAbsPos!!),
                         absoluteAdapterPosition)
                     weekArrayDetails.position.forEach {
                         postionOfDate.add(it)
@@ -186,14 +176,17 @@ class CalendarAdapter(
 
         // 2528 For Selecting Entire Week
         fun weekSelection(previousDates: ArrayList<Int>?) {
-            if (absoluteAdapterPosition == previousDates?.first()) {
-                parentView.setBackgroundResource(R.drawable.week_selector)
-            } else if (absoluteAdapterPosition == previousDates?.last()) {
-                parentView.setBackgroundResource(R.drawable.week_selection_right)
-            }
-            previousDates?.subList(1, 6)?.forEach {
-                if (absoluteAdapterPosition == it) {
-                    parentView.setBackgroundResource(R.drawable.week_selected_each)
+            val date = days?.get(absoluteAdapterPosition)
+            if (date?.monthValue!! > cmonth) {
+                if (absoluteAdapterPosition == previousDates?.first()) {
+                    parentView.setBackgroundResource(R.drawable.week_selector)
+                } else if (absoluteAdapterPosition == previousDates?.last()) {
+                    parentView.setBackgroundResource(R.drawable.week_selection_right)
+                }
+                previousDates?.subList(1, 6)?.forEach {
+                    if (absoluteAdapterPosition == it) {
+                        parentView.setBackgroundResource(R.drawable.week_selected_each)
+                    }
                 }
             }
         }
@@ -204,13 +197,16 @@ class CalendarAdapter(
         }
 
         // 2458 Method To fetch the Week Of the day
-        fun daysInWeekArray(dayses: LocalDate?, absoluteAdapterPosition: Int): WeekArrayDetails {
+        private fun daysInWeekArray(
+            dayses: LocalDate?,
+            absoluteAdapterPosition: Int,
+        ): WeekArrayDetails {
             val days = ArrayList<LocalDate>()
-            var weekdetails = dayses.let { sundayForDate(it!!, absoluteAdapterPosition) }
+            val weekdetails = sundayForDate(dayses!!, absoluteAdapterPosition)
             var current = weekdetails.date
-            var currentPosition = weekdetails.position
+            val currentPosition = weekdetails.position
             val endDate = current!!.plusWeeks(1)
-            var weekPositions = ArrayList<Int>()
+            val weekPositions = ArrayList<Int>()
             for (i in 0 until 7) {
                 weekPositions.add(currentPosition!!.plus(i))
             }
@@ -223,45 +219,41 @@ class CalendarAdapter(
 
         // 2528 Method to find the week Sunday
         private fun sundayForDate(current: LocalDate, absoluteAdapterPosition: Int): WeekDetails {
-            var current = current
-            var absoluteAdapterPosition = absoluteAdapterPosition
-            val oneWeekAgo = current.minusWeeks(1)
-            while (current.isAfter(oneWeekAgo)) {
-                if (current.dayOfWeek == DayOfWeek.SUNDAY) {
-                    return WeekDetails(current, absoluteAdapterPosition)
+            var currentDates = current
+            var absoluteAdapterPositionValue = absoluteAdapterPosition
+            val oneWeekAgo = currentDates.minusWeeks(1)
+            while (currentDates.isAfter(oneWeekAgo)) {
+                if (currentDates.dayOfWeek == DayOfWeek.SUNDAY) {
+                    return WeekDetails(currentDates, absoluteAdapterPositionValue)
                 }
-                current = current.minusDays(1)
-                absoluteAdapterPosition = absoluteAdapterPosition.minus(1)
+                currentDates = currentDates.minusDays(1)
+                absoluteAdapterPositionValue = absoluteAdapterPositionValue.minus(1)
             }
             return WeekDetails(null, null)
         }
 
         // 2622 Current Date Highlighter
-        fun selDateHighlight(date: LocalDate) {
+        private fun selDateHighlight(date: LocalDate) {
             if (daytype == "Day" || daytype == "Week") {
                 // 2528 Setting and highlighting the current Date
-                if (date.equals(CalendarUtils.selectedDate)) {
+                if (date == CalendarUtils.selectedDate && date.monthValue > cmonth) {
                     dayOfMonth.setTextColor(Color.WHITE)
                     dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
                 }
             }
         }
 
-        fun onClikedDates() {
-            var date = days?.get(absoluteAdapterPosition)
-            var weekArrayDetails =
+        private fun onClikedDates() {
+            val date = days?.get(absoluteAdapterPosition)
+            val weekArrayDetails =
                 daysInWeekArray(days?.get(absoluteAdapterPosition), absoluteAdapterPosition)
-            var datadayes = weekArrayDetails.date
-            var daysPositon = weekArrayDetails.position
+            val datadayes: ArrayList<LocalDate> = weekArrayDetails.date
+            val daysPositon = weekArrayDetails.position
             datadayes.forEach {
-                Log.d(TAG, "onClikedDates: $it")
                 selectedWeekDates.add(it)
                 dayinWeek.add(it.dayOfMonth.toString())
                 datadayMonth.add(it.month.toString())
             }
-            var c: Calendar = Calendar.getInstance()
-            var cmonth = c.get(Calendar.MONTH)
-            var cDay = c.get(Calendar.DAY_OF_MONTH)
             // 2528 From Current Month Hiding the previous Month
             if (date?.monthValue!! > cmonth + 1) {
                 onItemListener.onItemClick(absoluteAdapterPosition,

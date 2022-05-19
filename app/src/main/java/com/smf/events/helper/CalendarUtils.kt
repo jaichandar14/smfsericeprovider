@@ -1,17 +1,24 @@
 package com.smf.events.helper
 
+import android.util.Log
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 // 2528
 @Singleton
 class CalendarUtils @Inject constructor() {
     companion object {
         var selectedDate: LocalDate? = null
+        var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
     }
 
     fun formattedDate(date: LocalDate): String? {
@@ -37,6 +44,36 @@ class CalendarUtils @Inject constructor() {
     fun monthDayFromDate(date: LocalDate): String? {
         val formatter = DateTimeFormatter.ofPattern("MMMM d")
         return date.format(formatter)
+    }
+
+    // 2686 WeekDate
+    data class WeekDates(var fromDate: String, var toDate: String)
+
+    // 2686 Method for Getting Week Start and End Date
+    fun fromAndToDate(): WeekDates {
+        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+        val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        val startOfCurrentWeek: LocalDate =
+            CalendarUtils.selectedDate!!.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+        val lastDayOfWeek: DayOfWeek = firstDayOfWeek.plus(6)
+        val endOfWeek: LocalDate =
+            CalendarUtils.selectedDate!!.with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
+        Log.d("TAG", "nextMonthAction: ${startOfCurrentWeek}")
+        var fromDate = startOfCurrentWeek.format(dateFormatter)
+        var toDate = endOfWeek.format(dateFormatter)
+        return WeekDates(fromDate, toDate)
+    }
+
+    // 2686 MonthDates
+    data class MonthDates(var fromDate: String, var toDate: String)
+
+    //2686 Method fro getting From and to todate Fro a month
+    fun monthFromAndToDate(): MonthDates {
+        val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
+        val toDateMonth: LocalDate =
+            CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
+        return MonthDates(fromDateMonth.format(CalendarUtils.dateFormatter),
+            toDateMonth.format(CalendarUtils.dateFormatter))
     }
 
     // 2528 daysInMonthArray Method
@@ -66,3 +103,9 @@ class CalendarUtils @Inject constructor() {
 
 data class WeekDetails(var date: LocalDate?, var position: Int?)
 data class WeekArrayDetails(var date: ArrayList<LocalDate>, var position: ArrayList<Int>)
+
+object CalendarFormat {
+    const val DAY = "Day"
+    const val WEEK = "Week"
+    const val MONTH = "Month"
+}

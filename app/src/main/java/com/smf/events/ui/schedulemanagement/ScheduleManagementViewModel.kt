@@ -12,11 +12,6 @@ import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAdjusters
-import java.time.temporal.WeekFields
 import java.util.*
 import javax.inject.Inject
 
@@ -28,65 +23,42 @@ class ScheduleManagementViewModel @Inject constructor(
 
     var name: String? = null
     var allServiceposition: Int? = 0
-    private val now: LocalDate = LocalDate.now()
-    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
 
     // 2670 - CurrentDate LiveData
-    private var currentDate = MutableLiveData<String>()
-    val getCurrentDate: LiveData<String> = currentDate
-    fun setCurrentDate(newDate: String) {
-        currentDate.value = newDate
+    data class SelectedDate(var selectedDate: String, var seviceId: Int, var branchId: Int)
+    private var currentDate = MutableLiveData<SelectedDate>()
+    val getCurrentDate: LiveData<SelectedDate> = currentDate
+    fun setCurrentDate(selectedDate: String,seviceId: Int,branchId: Int) {
+        currentDate.value = SelectedDate(selectedDate, seviceId, branchId)
     }
 
-    // 2670 - StartOfCurrentWeekDate LiveData
-    private val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
-    private val startOfCurrentWeek: LocalDate =
-        now.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
-    private var startOfCurrentWeekDate = MutableLiveData(startOfCurrentWeek.format(dateFormatter))
-    val getStartOfCurrentWeekDate: LiveData<String> = startOfCurrentWeekDate
-    fun setStartOfCurrentWeekDate(newDate: String) {
-        startOfCurrentWeekDate.value = newDate
-    }
-
-    // Week from and to Date Live Data
+    // 2686 Week from and to Date Live Data
     private var weekDate = MutableLiveData<WeekDates>()
-
-    data class WeekDates(var fromDate: String, var toDate: String)
-
+    data class WeekDates(var fromDate: String, var toDate: String, var seviceId: Int, var branchid: Int)
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
-    fun setCurrentWeekDate(fromDate: String, toDate: String) {
+    fun setCurrentWeekDate(fromDate: String, toDate: String,seviceId: Int,branchId: Int) {
         Log.d("TAG", "setCurrentWeekDate: $fromDate  $toDate")
-        weekDate.value = WeekDates(fromDate, toDate)
+        weekDate.value = WeekDates(fromDate, toDate,seviceId,branchId)
     }
 
-    // Month From and To Date Live Data
+    // 2686 Month From and To Date Live Data
     private var monthDates = MutableLiveData<MonthDates>()
-
     data class MonthDates(
         var fromDate: String,
         var toDate: String,
         var currentDate: String,
-        var monthValue: Int,
+        var monthValue: Int,var seviceId: Int, var branchId: Int
     )
-
     val getCurrentMonthDate: LiveData<MonthDates> = monthDates
     fun setCurrentMonthDate(
         fromDate: String,
         toDate: String,
         currentDate: String,
         monthValue: Int,
+        seviceId: Int,branchId: Int
     ) {
         Log.d("TAG", "setCurrentMonthDate: $fromDate  $toDate")
-        monthDates.value = MonthDates(fromDate, toDate, currentDate, monthValue)
-    }
-
-    // 2670 - EndOfWeekDate LiveData
-    private val lastDayOfWeek: DayOfWeek = firstDayOfWeek.plus(6)
-    private val endOfWeek: LocalDate = now.with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
-    private var endOfWeekDate = MutableLiveData(endOfWeek.format(dateFormatter))
-    val getEndOfWeekDate: LiveData<String> = endOfWeekDate
-    fun setEndOfWeekDate(newDate: String) {
-        endOfWeekDate.value = newDate
+        monthDates.value = MonthDates(fromDate, toDate, currentDate, monthValue,seviceId,branchId)
     }
 
     // 2622 Mutable live data to get the Calendar Format
@@ -130,13 +102,9 @@ class ScheduleManagementViewModel @Inject constructor(
     @SuppressLint("ResourceType")
     fun branches(
         mDataBinding: FragmentCalendarBinding?,
-        branchData: java.util.ArrayList<String>,
-        idToken: String,
-        spRegId: Int,
-        serviceCategoryId: Int,
-        i: Int,
+        branchData: ArrayList<String>,
     ) {
-        var spinner = mDataBinding!!.spnBranches
+        val spinner = mDataBinding!!.spnBranches
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -165,7 +133,7 @@ class ScheduleManagementViewModel @Inject constructor(
         mDataBinding: FragmentCalendarBinding?,
         calendarUtils: ArrayList<String>,
     ) {
-        var spinner = mDataBinding!!.monthYearspn
+        val spinner = mDataBinding!!.monthYearspn
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -176,7 +144,6 @@ class ScheduleManagementViewModel @Inject constructor(
                 allServiceposition = position
                 // callBackInterface?.itemClick(position)
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
         val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(

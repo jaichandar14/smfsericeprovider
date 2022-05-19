@@ -80,15 +80,6 @@ class WeekExpandableListFragment : Fragment(),
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
 
-        sharedViewModel.getStartOfCurrentWeekDate.observe(requireActivity(),
-            { startOfCurrentWeekDate ->
-                fromDate = startOfCurrentWeekDate
-                sharedViewModel.getEndOfWeekDate.observe(requireActivity(), { endOfWeekDate ->
-                    toDate = endOfWeekDate
-                    // 2670 - Api Call Token Validation
-                    apiTokenValidation("bookedEventServices")
-                })
-            })
         sharedViewModel.getCurrentWeekDate.observe(requireActivity(),
             { currentWeekDate ->
                 fromDate = currentWeekDate.fromDate
