@@ -84,8 +84,8 @@ class DayExpandableListFragment : Fragment(),
 
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
-            fromDate = currentDate
-            toDate = currentDate
+            fromDate = currentDate.selectedDate
+            toDate = currentDate.selectedDate
             childData.clear()
             titleDate.clear()
             // 2670 - Api Call Token Validation
