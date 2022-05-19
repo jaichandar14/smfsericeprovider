@@ -11,10 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
@@ -23,6 +20,7 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -46,8 +44,8 @@ class MonthExpandableListFragment : Fragment(),
     var serviceVendorOnboardingId: Int? = null
     private var fromDate: String? = null
     private var toDate: String? = null
-    private var monthBeginDate: String? = null
-
+    private var currentDate: String? = null
+    private var monthValue: String? = null
     @Inject
     lateinit var sharedPreference: SharedPreference
 
@@ -81,17 +79,17 @@ class MonthExpandableListFragment : Fragment(),
         tokens.setCallBackInterface(this)
 
         // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
-            fromDate = currentDate
-            sharedViewModel.getMonthBeginDate.observe(requireActivity(), { monthBeginDate ->
-                this.monthBeginDate = monthBeginDate
-                sharedViewModel.getMonthEndDate.observe(requireActivity(), { monthEndDate ->
-                    toDate = monthEndDate
-                    // 2670 - Api Call Token Validation
-                    apiTokenValidation("bookedEventServices")
-                })
+        sharedViewModel.getCurrentMonthDate.observe(requireActivity(),
+            { currentMonthDate ->
+                fromDate = currentMonthDate.fromDate
+                toDate=currentMonthDate.toDate
+                currentDate=currentMonthDate.currentDate
+                monthValue= currentMonthDate.monthValue.toString()
+                childData.clear()
+                titleDate.clear()
+                // 2670 - Api Call Token Validation
+                apiTokenValidation("bookedEventServices")
             })
-        })
     }
 
     // 2670 - Method For AWS Token Validation
@@ -109,12 +107,18 @@ class MonthExpandableListFragment : Fragment(),
         withContext(Dispatchers.Main) {
             when (caller) {
                 "bookedEventServices" -> {
-                    fromDate?.let { fromDate ->
+                    val currentMonthValue = LocalDateTime.now().monthValue.toString()
+                    currentDate = if (monthValue==currentMonthValue){
+                        currentDate
+                    }else{
+                        fromDate
+                    }
+                    currentDate?.let { currentDate ->
                         toDate?.let { toDate ->
                             getBookedEventServices(
                                 idToken, spRegId,
                                 serviceCategoryId, serviceVendorOnboardingId,
-                                fromDate, toDate
+                                currentDate, toDate
                             )
                         }
                     }
@@ -160,8 +164,9 @@ class MonthExpandableListFragment : Fragment(),
                 )
             )
         }
+        Log.d("TAG", "setCurrentMonthDate2: ${fromDate}  ${toDate}")
         titleDate.add(
-            "${fromDate?.let { getMonth(it) }}  ${monthBeginDate?.let { dateFormat(it) }} - ${
+            "${fromDate?.let { getMonth(it) }}  ${fromDate.let { it?.let { it1 -> dateFormat(it1) } }} - ${
                 toDate?.let {
                     dateFormat(
                         it

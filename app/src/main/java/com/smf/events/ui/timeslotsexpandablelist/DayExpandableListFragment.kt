@@ -85,6 +85,8 @@ class DayExpandableListFragment : Fragment(),
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
             fromDate = currentDate
             toDate = currentDate
+            childData.clear()
+            titleDate.clear()
             // 2670 - Api Call Token Validation
             apiTokenValidation("bookedEventServices")
         })

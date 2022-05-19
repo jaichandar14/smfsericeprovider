@@ -88,6 +88,16 @@ class WeekExpandableListFragment : Fragment(),
                     apiTokenValidation("bookedEventServices")
                 })
             })
+        sharedViewModel.getCurrentWeekDate.observe(requireActivity(),
+            { currentWeekDate ->
+                fromDate = currentWeekDate.fromDate
+                toDate=currentWeekDate.toDate
+                childData.clear()
+                titleDate.clear()
+                    // 2670 - Api Call Token Validation
+                    apiTokenValidation("bookedEventServices")
+            })
+
     }
 
     // 2670 - Method For AWS Token Validation
