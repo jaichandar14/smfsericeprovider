@@ -106,20 +106,10 @@ class CalendarFragment : Fragment(),
         monthYearText = mDataBinding.monthYearTV
         // 2686 Set Current Date
         CalendarUtils.selectedDate = LocalDate.now()
-        // 2686 Setting the Selected Date in the Sharre View Model
-        sharedViewModel.setCurrentDate(
-            CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-            serviceCategoryId,
-            serviceVendorOnboardingId
-        )
-        // 2686 Setting the From And to Date of the week in SharedViewModel
-        settingWeekDate()
         // 2458 Method for  previousMonth
         previousMonthAction()
         // 2458 Method for  nextMonth
         nextMonthAction()
-        // 2685 Method for Setting the MonthDate
-        settingMonthDate()
     }
 
     // 2685 Method for Setting the MonthDate

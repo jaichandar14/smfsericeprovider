@@ -85,8 +85,6 @@ class WeekExpandableListFragment : Fragment(),
                 toDate = currentWeekDate.toDate
                 weekList = currentWeekDate.weekList
                 serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
-                childData.clear()
-                titleDate.clear()
                 // 2670 - Api Call Token Validation
                 apiTokenValidation("bookedEventServices")
             })
@@ -172,34 +170,42 @@ class WeekExpandableListFragment : Fragment(),
         })
     }
 
+    // Method For Updating ExpandableList Data
     private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        // Condition For Restrict Multiple Expandable List view showing during month navigation
-        if (titleDate.isEmpty() && childData.isEmpty()) {
-            val bookedEventDetails = ArrayList<ListData>()
-            titleDate.add(
-                "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
-                    toDate?.let {
-                        dateFormat(it)
-                    }
-                }"
-            )
-            if (apiResponse.response.data.isNullOrEmpty()) {
-                bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-                childData.put(titleDate[0], bookedEventDetails)
-            } else {
-                for (i in apiResponse.response.data.indices) {
-                    bookedEventDetails.add(
-                        ListData(
-                            apiResponse.response.data[i].serviceSlot,
-                            apiResponse.response.data[i].bookedEventServiceDtos
-                        )
+        val bookedEventDetails = ArrayList<ListData>()
+        if (apiResponse.response.data.isNullOrEmpty()) {
+            childData.clear()
+            titleDate.clear()
+            addTitle()
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            childData.put(titleDate[0], bookedEventDetails)
+        } else {
+            childData.clear()
+            titleDate.clear()
+            addTitle()
+            for (i in apiResponse.response.data.indices) {
+                bookedEventDetails.add(
+                    ListData(
+                        apiResponse.response.data[i].serviceSlot,
+                        apiResponse.response.data[i].bookedEventServiceDtos
                     )
-                }
-                childData.put(titleDate[0], bookedEventDetails)
+                )
             }
+            childData.put(titleDate[0], bookedEventDetails)
         }
         // 2558 - ExpandableList Initialization
         initializeExpandableListSetUp()
+    }
+
+    // 2397 - Method For Add ExpandableList Title Group
+    private fun addTitle() {
+        titleDate.add(
+            "${fromDate?.let { getMonth(it) }}  ${weekList?.get(0)?.let { dateFormat(it) }} - ${
+                toDate?.let {
+                    dateFormat(it)
+                }
+            }"
+        )
     }
 
     // 2670 - Method For Date And Day Arrangement To Display UI
