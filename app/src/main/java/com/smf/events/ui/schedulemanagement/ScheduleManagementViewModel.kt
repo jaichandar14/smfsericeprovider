@@ -12,7 +12,6 @@ import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
-import java.util.*
 import javax.inject.Inject
 
 
@@ -26,39 +25,57 @@ class ScheduleManagementViewModel @Inject constructor(
 
     // 2670 - CurrentDate LiveData
     data class SelectedDate(var selectedDate: String, var seviceId: Int, var branchId: Int)
+
     private var currentDate = MutableLiveData<SelectedDate>()
     val getCurrentDate: LiveData<SelectedDate> = currentDate
-    fun setCurrentDate(selectedDate: String,seviceId: Int,branchId: Int) {
+    fun setCurrentDate(selectedDate: String, seviceId: Int, branchId: Int) {
         currentDate.value = SelectedDate(selectedDate, seviceId, branchId)
     }
 
     // 2686 Week from and to Date Live Data
     private var weekDate = MutableLiveData<WeekDates>()
-    data class WeekDates(var fromDate: String, var toDate: String, var seviceId: Int, var branchid: Int)
+
+    data class WeekDates(
+        var fromDate: String,
+        var toDate: String,
+        var seviceId: Int,
+        var branchId: Int,
+        var weekList: ArrayList<String>
+    )
+
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
-    fun setCurrentWeekDate(fromDate: String, toDate: String,seviceId: Int,branchId: Int) {
+    fun setCurrentWeekDate(
+        fromDate: String,
+        toDate: String,
+        serviceId: Int,
+        branchId: Int,
+        weekList: ArrayList<String>
+    ) {
         Log.d("TAG", "setCurrentWeekDate: $fromDate  $toDate")
-        weekDate.value = WeekDates(fromDate, toDate,seviceId,branchId)
+        weekDate.value = WeekDates(fromDate, toDate, serviceId, branchId, weekList)
     }
 
     // 2686 Month From and To Date Live Data
     private var monthDates = MutableLiveData<MonthDates>()
+
     data class MonthDates(
         var fromDate: String,
         var toDate: String,
         var currentDate: String,
-        var monthValue: Int,var seviceId: Int, var branchId: Int
+        var monthValue: Int, var seviceId: Int, var branchId: Int
     )
+
     val getCurrentMonthDate: LiveData<MonthDates> = monthDates
     fun setCurrentMonthDate(
         fromDate: String,
         toDate: String,
         currentDate: String,
         monthValue: Int,
-        seviceId: Int,branchId: Int
+        serviceId: Int, branchId: Int
     ) {
         Log.d("TAG", "setCurrentMonthDate: $fromDate  $toDate")
-        monthDates.value = MonthDates(fromDate, toDate, currentDate, monthValue,seviceId,branchId)
+        monthDates.value =
+            MonthDates(fromDate, toDate, currentDate, monthValue, serviceId, branchId)
     }
 
     // 2622 Mutable live data to get the Calendar Format
@@ -144,6 +161,7 @@ class ScheduleManagementViewModel @Inject constructor(
                 allServiceposition = position
                 // callBackInterface?.itemClick(position)
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
         val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(
@@ -202,9 +220,13 @@ class ScheduleManagementViewModel @Inject constructor(
         toDate: String,
     ) =
         liveData(Dispatchers.IO) {
-            emit(scheduleManagementRepository.getEventDates(idToken,
-                spRegId,
-                serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate))
+            emit(
+                scheduleManagementRepository.getEventDates(
+                    idToken,
+                    spRegId,
+                    serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate
+                )
+            )
         }
 
     private var callBackInterface: CallBackInterface? = null

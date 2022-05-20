@@ -86,12 +86,30 @@ class DayExpandableListFragment : Fragment(),
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
             fromDate = currentDate.selectedDate
             toDate = currentDate.selectedDate
+            serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
             childData.clear()
             titleDate.clear()
             // 2670 - Api Call Token Validation
             apiTokenValidation("bookedEventServices")
         })
+    }
 
+    // 2691 - method For Set Local Variable Value serviceCategoryId And ServiceVendorOnBoardingId
+    private fun serviceCategoryIdAndServiceVendorOnboardingId(currentDate: ScheduleManagementViewModel.SelectedDate) {
+        when {
+            currentDate.seviceId == 0 -> {
+                serviceCategoryId = null
+                serviceVendorOnboardingId = null
+            }
+            currentDate.branchId == 0 -> {
+                serviceCategoryId = currentDate.seviceId
+                serviceVendorOnboardingId = null
+            }
+            else -> {
+                serviceCategoryId = currentDate.seviceId
+                serviceVendorOnboardingId = currentDate.branchId
+            }
+        }
     }
 
     // 2670 - Method For AWS Token Validation
@@ -152,23 +170,25 @@ class DayExpandableListFragment : Fragment(),
     }
 
     private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        val bookedEventDetails = ArrayList<ListData>()
-        fromDate?.let { dateFormat(it) }?.let { titleDate.add(it) }
-        if (apiResponse.response.data.isNullOrEmpty()) {
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            childData.put(titleDate[0], bookedEventDetails)
-        } else {
-            for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
+        // Condition For Restrict Multiple Expandable List view showing during month navigation
+        if (titleDate.isEmpty() && childData.isEmpty()) {
+            val bookedEventDetails = ArrayList<ListData>()
+            fromDate?.let { dateFormat(it) }?.let { titleDate.add(it) }
+            if (apiResponse.response.data.isNullOrEmpty()) {
+                bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+                childData.put(titleDate[0], bookedEventDetails)
+            } else {
+                for (i in apiResponse.response.data.indices) {
+                    bookedEventDetails.add(
+                        ListData(
+                            apiResponse.response.data[i].serviceSlot,
+                            apiResponse.response.data[i].bookedEventServiceDtos
+                        )
                     )
-                )
+                }
+                childData.put(titleDate[0], bookedEventDetails)
             }
-            childData.put(titleDate[0], bookedEventDetails)
         }
-
         // 2558 - ExpandableList Initialization
         initializeExpandableListSetUp()
     }
