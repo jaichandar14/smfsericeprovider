@@ -47,7 +47,7 @@ class CalendarUtils @Inject constructor() {
     }
 
     // 2686 WeekDate
-    data class WeekDates(var fromDate: String, var toDate: String)
+    data class WeekDates(var fromDate: String, var toDate: String, val weekList: ArrayList<String>)
 
     // 2686 Method for Getting Week Start and End Date
     fun fromAndToDate(): WeekDates {
@@ -55,13 +55,18 @@ class CalendarUtils @Inject constructor() {
         val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
         val startOfCurrentWeek: LocalDate =
             CalendarUtils.selectedDate!!.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+        val weekList = ArrayList<String>()
+        for (i in 0 until 7) {
+            weekList.add(startOfCurrentWeek.plusDays(i.toLong()).format(dateFormatter))
+        }
+        Log.d("TAG", "fromAndToDate: $weekList")
         val lastDayOfWeek: DayOfWeek = firstDayOfWeek.plus(6)
         val endOfWeek: LocalDate =
             CalendarUtils.selectedDate!!.with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
         Log.d("TAG", "nextMonthAction: ${startOfCurrentWeek}")
         var fromDate = startOfCurrentWeek.format(dateFormatter)
         var toDate = endOfWeek.format(dateFormatter)
-        return WeekDates(fromDate, toDate)
+        return WeekDates(fromDate, toDate,weekList)
     }
 
     // 2686 MonthDates
@@ -72,8 +77,10 @@ class CalendarUtils @Inject constructor() {
         val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
         val toDateMonth: LocalDate =
             CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
-        return MonthDates(fromDateMonth.format(CalendarUtils.dateFormatter),
-            toDateMonth.format(CalendarUtils.dateFormatter))
+        return MonthDates(
+            fromDateMonth.format(CalendarUtils.dateFormatter),
+            toDateMonth.format(CalendarUtils.dateFormatter)
+        )
     }
 
     // 2528 daysInMonthArray Method
@@ -88,14 +95,23 @@ class CalendarUtils @Inject constructor() {
         val firstOfMonth = selectedDate!!.withDayOfMonth(1)
         val dayOfWeek = firstOfMonth.dayOfWeek.value
         for (i in 1..42) {
-            if (i <= dayOfWeek) daysInMonthArray.add(LocalDate.of(prevMonth.year,
-                prevMonth.month,
-                prevDaysInMonth + i - dayOfWeek)) else if (i > daysInMonth + dayOfWeek) daysInMonthArray.add(
-                LocalDate.of(nextMonth.year,
-                    nextMonth.month,
-                    i - dayOfWeek - daysInMonth)) else daysInMonthArray.add(
+            if (i <= dayOfWeek) daysInMonthArray.add(
                 LocalDate.of(
-                    selectedDate!!.year, selectedDate!!.month, i - dayOfWeek))
+                    prevMonth.year,
+                    prevMonth.month,
+                    prevDaysInMonth + i - dayOfWeek
+                )
+            ) else if (i > daysInMonth + dayOfWeek) daysInMonthArray.add(
+                LocalDate.of(
+                    nextMonth.year,
+                    nextMonth.month,
+                    i - dayOfWeek - daysInMonth
+                )
+            ) else daysInMonthArray.add(
+                LocalDate.of(
+                    selectedDate!!.year, selectedDate!!.month, i - dayOfWeek
+                )
+            )
         }
         return daysInMonthArray
     }

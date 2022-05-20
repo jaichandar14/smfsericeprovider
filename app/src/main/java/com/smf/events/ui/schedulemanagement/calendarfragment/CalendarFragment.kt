@@ -107,7 +107,11 @@ class CalendarFragment : Fragment(),
         // 2686 Set Current Date
         CalendarUtils.selectedDate = LocalDate.now()
         // 2686 Setting the Selected Date in the Sharre View Model
-        sharedViewModel.setCurrentDate(CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),serviceCategoryId,serviceVendorOnboardingId)
+        sharedViewModel.setCurrentDate(
+            CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+            serviceCategoryId,
+            serviceVendorOnboardingId
+        )
         // 2686 Setting the From And to Date of the week in SharedViewModel
         settingWeekDate()
         // 2458 Method for  previousMonth
@@ -120,16 +124,24 @@ class CalendarFragment : Fragment(),
 
     // 2685 Method for Setting the MonthDate
     private fun settingMonthDate() {
-        sharedViewModel.setCurrentMonthDate(calendarUtils.monthFromAndToDate().fromDate,
+        sharedViewModel.setCurrentMonthDate(
+            calendarUtils.monthFromAndToDate().fromDate,
             calendarUtils.monthFromAndToDate().toDate,
             CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-            CalendarUtils.selectedDate!!.monthValue,serviceCategoryId,serviceVendorOnboardingId)
+            CalendarUtils.selectedDate!!.monthValue, serviceCategoryId, serviceVendorOnboardingId
+        )
     }
 
     // 2686 Method for Setting the WeekDate
     private fun settingWeekDate() {
-        sharedViewModel.setCurrentWeekDate(calendarUtils.fromAndToDate().fromDate,
-            calendarUtils.fromAndToDate().toDate,serviceCategoryId,serviceVendorOnboardingId)
+        val fromAndToDate = calendarUtils.fromAndToDate()
+        sharedViewModel.setCurrentWeekDate(
+            fromAndToDate.fromDate,
+            fromAndToDate.toDate,
+            serviceCategoryId,
+            serviceVendorOnboardingId,
+            fromAndToDate.weekList
+        )
     }
 
     // 2622 Method for Calendar Format(Day,week,month) Picker
@@ -168,8 +180,10 @@ class CalendarFragment : Fragment(),
             }
         }
         calendarAdapter =
-            CalendarAdapter(daysInMonth, this, mDataBinding, calendarType, dayinWeek,
-                daysPositon, serviceDate)
+            CalendarAdapter(
+                daysInMonth, this, mDataBinding, calendarType, dayinWeek,
+                daysPositon, serviceDate
+            )
         val layoutManager: RecyclerView.LayoutManager =
             GridLayoutManager(context, 7)
         calendarRecyclerView?.layoutManager = layoutManager
@@ -182,7 +196,11 @@ class CalendarFragment : Fragment(),
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            sharedViewModel.setCurrentDate(CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),serviceCategoryId,serviceVendorOnboardingId)
+            sharedViewModel.setCurrentDate(
+                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+                serviceCategoryId,
+                serviceVendorOnboardingId
+            )
             settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
@@ -196,7 +214,11 @@ class CalendarFragment : Fragment(),
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            sharedViewModel.setCurrentDate(CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),serviceCategoryId,serviceVendorOnboardingId)
+            sharedViewModel.setCurrentDate(
+                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+                serviceCategoryId,
+                serviceVendorOnboardingId
+            )
             settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
@@ -213,11 +235,24 @@ class CalendarFragment : Fragment(),
     ) {
         if (date != null) {
             CalendarUtils.selectedDate = date
-            sharedViewModel.setCurrentWeekDate(selectedWeekDates.first()
-                .format(CalendarUtils.dateFormatter),
-                selectedWeekDates.last().format(CalendarUtils.dateFormatter),serviceCategoryId,serviceVendorOnboardingId)
+            val weekList = ArrayList<String>()
+            selectedWeekDates.forEach {
+                weekList.add(it.format(CalendarUtils.dateFormatter))
+            }
+            sharedViewModel.setCurrentWeekDate(
+                selectedWeekDates.first()
+                    .format(CalendarUtils.dateFormatter),
+                selectedWeekDates.last().format(CalendarUtils.dateFormatter),
+                serviceCategoryId,
+                serviceVendorOnboardingId,
+                weekList
+            )
             setMonthView(dayinWeek, daysPositon)
-            sharedViewModel.setCurrentDate(CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),serviceCategoryId,serviceVendorOnboardingId)
+            sharedViewModel.setCurrentDate(
+                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+                serviceCategoryId,
+                serviceVendorOnboardingId
+            )
         }
     }
 
@@ -268,6 +303,13 @@ class CalendarFragment : Fragment(),
     ) {
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
         apiTokenValidationCalendar("EventDateApiBranches")
+        sharedViewModel.setCurrentDate(
+            CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+            serviceCategoryId,
+            this.serviceVendorOnboardingId
+        )
+        settingWeekDate()
+        settingMonthDate()
     }
 
     // 2458 Getting All Service
@@ -357,12 +399,14 @@ class CalendarFragment : Fragment(),
                 branchesId = branchId
             }
         }
-        sharedViewModel.getEventDates(idToken,
+        sharedViewModel.getEventDates(
+            idToken,
             spRegId,
             serviceId,
             branchesId,
             calendarUtils.monthFromAndToDate().fromDate,
-            calendarUtils.monthFromAndToDate().toDate).observe(viewLifecycleOwner, { apiresponse ->
+            calendarUtils.monthFromAndToDate().toDate
+        ).observe(viewLifecycleOwner, { apiresponse ->
             serviceDate.clear()
             when (apiresponse) {
                 is ApisResponse.Success -> {
@@ -400,9 +444,11 @@ class CalendarFragment : Fragment(),
                 }
                 "EventDateApiAllService" -> {
                     Log.d("TAG", "tokenCallBack:$serviceCategoryId ")
-                    eventDateAndCounts(serviceCategoryId,
+                    eventDateAndCounts(
+                        serviceCategoryId,
                         0,
-                        idToken)
+                        idToken
+                    )
                 }
                 "EventDateApiBranches" -> {
                     eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken)

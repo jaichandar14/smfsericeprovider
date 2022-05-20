@@ -11,10 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -45,8 +42,10 @@ class WeekExpandableListFragment : Fragment(),
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
+    var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
     private var fromDate: String? = null
     private var toDate: String? = null
+    private var weekList: ArrayList<String>? = null
 
     @Inject
     lateinit var sharedPreference: SharedPreference
@@ -83,13 +82,32 @@ class WeekExpandableListFragment : Fragment(),
         sharedViewModel.getCurrentWeekDate.observe(requireActivity(),
             { currentWeekDate ->
                 fromDate = currentWeekDate.fromDate
-                toDate=currentWeekDate.toDate
+                toDate = currentWeekDate.toDate
+                weekList = currentWeekDate.weekList
+                serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
                 childData.clear()
                 titleDate.clear()
-                    // 2670 - Api Call Token Validation
-                    apiTokenValidation("bookedEventServices")
+                // 2670 - Api Call Token Validation
+                apiTokenValidation("bookedEventServices")
             })
+    }
 
+    // 2691 - method For Set Local Variable Value serviceCategoryId And ServiceVendorOnBoardingId
+    private fun serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate: ScheduleManagementViewModel.WeekDates) {
+        when {
+            currentWeekDate.seviceId == 0 -> {
+                serviceCategoryId = null
+                serviceVendorOnboardingId = null
+            }
+            currentWeekDate.branchId == 0 -> {
+                serviceCategoryId = currentWeekDate.seviceId
+                serviceVendorOnboardingId = null
+            }
+            else -> {
+                serviceCategoryId = currentWeekDate.seviceId
+                serviceVendorOnboardingId = currentWeekDate.branchId
+            }
+        }
     }
 
     // 2670 - Method For AWS Token Validation
@@ -107,6 +125,11 @@ class WeekExpandableListFragment : Fragment(),
         withContext(Dispatchers.Main) {
             when (caller) {
                 "bookedEventServices" -> {
+                    weekList?.forEach {
+                        if (it.format(dateFormatter) == LocalDate.now().format(dateFormatter)) {
+                            fromDate = it.format(dateFormatter)
+                        }
+                    }
                     fromDate?.let { fromDate ->
                         toDate?.let { toDate ->
                             getBookedEventServices(
@@ -150,29 +173,31 @@ class WeekExpandableListFragment : Fragment(),
     }
 
     private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        val bookedEventDetails = ArrayList<ListData>()
-        titleDate.add(
-            "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
-                toDate?.let {
-                    dateFormat(it)
-                }
-            }"
-        )
-        if (apiResponse.response.data.isNullOrEmpty()) {
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            childData.put(titleDate[0], bookedEventDetails)
-        } else {
-            for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
+        // Condition For Restrict Multiple Expandable List view showing during month navigation
+        if (titleDate.isEmpty() && childData.isEmpty()) {
+            val bookedEventDetails = ArrayList<ListData>()
+            titleDate.add(
+                "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
+                    toDate?.let {
+                        dateFormat(it)
+                    }
+                }"
+            )
+            if (apiResponse.response.data.isNullOrEmpty()) {
+                bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+                childData.put(titleDate[0], bookedEventDetails)
+            } else {
+                for (i in apiResponse.response.data.indices) {
+                    bookedEventDetails.add(
+                        ListData(
+                            apiResponse.response.data[i].serviceSlot,
+                            apiResponse.response.data[i].bookedEventServiceDtos
+                        )
                     )
-                )
+                }
+                childData.put(titleDate[0], bookedEventDetails)
             }
-            childData.put(titleDate[0], bookedEventDetails)
         }
-
         // 2558 - ExpandableList Initialization
         initializeExpandableListSetUp()
     }

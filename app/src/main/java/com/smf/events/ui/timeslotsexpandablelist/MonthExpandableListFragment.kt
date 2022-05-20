@@ -87,11 +87,30 @@ class MonthExpandableListFragment : Fragment(),
                 toDate = currentMonthDate.toDate
                 currentDate = currentMonthDate.currentDate
                 monthValue = currentMonthDate.monthValue.toString()
+                serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
                 childData.clear()
                 titleDate.clear()
                 // 2670 - Api Call Token Validation
                 apiTokenValidation("bookedEventServices")
             })
+    }
+
+    // 2691 - method For Set Local Variable Value serviceCategoryId And ServiceVendorOnBoardingId
+    private fun serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate: ScheduleManagementViewModel.MonthDates) {
+        when {
+            currentMonthDate.seviceId == 0 -> {
+                serviceCategoryId = null
+                serviceVendorOnboardingId = null
+            }
+            currentMonthDate.branchId == 0 -> {
+                serviceCategoryId = currentMonthDate.seviceId
+                serviceVendorOnboardingId = null
+            }
+            else -> {
+                serviceCategoryId = currentMonthDate.seviceId
+                serviceVendorOnboardingId = currentMonthDate.branchId
+            }
+        }
     }
 
     // 2670 - Method For AWS Token Validation
@@ -157,31 +176,33 @@ class MonthExpandableListFragment : Fragment(),
     }
 
     private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        val bookedEventDetails = ArrayList<ListData>()
-        titleDate.add(
-            "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
-                toDate?.let {
-                    dateFormat(
-                        it
+        // Condition For Restrict Multiple Expandable List view showing during month navigation
+        if (titleDate.isEmpty() && childData.isEmpty()) {
+            val bookedEventDetails = ArrayList<ListData>()
+            titleDate.add(
+                "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
+                    toDate?.let {
+                        dateFormat(
+                            it
+                        )
+                    }
+                }"
+            )
+            if (apiResponse.response.data.isNullOrEmpty()) {
+                bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+                childData.put(titleDate[0], bookedEventDetails)
+            } else {
+                for (i in apiResponse.response.data.indices) {
+                    bookedEventDetails.add(
+                        ListData(
+                            apiResponse.response.data[i].serviceSlot,
+                            apiResponse.response.data[i].bookedEventServiceDtos
+                        )
                     )
                 }
-            }"
-        )
-        if (apiResponse.response.data.isNullOrEmpty()) {
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            childData.put(titleDate[0], bookedEventDetails)
-        } else {
-            for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
-                    )
-                )
+                childData.put(titleDate[0], bookedEventDetails)
             }
-            childData.put(titleDate[0], bookedEventDetails)
         }
-
         // 2558 - ExpandableList Initialization
         initializeExpandableListSetUp()
     }

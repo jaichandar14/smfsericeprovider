@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ServiceManagment</string>
+    <string name="app_name">Festo</string>
     <string name="get_started">Get Started</string>
     <string name="signuptext">"New User?<font color='#3aa8c1'>Sign Up</font>"</string>
     <string name="signin">Sign in</string>
