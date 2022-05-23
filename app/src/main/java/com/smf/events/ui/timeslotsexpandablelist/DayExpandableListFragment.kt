@@ -87,8 +87,6 @@ class DayExpandableListFragment : Fragment(),
             fromDate = currentDate.selectedDate
             toDate = currentDate.selectedDate
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
-            childData.clear()
-            titleDate.clear()
             // 2670 - Api Call Token Validation
             apiTokenValidation("bookedEventServices")
         })
@@ -169,15 +167,19 @@ class DayExpandableListFragment : Fragment(),
         })
     }
 
+    // Method For Updating ExpandableList Data
     private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        // Condition For Restrict Multiple Expandable List view showing during month navigation
-        if (titleDate.isEmpty() && childData.isEmpty()) {
             val bookedEventDetails = ArrayList<ListData>()
-            fromDate?.let { dateFormat(it) }?.let { titleDate.add(it) }
             if (apiResponse.response.data.isNullOrEmpty()) {
+                childData.clear()
+                titleDate.clear()
+                fromDate?.let { dateFormat(it) }?.let { titleDate.add(it) }
                 bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
                 childData.put(titleDate[0], bookedEventDetails)
             } else {
+                childData.clear()
+                titleDate.clear()
+                fromDate?.let { dateFormat(it) }?.let { titleDate.add(it) }
                 for (i in apiResponse.response.data.indices) {
                     bookedEventDetails.add(
                         ListData(
@@ -188,7 +190,7 @@ class DayExpandableListFragment : Fragment(),
                 }
                 childData.put(titleDate[0], bookedEventDetails)
             }
-        }
+
         // 2558 - ExpandableList Initialization
         initializeExpandableListSetUp()
     }
