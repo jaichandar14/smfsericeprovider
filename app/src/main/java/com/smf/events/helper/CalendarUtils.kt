@@ -40,6 +40,10 @@ class CalendarUtils @Inject constructor() {
         val formatter = DateTimeFormatter.ofPattern("MMM")
         return date.format(formatter)
     }
+    fun yearAndMonthFromDate(date: LocalDate): String? {
+        val formatter = DateTimeFormatter.ofPattern("yyyy")
+        return date.format(formatter)
+    }
 
     fun monthDayFromDate(date: LocalDate): String? {
         val formatter = DateTimeFormatter.ofPattern("MMMM d")
@@ -124,4 +128,14 @@ object CalendarFormat {
     const val DAY = "Day"
     const val WEEK = "Week"
     const val MONTH = "Month"
+
+    const val JAN = 1
+    const val FEB = 2
+    const val MAR = 3
+    const val APR = 4
+    const val MAY = 5
+    const val JUN = 6
+
+
 }
+

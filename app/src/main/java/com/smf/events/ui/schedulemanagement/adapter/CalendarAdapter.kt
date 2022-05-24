@@ -117,6 +117,7 @@ class CalendarAdapter(
         private var c: Calendar = Calendar.getInstance()
         private var cmonth = c.get(Calendar.MONTH)
         private var cDay = c.get(Calendar.DAY_OF_MONTH)
+        private var cyear = c.get(Calendar.YEAR)
 
         init {
             itemView.setOnClickListener(this)
@@ -142,23 +143,30 @@ class CalendarAdapter(
                         val currentDay = LocalDate.parse(it, currentDayFormatter).dayOfMonth
                         val currentMonth = LocalDate.parse(it, currentDayFormatter)
                             .format(DateTimeFormatter.ofPattern("MMM"))
-                        if (dayOfMonth.text == currentDay.toString() && mViewDataBinding?.monthYearTV?.text == currentMonth) {
+                        if (dayOfMonth.text.toString()
+                                .toInt() == currentDay && mViewDataBinding?.monthYearTV?.text == currentMonth
+                        ) {
                             dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
                         }
                     }
-                    // 2622 Current Date Highlighter
-                    selDateHighlight(date)
                     val c: Calendar = Calendar.getInstance()
                     val cmonth = c.get(Calendar.MONTH) + 1
-                    if (date.monthValue < cmonth) {
+                    if (mViewDataBinding?.yearTV?.text.toString().toInt() >= cyear) {
+                        // 2622 Current Date Highlighter
+                        selDateHighlight(date)
+                    }
+                    if (date.monthValue < cmonth && date.year == cyear) {
                         dayOfMonth.setTextColor(Color.GRAY)
-                    } else if (date.dayOfMonth < formattedDay.toInt() && mViewDataBinding?.monthYearTV?.text == formattedMonth) {
+                    } else if (date.dayOfMonth < formattedDay.toInt() && mViewDataBinding?.monthYearTV?.text == formattedMonth && mViewDataBinding?.yearTV?.text.toString()
+                            .toInt() == cyear
+                    ) {
+                        dayOfMonth.setTextColor(Color.GRAY)
+                    } else if (mViewDataBinding?.yearTV?.text.toString().toInt() < cyear) {
                         dayOfMonth.setTextColor(Color.GRAY)
                     }
                 } else {
                     dayOfMonth.setTextColor(Color.LTGRAY)
                 }
-
                 if (CalendarUtils.selectedDate == days?.get(absoluteAdapterPosition)) {
                     weekAbsPos = absoluteAdapterPosition
                     val weekArrayDetails = daysInWeekArray(days?.get(weekAbsPos!!),
@@ -236,7 +244,12 @@ class CalendarAdapter(
         private fun selDateHighlight(date: LocalDate) {
             if (daytype == "Day" || daytype == "Week") {
                 // 2528 Setting and highlighting the current Date
-                if (date == CalendarUtils.selectedDate && date.monthValue > cmonth) {
+                if (date != CalendarUtils.selectedDate) {}
+                else if (date.monthValue < cmonth + 1 && mViewDataBinding?.yearTV?.text.toString()
+                        .toInt() == cyear
+                ) {} else if (mViewDataBinding?.monthYearTV?.text == thisMonth && date.dayOfMonth < cDay && mViewDataBinding?.yearTV?.text.toString()
+                        .toInt() == cyear
+                ) {} else {
                     dayOfMonth.setTextColor(Color.WHITE)
                     dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
                 }
@@ -254,14 +267,16 @@ class CalendarAdapter(
                 dayinWeek.add(it.dayOfMonth.toString())
                 datadayMonth.add(it.month.toString())
             }
-            // 2528 From Current Month Hiding the previous Month
-            if (date?.monthValue!! > cmonth + 1) {
-                onItemListener.onItemClick(absoluteAdapterPosition,
-                    days?.get(absoluteAdapterPosition),
-                    dayinWeek, daysPositon, selectedWeekDates)
-            }
-            // 2528  Current Date And Month Hiding
-            if (mViewDataBinding?.monthYearTV?.text == thisMonth && date.dayOfMonth >= cDay) {
+            // 2692 hiding the previous date and month
+            if (mViewDataBinding?.monthYearTV?.text == thisMonth && date?.dayOfMonth!! < cDay && mViewDataBinding?.yearTV?.text.toString()
+                    .toInt() == cyear
+            ) {}
+            else if (date?.monthValue!! < cmonth + 1 && mViewDataBinding?.yearTV?.text.toString()
+                    .toInt() == cyear
+            ) {}
+            else if (mViewDataBinding?.yearTV?.text.toString()
+                    .toInt() < cyear){}
+            else {
                 onItemListener.onItemClick(absoluteAdapterPosition,
                     days?.get(absoluteAdapterPosition),
                     dayinWeek, daysPositon, selectedWeekDates)
