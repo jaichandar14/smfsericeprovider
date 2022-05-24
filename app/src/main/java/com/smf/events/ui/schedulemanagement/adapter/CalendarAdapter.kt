@@ -244,12 +244,14 @@ class CalendarAdapter(
         private fun selDateHighlight(date: LocalDate) {
             if (daytype == "Day" || daytype == "Week") {
                 // 2528 Setting and highlighting the current Date
-                if (date != CalendarUtils.selectedDate) {}
-                else if (date.monthValue < cmonth + 1 && mViewDataBinding?.yearTV?.text.toString()
+                if (date != CalendarUtils.selectedDate) {
+                } else if (date.monthValue < cmonth + 1 && mViewDataBinding?.yearTV?.text.toString()
                         .toInt() == cyear
-                ) {} else if (mViewDataBinding?.monthYearTV?.text == thisMonth && date.dayOfMonth < cDay && mViewDataBinding?.yearTV?.text.toString()
+                ) {
+                } else if (mViewDataBinding?.monthYearTV?.text == thisMonth && date.dayOfMonth < cDay && mViewDataBinding?.yearTV?.text.toString()
                         .toInt() == cyear
-                ) {} else {
+                ) {
+                } else {
                     dayOfMonth.setTextColor(Color.WHITE)
                     dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
                 }
@@ -270,13 +272,14 @@ class CalendarAdapter(
             // 2692 hiding the previous date and month
             if (mViewDataBinding?.monthYearTV?.text == thisMonth && date?.dayOfMonth!! < cDay && mViewDataBinding?.yearTV?.text.toString()
                     .toInt() == cyear
-            ) {}
-            else if (date?.monthValue!! < cmonth + 1 && mViewDataBinding?.yearTV?.text.toString()
+            ) {
+            } else if (date?.monthValue!! < cmonth + 1 && mViewDataBinding?.yearTV?.text.toString()
                     .toInt() == cyear
-            ) {}
-            else if (mViewDataBinding?.yearTV?.text.toString()
-                    .toInt() < cyear){}
-            else {
+            ) {
+            } else if (mViewDataBinding?.yearTV?.text.toString()
+                    .toInt() < cyear
+            ) {
+            } else {
                 onItemListener.onItemClick(absoluteAdapterPosition,
                     days?.get(absoluteAdapterPosition),
                     dayinWeek, daysPositon, selectedWeekDates)

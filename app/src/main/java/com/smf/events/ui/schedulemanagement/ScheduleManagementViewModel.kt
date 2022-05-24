@@ -40,7 +40,7 @@ class ScheduleManagementViewModel @Inject constructor(
         var toDate: String,
         var seviceId: Int,
         var branchId: Int,
-        var weekList: ArrayList<String>
+        var weekList: ArrayList<String>,
     )
 
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
@@ -49,7 +49,7 @@ class ScheduleManagementViewModel @Inject constructor(
         toDate: String,
         serviceId: Int,
         branchId: Int,
-        weekList: ArrayList<String>
+        weekList: ArrayList<String>,
     ) {
         Log.d("TAG", "setCurrentWeekDate: $fromDate  $toDate")
         weekDate.value = WeekDates(fromDate, toDate, serviceId, branchId, weekList)
@@ -62,7 +62,7 @@ class ScheduleManagementViewModel @Inject constructor(
         var fromDate: String,
         var toDate: String,
         var currentDate: String,
-        var monthValue: Int, var seviceId: Int, var branchId: Int
+        var monthValue: Int, var seviceId: Int, var branchId: Int,
     )
 
     val getCurrentMonthDate: LiveData<MonthDates> = monthDates
@@ -71,7 +71,7 @@ class ScheduleManagementViewModel @Inject constructor(
         toDate: String,
         currentDate: String,
         monthValue: Int,
-        serviceId: Int, branchId: Int
+        serviceId: Int, branchId: Int,
     ) {
         Log.d("TAG", "setCurrentMonthDate: $fromDate  $toDate")
         monthDates.value =
@@ -142,37 +142,6 @@ class ScheduleManagementViewModel @Inject constructor(
         arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
         arrayAdapter.notifyDataSetChanged()
         mDataBinding.spnBranches.adapter = arrayAdapter
-    }
-
-    // 2458 Method for  Setting Years
-    @SuppressLint("ResourceType")
-    fun year(
-        mDataBinding: FragmentCalendarBinding?,
-        calendarUtils: ArrayList<String>,
-    ) {
-        val spinner = mDataBinding!!.monthYearspn
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long,
-            ) {
-                allServiceposition = position
-                // callBackInterface?.itemClick(position)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-        val arrayAdapter: ArrayAdapter<Any?> = ArrayAdapter(
-            getApplication(),
-            com.smf.events.R.layout.spinners_list,
-            calendarUtils as List<Any?>
-        )
-        arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
-        spinner.adapter = arrayAdapter
-        arrayAdapter.notifyDataSetChanged()
-        mDataBinding.monthYearspn.adapter = arrayAdapter
     }
 
     // 2458 Method For Getting All Service
