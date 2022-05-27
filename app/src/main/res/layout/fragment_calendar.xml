@@ -118,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"
-                        android:src="@drawable/arrow_left_20"
+                        app:srcCompat="@drawable/arrow_left_20"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.05"
@@ -127,10 +127,10 @@
 
                     <TextView
                         android:id="@+id/monthYearTV"
-                        android:layout_width="@dimen/size_45dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/size_10dp"
-                        android:text="Aug"
+                        android:text="@string/aug"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="@dimen/size_22sp"
@@ -139,30 +139,31 @@
                         app:layout_constraintHorizontal_bias="0.04"
                         app:layout_constraintStart_toEndOf="@+id/previous_month"
                         app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/yearTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:text="@string/_2022"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_22sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.04"
+                        app:layout_constraintStart_toEndOf="@+id/monthYearTV"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
                         android:id="@+id/next_month"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"
-                        android:src="@drawable/arrow_forward_20"
+                        app:srcCompat="@drawable/arrow_forward_20"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.07"
-                        app:layout_constraintStart_toEndOf="@+id/monthYearTV"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/monthYearspn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/empty_shapes"
-                        android:gravity="end"
-                        android:textAlignment="textEnd"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.71"
-                        app:layout_constraintStart_toEndOf="@+id/next_month"
+                        app:layout_constraintStart_toEndOf="@+id/yearTV"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
