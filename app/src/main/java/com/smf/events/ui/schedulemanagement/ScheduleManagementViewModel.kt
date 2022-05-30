@@ -23,13 +23,25 @@ class ScheduleManagementViewModel @Inject constructor(
     var name: String? = null
     var allServiceposition: Int? = 0
 
+    // 2735
     // 2670 - CurrentDate LiveData
-    data class SelectedDate(var selectedDate: String, var seviceId: Int, var branchId: Int)
+    data class SelectedDate(
+        var selectedDate: String,
+        var seviceId: Int,
+        var branchId: Int,
+        var listOfDays: ArrayList<String>,
+    )
 
     private var currentDate = MutableLiveData<SelectedDate>()
     val getCurrentDate: LiveData<SelectedDate> = currentDate
-    fun setCurrentDate(selectedDate: String, seviceId: Int, branchId: Int) {
-        currentDate.value = SelectedDate(selectedDate, seviceId, branchId)
+    fun setCurrentDate(
+        selectedDate: String,
+        seviceId: Int,
+        branchId: Int,
+        listOfDays: ArrayList<String>,
+    ) {
+        currentDate.value = SelectedDate(selectedDate, seviceId, branchId, listOfDays)
+        Log.d("TAG", "setCurrentDate: $listOfDays")
     }
 
     // 2686 Week from and to Date Live Data

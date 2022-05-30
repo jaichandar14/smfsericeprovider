@@ -3,6 +3,7 @@ package com.smf.events.ui.schedulemanagement.adapter
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,6 +119,8 @@ class CalendarAdapter(
         private var cmonth = c.get(Calendar.MONTH)
         private var cDay = c.get(Calendar.DAY_OF_MONTH)
         private var cyear = c.get(Calendar.YEAR)
+        var listOfDatesC: ArrayList<String> = ArrayList()
+        var listOfDatesPN: ArrayList<String> = ArrayList()
 
         init {
             itemView.setOnClickListener(this)
@@ -143,10 +146,13 @@ class CalendarAdapter(
                         val currentDay = LocalDate.parse(it, currentDayFormatter).dayOfMonth
                         val currentMonth = LocalDate.parse(it, currentDayFormatter)
                             .format(DateTimeFormatter.ofPattern("MMM"))
-                        if (dayOfMonth.text.toString()
-                                .toInt() == currentDay && mViewDataBinding?.monthYearTV?.text == currentMonth
-                        ) {
-                            dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
+                        // 2735 If condition for filter the event for  upcoming Dates
+                        if (dayOfMonth.text.toString().toInt() >= LocalDate.now().dayOfMonth) {
+                            if (dayOfMonth.text.toString()
+                                    .toInt() == currentDay && mViewDataBinding?.monthYearTV?.text == currentMonth
+                            ) {
+                                dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
+                            }
                         }
                     }
                     val c: Calendar = Calendar.getInstance()
@@ -167,6 +173,7 @@ class CalendarAdapter(
                 } else {
                     dayOfMonth.setTextColor(Color.LTGRAY)
                 }
+
                 if (CalendarUtils.selectedDate == days?.get(absoluteAdapterPosition)) {
                     weekAbsPos = absoluteAdapterPosition
                     val weekArrayDetails = daysInWeekArray(days?.get(weekAbsPos!!),
@@ -178,6 +185,30 @@ class CalendarAdapter(
                         CalendarUtils.selectedDate,
                         selectedDatePos)
                     postionOfDate.toSet().toList() as ArrayList<Int>
+                }
+            }
+        }
+
+        // 2735 Method of List of Date for Current and next Previous month
+        fun lisOfDatesCPN(date: LocalDate) {
+            // 2735 for setting the list of  date
+            if (date.dayOfMonth >= formattedDay.toInt() && mViewDataBinding?.monthYearTV?.text == formattedMonth && mViewDataBinding?.yearTV?.text.toString()
+                    .toInt() == cyear
+            ) {
+                if (date.month?.equals(CalendarUtils.selectedDate?.month)!!) {
+                    val formatterdates = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+                    listOfDatesC.add(date.format(formatterdates))
+                    Log.d("TAG", "calendarDWMLogics1: ${date}")
+                }
+                // onItemListener.listOfDates(listOfDatesC)
+            } else {
+                if (date.month?.equals(CalendarUtils.selectedDate?.month)!!) {
+                    if (mViewDataBinding?.monthYearTV?.text != formattedMonth) {
+                        val formatterdates = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+                        listOfDatesPN.add(date.format(formatterdates))
+                        Log.d("TAG", "calendarDWMLogics: ${listOfDatesPN.toSet()}")
+                        //onItemListener.listOfDatesPN(listOfDatesC)
+                    }
                 }
             }
         }
