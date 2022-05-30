@@ -32,6 +32,7 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.math.log
 
 
 class DayExpandableListFragment : Fragment(),
@@ -84,6 +85,7 @@ class DayExpandableListFragment : Fragment(),
 
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
+            Log.d("TAG", "onViewCreated get current Date: ${currentDate.listOfDays}")
             fromDate = currentDate.selectedDate
             toDate = currentDate.selectedDate
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
