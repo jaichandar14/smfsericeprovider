@@ -5,9 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseExpandableListAdapter
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.smf.events.R
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import java.time.Month
@@ -53,6 +52,7 @@ class CustomExpandableListAdapter internal constructor(
         val view12To3am = convertView?.findViewById<View>(R.id.view_12_3am)
         val layoutLinear12To3am = convertView?.findViewById<View>(R.id.layout_linear_12_3am)
         val textNoEventsAvailable = convertView?.findViewById<View>(R.id.text_no_events_available)
+        val progressBar = convertView?.findViewById<ProgressBar>(R.id.progress_bar_child)
         address12To3am?.text = null
 
         image12To3am?.setOnClickListener {
@@ -64,6 +64,10 @@ class CustomExpandableListAdapter internal constructor(
         if (expandedListData.timeSlot == "") {
             layoutLinear12To3am?.visibility = View.INVISIBLE
             textNoEventsAvailable?.visibility = View.VISIBLE
+        } else if (expandedListData.timeSlot == "Empty") {
+            layoutLinear12To3am?.visibility = View.INVISIBLE
+            textNoEventsAvailable?.visibility = View.INVISIBLE
+            progressBar?.visibility = View.VISIBLE
         } else {
             // Get Booked Event Lists Line By Line
             val addressText = StringBuffer()
@@ -121,12 +125,17 @@ class CustomExpandableListAdapter internal constructor(
             layoutInflater.inflate(R.layout.time_slot_title_collapse, null)
         }
         val titleDateTextView = convertView?.findViewById<TextView>(R.id.title_date_textView)
+        val expandableListLayout = convertView?.findViewById<LinearLayout>(R.id.expandable_title_layout)
         if (isExpanded) {
             convertView?.findViewById<ImageView>(R.id.plus_icon)?.setImageResource(R.drawable.minus)
         } else {
             convertView?.findViewById<ImageView>(R.id.plus_icon)?.setImageResource(R.drawable.plus)
         }
         titleDateTextView?.text = listTitle
+
+        expandableListLayout?.setOnClickListener {
+            timeSlotIconOnClickListener?.onGroupClick(parent,listPosition,isExpanded)
+        }
 
         return convertView!!
     }
@@ -149,6 +158,7 @@ class CustomExpandableListAdapter internal constructor(
     // Interface For TimeSlot Icon Click
     interface TimeSlotIconClickListener {
         fun onClick(expandedListPosition: Int)
+        fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean)
     }
 
     // 2670 - Method For Date And Month Arrangement To Display UI
