@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.smf.events.R
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import java.time.Month
@@ -64,7 +63,7 @@ class CustomExpandableListAdapter internal constructor(
         if (expandedListData.timeSlot == "") {
             layoutLinear12To3am?.visibility = View.INVISIBLE
             textNoEventsAvailable?.visibility = View.VISIBLE
-        } else if (expandedListData.timeSlot == "Empty") {
+        } else if (expandedListData.timeSlot == context.getString(R.string.empty)) {
             layoutLinear12To3am?.visibility = View.INVISIBLE
             textNoEventsAvailable?.visibility = View.INVISIBLE
             progressBar?.visibility = View.VISIBLE
@@ -125,7 +124,8 @@ class CustomExpandableListAdapter internal constructor(
             layoutInflater.inflate(R.layout.time_slot_title_collapse, null)
         }
         val titleDateTextView = convertView?.findViewById<TextView>(R.id.title_date_textView)
-        val expandableListLayout = convertView?.findViewById<LinearLayout>(R.id.expandable_title_layout)
+        val expandableListLayout =
+            convertView?.findViewById<LinearLayout>(R.id.expandable_title_layout)
         if (isExpanded) {
             convertView?.findViewById<ImageView>(R.id.plus_icon)?.setImageResource(R.drawable.minus)
         } else {
@@ -134,7 +134,7 @@ class CustomExpandableListAdapter internal constructor(
         titleDateTextView?.text = listTitle
 
         expandableListLayout?.setOnClickListener {
-            timeSlotIconOnClickListener?.onGroupClick(parent,listPosition,isExpanded)
+            timeSlotIconOnClickListener?.onGroupClick(parent, listPosition, isExpanded)
         }
 
         return convertView!!
@@ -175,5 +175,4 @@ class CustomExpandableListAdapter internal constructor(
         }
         return "$month $date, "
     }
-
 }

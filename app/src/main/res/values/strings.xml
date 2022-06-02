@@ -154,9 +154,11 @@
         <item>GBP(\u00a3)</item>
         <item>INR(\u20B9)</item>
     </string-array>
-    //2684
+    // 2684
     <string name="no_events_available">No Events Available</string>
     <string name="aug">Aug</string>
     <string name="_2022">2022</string>
+    // 2773
+    <string name="empty">Empty</string>
 
 </resources>
