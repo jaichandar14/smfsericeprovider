@@ -194,12 +194,6 @@ class CalendarFragment : Fragment(),
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            sharedViewModel.setCurrentDate(
-                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-                serviceCategoryId,
-                serviceVendorOnboardingId,
-                serviceDate
-            )
             settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
@@ -213,12 +207,6 @@ class CalendarFragment : Fragment(),
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            sharedViewModel.setCurrentDate(
-                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-                serviceCategoryId,
-                serviceVendorOnboardingId,
-                serviceDate
-            )
             settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
@@ -415,6 +403,7 @@ class CalendarFragment : Fragment(),
                         this.serviceVendorOnboardingId,
                         serviceDate
                     )
+
                     setMonthView(dayinWeek, daysPositon)
                     Log.d("TAG", "Calendar Event:$serviceDate ")
                 }

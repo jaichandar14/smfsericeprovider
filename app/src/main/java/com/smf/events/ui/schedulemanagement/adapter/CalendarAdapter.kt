@@ -239,7 +239,7 @@ class CalendarAdapter(
         // 2528 For Selecting Entire Week
         fun weekSelection(previousDates: ArrayList<Int>?, position: Int) {
             val date = days?.get(position)
-            if (date?.monthValue!! > cmonth) {
+            if (date?.monthValue!! >= cmonth) {
                 Log.d("TAG", "weekSelection: $absoluteAdapterPosition")
                 if (absoluteAdapterPosition == previousDates?.first()) {
                     parentView.setBackgroundResource(R.drawable.week_selector)
