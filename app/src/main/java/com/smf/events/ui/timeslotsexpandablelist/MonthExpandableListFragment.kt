@@ -44,10 +44,12 @@ class MonthExpandableListFragment : Fragment(),
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
+    private val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
     private var fromDate: String? = null
     private var toDate: String? = null
     private var currentDate: String? = null
     private var monthValue: String? = null
+    private var groupPosition: Int = 0
 
     @Inject
     lateinit var sharedPreference: SharedPreference
@@ -92,6 +94,103 @@ class MonthExpandableListFragment : Fragment(),
                 // 2670 - Api Call Token Validation
                 apiTokenValidation("bookedEventServices")
             })
+    }
+
+    // 2670 - Method For Get Booked Event Services
+    private fun getBookedEventServices(
+        idToken: String, spRegId: Int, serviceCategoryId: Int?,
+        serviceVendorOnBoardingId: Int?,
+        fromDate: String,
+        toDate: String
+    ) {
+        sharedViewModel.getBookedEventServices(
+            idToken, spRegId, serviceCategoryId,
+            serviceVendorOnBoardingId,
+            fromDate,
+            toDate
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+            when (apiResponse) {
+                is ApisResponse.Success -> {
+                    Log.d("TAG", "check token result success month: ${apiResponse.response.data}")
+                    updateExpandableListData(apiResponse)
+                }
+                is ApisResponse.Error -> {
+                    Log.d("TAG", "check token result: ${apiResponse.exception}")
+                }
+                else -> {}
+            }
+        })
+    }
+
+    // Method For Updating ExpandableList Data
+    private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
+        val bookedEventDetails = ArrayList<ListData>()
+        if (apiResponse.response.data.isNullOrEmpty()) {
+            childData.clear()
+            titleDate.clear()
+            addTitle()
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            childData[titleDate[0]] = bookedEventDetails
+        } else {
+            childData.clear()
+            titleDate.clear()
+            addTitle()
+            for (i in apiResponse.response.data.indices) {
+                bookedEventDetails.add(
+                    ListData(
+                        apiResponse.response.data[i].serviceSlot,
+                        apiResponse.response.data[i].bookedEventServiceDtos
+                    )
+                )
+            }
+            childData[titleDate[0]] = bookedEventDetails
+        }
+        // 2558 - ExpandableList Initialization
+        initializeExpandableListSetUp()
+    }
+
+    // 2558 - Method for ExpandableList Initialization
+    private fun initializeExpandableListSetUp() {
+        if (expandableListView != null) {
+            adapter = CustomExpandableListAdapter(
+                requireContext(),
+                getString(R.string.month),
+                titleDate,
+                childData
+            )
+            expandableListView!!.setAdapter(adapter)
+            adapter?.setOnClickListener(this)
+
+            // Default Expansion Into The ExpandableList
+            expandableListView!!.expandGroup(groupPosition)
+            adapter!!.notifyDataSetChanged()
+
+            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+
+                return@setOnChildClickListener false
+            }
+        }
+    }
+
+    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
+        Log.d("TAG", "onGroupClick month: called")
+    }
+
+    override fun onClick(expandedListPosition: Int) {
+        Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
+    }
+
+    // 2697 - Method For Add ExpandableList Title Group
+    private fun addTitle() {
+        titleDate.add(
+            "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
+                toDate?.let {
+                    dateFormat(
+                        it
+                    )
+                }
+            }"
+        )
     }
 
     // 2691 - method For Set Local Variable Value serviceCategoryId And ServiceVendorOnBoardingId
@@ -148,80 +247,19 @@ class MonthExpandableListFragment : Fragment(),
         }
     }
 
-    // 2670 - Method For Get Booked Event Services
-    private fun getBookedEventServices(
-        idToken: String, spRegId: Int, serviceCategoryId: Int?,
-        serviceVendorOnBoardingId: Int?,
-        fromDate: String,
-        toDate: String
-    ) {
-        sharedViewModel.getBookedEventServices(
-            idToken, spRegId, serviceCategoryId,
-            serviceVendorOnBoardingId,
-            fromDate,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d("TAG", "check token result success month: ${apiResponse.response.data}")
-                    updateExpandableListData(apiResponse)
-                }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result: ${apiResponse.exception}")
-                }
-                else -> {}
-            }
-        })
-    }
-
-    // Method For Updating ExpandableList Data
-    private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        val bookedEventDetails = ArrayList<ListData>()
-        if (apiResponse.response.data.isNullOrEmpty()) {
-            childData.clear()
-            titleDate.clear()
-            addTitle()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            childData.put(titleDate[0], bookedEventDetails)
-        } else {
-            childData.clear()
-            titleDate.clear()
-            addTitle()
-            for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
-                    )
-                )
-            }
-            childData.put(titleDate[0], bookedEventDetails)
-        }
-        // 2558 - ExpandableList Initialization
-        initializeExpandableListSetUp()
-    }
-
-    // 2697 - Method For Add ExpandableList Title Group
-    private fun addTitle() {
-        titleDate.add(
-            "${fromDate?.let { getMonth(it) }}  ${fromDate?.let { dateFormat(it) }} - ${
-                toDate?.let {
-                    dateFormat(
-                        it
-                    )
-                }
-            }"
-        )
+    // 2670 - Method For Set IdToken And SpRegId From SharedPreferences
+    private fun setIdTokenAndSpRegId() {
+        spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
 
     // 2670 - Method For Date And Day Arrangement To Display UI
     private fun dateFormat(input: String): String {
         val date = input.substring(3, 5)
-        val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
         val currentDay = LocalDate.parse(input, currentDayFormatter).dayOfWeek.getDisplayName(
             TextStyle.SHORT, Locale.ENGLISH
         )
-
         return "$date $currentDay"
     }
 
@@ -236,59 +274,6 @@ class MonthExpandableListFragment : Fragment(),
                 .lowercase(Locale.getDefault()) + month.substring(2, 3)
                 .lowercase(Locale.getDefault())
         }
-
         return month
     }
-
-    // 2558 - Method for ExpandableList Initialization
-    private fun initializeExpandableListSetUp() {
-        if (expandableListView != null) {
-            adapter = CustomExpandableListAdapter(
-                requireContext(),
-                getString(R.string.month),
-                titleDate,
-                childData
-            )
-            expandableListView!!.setAdapter(adapter)
-            adapter?.setOnClickListener(this)
-
-            expandableListView!!.setOnGroupClickListener { parent, v, groupPosition, id ->
-
-                return@setOnGroupClickListener false
-            }
-
-            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-
-                return@setOnChildClickListener false
-            }
-
-            expandableListView!!.setOnGroupCollapseListener { groupPosition ->
-                Log.d(
-                    "TAG",
-                    "initializeExpandableListSetUp: clope $groupPosition"
-                )
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("TAG", "onViewCreated: TimeSlotsExpandableListFragment onResume called")
-    }
-
-    override fun onClick(expandedListPosition: Int) {
-        Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
-    }
-
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-
-    }
-
-    // 2670 - Method For Set IdToken And SpRegId From SharedPreferences
-    private fun setIdTokenAndSpRegId() {
-        spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
-        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
-        roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
-    }
-
 }
