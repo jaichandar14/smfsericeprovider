@@ -386,6 +386,13 @@ class CalendarFragment : Fragment(),
         val monthDate = calendarUtils.monthFromAndToDate()
         //  2777 if condition for call the api for upcoming and current month
         if (CalendarUtils.selectedDate?.monthValue!! <= cmonth && CalendarUtils.selectedDate?.year!! <= cyear) {
+            serviceDate.clear()
+            sharedViewModel.setCurrentDate(
+                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+                this.serviceCategoryId,
+                this.serviceVendorOnboardingId,
+                serviceDate
+            )
         } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
             sharedViewModel.getEventDates(
                 idToken,

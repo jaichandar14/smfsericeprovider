@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
 import com.smf.events.helper.*
@@ -244,6 +245,7 @@ class MonthExpandableListFragment : Fragment(),
         if (expandableListView != null) {
             adapter = CustomExpandableListAdapter(
                 requireContext(),
+                getString(R.string.month),
                 titleDate,
                 childData
             )
