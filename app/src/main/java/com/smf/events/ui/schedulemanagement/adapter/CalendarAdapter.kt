@@ -68,7 +68,7 @@ class CalendarAdapter(
         holder.calendarDWMLogics()
         if (daytype == "Week") {
             Log.d("TAG", "onBindViewHolder: $positonOfDays")
-            holder.weekSelection(positonOfDays,position)
+            holder.weekSelection(positonOfDays, position)
         }
     }
 
@@ -120,8 +120,6 @@ class CalendarAdapter(
         private var cmonth = c.get(Calendar.MONTH)
         private var cDay = c.get(Calendar.DAY_OF_MONTH)
         private var cyear = c.get(Calendar.YEAR)
-        var listOfDatesC: ArrayList<String> = ArrayList()
-        var listOfDatesPN: ArrayList<String> = ArrayList()
 
         init {
             itemView.setOnClickListener(this)
@@ -187,30 +185,6 @@ class CalendarAdapter(
                 dayOfMonth.setTextColor(Color.GRAY)
             } else if (mViewDataBinding?.yearTV?.text.toString().toInt() < cyear) {
                 dayOfMonth.setTextColor(Color.GRAY)
-            }
-        }
-
-        // 2735 Method of List of Date for Current and next Previous month
-        fun lisOfDatesCPN(date: LocalDate) {
-            // 2735 for setting the list of  date
-            if (date.dayOfMonth >= formattedDay.toInt() && mViewDataBinding?.monthYearTV?.text == formattedMonth && mViewDataBinding?.yearTV?.text.toString()
-                    .toInt() == cyear
-            ) {
-                if (date.month?.equals(CalendarUtils.selectedDate?.month)!!) {
-                    val formatterdates = DateTimeFormatter.ofPattern("MM/dd/yyyy")
-                    listOfDatesC.add(date.format(formatterdates))
-                    Log.d("TAG", "calendarDWMLogics1: ${date}")
-                }
-                // onItemListener.listOfDates(listOfDatesC)
-            } else {
-                if (date.month?.equals(CalendarUtils.selectedDate?.month)!!) {
-                    if (mViewDataBinding?.monthYearTV?.text != formattedMonth) {
-                        val formatterdates = DateTimeFormatter.ofPattern("MM/dd/yyyy")
-                        listOfDatesPN.add(date.format(formatterdates))
-                        Log.d("TAG", "calendarDWMLogics: ${listOfDatesPN.toSet()}")
-                        //onItemListener.listOfDatesPN(listOfDatesC)
-                    }
-                }
             }
         }
 
