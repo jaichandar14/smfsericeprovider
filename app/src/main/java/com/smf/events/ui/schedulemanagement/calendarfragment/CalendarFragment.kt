@@ -65,7 +65,6 @@ class CalendarFragment : Fragment(),
     private var absoluteAdapterPosition: Int? = null
     var serviceDate = ArrayList<String>()
     private var dateList: ArrayList<String> = ArrayList()
-    private var dateListPN: ArrayList<String> = ArrayList()
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -116,7 +115,7 @@ class CalendarFragment : Fragment(),
 
     // 2685 Method for Setting the MonthDate
     private fun settingMonthDate() {
-        var monthDate = calendarUtils.monthFromAndToDate()
+        val monthDate = calendarUtils.monthFromAndToDate()
         sharedViewModel.setCurrentMonthDate(
             monthDate.fromDate,
             monthDate.toDate,
@@ -128,8 +127,8 @@ class CalendarFragment : Fragment(),
     // 2686 Method for Setting the WeekDate
     private fun settingWeekDate() {
         val fromAndToDate = calendarUtils.fromAndToDate()
-        var weeksOfMonth=calendarUtils.fetchWeekOfMonth()
-        for (i in 1 until weeksOfMonth.size+1){
+        val weeksOfMonth = calendarUtils.fetchWeekOfMonth()
+        for (i in 1 until weeksOfMonth.size + 1) {
             Log.d("TAG", "settingWeekDate: ${weeksOfMonth.get(i)?.fromDate}")
         }
         sharedViewModel.setCurrentWeekDate(
@@ -381,39 +380,47 @@ class CalendarFragment : Fragment(),
                 branchesId = branchId
             }
         }
-        var monthDate = calendarUtils.monthFromAndToDate()
-        sharedViewModel.getEventDates(
-            idToken,
-            spRegId,
-            serviceId,
-            branchesId,
-            monthDate.fromDate,
-            monthDate.toDate
-        ).observe(viewLifecycleOwner, { apiresponse ->
-            serviceDate.clear()
-            when (apiresponse) {
-                is ApisResponse.Success -> {
-                    Log.d("TAG", "Calendar Event List : ${apiresponse.response.data.serviceDates}")
-                    apiresponse.response.data.serviceDates.forEach {
-                        serviceDate.add(it)
-                    }
-                    sharedViewModel.setCurrentDate(
-                        CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-                        this.serviceCategoryId,
-                        this.serviceVendorOnboardingId,
-                        serviceDate
-                    )
+        val c: Calendar = Calendar.getInstance()
+        val cmonth = c.get(Calendar.MONTH)
+        val cyear = c.get(Calendar.YEAR)
+        //  2777 if condition for call the api for upcoming and current month
+        if (CalendarUtils.selectedDate?.monthValue!! <= cmonth && CalendarUtils.selectedDate?.year!! <= cyear) {
+        } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
+            val monthDate = calendarUtils.monthFromAndToDate()
+            sharedViewModel.getEventDates(
+                idToken,
+                spRegId,
+                serviceId,
+                branchesId,
+                monthDate.fromDate,
+                monthDate.toDate
+            ).observe(viewLifecycleOwner, { apiresponse ->
+                serviceDate.clear()
+                when (apiresponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG",
+                            "Calendar Event List : ${apiresponse.response.data.serviceDates}")
+                        apiresponse.response.data.serviceDates.forEach {
+                            serviceDate.add(it)
+                        }
+                        sharedViewModel.setCurrentDate(
+                            CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+                            this.serviceCategoryId,
+                            this.serviceVendorOnboardingId,
+                            serviceDate
+                        )
 
-                    setMonthView(dayinWeek, daysPositon)
-                    Log.d("TAG", "Calendar Event:$serviceDate ")
+                        setMonthView(dayinWeek, daysPositon)
+                        Log.d("TAG", "Calendar Event:$serviceDate ")
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiresponse.exception}")
+                    }
+                    else -> {
+                    }
                 }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result: ${apiresponse.exception}")
-                }
-                else -> {
-                }
-            }
-        })
+            })
+        }
     }
 
     // 2686 - Method For AWS Token Validation
@@ -455,17 +462,5 @@ class CalendarFragment : Fragment(),
                 }
             }
         }
-    }
-
-    private fun monthFromAndToDate(): ArrayList<String> {
-        dateList.clear()
-        val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
-        val toDateMonth: LocalDate =
-            CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
-        for (i in 0 until toDateMonth.dayOfMonth) {
-            fromDateMonth.plusDays(i.toLong())
-            dateList.add(fromDateMonth.plusDays(i.toLong()).format(CalendarUtils.dateFormatter))
-        }
-        return dateList
     }
 }
