@@ -81,8 +81,8 @@ class WeekExpandableListFragment : Fragment(),
 
         sharedViewModel.getCurrentWeekDate.observe(requireActivity(),
             { currentWeekDate ->
-                fromDate = currentWeekDate.fromDate
-                toDate = currentWeekDate.toDate
+//                fromDate = currentWeekDate.fromDate
+//                toDate = currentWeekDate.toDate
                 weekList = currentWeekDate.weekList
                 serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
                 // 2670 - Api Call Token Validation

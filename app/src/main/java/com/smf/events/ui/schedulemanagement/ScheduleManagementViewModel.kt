@@ -12,6 +12,7 @@ import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
+import java.util.HashMap
 import javax.inject.Inject
 
 
@@ -48,23 +49,20 @@ class ScheduleManagementViewModel @Inject constructor(
     private var weekDate = MutableLiveData<WeekDates>()
 
     data class WeekDates(
-        var fromDate: String,
-        var toDate: String,
+        var weekListMapOfMonth: HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
         var seviceId: Int,
         var branchId: Int,
         var weekList: ArrayList<String>,
     )
-
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
     fun setCurrentWeekDate(
-        fromDate: String,
-        toDate: String,
+        weekListMapOfMonth: java.util.HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
         serviceId: Int,
         branchId: Int,
         weekList: ArrayList<String>,
     ) {
-        Log.d("TAG", "setCurrentWeekDate: $fromDate  $toDate")
-        weekDate.value = WeekDates(fromDate, toDate, serviceId, branchId, weekList)
+        Log.d("TAG", "setCurrentWeekDate: $weekListMapOfMonth  ")
+        weekDate.value = WeekDates(weekListMapOfMonth, serviceId, branchId, weekList)
     }
 
     // 2686 Month From and To Date Live Data

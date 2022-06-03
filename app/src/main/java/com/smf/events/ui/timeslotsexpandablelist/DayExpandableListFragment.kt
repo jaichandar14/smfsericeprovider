@@ -95,7 +95,6 @@ class DayExpandableListFragment : Fragment(),
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
             // Set Expand List Position
             groupPosition = 0
-            listOfDates?.add("06/31/2022")
             Log.d("TAG", "onViewCreated listOfDays: ${currentDate.listOfDays} ")
             // List Data Initialization
             setListOfDatesAndFromAndToDate(currentDate)
@@ -104,7 +103,7 @@ class DayExpandableListFragment : Fragment(),
 
     // 2722 - Method For Setting Data To ListOfDates And FromDate AndToDate Variables
     private fun setListOfDatesAndFromAndToDate(currentDate: ScheduleManagementViewModel.SelectedDate) {
-        if (listOfDates.isNullOrEmpty()) {
+        if (currentDate.listOfDays.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
@@ -193,9 +192,9 @@ class DayExpandableListFragment : Fragment(),
             adapter?.setOnClickListener(this)
 
             // 2722 - Default Expand Group In First Position
-            expandableListView!!.expandGroup(groupPosition)
-            adapter!!.notifyDataSetChanged()
-            lastGroupPosition = groupPosition
+//            expandableListView!!.expandGroup(groupPosition)
+//            adapter!!.notifyDataSetChanged()
+//            lastGroupPosition = groupPosition
 
             expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
 
@@ -231,7 +230,7 @@ class DayExpandableListFragment : Fragment(),
         toDate = listOfDates?.get(listPosition)
 
         // Condition For Selected Group Expanded (or) Not
-        if (listPosition != lastGroupPosition) {
+       // if (listPosition != lastGroupPosition) {
             val bookedEventDetails = ArrayList<ListData>()
             bookedEventDetails.add(
                 ListData(
@@ -244,7 +243,7 @@ class DayExpandableListFragment : Fragment(),
             parent.expandGroup(listPosition)
             apiTokenValidation("bookedEventServicesFromSelectedDate")
             lastGroupPosition = listPosition
-        }
+      //  }
     }
 
     override fun onResume() {
