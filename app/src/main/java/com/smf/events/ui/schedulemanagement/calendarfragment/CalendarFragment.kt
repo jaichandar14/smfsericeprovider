@@ -98,6 +98,7 @@ class CalendarFragment : Fragment(),
         setCalendarFormat()
         // 2686 Method for Token Validation and Service list ApiCall
         apiTokenValidationCalendar("AllServices")
+
     }
 
     // 2458 Method for initializing
@@ -127,9 +128,12 @@ class CalendarFragment : Fragment(),
     // 2686 Method for Setting the WeekDate
     private fun settingWeekDate() {
         val fromAndToDate = calendarUtils.fromAndToDate()
+        var weeksOfMonth=calendarUtils.fetchWeekOfMonth()
+        for (i in 1 until weeksOfMonth.size+1){
+            Log.d("TAG", "settingWeekDate: ${weeksOfMonth.get(i)?.fromDate}")
+        }
         sharedViewModel.setCurrentWeekDate(
-            fromAndToDate.fromDate,
-            fromAndToDate.toDate,
+            weeksOfMonth,
             serviceCategoryId,
             serviceVendorOnboardingId,
             fromAndToDate.weekList
@@ -189,13 +193,7 @@ class CalendarFragment : Fragment(),
         mDataBinding.previousMonth.setOnClickListener {
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusMonths(1)
             daysPositon = null
-            //      setMonthView(dayinWeek, daysPositon)
-            sharedViewModel.setCurrentDate(
-                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-                serviceCategoryId,
-                serviceVendorOnboardingId,
-                monthFromAndToDate()
-            )
+            setMonthView(dayinWeek, daysPositon)
             settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
@@ -208,13 +206,7 @@ class CalendarFragment : Fragment(),
         mDataBinding.nextMonth.setOnClickListener {
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusMonths(1)
             daysPositon = null
-            // setMonthView(dayinWeek, daysPositon)
-            sharedViewModel.setCurrentDate(
-                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-                serviceCategoryId,
-                serviceVendorOnboardingId,
-                monthFromAndToDate()
-            )
+            setMonthView(dayinWeek, daysPositon)
             settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
@@ -236,9 +228,7 @@ class CalendarFragment : Fragment(),
                 weekList.add(it.format(CalendarUtils.dateFormatter))
             }
             sharedViewModel.setCurrentWeekDate(
-                selectedWeekDates.first()
-                    .format(CalendarUtils.dateFormatter),
-                selectedWeekDates.last().format(CalendarUtils.dateFormatter),
+                calendarUtils.fetchWeekOfMonth(),
                 serviceCategoryId,
                 serviceVendorOnboardingId,
                 weekList
@@ -248,7 +238,7 @@ class CalendarFragment : Fragment(),
                 CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                 serviceCategoryId,
                 serviceVendorOnboardingId,
-                monthFromAndToDate()
+                serviceDate
             )
         }
     }
@@ -300,12 +290,6 @@ class CalendarFragment : Fragment(),
     ) {
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
         apiTokenValidationCalendar("EventDateApiBranches")
-        sharedViewModel.setCurrentDate(
-            CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-            serviceCategoryId,
-            this.serviceVendorOnboardingId,
-            monthFromAndToDate()
-        )
         settingWeekDate()
         settingMonthDate()
     }
@@ -413,6 +397,13 @@ class CalendarFragment : Fragment(),
                     apiresponse.response.data.serviceDates.forEach {
                         serviceDate.add(it)
                     }
+                    sharedViewModel.setCurrentDate(
+                        CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+                        this.serviceCategoryId,
+                        this.serviceVendorOnboardingId,
+                        serviceDate
+                    )
+
                     setMonthView(dayinWeek, daysPositon)
                     Log.d("TAG", "Calendar Event:$serviceDate ")
                 }

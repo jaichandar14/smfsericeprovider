@@ -16,6 +16,7 @@ import kotlin.collections.ArrayList
 // 2528
 @Singleton
 class CalendarUtils @Inject constructor() {
+    //    lateinit var list:androidx.collection.ArrayMap<Int,String>
     companion object {
         var selectedDate: LocalDate? = null
         var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
@@ -40,6 +41,7 @@ class CalendarUtils @Inject constructor() {
         val formatter = DateTimeFormatter.ofPattern("MMM")
         return date.format(formatter)
     }
+
     fun yearAndMonthFromDate(date: LocalDate): String? {
         val formatter = DateTimeFormatter.ofPattern("yyyy")
         return date.format(formatter)
@@ -70,7 +72,7 @@ class CalendarUtils @Inject constructor() {
         Log.d("TAG", "nextMonthAction: ${startOfCurrentWeek}")
         var fromDate = startOfCurrentWeek.format(dateFormatter)
         var toDate = endOfWeek.format(dateFormatter)
-        return WeekDates(fromDate, toDate,weekList)
+        return WeekDates(fromDate, toDate, weekList)
     }
 
     // 2686 MonthDates
@@ -119,8 +121,44 @@ class CalendarUtils @Inject constructor() {
         }
         return daysInMonthArray
     }
+
+    // 2743 Fetcching the entire week of a month
+    fun fetchWeekOfMonth(): HashMap<Int, WeekDatesOfMonth> {
+        // getting sundays  date of the month
+        var j = 2
+        var weeksList: HashMap<Int, WeekDatesOfMonth> = HashMap()
+        val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
+        val toDateMonth: LocalDate =
+            CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
+        val firstDayOfWeekSunday: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        val startOfFirstWeekSunday: LocalDate =
+            fromDateMonth.with(TemporalAdjusters.previousOrSame(firstDayOfWeekSunday))
+        val lastDayOfWeekSunday: DayOfWeek = firstDayOfWeekSunday.plus(6)
+        val endLastDayOfWeekSunday: LocalDate =
+            fromDateMonth.with(TemporalAdjusters.nextOrSame(lastDayOfWeekSunday))
+        weeksList.put(1, WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday))
+
+        // getting Saturdays  date of the month
+        val endOfWeek: LocalDate =
+            toDateMonth.with(TemporalAdjusters.previousOrSame(firstDayOfWeekSunday))
+        val endOfMonthWeek: LocalDate =
+            toDateMonth.with(TemporalAdjusters.nextOrSame(lastDayOfWeekSunday))
+        var startweeklistSaturday = endLastDayOfWeekSunday
+        var startweeklist = startOfFirstWeekSunday
+        for (i in 0 until 7) {
+            if (startweeklist == endOfWeek && startweeklistSaturday == endOfMonthWeek) {
+            } else {
+                startweeklist = startweeklist.plusDays(7)
+                startweeklistSaturday = startweeklistSaturday.plusDays(7)
+                weeksList.put(j, WeekDatesOfMonth(startweeklist, startweeklistSaturday))
+                j++
+            }
+        }
+        return weeksList
+    }
 }
 
+data class WeekDatesOfMonth(var fromDate: LocalDate, var toDate: LocalDate)
 data class WeekDetails(var date: LocalDate?, var position: Int?)
 data class WeekArrayDetails(var date: ArrayList<LocalDate>, var position: ArrayList<Int>)
 

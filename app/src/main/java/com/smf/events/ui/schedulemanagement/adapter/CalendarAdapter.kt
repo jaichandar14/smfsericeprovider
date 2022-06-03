@@ -67,7 +67,8 @@ class CalendarAdapter(
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         holder.calendarDWMLogics()
         if (daytype == "Week") {
-            holder.weekSelection(positonOfDays)
+            Log.d("TAG", "onBindViewHolder: $positonOfDays")
+            holder.weekSelection(positonOfDays,position)
         }
     }
 
@@ -146,30 +147,11 @@ class CalendarAdapter(
                         val currentDay = LocalDate.parse(it, currentDayFormatter).dayOfMonth
                         val currentMonth = LocalDate.parse(it, currentDayFormatter)
                             .format(DateTimeFormatter.ofPattern("MMM"))
-                        // 2735 If condition for filter the event for  upcoming Dates
-                        if (dayOfMonth.text.toString().toInt() >= LocalDate.now().dayOfMonth) {
-                            if (dayOfMonth.text.toString()
-                                    .toInt() == currentDay && mViewDataBinding?.monthYearTV?.text == currentMonth
-                            ) {
-                                dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
-                            }
-                        }
+                        // 2743 Method for high-lighting the upcoming month
+                        eventHighLighter(currentDay, currentMonth, date)
                     }
-                    val c: Calendar = Calendar.getInstance()
-                    val cmonth = c.get(Calendar.MONTH) + 1
-                    if (mViewDataBinding?.yearTV?.text.toString().toInt() >= cyear) {
-                        // 2622 Current Date Highlighter
-                        selDateHighlight(date)
-                    }
-                    if (date.monthValue < cmonth && date.year == cyear) {
-                        dayOfMonth.setTextColor(Color.GRAY)
-                    } else if (date.dayOfMonth < formattedDay.toInt() && mViewDataBinding?.monthYearTV?.text == formattedMonth && mViewDataBinding?.yearTV?.text.toString()
-                            .toInt() == cyear
-                    ) {
-                        dayOfMonth.setTextColor(Color.GRAY)
-                    } else if (mViewDataBinding?.yearTV?.text.toString().toInt() < cyear) {
-                        dayOfMonth.setTextColor(Color.GRAY)
-                    }
+                    // 2743 Method For hiding the previous DAY,MONTH,YEAR
+                    previousDMYHider(date)
                 } else {
                     dayOfMonth.setTextColor(Color.LTGRAY)
                 }
@@ -186,6 +168,25 @@ class CalendarAdapter(
                         selectedDatePos)
                     postionOfDate.toSet().toList() as ArrayList<Int>
                 }
+            }
+        }
+
+        // 2743 Method For hiding the previous DAY,MONTH,YEAR
+        private fun previousDMYHider(date: LocalDate) {
+            val c: Calendar = Calendar.getInstance()
+            val cmonth = c.get(Calendar.MONTH) + 1
+            if (mViewDataBinding?.yearTV?.text.toString().toInt() >= cyear) {
+                // 2622 Current Date Highlighter
+                selDateHighlight(date)
+            }
+            if (date.monthValue < cmonth && date.year == cyear) {
+                dayOfMonth.setTextColor(Color.GRAY)
+            } else if (date.dayOfMonth < formattedDay.toInt() && mViewDataBinding?.monthYearTV?.text == formattedMonth && mViewDataBinding?.yearTV?.text.toString()
+                    .toInt() == cyear
+            ) {
+                dayOfMonth.setTextColor(Color.GRAY)
+            } else if (mViewDataBinding?.yearTV?.text.toString().toInt() < cyear) {
+                dayOfMonth.setTextColor(Color.GRAY)
             }
         }
 
@@ -213,10 +214,33 @@ class CalendarAdapter(
             }
         }
 
+        // 2743 Method HighLighting the events
+        private fun eventHighLighter(currentDay: Int, currentMonth: String, date: LocalDate) {
+            // 2735 If condition for filter the event for  upcoming Dates
+            if (dayOfMonth.text.toString()
+                    .toInt() == currentDay && mViewDataBinding?.monthYearTV?.text == currentMonth
+            ) {
+                // 2528 Setting and highlighting the current Date
+                if (date.monthValue < cmonth + 1 && mViewDataBinding?.yearTV?.text.toString()
+                        .toInt() == cyear
+                ) {
+                } else if (mViewDataBinding?.monthYearTV?.text == formattedMonth && mViewDataBinding?.yearTV?.text.toString()
+                        .toInt() == cyear
+                ) {
+                    if (dayOfMonth.text.toString().toInt() >= LocalDate.now().dayOfMonth) {
+                        dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
+                    }
+                } else {
+                    dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
+                }
+            }
+        }
+
         // 2528 For Selecting Entire Week
-        fun weekSelection(previousDates: ArrayList<Int>?) {
-            val date = days?.get(absoluteAdapterPosition)
-            if (date?.monthValue!! > cmonth) {
+        fun weekSelection(previousDates: ArrayList<Int>?, position: Int) {
+            val date = days?.get(position)
+            if (date?.monthValue!! >= cmonth) {
+                Log.d("TAG", "weekSelection: $absoluteAdapterPosition")
                 if (absoluteAdapterPosition == previousDates?.first()) {
                     parentView.setBackgroundResource(R.drawable.week_selector)
                 } else if (absoluteAdapterPosition == previousDates?.last()) {
