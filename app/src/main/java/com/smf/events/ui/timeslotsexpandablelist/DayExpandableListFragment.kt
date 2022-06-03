@@ -49,7 +49,6 @@ class DayExpandableListFragment : Fragment(),
     var serviceVendorOnboardingId: Int? = null
     private var fromDate: String? = null
     private var toDate: String? = null
-    var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
     var parent: ViewGroup? = null
     private var listOfDates: ArrayList<String>? = ArrayList()
     private var groupPosition: Int = 0
@@ -93,26 +92,78 @@ class DayExpandableListFragment : Fragment(),
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
-            // Set Expand List Position
-            groupPosition = 0
             Log.d("TAG", "onViewCreated listOfDays: ${currentDate.listOfDays} ")
-            // List Data Initialization
-            setListOfDatesAndFromAndToDate(currentDate)
+            setListOfDatesArrayList(currentDate)
         })
     }
 
-    // 2722 - Method For Setting Data To ListOfDates And FromDate AndToDate Variables
-    private fun setListOfDatesAndFromAndToDate(currentDate: ScheduleManagementViewModel.SelectedDate) {
+    // 2776 - Method For set Dates ArrayList
+    private fun setListOfDatesArrayList(currentDate: ScheduleManagementViewModel.SelectedDate) {
         if (currentDate.listOfDays.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
+            mDataBinding.expendableList.visibility = View.VISIBLE
+            mDataBinding.noEventsText.visibility = View.GONE
             listOfDates = currentDate.listOfDays
-            fromDate = listOfDates!![0]
-            toDate = listOfDates!![0]
-            // 2670 - Api Call Token Validation
-            apiTokenValidation("bookedEventServices")
+            expandableListInitialSetUp()
         }
+    }
+
+    // 2776 -  Method For Set titleDate and childData values
+    private fun expandableListInitialSetUp() {
+        childData.clear()
+        titleDate.clear()
+        for (i in 0 until (listOfDates?.size ?: 0)) {
+            val bookedEventDetails = ArrayList<ListData>()
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
+            childData[titleDate[i]] = bookedEventDetails
+        }
+        // 2558 - ExpandableList Initialization
+        initializeExpandableListSetUp()
+    }
+
+    // 2558 - Method for ExpandableList Initialization
+    private fun initializeExpandableListSetUp() {
+        if (expandableListView != null) {
+            adapter = CustomExpandableListAdapter(
+                requireContext(),
+                getString(R.string.day),
+                titleDate,
+                childData
+            )
+            expandableListView!!.setAdapter(adapter)
+            adapter?.setOnClickListener(this)
+
+            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+
+                return@setOnChildClickListener false
+            }
+        }
+    }
+
+    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
+        this.parent = parent as ExpandableListView
+        this.groupPosition = listPosition
+        fromDate = listOfDates?.get(listPosition)
+        toDate = listOfDates?.get(listPosition)
+        if (isExpanded) {
+            parent.collapseGroup(listPosition)
+        } else {
+            val bookedEventDetails = ArrayList<ListData>()
+            bookedEventDetails.add(
+                ListData(
+                    getString(R.string.empty),
+                    listOf(BookedEventServiceDto("", "", "", ""))
+                )
+            )
+            childData[titleDate[groupPosition]] = bookedEventDetails
+            parent.collapseGroup(lastGroupPosition)
+            parent.expandGroup(listPosition)
+            apiTokenValidation("bookedEventServicesFromSelectedDate")
+        }
+        lastGroupPosition = listPosition
     }
 
     // 2670 - Method For Get Booked Event Services
@@ -120,8 +171,7 @@ class DayExpandableListFragment : Fragment(),
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
-        toDate: String,
-        caller: String
+        toDate: String
     ) {
         sharedViewModel.getBookedEventServices(
             idToken, spRegId, serviceCategoryId,
@@ -132,11 +182,7 @@ class DayExpandableListFragment : Fragment(),
             when (apiResponse) {
                 is ApisResponse.Success -> {
                     Log.d("TAG", "check token result success BookedEvent: ${apiResponse.response}")
-                    if (caller == "bookedEventServices") {
-                        addExpandableListDataInitialData(apiResponse)
-                    } else {
-                        updateExpandableListDataSelectedDate(apiResponse)
-                    }
+                    updateExpandableListDataSelectedDate(apiResponse)
                 }
                 is ApisResponse.Error -> {
                     Log.d("TAG", "check token result BookedEvent exp: ${apiResponse.exception}")
@@ -145,62 +191,6 @@ class DayExpandableListFragment : Fragment(),
                 }
             }
         })
-    }
-
-    // Method For Updating ExpandableList Data
-    private fun addExpandableListDataInitialData(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        val bookedEventDetails = ArrayList<ListData>()
-        childData.clear()
-        titleDate.clear()
-        if (apiResponse.response.data.isNullOrEmpty()) {
-            listOfDates?.get(0)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            childData[titleDate[0]] = bookedEventDetails
-        } else {
-            listOfDates?.get(0)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
-            for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
-                    )
-                )
-            }
-            childData[titleDate[0]] = bookedEventDetails
-        }
-
-        for (i in 1 until (listOfDates?.size ?: 0)) {
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
-            childData[titleDate[i]] = bookedEventDetails
-        }
-
-        // 2558 - ExpandableList Initialization
-        initializeExpandableListSetUp()
-    }
-
-    // 2558 - Method for ExpandableList Initialization
-    private fun initializeExpandableListSetUp() {
-        if (expandableListView != null) {
-            adapter = CustomExpandableListAdapter(
-                requireContext(),
-                titleDate,
-                childData
-            )
-            expandableListView!!.setAdapter(adapter)
-            adapter?.setOnClickListener(this)
-
-            // 2722 - Default Expand Group In First Position
-//            expandableListView!!.expandGroup(groupPosition)
-//            adapter!!.notifyDataSetChanged()
-//            lastGroupPosition = groupPosition
-
-            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-
-                return@setOnChildClickListener false
-            }
-        }
     }
 
     // 2773 - Method For Update SelectedDate To ExpandableList
@@ -221,34 +211,6 @@ class DayExpandableListFragment : Fragment(),
             childData[titleDate[groupPosition]] = bookedEventDetails
         }
         adapter!!.notifyDataSetChanged()
-    }
-
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        this.parent = parent as ExpandableListView
-        this.groupPosition = listPosition
-        fromDate = listOfDates?.get(listPosition)
-        toDate = listOfDates?.get(listPosition)
-
-        // Condition For Selected Group Expanded (or) Not
-       // if (listPosition != lastGroupPosition) {
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(
-                ListData(
-                    getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", ""))
-                )
-            )
-            childData[titleDate[groupPosition]] = bookedEventDetails
-            parent.collapseGroup(lastGroupPosition)
-            parent.expandGroup(listPosition)
-            apiTokenValidation("bookedEventServicesFromSelectedDate")
-            lastGroupPosition = listPosition
-      //  }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("TAG", "onViewCreated: TimeSlotsExpandableListFragment onResume called")
     }
 
     override fun onClick(expandedListPosition: Int) {
@@ -298,7 +260,7 @@ class DayExpandableListFragment : Fragment(),
                     getBookedEventServices(
                         idToken, spRegId,
                         serviceCategoryId, serviceVendorOnboardingId,
-                        fromDate, toDate, caller
+                        fromDate, toDate
                     )
                 }
             }

@@ -13,6 +13,7 @@ import java.util.*
 
 class CustomExpandableListAdapter internal constructor(
     private val context: Context,
+    private val classTag: String,
     private val titleDate: ArrayList<String>,
     private val childData: HashMap<String, List<ListData>>
 ) : BaseExpandableListAdapter() {
@@ -72,7 +73,12 @@ class CustomExpandableListAdapter internal constructor(
             val addressText = StringBuffer()
             for (i in expandedListData.status.indices) {
                 if (i == 0) {
-                    addressText.append(" " + dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
+                    // Condition For Remove Event Date Inside Day Event Display
+                    if (classTag == context.getString(R.string.day)){
+                        addressText.append(" " + expandedListData.status[i].eventName + " " + context.getString(R.string.event))
+                    }else{
+                        addressText.append(" " + dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
+                    }
                 } else {
                     addressText.append(dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
                 }
