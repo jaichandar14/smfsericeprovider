@@ -31,6 +31,9 @@ import com.smf.events.ui.signup.SignUpFragment
 import com.smf.events.ui.signup.SignUpModule
 import com.smf.events.ui.splash.SplashFragment
 import com.smf.events.ui.splash.SplashModule
+import com.smf.events.ui.timeslotmodifyexpanablelist.DayModifyExpandableListFragment
+import com.smf.events.ui.timeslotmodifyexpanablelist.MonthModifyExpandableListFragment
+import com.smf.events.ui.timeslotmodifyexpanablelist.WeekModifyExpandableListFragment
 import com.smf.events.ui.timeslotsexpandablelist.DayExpandableListFragment
 import com.smf.events.ui.timeslotsexpandablelist.MonthExpandableListFragment
 import com.smf.events.ui.timeslotsexpandablelist.TimeSlotsExpandableListModule
@@ -110,4 +113,15 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
     abstract fun provideMonthExpandableListFragment(): MonthExpandableListFragment
 
+    // 2798 - Time Slots Modify Day ExpandableList Fragment Injection
+    @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
+    abstract fun provideDayModifyExpandableListFragment(): DayModifyExpandableListFragment
+
+    // 2798 - Time Slots Modify Week ExpandableList Fragment Injection
+    @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
+    abstract fun provideWeekModifyExpandableListFragment(): WeekModifyExpandableListFragment
+
+    // 2798 - Time Slots Modify Month ExpandableList Fragment Injection
+    @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
+    abstract fun provideMonthModifyExpandableListFragment(): MonthModifyExpandableListFragment
 }

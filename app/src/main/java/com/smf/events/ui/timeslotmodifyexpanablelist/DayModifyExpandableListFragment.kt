@@ -1,4 +1,4 @@
-package com.smf.events.ui.timeslotsexpandablelist
+package com.smf.events.ui.timeslotmodifyexpanablelist
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
@@ -17,7 +18,7 @@ import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
-import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
+import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
@@ -33,11 +34,11 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class DayExpandableListFragment : Fragment(),
-    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
+class DayModifyExpandableListFragment: Fragment(),
+    CustomModifyExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
 
     private var expandableListView: ExpandableListView? = null
-    private var adapter: CustomExpandableListAdapter? = null
+    private var adapter: CustomModifyExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
     private var titleDate = ArrayList<String>()
     private lateinit var mDataBinding: FragmentTimeSlotsExpandableListBinding
@@ -137,13 +138,13 @@ class DayExpandableListFragment : Fragment(),
     // 2558 - Method for ExpandableList Initialization
     private fun initializeExpandableListSetUp() {
         if (expandableListView != null) {
-            adapter = CustomExpandableListAdapter(
+            adapter = CustomModifyExpandableListAdapter(
                 requireContext(),
                 getString(R.string.day),
                 titleDate,
                 childData
             )
-            expandableListView!!.setAdapter(adapter)
+            expandableListView?.setAdapter(adapter)
             adapter?.setOnClickListener(this)
         }
     }

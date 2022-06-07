@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.smf.events.R
 import com.smf.events.databinding.FragmentTimeSlotsBinding
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
-import com.smf.events.ui.timeslot.adapter.TimeSlotViewPagerAdapter
+import com.smf.events.ui.timeslot.adapter.TimeSlotViewPagerBookedEventsAdapter
+import com.smf.events.ui.timeslot.adapter.TimeSlotViewPagerModifyAvailabilityAdapter
 
 // 2487
 class TimeSlotsFragment : Fragment() {
@@ -43,22 +45,34 @@ class TimeSlotsFragment : Fragment() {
 
     private fun tabLayoutAndViewPagerSetUp() {
         // 2527 - Set Data For TabLayout
-        tabLayout.addTab(tabLayout.newTab().setText("Day(2)"))
-        tabLayout.addTab(tabLayout.newTab().setText("Week(4)"))
-        tabLayout.addTab(tabLayout.newTab().setText("Month(6)"))
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day)))
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.week)))
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.month)))
         // 2527 - TabLayout Page Limit
         viewPager.offscreenPageLimit = 3
-        // Set View Pager Adapter
-        viewPager.adapter =
-            TimeSlotViewPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
+        if (tag == "true") {
+            // Set View Pager Adapter
+            viewPager.adapter =
+                TimeSlotViewPagerModifyAvailabilityAdapter(
+                    requireActivity().supportFragmentManager,
+                    lifecycle
+                )
+        } else {
+            // Set View Pager Adapter
+            viewPager.adapter =
+                TimeSlotViewPagerBookedEventsAdapter(
+                    requireActivity().supportFragmentManager,
+                    lifecycle
+                )
+        }
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewPager.currentItem = tab!!.position
-                when(tab.position){
-                    0->sharedViewModel.setCalendarFormat("Day")
-                    1->sharedViewModel.setCalendarFormat("Week")
-                    2->sharedViewModel.setCalendarFormat("Month")
+                when (tab.position) {
+                    0 -> sharedViewModel.setCalendarFormat(getString(R.string.day))
+                    1 -> sharedViewModel.setCalendarFormat(getString(R.string.week))
+                    2 -> sharedViewModel.setCalendarFormat(getString(R.string.month))
                 }
             }
 

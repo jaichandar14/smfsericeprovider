@@ -2,6 +2,7 @@ package com.smf.events.ui.schedulemanagement
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,8 @@ import javax.inject.Inject
 // 2458
 class ScheduleManagementActivity :
     BaseActivity<ActivityScheduleManagmentBinding, ScheduleManagementViewModel>() {
+
+    private var status = false
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -47,7 +50,12 @@ class ScheduleManagementActivity :
                     resources.getString(R.string.switch_to_modify_slots_availability)
             else mViewDataBinding?.switchBtnTx?.text =
                 resources.getString(R.string.switch_to_View_Event_List)
+
+            status = mViewDataBinding?.switchBtn?.isChecked != false
+            Log.d("TAG", "calendarUI: $status")
+            updateTimeSlotsUI(status)
         }
+        Log.d("TAG", "calendarUI: $status")
         val frg = CalendarFragment() //create the fragment instance for the middle fragment
         val manager: FragmentManager =
             supportFragmentManager //create an instance of fragment manager
@@ -65,6 +73,23 @@ class ScheduleManagementActivity :
         val transaction: FragmentTransaction =
             manager.beginTransaction() //create an instance of Fragment-transaction
         transaction.add(R.id.timeslots_fragment, frg, "Frag_Bottom_tag")
+        transaction.commit()
+    }
+
+    // 2527 - Method for TimeSlots Ui
+    private fun updateTimeSlotsUI(status: Boolean) {
+        val frg = TimeSlotsFragment() //create the fragment instance for the middle fragment
+        val manager: FragmentManager =
+            supportFragmentManager //create an instance of fragment manager
+        val transaction: FragmentTransaction =
+            manager.beginTransaction() //create an instance of Fragment-transaction
+        if (status){
+            Log.d("TAG", "calendarUI if : $status")
+            transaction.replace(R.id.timeslots_fragment, frg, status.toString())
+        }else{
+            Log.d("TAG", "calendarUI else: $status")
+            transaction.replace(R.id.timeslots_fragment, frg, status.toString())
+        }
         transaction.commit()
     }
 }
