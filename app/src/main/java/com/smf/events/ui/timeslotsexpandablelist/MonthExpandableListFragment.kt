@@ -12,7 +12,10 @@ import androidx.fragment.app.activityViewModels
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -48,7 +51,7 @@ class MonthExpandableListFragment : Fragment(),
     private var fromDate: String? = null
     private var toDate: String? = null
     private var currentDate: String? = null
-    private var monthValue: String? = null
+    private var monthValue: String = ""
     private var groupPosition: Int = 0
 
     @Inject
@@ -91,9 +94,22 @@ class MonthExpandableListFragment : Fragment(),
                 currentDate = currentMonthDate.currentDate
                 monthValue = currentMonthDate.monthValue.toString()
                 serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
-                // 2670 - Api Call Token Validation
-                apiTokenValidation("bookedEventServices")
+                Log.d("TAG", "onViewCreated monthValue: $monthValue")
+                monthValidation()
             })
+    }
+
+    // 2795 - Method For Restrict Previous Month
+    private fun monthValidation(){
+        if (LocalDateTime.now().monthValue <= monthValue.toInt()) {
+            mDataBinding.expendableList.visibility = View.VISIBLE
+            mDataBinding.noEventsText.visibility = View.GONE
+            // 2670 - Api Call Token Validation
+            apiTokenValidation("bookedEventServices")
+        }else{
+            mDataBinding.expendableList.visibility = View.GONE
+            mDataBinding.noEventsText.visibility = View.VISIBLE
+        }
     }
 
     // 2670 - Method For Get Booked Event Services
@@ -164,11 +180,6 @@ class MonthExpandableListFragment : Fragment(),
             // Default Expansion Into The ExpandableList
             expandableListView!!.expandGroup(groupPosition)
             adapter!!.notifyDataSetChanged()
-
-            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-
-                return@setOnChildClickListener false
-            }
         }
     }
 
@@ -178,6 +189,7 @@ class MonthExpandableListFragment : Fragment(),
 
     override fun onClick(expandedListPosition: Int) {
         Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
+//        TODO - Click Events
     }
 
     // 2697 - Method For Add ExpandableList Title Group

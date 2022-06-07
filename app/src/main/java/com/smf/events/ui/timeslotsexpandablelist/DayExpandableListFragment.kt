@@ -29,7 +29,6 @@ import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
-import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -92,8 +91,19 @@ class DayExpandableListFragment : Fragment(),
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
-            Log.d("TAG", "onViewCreated listOfDays: ${currentDate.listOfDays} ")
-            setListOfDatesArrayList(currentDate)
+            if (currentDate.listOfDays.contains(currentDate.selectedDate)) {
+                currentDate.listOfDays.forEach {
+                    if (it == currentDate.selectedDate) {
+                        fromDate = currentDate.selectedDate
+                        toDate = currentDate.selectedDate
+                        listOfDates = currentDate.listOfDays
+                        apiTokenValidation("EventsOnSelectedDate")
+                        expandableListView?.collapseGroup(lastGroupPosition)
+                    }
+                }
+            } else {
+                setListOfDatesArrayList(currentDate)
+            }
         })
     }
 
@@ -135,11 +145,6 @@ class DayExpandableListFragment : Fragment(),
             )
             expandableListView!!.setAdapter(adapter)
             adapter?.setOnClickListener(this)
-
-            expandableListView!!.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
-
-                return@setOnChildClickListener false
-            }
         }
     }
 
@@ -151,6 +156,8 @@ class DayExpandableListFragment : Fragment(),
         if (isExpanded) {
             parent.collapseGroup(listPosition)
         } else {
+            // Send Selected Date To ViewModel For Calender UI Display
+            fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
             val bookedEventDetails = ArrayList<ListData>()
             bookedEventDetails.add(
                 ListData(
@@ -171,7 +178,8 @@ class DayExpandableListFragment : Fragment(),
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
-        toDate: String
+        toDate: String,
+        caller: String
     ) {
         sharedViewModel.getBookedEventServices(
             idToken, spRegId, serviceCategoryId,
@@ -182,7 +190,7 @@ class DayExpandableListFragment : Fragment(),
             when (apiResponse) {
                 is ApisResponse.Success -> {
                     Log.d("TAG", "check token result success BookedEvent: ${apiResponse.response}")
-                    updateExpandableListDataSelectedDate(apiResponse)
+                    updateExpandableListDataSelectedDate(apiResponse, caller)
                 }
                 is ApisResponse.Error -> {
                     Log.d("TAG", "check token result BookedEvent exp: ${apiResponse.exception}")
@@ -194,11 +202,31 @@ class DayExpandableListFragment : Fragment(),
     }
 
     // 2773 - Method For Update SelectedDate To ExpandableList
-    private fun updateExpandableListDataSelectedDate(apiResponse: ApisResponse.Success<BookedServiceList>) {
+    private fun updateExpandableListDataSelectedDate(
+        apiResponse: ApisResponse.Success<BookedServiceList>,
+        caller: String
+    ) {
+        if (caller == "EventsOnSelectedDate") {
+            initializeExpandableListSetUp()
+            listOfDates?.indexOf(fromDate)?.let { setDataToExpandableList(apiResponse, it) }
+            listOfDates?.indexOf(fromDate)?.let { expandableListView?.expandGroup(it) }
+            adapter!!.notifyDataSetChanged()
+            lastGroupPosition = listOfDates?.indexOf(fromDate)!!
+        } else {
+            setDataToExpandableList(apiResponse, groupPosition)
+            adapter!!.notifyDataSetChanged()
+        }
+    }
+
+    // 2795 - Method For Set Data To ExpandableList
+    private fun setDataToExpandableList(
+        apiResponse: ApisResponse.Success<BookedServiceList>,
+        position: Int
+    ) {
         val bookedEventDetails = ArrayList<ListData>()
         if (apiResponse.response.data.isNullOrEmpty()) {
             bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            childData[titleDate[groupPosition]] = bookedEventDetails
+            childData[titleDate[position]] = bookedEventDetails
         } else {
             for (i in apiResponse.response.data.indices) {
                 bookedEventDetails.add(
@@ -208,13 +236,13 @@ class DayExpandableListFragment : Fragment(),
                     )
                 )
             }
-            childData[titleDate[groupPosition]] = bookedEventDetails
+            childData[titleDate[position]] = bookedEventDetails
         }
-        adapter!!.notifyDataSetChanged()
     }
 
     override fun onClick(expandedListPosition: Int) {
         Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
+//        TODO - Click Events
     }
 
     // 2670 - Method For Set IdToken And SpRegId From SharedPreferences
@@ -260,7 +288,7 @@ class DayExpandableListFragment : Fragment(),
                     getBookedEventServices(
                         idToken, spRegId,
                         serviceCategoryId, serviceVendorOnboardingId,
-                        fromDate, toDate
+                        fromDate, toDate, caller
                     )
                 }
             }

@@ -45,6 +45,26 @@ class ScheduleManagementViewModel @Inject constructor(
         Log.d("TAG", "setCurrentDate: $listOfDays")
     }
 
+    // 2795 - From TimeSlot UI Expanded Date Send To Calendar UI
+    private var currentDateExp = MutableLiveData<String>()
+    val getExpCurrentDate: LiveData<String> = currentDateExp
+    fun setExpCurrentDate(
+        currentDate: String
+    ) {
+        currentDateExp.value = currentDate
+        Log.d("TAG", "setCurrentDate currentDate: $currentDate")
+    }
+
+    // 2795 - From TimeSlot UI Expanded Week Send To Calendar UI
+    private var currentWeekExp = MutableLiveData<ArrayList<String>>()
+    val getExpCurrentWeek: LiveData<ArrayList<String>> = currentWeekExp
+    fun setExpCurrentWeek(
+        currentDateWeek: ArrayList<String>
+    ) {
+        currentWeekExp.value = currentDateWeek
+        Log.d("TAG", "setCurrentDate currentWeek: $currentDateWeek")
+    }
+
     // 2686 Week from and to Date Live Data
     private var weekDate = MutableLiveData<WeekDates>()
 
@@ -52,14 +72,15 @@ class ScheduleManagementViewModel @Inject constructor(
         var weekListMapOfMonth: HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
         var seviceId: Int,
         var branchId: Int,
-        var weekList: ArrayList<String>,
+        var weekList: ArrayList<String>
     )
+
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
     fun setCurrentWeekDate(
-        weekListMapOfMonth: java.util.HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
+        weekListMapOfMonth: HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
         serviceId: Int,
         branchId: Int,
-        weekList: ArrayList<String>,
+        weekList: ArrayList<String>
     ) {
         Log.d("TAG", "setCurrentWeekDate: $weekListMapOfMonth  ")
         weekDate.value = WeekDates(weekListMapOfMonth, serviceId, branchId, weekList)
