@@ -9,7 +9,7 @@ import com.smf.events.ui.timeslotsexpandablelist.DayExpandableListFragment
 import com.smf.events.ui.timeslotsexpandablelist.MonthExpandableListFragment
 import com.smf.events.ui.timeslotsexpandablelist.WeekExpandableListFragment
 
-class TimeSlotViewPagerAdapter(
+class TimeSlotViewPagerBookedEventsAdapter(
     fragmentManager: FragmentManager, lifecycle: Lifecycle
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
