@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -24,9 +25,11 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 // 2458
 class CalendarFragment : Fragment(),
@@ -64,7 +67,11 @@ class CalendarFragment : Fragment(),
     private var daysPositon: ArrayList<Int>? = null
     private var absoluteAdapterPosition: Int? = null
     var serviceDate = ArrayList<String>()
-    private var dateList: ArrayList<String> = ArrayList()
+    private val c: Calendar = Calendar.getInstance()
+    private val cmonth = c.get(Calendar.MONTH)
+    private val cyear = c.get(Calendar.YEAR)
+    private var weekSelectedListAll: HashMap<LocalDate, Int>? = HashMap()
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -97,6 +104,30 @@ class CalendarFragment : Fragment(),
         setCalendarFormat()
         // 2686 Method for Token Validation and Service list ApiCall
         apiTokenValidationCalendar("AllServices")
+        // 2796 Method for observing Exp View Date
+        selectedEXPDateObserver()
+
+    }
+
+    private fun selectedEXPDateObserver() {
+        sharedViewModel.getExpCurrentDate.observe(requireActivity(), {
+            val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+            val currentDay = LocalDate.parse(it, currentDayFormatter)
+            CalendarUtils.selectedDate = currentDay
+            setMonthView(dayinWeek, daysPositon)
+        })
+    }
+
+    private fun setSelectedWeekSetter(
+        weeksOfMonth: java.util.HashMap<Int, WeekDatesOfMonth>,
+        fromAndToDate: CalendarUtils.WeekDates,
+    ) {
+        sharedViewModel.setCurrentWeekDate(
+            weeksOfMonth,
+            serviceCategoryId,
+            serviceVendorOnboardingId,
+            fromAndToDate.weekList, serviceDate
+        )
 
     }
 
@@ -116,6 +147,18 @@ class CalendarFragment : Fragment(),
     // 2685 Method for Setting the MonthDate
     private fun settingMonthDate() {
         val monthDate = calendarUtils.monthFromAndToDate()
+        if (CalendarUtils.selectedDate?.monthValue!! <= cmonth && CalendarUtils.selectedDate?.year!! <= cyear) {
+            monthDate.fromDate = ""
+            monthDate.toDate = ""
+            setCurrentMonth(monthDate)
+        } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
+            setCurrentMonth(monthDate)
+        }
+
+    }
+
+    // 2796 Method for setting current Month
+    private fun setCurrentMonth(monthDate: CalendarUtils.MonthDates) {
         sharedViewModel.setCurrentMonthDate(
             monthDate.fromDate,
             monthDate.toDate,
@@ -128,15 +171,16 @@ class CalendarFragment : Fragment(),
     private fun settingWeekDate() {
         val fromAndToDate = calendarUtils.fromAndToDate()
         val weeksOfMonth = calendarUtils.fetchWeekOfMonth()
-        for (i in 1 until weeksOfMonth.size + 1) {
-            Log.d("TAG", "settingWeekDate: ${weeksOfMonth.get(i)?.fromDate}")
+        val cmonth = c.get(Calendar.MONTH)
+        if (CalendarUtils.selectedDate?.monthValue!! < cmonth && CalendarUtils.selectedDate?.year!! <= cyear) {
+            weeksOfMonth.clear()
+            serviceDate.clear()
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
+        } else if (CalendarUtils.selectedDate?.monthValue!! >= cmonth && CalendarUtils.selectedDate?.year!! >= cyear) {
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
+        } else {
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
         }
-        sharedViewModel.setCurrentWeekDate(
-            weeksOfMonth,
-            serviceCategoryId,
-            serviceVendorOnboardingId,
-            fromAndToDate.weekList
-        )
     }
 
     // 2622 Method for Calendar Format(Day,week,month) Picker
@@ -150,11 +194,36 @@ class CalendarFragment : Fragment(),
             // 2458 Method For Setting Month View in Calendar
             setMonthView(dayinWeek, daysPositon)
         })
+        selectedWeekEXPObserver()
+    }
+
+    // 2796 Method for week Observer
+    private fun selectedWeekEXPObserver() {
+        sharedViewModel.getExpCurrentWeek.observe(requireActivity(), {
+            val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+            val selectedDate: ArrayList<String> = ArrayList()
+            it.forEach {
+                selectedDate.add(it)
+            }
+            val selectedDateLocal: ArrayList<LocalDate> = ArrayList()
+            selectedDate.forEach {
+                selectedDateLocal.add(LocalDate.parse(it, currentDayFormatter))
+            }
+            val currentDay = LocalDate.parse(it.first(), currentDayFormatter)
+            daysPositon?.clear()
+            for (i in 0 until 7) {
+                weekSelectedListAll!!.get(currentDay.plusDays(i.toLong()))
+                    ?.let { it1 -> daysPositon?.add(it1) }
+            }
+            CalendarUtils.selectedDate = currentDay
+            setMonthView(dayinWeek, daysPositon)
+        })
     }
 
     // 2622
     // 2458 Method For Setting Month View in Calendar
     private fun setMonthView(dayinWeek: ArrayList<String>?, daysPositon: ArrayList<Int>?) {
+        Log.d("TAG", "setMonthView: $dayinWeek")
         monthYearText?.text =
             CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDate(it) }
         yearText?.text = CalendarUtils.selectedDate?.let { calendarUtils.yearAndMonthFromDate(it) }
@@ -193,7 +262,7 @@ class CalendarFragment : Fragment(),
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            settingWeekDate()
+            //  settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
         }
@@ -206,7 +275,7 @@ class CalendarFragment : Fragment(),
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            settingWeekDate()
+            //  settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
         }
@@ -230,7 +299,7 @@ class CalendarFragment : Fragment(),
                 calendarUtils.fetchWeekOfMonth(),
                 serviceCategoryId,
                 serviceVendorOnboardingId,
-                weekList
+                weekList, serviceDate
             )
             setMonthView(dayinWeek, daysPositon)
             sharedViewModel.setCurrentDate(
@@ -240,6 +309,7 @@ class CalendarFragment : Fragment(),
                 serviceDate
             )
         }
+
     }
 
     // 2685 CallBack Mehod for WeekSelected Date Onclick
@@ -253,6 +323,12 @@ class CalendarFragment : Fragment(),
             daysPositon = pos
             this.absoluteAdapterPosition = absoluteAdapterPosition
         }
+        //setMonthView(dayinWeek, daysPositon)
+    }
+
+    override fun weekMapList(weekMapList: HashMap<LocalDate, Int>?) {
+        Log.d("TAG", "weekMapList: $weekMapList")
+        weekSelectedListAll = weekMapList
     }
 
     // 2458 Setting IdToken, SpRegId And RollId
@@ -289,7 +365,7 @@ class CalendarFragment : Fragment(),
     ) {
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
         apiTokenValidationCalendar("EventDateApiBranches")
-        settingWeekDate()
+        //  settingWeekDate()
         settingMonthDate()
     }
 
@@ -311,6 +387,7 @@ class CalendarFragment : Fragment(),
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
                     }
                     else -> {
+                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -393,6 +470,11 @@ class CalendarFragment : Fragment(),
                 this.serviceVendorOnboardingId,
                 serviceDate
             )
+            val fromAndToDate = calendarUtils.fromAndToDate()
+            val weeksOfMonth = calendarUtils.fetchWeekOfMonth()
+            weeksOfMonth.clear()
+            serviceDate.clear()
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
         } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
             sharedViewModel.getEventDates(
                 idToken,
@@ -416,7 +498,8 @@ class CalendarFragment : Fragment(),
                             this.serviceVendorOnboardingId,
                             serviceDate
                         )
-
+                        // 2796
+                        settingWeekDate()
                         setMonthView(dayinWeek, daysPositon)
                         Log.d("TAG", "Calendar Event:$serviceDate ")
                     }
@@ -424,6 +507,7 @@ class CalendarFragment : Fragment(),
                         Log.d("TAG", "check token result: ${apiresponse.exception}")
                     }
                     else -> {
+                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -466,6 +550,7 @@ class CalendarFragment : Fragment(),
                     getAllServices()
                 }
                 else -> {
+                    Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
                 }
             }
         }

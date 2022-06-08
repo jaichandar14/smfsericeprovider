@@ -22,6 +22,7 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 // 2458
 class CalendarAdapter(
@@ -40,6 +41,8 @@ class CalendarAdapter(
     private var dayinWeek: ArrayList<String>? = null
     private var positonOfDays: ArrayList<Int>? = null
     var serviceDateList: ArrayList<String>? = null
+    var i = 1
+    var weekMapListAll: HashMap<LocalDate, Int> = HashMap()
 
     init {
         this.onItemListener = onItemListener
@@ -70,6 +73,16 @@ class CalendarAdapter(
             Log.d("TAG", "onBindViewHolder: $positonOfDays")
             holder.weekSelection(positonOfDays, position)
         }
+        // 2796 Method for fetching all Date nd its position
+        fetchingAllDateAndPosition( position)
+    }
+
+    private fun fetchingAllDateAndPosition( position: Int) {
+        val date = days?.get(position)
+        date?.let { weekMapListAll.put(it, position) }
+        if (position == 41) {
+            onItemListener?.weekMapList(weekMapListAll)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -92,6 +105,11 @@ class CalendarAdapter(
             selectedDate: LocalDate?,
             absoluteAdapterPosition: Int,
         )
+       // 2796  For All Date and Position
+        fun weekMapList(
+            weekMapList: HashMap<LocalDate, Int>?,
+        )
+
     }
 
     // 2458 Calendar View Holder Class
@@ -130,6 +148,8 @@ class CalendarAdapter(
         fun calendarDWMLogics() {
             var selectedDatePos = 0
             val date = days?.get(absoluteAdapterPosition)
+            Log.d("TAG", "calendarDWMLogicsDatte:$date ")
+
             if (CalendarUtils.selectedDate == date) {
                 selectedDatePos = absoluteAdapterPosition
             }
@@ -213,18 +233,18 @@ class CalendarAdapter(
         // 2528 For Selecting Entire Week
         fun weekSelection(previousDates: ArrayList<Int>?, position: Int) {
             val date = days?.get(position)
-            if (date?.monthValue!! >= cmonth) {
-                Log.d("TAG", "weekSelection: $absoluteAdapterPosition")
-                if (absoluteAdapterPosition == previousDates?.first()) {
-                    parentView.setBackgroundResource(R.drawable.week_selector)
-                } else if (absoluteAdapterPosition == previousDates?.last()) {
-                    parentView.setBackgroundResource(R.drawable.week_selection_right)
+            // if (date?.monthValue!! >= cmonth && date.year >= cyear)  {
+            Log.d("TAG", "weekSelection: $absoluteAdapterPosition")
+            if (absoluteAdapterPosition == previousDates?.first()) {
+                parentView.setBackgroundResource(R.drawable.week_selector)
+            } else if (absoluteAdapterPosition == previousDates?.last()) {
+                parentView.setBackgroundResource(R.drawable.week_selection_right)
+            }
+            previousDates?.subList(1, 6)?.forEach {
+                if (absoluteAdapterPosition == it) {
+                    parentView.setBackgroundResource(R.drawable.week_selected_each)
                 }
-                previousDates?.subList(1, 6)?.forEach {
-                    if (absoluteAdapterPosition == it) {
-                        parentView.setBackgroundResource(R.drawable.week_selected_each)
-                    }
-                }
+                //  }
             }
         }
 

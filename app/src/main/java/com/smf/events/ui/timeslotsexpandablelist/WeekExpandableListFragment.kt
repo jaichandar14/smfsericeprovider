@@ -76,7 +76,7 @@ class WeekExpandableListFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mDataBinding = FragmentTimeSlotsExpandableListBinding.inflate(inflater, container, false)
         return mDataBinding.root
@@ -101,13 +101,20 @@ class WeekExpandableListFragment : Fragment(),
                 weekMap?.forEach { it ->
                     listOfDatesArray.add(it.value)
                 }
+                Log.d("TAG", "onViewCreated booked date: ${currentWeekDate.weekListMapOfMonth}")
+
                 weekList = currentWeekDate.weekList
-                listOfDates.add("06/08/2022")
-                listOfDates.add("06/13/2022")
-                listOfDates.add("06/20/2022")
-                listOfDates.add("06/24/2022")
+                Log.d("TAG", "onViewCreated booked datemap: ${weekMap}")
+
+                listOfDates = currentWeekDate.bookedWeekList
+//                listOfDates.add("06/08/2022")
+//                listOfDates.add("06/13/2022")
+//                listOfDates.add("06/20/2022")
+//                listOfDates.add("06/24/2022")
 
                 if (checkCurrentWeekHaveEvent(currentWeekDate)) {
+                    mDataBinding.expendableList.visibility = View.VISIBLE
+                    mDataBinding.noEventsText.visibility = View.GONE
                     listOfDatesArray.forEach {
                         if (currentWeekDate.weekList[0] == it[0]) {
                             this.groupPosition = listOfDatesArray.indexOf(it)
@@ -186,7 +193,7 @@ class WeekExpandableListFragment : Fragment(),
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
         toDate: String,
-        caller: String
+        caller: String,
     ) {
         sharedViewModel.getBookedEventServices(
             idToken, spRegId, serviceCategoryId,
@@ -211,7 +218,7 @@ class WeekExpandableListFragment : Fragment(),
     // Method For Updating ExpandableList Data
     private fun updateExpandableListData(
         apiResponse: ApisResponse.Success<BookedServiceList>,
-        caller: String
+        caller: String,
     ) {
         if (caller == "bookedEventServicesInitial") {
             // ExpandableView And Adapter Initialization
@@ -366,15 +373,16 @@ class WeekExpandableListFragment : Fragment(),
     // 2776 - method For getting Week Map List
     private fun getWeekListMap(currentWeekDate: ScheduleManagementViewModel.WeekDates): HashMap<Int, ArrayList<String>> {
         val weekMap = HashMap<Int, ArrayList<String>>()
-        for (i in 1 until currentWeekDate.weekListMapOfMonth.size + 1) {
-            val weekFromDate = currentWeekDate.weekListMapOfMonth[i]?.fromDate
+        currentWeekDate.weekListMapOfMonth.forEach {
+            Log.d("TAG", "getWeekListMap: ${it.key}")
+            val weekFromDate = currentWeekDate.weekListMapOfMonth[it.key]?.fromDate
             val weekList = ArrayList<String>()
             for (a in 0 until 7) {
                 if (weekFromDate != null) {
                     weekList.add(weekFromDate.plusDays(a.toLong()).format(dateFormatter))
                 }
             }
-            weekMap[i] = weekList
+            weekMap[it.key] = weekList
         }
         return weekMap
     }
