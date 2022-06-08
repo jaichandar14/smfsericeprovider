@@ -71,7 +71,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mDataBinding = FragmentTimeSlotsExpandableListBinding.inflate(inflater, container, false)
         return mDataBinding.root
@@ -100,13 +100,13 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2795 - Method For Restrict Previous Month
-    private fun monthValidation(){
-        if (LocalDateTime.now().monthValue <= monthValue.toInt()) {
+    private fun monthValidation() {
+        if (!fromDate.isNullOrEmpty() && !toDate.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
             // 2670 - Api Call Token Validation
             apiTokenValidation("bookedEventServices")
-        }else{
+        } else {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         }
@@ -117,7 +117,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
-        toDate: String
+        toDate: String,
     ) {
         sharedViewModel.getBookedEventServices(
             idToken, spRegId, serviceCategoryId,
@@ -133,7 +133,8 @@ class MonthModifyExpandableListFragment : Fragment(),
                 is ApisResponse.Error -> {
                     Log.d("TAG", "check token result: ${apiResponse.exception}")
                 }
-                else -> {}
+                else -> {
+                }
             }
         })
     }
@@ -254,7 +255,8 @@ class MonthModifyExpandableListFragment : Fragment(),
                         }
                     }
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }

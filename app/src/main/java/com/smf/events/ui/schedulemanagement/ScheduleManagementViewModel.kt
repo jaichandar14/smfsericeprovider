@@ -12,7 +12,7 @@ import androidx.lifecycle.liveData
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 
@@ -49,7 +49,7 @@ class ScheduleManagementViewModel @Inject constructor(
     private var currentDateExp = MutableLiveData<String>()
     val getExpCurrentDate: LiveData<String> = currentDateExp
     fun setExpCurrentDate(
-        currentDate: String
+        currentDate: String,
     ) {
         currentDateExp.value = currentDate
         Log.d("TAG", "setCurrentDate currentDate: $currentDate")
@@ -59,7 +59,7 @@ class ScheduleManagementViewModel @Inject constructor(
     private var currentWeekExp = MutableLiveData<ArrayList<String>>()
     val getExpCurrentWeek: LiveData<ArrayList<String>> = currentWeekExp
     fun setExpCurrentWeek(
-        currentDateWeek: ArrayList<String>
+        currentDateWeek: ArrayList<String>,
     ) {
         currentWeekExp.value = currentDateWeek
         Log.d("TAG", "setCurrentDate currentWeek: $currentDateWeek")
@@ -72,7 +72,8 @@ class ScheduleManagementViewModel @Inject constructor(
         var weekListMapOfMonth: HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
         var seviceId: Int,
         var branchId: Int,
-        var weekList: ArrayList<String>
+        var weekList: ArrayList<String>,
+        var bookedWeekList: ArrayList<String>,
     )
 
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
@@ -80,10 +81,12 @@ class ScheduleManagementViewModel @Inject constructor(
         weekListMapOfMonth: HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
         serviceId: Int,
         branchId: Int,
-        weekList: ArrayList<String>
+        weekList: ArrayList<String>,
+        bookedWeekList: ArrayList<String>,
     ) {
         Log.d("TAG", "setCurrentWeekDate: $weekListMapOfMonth  ")
-        weekDate.value = WeekDates(weekListMapOfMonth, serviceId, branchId, weekList)
+        weekDate.value =
+            WeekDates(weekListMapOfMonth, serviceId, branchId, weekList, bookedWeekList)
     }
 
     // 2686 Month From and To Date Live Data
