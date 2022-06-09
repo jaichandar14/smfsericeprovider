@@ -164,6 +164,8 @@
     <string name="day">Day</string>
     <string name="week">Week</string>
     <string name="month">Month</string>
+    // 2803
     <string name="event">Event</string>
-
+    <string name="you_are_deselecting">You are deselecting 3pm - 6pm slots availablity for the entire month of August .This will modify all you existing slots availability.Please click ok to proceed</string>
+    <string name="event_booked_on_the_below_mentioned_dates_hence_you_can_not_modify_the_3pm_6pm_slots_availability">Event Booked on the below mentioned dates.Hence you can not modify the 3pm - 6pm slots availability</string>
 </resources>

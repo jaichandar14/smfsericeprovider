@@ -27,5 +27,8 @@
     <color name="circle_outer_border">#C6C6C6</color>
     <color name="calendar_background">#494444</color>
     <color name="calendar_border_darl_gray">#605D5D</color>
+    // 2803
+    <color name="pairing_theme">#FF3577</color>
+    <color name="pairing_theme_fade">#F9649D</color>
 
 </resources>

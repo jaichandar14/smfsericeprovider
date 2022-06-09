@@ -72,7 +72,10 @@
     <dimen name="size_33dp">33dp</dimen>
     // 2527
     <dimen name="size_1000dp">1000dp</dimen>
-    //2528
+    // 2528
     <dimen name="size_180dp">180dp</dimen>
     <dimen name="size_210">210dp</dimen>
+    // 2803
+    <dimen name="size_37dp">37dp</dimen>
+    <dimen name="size_70dp">70dp</dimen>
 </resources>
