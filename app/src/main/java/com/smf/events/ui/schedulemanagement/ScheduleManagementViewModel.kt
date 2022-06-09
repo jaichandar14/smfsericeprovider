@@ -232,6 +232,28 @@ class ScheduleManagementViewModel @Inject constructor(
             )
         }
 
+    // 2801 - Booked Event Services API For Modify Slots
+    fun getModifyBookedEventServices(
+        idToken: String, spRegId: Int, serviceCategoryId: Int?,
+        serviceVendorOnBoardingId: Int?,
+        isMonth: Boolean,
+        fromDate: String,
+        toDate: String,
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(
+                scheduleManagementRepository.getModifyBookedEventServices(
+                    idToken,
+                    spRegId,
+                    serviceCategoryId,
+                    serviceVendorOnBoardingId,
+                    isMonth,
+                    fromDate,
+                    toDate
+                )
+            )
+        }
+
     private var callBackInterface: CallBackInterface? = null
 
     // 2458 Initializing CallBack Interface Method
