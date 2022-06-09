@@ -38,6 +38,7 @@ class DayModifyExpandableListFragment : Fragment(),
     CustomModifyExpandableListAdapterDay.TimeSlotIconClickListener,
     Tokens.IdTokenCallBackInterface {
 
+    var TAG = "DayModifyExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomModifyExpandableListAdapterDay? = null
     private var childData = HashMap<String, List<ListData>>()
@@ -104,9 +105,9 @@ class DayModifyExpandableListFragment : Fragment(),
                         apiTokenValidation("EventsOnSelectedDate")
                     }
                 }
-                Log.d("TAG", "onViewCreated sele: ${currentDate.selectedDate}")
+                Log.d(TAG, "onViewCreated sele: ${currentDate.selectedDate}")
             } else {
-                Log.d("TAG", "onViewCreated sele e: ${currentDate.selectedDate}")
+                Log.d(TAG, "onViewCreated sele e: ${currentDate.selectedDate}")
                 setListOfDatesArrayList(currentDate)
             }
         })
@@ -148,6 +149,7 @@ class DayModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
+        // Now here passed static values. In next commit will change dynamic values
         sharedViewModel.getModifyBookedEventServices(
             idToken, 167, serviceCategoryId,
             1669,
@@ -155,7 +157,7 @@ class DayModifyExpandableListFragment : Fragment(),
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
-                    Log.d("TAG", "success ModifyBookedEvent: ${apiResponse.response.data}")
+                    Log.d(TAG, "success ModifyBookedEvent: ${apiResponse.response.data}")
                     if (caller == "EventsOnSelectedDate") {
                         eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
                     } else {
@@ -165,7 +167,7 @@ class DayModifyExpandableListFragment : Fragment(),
                 }
                 is ApisResponse.Error -> {
                     Log.d(
-                        "TAG",
+                        TAG,
                         "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
                     )
                 }
@@ -217,7 +219,7 @@ class DayModifyExpandableListFragment : Fragment(),
                 childData[titleDate[i]] = bookedEventDetails
             }
         }
-        Log.d("TAG", "getBookedEventServices childData: $childData")
+        Log.d(TAG, "getBookedEventServices childData: $childData")
         initializeExpandableListSetUp(caller)
 //                        listOfDates?.indexOf(fromDate)?.let { expandableListView?.expandGroup(it) }
 //                        lastGroupPosition = listOfDates?.indexOf(fromDate)!!
@@ -229,7 +231,7 @@ class DayModifyExpandableListFragment : Fragment(),
         apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
         position: Int
     ) {
-        Log.d("TAG", "setDataToExpandableList position: $position")
+        Log.d(TAG, "setDataToExpandableList position: $position")
         val bookedEventDetails = ArrayList<ListData>()
         apiResponse.response.data.forEach { data ->
             if (data.bookedEventServiceDtos == null) {
@@ -255,7 +257,7 @@ class DayModifyExpandableListFragment : Fragment(),
                 )
             }
         }
-        Log.d("TAG", "setDataToExpandableList pos11: $bookedEventDetails")
+        Log.d(TAG, "setDataToExpandableList pos11: $bookedEventDetails")
         childData[titleDate[position]] = bookedEventDetails
     }
 
@@ -283,7 +285,7 @@ class DayModifyExpandableListFragment : Fragment(),
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
         this.parent = parent as ExpandableListView
         this.groupPosition = listPosition
-        Log.d("TAG", "setDataToExpandableList pos cli: ${this.groupPosition}")
+        Log.d(TAG, "setDataToExpandableList pos cli: ${this.groupPosition}")
         fromDate = listOfDates?.get(listPosition)
         toDate = listOfDates?.get(listPosition)
         if (isExpanded) {

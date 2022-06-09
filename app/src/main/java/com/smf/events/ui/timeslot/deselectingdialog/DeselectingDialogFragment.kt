@@ -11,6 +11,7 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentDeseletingDialogBinding
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.timeslot.deselectingdialog.adaptor.DeselectedDialogAdaptor
@@ -64,7 +65,7 @@ class DeselectingDialogFragment(
 
     override fun onStart() {
         super.onStart()
-        if (purpose == "Deselected") {
+        if (purpose == AppConstants.DESELECTED) {
             var window: Window? = dialog?.window
             var params: WindowManager.LayoutParams = window!!.attributes
             params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
@@ -88,7 +89,7 @@ class DeselectingDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (purpose == "Deselected") {
+        if (purpose == AppConstants.DESELECTED) {
             deselectedDialog()
         } else if (purpose == "sele") {
             modifyDialog()
@@ -100,15 +101,19 @@ class DeselectingDialogFragment(
 
     // 2801 - method For OkButton
     private fun okBtnClick() {
-        mDataBinding?.okBtn?.setOnClickListener {
-
+        mDataBinding?.let {
+            it.okBtn.setOnClickListener {
+//    TODO OK BUTTON API CALL
+            }
         }
     }
 
     // 2801 - method For CancelButton
     private fun cancelBtnClick() {
-        mDataBinding?.cancelBtn?.setOnClickListener {
-            dismiss()
+        mDataBinding?.let {
+            it.cancelBtn.setOnClickListener {
+                dismiss()
+            }
         }
     }
 
@@ -135,7 +140,7 @@ class DeselectingDialogFragment(
     // 2803 Method for Deselection Dialog
     private fun deselectedDialog() {
         mDataBinding?.txTitle?.text =
-            getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth +"."+ " " + getString(
+            getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
                 R.string.you_are_deselecting_second
             )
     }
