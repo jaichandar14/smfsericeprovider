@@ -91,6 +91,8 @@ class DayExpandableListFragment : Fragment(),
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
+            mDataBinding.expendableList.visibility = View.VISIBLE
+            mDataBinding.noEventsText.visibility = View.GONE
             if (currentDate.listOfDays.contains(currentDate.selectedDate)) {
                 currentDate.listOfDays.forEach {
                     if (it == currentDate.selectedDate) {

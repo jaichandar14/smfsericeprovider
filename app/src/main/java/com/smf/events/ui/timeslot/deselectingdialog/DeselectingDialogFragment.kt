@@ -1,6 +1,5 @@
 package com.smf.events.ui.timeslot.deselectingdialog
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -12,6 +11,7 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentDeseletingDialogBinding
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.ui.timeslot.deselectingdialog.adaptor.DeselectedDialogAdaptor
@@ -20,7 +20,11 @@ import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 // 2803 Deselecting and modify Dialog Fragment
-class DeselectingDialogFragment(var s: String) :
+class DeselectingDialogFragment(
+    private var purpose: String,
+    var timeSlot: String,
+    var currentMonth: String
+) :
     BaseDialogFragment<FragmentDeseletingDialogBinding, DeselectingDialogViewModel>() {
 
     private lateinit var adapter: DeselectedDialogAdaptor
@@ -36,16 +40,19 @@ class DeselectingDialogFragment(var s: String) :
 
     companion object {
         const val TAG = "CustomDialogFragment"
-        fun newInstance(s: String): DeselectingDialogFragment {
-            return DeselectingDialogFragment(s)
+        fun newInstance(
+            purpose: String,
+            timeSlot: String,
+            currentMonth: String
+        ): DeselectingDialogFragment {
+            return DeselectingDialogFragment(purpose, timeSlot, currentMonth)
         }
     }
 
-
     override fun getViewModel(): DeselectingDialogViewModel =
         ViewModelProvider(this, factory).get(
-            DeselectingDialogViewModel::class.java)
-
+            DeselectingDialogViewModel::class.java
+        )
 
     override fun getBindingVariable(): Int = BR.deselectingViewModel
 
@@ -56,10 +63,9 @@ class DeselectingDialogFragment(var s: String) :
         super.onAttach(context)
     }
 
-
     override fun onStart() {
         super.onStart()
-        if (s == "Deselected") {
+        if (purpose == AppConstants.DESELECTED) {
             var window: Window? = dialog?.window
             var params: WindowManager.LayoutParams = window!!.attributes
             params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
@@ -75,32 +81,55 @@ class DeselectingDialogFragment(var s: String) :
             //dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.setBackgroundDrawableResource(R.drawable.shape_dailog_curved)
             dialog?.window?.setLayout(800, ConstraintLayout.LayoutParams.WRAP_CONTENT)
-            mDataBinding?.txTitle?.text =
-                "Event Booked on the below mentioned dates.Hence you can't modify the 3pm -6pm slots availability"
             mDataBinding?.cancelBtn?.visibility = View.GONE
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (s == "Deselected") {
+        if (purpose == AppConstants.DESELECTED) {
             deselectedDialog()
-        } else if (s == "sele") {
+        } else if (purpose == "sele") {
             modifyDialog()
+        }
+
+        okBtnClick()
+        cancelBtnClick()
+    }
+
+    // 2801 - method For OkButton
+    private fun okBtnClick() {
+        mDataBinding?.let {
+            it.okBtn.setOnClickListener {
+//    TODO OK BUTTON API CALL
+            }
+        }
+    }
+
+    // 2801 - method For CancelButton
+    private fun cancelBtnClick() {
+        mDataBinding?.let {
+            it.cancelBtn.setOnClickListener {
+                dismiss()
+            }
         }
     }
 
     // 2803  Modify Dialog Method
     private fun modifyDialog() {
-        mDataBinding?.txTitle?.text = getString(R.string.event_booked_on_the_below_mentioned_dates_hence_you_can_not_modify_the_3pm_6pm_slots_availability)
+        mDataBinding?.txTitle?.text =
+            getString(R.string.event_booked_on_the_below_mentioned_dates_hence_you_can_not_modify_the_3pm_6pm_slots_availability)
         mDataBinding?.cancelBtn?.visibility = View.GONE
         mDataBinding?.listView?.visibility = View.VISIBLE
         var listData: ArrayList<ListData> = ArrayList()
-        listData.add(ListData("AUG 19", "jaibday", "6pm - 9pm", "chennai")
+        listData.add(
+            ListData("AUG 19", "jaibday", "6pm - 9pm", "chennai")
         )
-        listData.add(ListData("AUG 19", "jaibday", "9pm - 12pm", "chennai")
+        listData.add(
+            ListData("AUG 19", "jaibday", "9pm - 12pm", "chennai")
         )
-        listData.add(ListData("AUG 19", "jaibday", "9pm - 12pm", "chennai")
+        listData.add(
+            ListData("AUG 19", "jaibday", "9pm - 12pm", "chennai")
         )
         adapter = DeselectedDialogAdaptor(listData, requireContext())
         mDataBinding?.listView?.adapter = adapter
@@ -108,7 +137,10 @@ class DeselectingDialogFragment(var s: String) :
 
     // 2803 Method for Deselection Dialog
     private fun deselectedDialog() {
-        mDataBinding?.txTitle?.text = getString(R.string.you_are_deselecting)
+        mDataBinding?.txTitle?.text =
+            getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                R.string.you_are_deselecting_second
+            )
     }
 
 }

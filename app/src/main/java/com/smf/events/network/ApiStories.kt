@@ -13,6 +13,7 @@ import com.smf.events.ui.schedulemanagement.model.EventDates
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.vieworderdetails.model.OrderDetails
 import retrofit2.http.*
@@ -114,4 +115,15 @@ interface ApiStories {
         @Query ("toDate") toDate:String,
     ): EventDates
 
+    // 2801 - Booked Event Services API For Modify Slots
+    @GET("epm-service/api/app-services/slot-availability/{sp-reg-id}")
+    suspend fun getModifyBookedEventServices(
+        @Header("Authorization") idToken: String,
+        @Path("sp-reg-id") spRegId: Int,
+        @Query("serviceCategoryId") serviceCategoryId: Int?,
+        @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int?,
+        @Query("isMonth") isMonth: Boolean,
+        @Query("fromDate") fromDate: String,
+        @Query("toDate") toDate: String
+    ): ModifyBookedServiceEvents
 }

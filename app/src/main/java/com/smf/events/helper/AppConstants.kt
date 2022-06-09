@@ -21,4 +21,7 @@ object AppConstants {
     const val REJECTED_BID = "Bid Rejected"
     const val TIMED_OUT = "Timed Out"
     const val BID_LOST = "Lost Bid"
+
+    //2801
+    const val DESELECTED = "Deselected"
 }

@@ -5,6 +5,7 @@ import com.smf.events.network.ApiStories
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.schedulemanagement.model.EventDates
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -70,6 +71,30 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
     ): ApisResponse<EventDates> {
         return try {
             val getResponse =apiStories.getEventDates(idToken,spRegId, serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate)
+            ApisResponse.Success(getResponse)
+        } catch (e: HttpException) {
+            ApisResponse.Error(e)
+        }
+    }
+
+    // 2801 - Booked Event Services API For Modify Slots
+    suspend fun getModifyBookedEventServices(
+        idToken: String, spRegId: Int, serviceCategoryId: Int?,
+        serviceVendorOnBoardingId: Int?,
+        isMonth: Boolean,
+        fromDate: String,
+        toDate: String
+    ): ApisResponse<ModifyBookedServiceEvents> {
+        return try {
+            val getResponse = apiStories.getModifyBookedEventServices(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnBoardingId,
+                isMonth,
+                fromDate,
+                toDate
+            )
             ApisResponse.Success(getResponse)
         } catch (e: HttpException) {
             ApisResponse.Error(e)
