@@ -31,6 +31,8 @@ import com.smf.events.ui.signup.SignUpFragment
 import com.smf.events.ui.signup.SignUpModule
 import com.smf.events.ui.splash.SplashFragment
 import com.smf.events.ui.splash.SplashModule
+import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
+import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogModule
 import com.smf.events.ui.timeslotmodifyexpanablelist.DayModifyExpandableListFragment
 import com.smf.events.ui.timeslotmodifyexpanablelist.MonthModifyExpandableListFragment
 import com.smf.events.ui.timeslotmodifyexpanablelist.WeekModifyExpandableListFragment
@@ -124,4 +126,9 @@ abstract class ActivityBuilder {
     // 2798 - Time Slots Modify Month ExpandableList Fragment Injection
     @ContributesAndroidInjector(modules = [TimeSlotsExpandableListModule::class])
     abstract fun provideMonthModifyExpandableListFragment(): MonthModifyExpandableListFragment
+
+    // 2803 - Deselection dialog Fragment Injection
+    @ContributesAndroidInjector(modules = [DeselectingDialogModule::class])
+    abstract fun provideDeselectedDialogFragment(): DeselectingDialogFragment
+
 }

@@ -21,6 +21,7 @@ import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.ServicesData
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.schedulemanagement.adapter.CalendarAdapter
+import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -265,6 +266,12 @@ class CalendarFragment : Fragment(),
             //  settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
+
+//            DeselectingDialogFragment.newInstance("sele")
+//                .show(
+//                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+//                    DeselectingDialogFragment.TAG
+//                )
         }
     }
 
@@ -278,6 +285,11 @@ class CalendarFragment : Fragment(),
             //  settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
+//            DeselectingDialogFragment.newInstance("Deselected")
+//                .show(
+//                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+//                    DeselectingDialogFragment.TAG
+//                )
         }
     }
 
@@ -490,7 +502,12 @@ class CalendarFragment : Fragment(),
                         Log.d("TAG",
                             "Calendar Event List : ${apiresponse.response.data.serviceDates}")
                         apiresponse.response.data.serviceDates.forEach {
-                            serviceDate.add(it)
+                            val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                           var dateList= LocalDate.parse(it, currentDayFormatter)
+                            if (dateList<= LocalDate.now()){
+                                // previous Date
+                            }else{
+                            serviceDate.add(it)}
                         }
                         sharedViewModel.setCurrentDate(
                             CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
