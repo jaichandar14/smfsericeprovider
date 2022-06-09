@@ -18,6 +18,7 @@ class CustomModifyExpandableListAdapterDay internal constructor(
     private val childData: HashMap<String, List<ListData>>
 ) : BaseExpandableListAdapter() {
 
+    private val TAG = "CustomModifyExpandableL"
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         return this.childData[this.titleDate[listPosition]]!![expandedListPosition]
     }
@@ -56,7 +57,7 @@ class CustomModifyExpandableListAdapterDay internal constructor(
         address12To3am?.text = null
 
         image12To3am?.setOnClickListener {
-            Log.d("TAG", "getChildView: clicked $expandedListPosition")
+            Log.d(TAG , "getChildView: clicked $expandedListPosition")
             timeSlotIconOnClickListener?.onChildClick(listPosition, expandedListPosition,expandedListData.timeSlot)
         }
 
@@ -72,11 +73,11 @@ class CustomModifyExpandableListAdapterDay internal constructor(
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = " "+ context.getString(R.string.available)
             image12To3am?.setImageResource(R.drawable.select)
-        } else if (expandedListData.status[0].branchName == "available") {
+        } else if (expandedListData.status[0].branchName == context.getString(R.string.available_small)) {
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = " "+ context.getString(R.string.available)
             image12To3am?.setImageResource(R.drawable.select)
-        } else if (expandedListData.status[0].branchName == "null") {
+        } else if (expandedListData.status[0].branchName == context.getString(R.string.null_text)) {
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = " "+ context.getString(R.string.not_avilable)
             image12To3am?.setImageResource(R.drawable.unselect)

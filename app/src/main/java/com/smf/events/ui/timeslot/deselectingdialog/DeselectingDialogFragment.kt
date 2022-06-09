@@ -81,8 +81,6 @@ class DeselectingDialogFragment(
             //dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.setBackgroundDrawableResource(R.drawable.shape_dailog_curved)
             dialog?.window?.setLayout(800, ConstraintLayout.LayoutParams.WRAP_CONTENT)
-            mDataBinding?.txTitle?.text =
-                "Event Booked on the below mentioned dates.Hence you can't modify the 3pm -6pm slots availability"
             mDataBinding?.cancelBtn?.visibility = View.GONE
         }
     }

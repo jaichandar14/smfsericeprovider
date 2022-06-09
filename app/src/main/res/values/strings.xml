@@ -172,5 +172,7 @@
     <string name="event_booked_on_the_below_mentioned_dates_hence_you_can_not_modify_the_3pm_6pm_slots_availability">Event Booked on the below mentioned dates.Hence you can not modify the 3pm - 6pm slots availability</string>
     // 2801
     <string name="not_avilable">Not Available</string>
+    <string name="available_small">available</string>
+    <string name="null_text">null</string>
 
 </resources>

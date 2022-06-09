@@ -149,7 +149,7 @@ class DayModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        // Now here passed static values. In next commit will change dynamic values
+//        TODO Now here passed static values. In next commit will change dynamic values
         sharedViewModel.getModifyBookedEventServices(
             idToken, 167, serviceCategoryId,
             1669,
@@ -203,8 +203,7 @@ class DayModifyExpandableListFragment : Fragment(),
                         )
                     }
                 }
-                listOfDates?.get(i)
-                    ?.let { it -> dateFormat(it).let { titleDate.add(it) } }
+                listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
                 childData[titleDate[i]] = bookedEventDetails
             } else {
                 val bookedEventDetails = ArrayList<ListData>()
@@ -238,14 +237,14 @@ class DayModifyExpandableListFragment : Fragment(),
                 bookedEventDetails.add(
                     ListData(
                         data.serviceSlot,
-                        listOf(BookedEventServiceDto("null", "", "", ""))
+                        listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
                     )
                 )
             } else if (data.bookedEventServiceDtos.isEmpty()) {
                 bookedEventDetails.add(
                     ListData(
                         data.serviceSlot,
-                        listOf(BookedEventServiceDto("available", "", "", ""))
+                        listOf(BookedEventServiceDto(getString(R.string.available_small), "", "", ""))
                     )
                 )
             } else {
@@ -318,7 +317,7 @@ class DayModifyExpandableListFragment : Fragment(),
         )
         when (branchName) {
             "available" -> {
-                DeselectingDialogFragment.newInstance("Deselected", timeSlot, currentMonth)
+                DeselectingDialogFragment.newInstance(AppConstants.DESELECTED, timeSlot, currentMonth)
                     .show(
                         (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                         DeselectingDialogFragment.TAG
@@ -331,7 +330,6 @@ class DayModifyExpandableListFragment : Fragment(),
                 Log.d("TAG", "onCreateView viewModel called else $branchName")
             }
         }
-
     }
 
     // 2670 - Method For Set IdToken And SpRegId From SharedPreferences
