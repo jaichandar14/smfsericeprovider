@@ -79,7 +79,7 @@ class CustomModifyExpandableListAdapterDay internal constructor(
             image12To3am?.setImageResource(R.drawable.select)
         } else if (expandedListData.status[0].branchName == context.getString(R.string.null_text)) {
             timeSlot12To3am?.text = expandedListData.timeSlot
-            address12To3am?.text = " "+ context.getString(R.string.not_avilable)
+            address12To3am?.text = " "+ context.getString(R.string.not_available)
             image12To3am?.setImageResource(R.drawable.unselect)
         } else {
             // Get Booked Event Lists Line By Line

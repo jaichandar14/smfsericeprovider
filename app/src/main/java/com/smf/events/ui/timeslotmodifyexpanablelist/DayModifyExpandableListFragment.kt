@@ -16,6 +16,8 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapterDay
@@ -23,6 +25,7 @@ import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEv
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -54,6 +57,7 @@ class DayModifyExpandableListFragment : Fragment(),
     var parent: ViewGroup? = null
     private var listOfDates: ArrayList<String>? = ArrayList()
     private var groupPosition: Int = 0
+    private lateinit var dialogDisposable: Disposable
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -111,6 +115,17 @@ class DayModifyExpandableListFragment : Fragment(),
                 setListOfDatesArrayList(currentDate)
             }
         })
+
+        // Observe Modify Dialog Result
+        observeModifyDialogResult()
+    }
+
+    // 2814 - Method For Observe Result From ModifyDialog
+    private fun observeModifyDialogResult() {
+        dialogDisposable = RxBus.listen(RxEvent.ModifyDialog::class.java).subscribe {
+            Log.d(TAG, "onViewCreated listener: called")
+            apiTokenValidation("Available")
+        }
     }
 
     // 2776 - Method For set Dates ArrayList
@@ -152,7 +167,7 @@ class DayModifyExpandableListFragment : Fragment(),
 //        TODO Now here passed static values. In next commit will change dynamic values
         sharedViewModel.getModifyBookedEventServices(
             idToken, 167, serviceCategoryId,
-            1669,
+            1701,
             false, "05/25/2022", "05/25/2022"
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
             when (apiResponse) {
@@ -244,7 +259,14 @@ class DayModifyExpandableListFragment : Fragment(),
                 bookedEventDetails.add(
                     ListData(
                         data.serviceSlot,
-                        listOf(BookedEventServiceDto(getString(R.string.available_small), "", "", ""))
+                        listOf(
+                            BookedEventServiceDto(
+                                getString(R.string.available_small),
+                                "",
+                                "",
+                                ""
+                            )
+                        )
                     )
                 )
             } else {
@@ -315,9 +337,19 @@ class DayModifyExpandableListFragment : Fragment(),
             TextStyle.FULL,
             Locale.ENGLISH
         )
+        val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
+
         when (branchName) {
             "available" -> {
-                DeselectingDialogFragment.newInstance(AppConstants.DESELECTED, timeSlot, currentMonth)
+//                 TODO next commit will pass the dynamic parameters
+                DeselectingDialogFragment.newInstance(
+                    AppConstants.DESELECTED,
+                    timeSlot,
+                    currentMonth,
+                    1701,
+                    "05/25/2022",
+                    "05/25/2022", statusList
+                )
                     .show(
                         (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                         DeselectingDialogFragment.TAG
@@ -325,11 +357,55 @@ class DayModifyExpandableListFragment : Fragment(),
             }
             "null" -> {
                 Log.d("TAG", "onCreateView viewModel called null $branchName")
+//                TODO next commit will pass the dynamic parameters
+                modifyNullApiUpdate("05/25/2022", true, timeSlot, 1701, "05/25/2022")
             }
             else -> {
                 Log.d("TAG", "onCreateView viewModel called else $branchName")
+//                 TODO next commit will pass the dynamic parameters
+                DeselectingDialogFragment.newInstance(
+                    AppConstants.SELECTED,
+                    timeSlot,
+                    currentMonth,
+                    1701,
+                    "05/25/2022",
+                    "05/25/2022",
+                    statusList
+                )
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        DeselectingDialogFragment.TAG
+                    )
             }
         }
+    }
+
+    // 2814 - Method For getModifyDaySlot Api call with NULL
+    private fun modifyNullApiUpdate(
+        fromDate: String,
+        isAvailable: Boolean,
+        timeSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) {
+        sharedViewModel.getModifyDaySlot(
+            idToken, spRegId, fromDate, isAvailable, timeSlot,
+            serviceVendorOnBoardingId,
+            toDate
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+            when (apiResponse) {
+                is ApisResponse.Success -> {
+                    Log.d(TAG, "success ModifyBookedEvent null: ${apiResponse.response.data}")
+                    apiTokenValidation("Null")
+                }
+                is ApisResponse.Error -> {
+                    Log.d(TAG, "check token result success error: ${apiResponse.exception}")
+                }
+                else -> {
+                    Log.d(TAG, "Condition Not Satisfied")
+                }
+            }
+        })
     }
 
     // 2670 - Method For Set IdToken And SpRegId From SharedPreferences
@@ -400,5 +476,10 @@ class DayModifyExpandableListFragment : Fragment(),
             Locale.ENGLISH
         )
         return "$month  $date - $currentDay"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

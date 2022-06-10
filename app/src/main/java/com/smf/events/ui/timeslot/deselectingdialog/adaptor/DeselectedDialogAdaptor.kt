@@ -38,6 +38,7 @@ class DeselectedDialogAdaptor(listData: ArrayList<ListData>, context: Context) :
         viewHolder.date.text = services!!.date
         viewHolder.event.text = services.eventName
         viewHolder.slot.text = services.slots
+        viewHolder.branch.text = services.branches
         view.tag = viewHolder
         return view
     }

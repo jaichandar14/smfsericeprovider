@@ -24,4 +24,6 @@ object AppConstants {
 
     //2801
     const val DESELECTED = "Deselected"
+    //2814
+    const val SELECTED = "selected"
 }

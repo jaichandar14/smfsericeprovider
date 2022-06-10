@@ -13,6 +13,7 @@ import com.smf.events.ui.schedulemanagement.model.EventDates
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
+import com.smf.events.ui.timeslot.deselectingdialog.model.ModifyDaySlotResponse
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.vieworderdetails.model.OrderDetails
@@ -126,4 +127,16 @@ interface ApiStories {
         @Query("fromDate") fromDate: String,
         @Query("toDate") toDate: String
     ): ModifyBookedServiceEvents
+
+    // 2814 - modify-day-slot
+    @PUT("epm-service/api/app-services/modify-day-slot/{sp-reg-id}")
+    suspend fun getModifyDaySlot(
+        @Header("Authorization") idToken: String,
+        @Path("sp-reg-id") spRegId: Int,
+        @Query("fromDate") fromDate: String,
+        @Query("isAvailable") isAvailable: Boolean,
+        @Query("modifiedSlot") modifiedSlot: String,
+        @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int,
+        @Query("toDate") toDate: String
+    ): ModifyDaySlotResponse
 }
