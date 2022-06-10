@@ -26,4 +26,8 @@ object AppConstants {
     const val DESELECTED = "Deselected"
     //2814
     const val SELECTED = "selected"
+    //2815
+    const val DAY = "Day"
+    const val WEEK = "Week"
+    const val MONTH = "Month"
 }

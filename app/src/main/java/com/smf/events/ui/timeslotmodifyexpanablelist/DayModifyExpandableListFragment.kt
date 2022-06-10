@@ -21,6 +21,7 @@ import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapterDay
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.Data
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
@@ -123,8 +124,10 @@ class DayModifyExpandableListFragment : Fragment(),
     // 2814 - Method For Observe Result From ModifyDialog
     private fun observeModifyDialogResult() {
         dialogDisposable = RxBus.listen(RxEvent.ModifyDialog::class.java).subscribe {
-            Log.d(TAG, "onViewCreated listener: called")
-            apiTokenValidation("Available")
+            if (it.status == AppConstants.DAY) {
+                Log.d(TAG, "onViewCreated listener day: called")
+                apiTokenValidation("Available")
+            }
         }
     }
 
@@ -203,12 +206,9 @@ class DayModifyExpandableListFragment : Fragment(),
                 val bookedEventDetails = ArrayList<ListData>()
                 apiResponse.response.data.forEach {
                     if (it.bookedEventServiceDtos == null) {
-                        bookedEventDetails.add(
-                            ListData(
-                                it.serviceSlot,
-                                listOf(BookedEventServiceDto("null", "", "", ""))
-                            )
-                        )
+                        bookedEventDetails.add(nullListData(it))
+                    } else if (it.bookedEventServiceDtos.isEmpty()) {
+                        bookedEventDetails.add(isEmptyAvailableListData(it))
                     } else {
                         bookedEventDetails.add(
                             ListData(
@@ -222,12 +222,7 @@ class DayModifyExpandableListFragment : Fragment(),
                 childData[titleDate[i]] = bookedEventDetails
             } else {
                 val bookedEventDetails = ArrayList<ListData>()
-                bookedEventDetails.add(
-                    ListData(
-                        "",
-                        listOf(BookedEventServiceDto("", "", "", ""))
-                    )
-                )
+                bookedEventDetails.add(emptyListData())
                 listOfDates?.get(i)
                     ?.let { it -> dateFormat(it).let { titleDate.add(it) } }
                 childData[titleDate[i]] = bookedEventDetails
@@ -235,9 +230,37 @@ class DayModifyExpandableListFragment : Fragment(),
         }
         Log.d(TAG, "getBookedEventServices childData: $childData")
         initializeExpandableListSetUp(caller)
-//                        listOfDates?.indexOf(fromDate)?.let { expandableListView?.expandGroup(it) }
-//                        lastGroupPosition = listOfDates?.indexOf(fromDate)!!
+    }
 
+    // 2815 - Method For Set Null Value
+    private fun nullListData(data: Data): ListData {
+        return ListData(
+            data.serviceSlot,
+            listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
+        )
+    }
+
+    // 2815 - Method For Set available Value
+    private fun isEmptyAvailableListData(data: Data): ListData {
+        return ListData(
+            data.serviceSlot,
+            listOf(
+                BookedEventServiceDto(
+                    getString(R.string.available_small),
+                    "",
+                    "",
+                    ""
+                )
+            )
+        )
+    }
+
+    // 2815 - Method For Set Empty Value
+    private fun emptyListData(): ListData {
+        return ListData(
+            "",
+            listOf(BookedEventServiceDto("", "", "", ""))
+        )
     }
 
     // 2795 - Method For Set Data To ExpandableList
@@ -249,26 +272,9 @@ class DayModifyExpandableListFragment : Fragment(),
         val bookedEventDetails = ArrayList<ListData>()
         apiResponse.response.data.forEach { data ->
             if (data.bookedEventServiceDtos == null) {
-                bookedEventDetails.add(
-                    ListData(
-                        data.serviceSlot,
-                        listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
-                    )
-                )
+                bookedEventDetails.add(nullListData(data))
             } else if (data.bookedEventServiceDtos.isEmpty()) {
-                bookedEventDetails.add(
-                    ListData(
-                        data.serviceSlot,
-                        listOf(
-                            BookedEventServiceDto(
-                                getString(R.string.available_small),
-                                "",
-                                "",
-                                ""
-                            )
-                        )
-                    )
-                )
+                bookedEventDetails.add(isEmptyAvailableListData(data))
             } else {
                 bookedEventDetails.add(
                     ListData(
@@ -298,7 +304,6 @@ class DayModifyExpandableListFragment : Fragment(),
         if (caller == "EventsOnSelectedDate") {
             listOfDates?.indexOf(fromDate)?.let { expandableListView?.expandGroup(it) }
             lastGroupPosition = listOfDates?.indexOf(fromDate)!!
-//            expandableListView?.expandGroup(groupPosition)
             adapter?.notifyDataSetChanged()
         }
     }
@@ -306,7 +311,6 @@ class DayModifyExpandableListFragment : Fragment(),
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
         this.parent = parent as ExpandableListView
         this.groupPosition = listPosition
-        Log.d(TAG, "setDataToExpandableList pos cli: ${this.groupPosition}")
         fromDate = listOfDates?.get(listPosition)
         toDate = listOfDates?.get(listPosition)
         if (isExpanded) {
@@ -339,10 +343,12 @@ class DayModifyExpandableListFragment : Fragment(),
         )
         val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
 
+        Log.d(TAG, "onChildClick day: called $childData")
         when (branchName) {
-            "available" -> {
+            getString(R.string.available_small) -> {
 //                 TODO next commit will pass the dynamic parameters
                 DeselectingDialogFragment.newInstance(
+                    AppConstants.DAY,
                     AppConstants.DESELECTED,
                     timeSlot,
                     currentMonth,
@@ -355,7 +361,7 @@ class DayModifyExpandableListFragment : Fragment(),
                         DeselectingDialogFragment.TAG
                     )
             }
-            "null" -> {
+            getString(R.string.null_text) -> {
                 Log.d("TAG", "onCreateView viewModel called null $branchName")
 //                TODO next commit will pass the dynamic parameters
                 modifyNullApiUpdate("05/25/2022", true, timeSlot, 1701, "05/25/2022")
@@ -364,6 +370,7 @@ class DayModifyExpandableListFragment : Fragment(),
                 Log.d("TAG", "onCreateView viewModel called else $branchName")
 //                 TODO next commit will pass the dynamic parameters
                 DeselectingDialogFragment.newInstance(
+                    AppConstants.DAY,
                     AppConstants.SELECTED,
                     timeSlot,
                     currentMonth,
@@ -378,6 +385,9 @@ class DayModifyExpandableListFragment : Fragment(),
                     )
             }
         }
+        // Setting Position From Selected Calender Date
+        this.groupPosition = listPosition
+        lastGroupPosition = listPosition
     }
 
     // 2814 - Method For getModifyDaySlot Api call with NULL
@@ -399,7 +409,7 @@ class DayModifyExpandableListFragment : Fragment(),
                     apiTokenValidation("Null")
                 }
                 is ApisResponse.Error -> {
-                    Log.d(TAG, "check token result success error: ${apiResponse.exception}")
+                    Log.d(TAG, "success ModifyBookedEvent null error: ${apiResponse.exception}")
                 }
                 else -> {
                     Log.d(TAG, "Condition Not Satisfied")

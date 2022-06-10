@@ -175,5 +175,7 @@
     <string name="available_small">available</string>
     <string name="null_text">null</string>
     <string name="slots_availability">slots availability</string>
+    //2815
+    <string name="entire_week">slots availability for the entire week of </string>
 
 </resources>

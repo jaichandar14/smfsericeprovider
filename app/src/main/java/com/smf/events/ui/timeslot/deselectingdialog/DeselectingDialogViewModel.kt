@@ -34,4 +34,28 @@ class DeselectingDialogViewModel @Inject constructor(
                 )
             )
         }
+
+    // 2814 - modify-week-slot
+    fun getModifyWeekSlot(
+        idToken: String,
+        spRegId: Int,
+        fromDate: String,
+        isAvailable: Boolean,
+        modifiedSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(
+                deselectingDialogRepository.getModifyWeekSlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    modifiedSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            )
+        }
 }

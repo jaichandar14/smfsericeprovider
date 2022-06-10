@@ -127,4 +127,30 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
             ApisResponse.Error(e)
         }
     }
+
+    // 2815 - modify-week-slot
+    suspend fun getModifyWeekSlot(
+        idToken: String,
+        spRegId: Int,
+        fromDate: String,
+        isAvailable: Boolean,
+        modifiedSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ): ApisResponse<ModifyDaySlotResponse> {
+        return try {
+            val getResponse = apiStories.getModifyWeekSlot(
+                idToken,
+                spRegId,
+                fromDate,
+                isAvailable,
+                modifiedSlot,
+                serviceVendorOnBoardingId,
+                toDate
+            )
+            ApisResponse.Success(getResponse)
+        } catch (e: HttpException) {
+            ApisResponse.Error(e)
+        }
+    }
 }
