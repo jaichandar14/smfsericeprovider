@@ -1,17 +1,37 @@
 package com.smf.events.ui.timeslot.deselectingdialog
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.view.View
-import com.smf.events.R
+import androidx.lifecycle.liveData
 import com.smf.events.base.BaseDialogViewModel
-import com.smf.events.databinding.FragmentDeseletingDialogBinding
-import com.smf.events.ui.timeslot.deselectingdialog.adaptor.DeselectedDialogAdaptor
-import com.smf.events.ui.timeslot.deselectingdialog.model.ListData
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class DeselectingDialogViewModel @Inject constructor(
+    private val deselectingDialogRepository: DeselectingDialogRepository,
     application: Application,
 ) : BaseDialogViewModel(application) {
 
+    // 2814 - modify-day-slot
+    fun getModifyDaySlot(
+        idToken: String,
+        spRegId: Int,
+        fromDate: String,
+        isAvailable: Boolean,
+        modifiedSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(
+                deselectingDialogRepository.getModifyDaySlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    modifiedSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            )
+        }
 }
