@@ -151,4 +151,16 @@ interface ApiStories {
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int,
         @Query("toDate") toDate: String
     ): ModifyDaySlotResponse
+
+    // 2823 - modify-month-slot
+    @PUT("epm-service/api/app-services/modify-month-slot/{sp-reg-id}")
+    suspend fun getModifyMonthSlot(
+        @Header("Authorization") idToken: String,
+        @Path("sp-reg-id") spRegId: Int,
+        @Query("fromDate") fromDate: String,
+        @Query("isAvailable") isAvailable: Boolean,
+        @Query("modifiedSlot") modifiedSlot: String,
+        @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int,
+        @Query("toDate") toDate: String
+    ): ModifyDaySlotResponse
 }

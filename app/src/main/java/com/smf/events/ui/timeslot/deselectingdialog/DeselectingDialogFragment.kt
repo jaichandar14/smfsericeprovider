@@ -218,6 +218,39 @@ class DeselectingDialogFragment(
         })
     }
 
+    private fun getModifyMonthSlot(
+        idToken: String,
+        spRegId: Int,
+        fromDate: String,
+        isAvailable: Boolean,
+        modifiedSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) {
+        getViewModel().getModifyMonthSlot(
+            idToken, spRegId, fromDate, isAvailable, modifiedSlot,
+            serviceVendorOnBoardingId,
+            toDate
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+            when (apiResponse) {
+                is ApisResponse.Success -> {
+                    Log.d(TAG, "success ModifyBookedEvent: ${apiResponse.response.data}")
+                    // Passing Updated Status To DayModifyExpandableListFragment
+                    callBackToModifyFragments()
+                    dismiss()
+                }
+                is ApisResponse.Error -> {
+                    Log.d(
+                        TAG,
+                        "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
+                    )
+                }
+                else -> {
+                }
+            }
+        })
+    }
+
     private fun callBackToModifyFragments(){
         when(classTag){
             AppConstants.DAY -> {
@@ -322,7 +355,15 @@ class DeselectingDialogFragment(
                     )
                 }
                 AppConstants.MONTH ->{
-
+                    getModifyMonthSlot(
+                        idToken,
+                        spRegId,
+                        fromDate,
+                        isAvailable,
+                        timeSlot,
+                        serviceVendorOnBoardingId,
+                        toDate
+                    )
                 }
             }
         }
