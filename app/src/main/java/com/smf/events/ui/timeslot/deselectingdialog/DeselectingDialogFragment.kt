@@ -32,6 +32,7 @@ import kotlin.collections.ArrayList
 
 // 2803 Deselecting and modify Dialog Fragment
 class DeselectingDialogFragment(
+    private var classTag: String,
     private var purpose: String,
     var timeSlot: String,
     var currentMonth: String,
@@ -60,6 +61,7 @@ class DeselectingDialogFragment(
     companion object {
         const val TAG = "CustomDialogFragment"
         fun newInstance(
+            classTag: String,
             purpose: String,
             timeSlot: String,
             currentMonth: String,
@@ -69,6 +71,7 @@ class DeselectingDialogFragment(
             statusList: List<BookedEventServiceDto>?
         ): DeselectingDialogFragment {
             return DeselectingDialogFragment(
+                classTag,
                 purpose,
                 timeSlot,
                 currentMonth,
@@ -127,7 +130,6 @@ class DeselectingDialogFragment(
             isAvailable = false
             deselectedDialog()
         } else if (purpose == AppConstants.SELECTED) {
-//            isAvailable = true
             modifyDialog()
         }
 
@@ -168,7 +170,7 @@ class DeselectingDialogFragment(
                 is ApisResponse.Success -> {
                     Log.d(TAG, "success ModifyBookedEvent: ${apiResponse.response.data}")
                     // Passing Updated Status To DayModifyExpandableListFragment
-                    RxBus.publish(RxEvent.ModifyDialog("yes"))
+                    callBackToModifyFragments()
                     dismiss()
                 }
                 is ApisResponse.Error -> {
@@ -183,6 +185,52 @@ class DeselectingDialogFragment(
         })
     }
 
+    private fun getModifyWeekSlot(
+        idToken: String,
+        spRegId: Int,
+        fromDate: String,
+        isAvailable: Boolean,
+        modifiedSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) {
+        getViewModel().getModifyWeekSlot(
+            idToken, spRegId, fromDate, isAvailable, modifiedSlot,
+            serviceVendorOnBoardingId,
+            toDate
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+            when (apiResponse) {
+                is ApisResponse.Success -> {
+                    Log.d(TAG, "success ModifyBookedEvent: ${apiResponse.response.data}")
+                    // Passing Updated Status To DayModifyExpandableListFragment
+                    callBackToModifyFragments()
+                    dismiss()
+                }
+                is ApisResponse.Error -> {
+                    Log.d(
+                        TAG,
+                        "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
+                    )
+                }
+                else -> {
+                }
+            }
+        })
+    }
+
+    private fun callBackToModifyFragments(){
+        when(classTag){
+            AppConstants.DAY -> {
+                RxBus.publish(RxEvent.ModifyDialog(AppConstants.DAY))
+            }
+            AppConstants.WEEK ->{
+                RxBus.publish(RxEvent.ModifyDialog(AppConstants.WEEK))
+            }
+            AppConstants.MONTH ->{
+                RxBus.publish(RxEvent.ModifyDialog(AppConstants.MONTH))
+            }
+        }
+    }
     // 2801 - method For CancelButton
     private fun cancelBtnClick() {
         mDataBinding?.let {
@@ -198,7 +246,7 @@ class DeselectingDialogFragment(
             getString(R.string.event_booked_on) + " " + timeSlot + " " + getString(R.string.slots_availability)
         mDataBinding?.cancelBtn?.visibility = View.GONE
         mDataBinding?.listView?.visibility = View.VISIBLE
-        var listData: ArrayList<ListData> = ArrayList()
+        val listData: ArrayList<ListData> = ArrayList()
 
         statusList?.let { data ->
             data.forEach {
@@ -213,10 +261,27 @@ class DeselectingDialogFragment(
 
     // 2803 Method for Deselection Dialog
     private fun deselectedDialog() {
-        mDataBinding?.txTitle?.text =
-            getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
-                R.string.you_are_deselecting_second
-            )
+        when (classTag) {
+            AppConstants.DAY -> {
+                mDataBinding?.txTitle?.text =
+                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                        R.string.you_are_deselecting_second
+                    )
+            }
+            AppConstants.WEEK ->{
+                mDataBinding?.txTitle?.text =
+                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + currentMonth + "." + " " + getString(
+                        R.string.you_are_deselecting_second
+                    )
+            }
+            AppConstants.MONTH ->{
+                mDataBinding?.txTitle?.text =
+                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                        R.string.you_are_deselecting_second
+                    )
+            }
+        }
+
     }
 
     // 2814 - Method For AWS Token Validation
@@ -232,15 +297,34 @@ class DeselectingDialogFragment(
     // 2814 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            getModifyDaySlot(
-                idToken,
-                spRegId,
-                fromDate,
-                isAvailable,
-                timeSlot,
-                serviceVendorOnBoardingId,
-                toDate
-            )
+            when (classTag) {
+                AppConstants.DAY -> {
+                    getModifyDaySlot(
+                        idToken,
+                        spRegId,
+                        fromDate,
+                        isAvailable,
+                        timeSlot,
+                        serviceVendorOnBoardingId,
+                        toDate
+                    )
+                }
+                AppConstants.WEEK ->{
+
+                    getModifyWeekSlot(
+                        idToken,
+                        spRegId,
+                        fromDate,
+                        isAvailable,
+                        timeSlot,
+                        serviceVendorOnBoardingId,
+                        toDate
+                    )
+                }
+                AppConstants.MONTH ->{
+
+                }
+            }
         }
     }
 

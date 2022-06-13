@@ -26,4 +26,16 @@ object AppConstants {
     const val DESELECTED = "Deselected"
     //2814
     const val SELECTED = "selected"
+    //2815
+    const val DAY = "Day"
+    const val WEEK = "Week"
+    const val MONTH = "Month"
+    const val EVENTS_ON_SELECTED_DATE = "EventsOnSelectedDate"
+    const val INITIAL_DATE_NO_EVENTS = "InitialDateNoEvents"
+    const val BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE = "bookedEventServicesFromSelectedDate"
+    const val NULL = "Null"
+    const val AVAILABLE = "Available"
+    const val EVENTS_ON_SELECTED_WEEK = "EventsOnSelectedWeek"
+    const val BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK = "bookedEventServicesFromSelectedWeek"
+    const val INITIAL_WEEK_NO_EVENTS = "InitialWeekNoEvents"
 }
