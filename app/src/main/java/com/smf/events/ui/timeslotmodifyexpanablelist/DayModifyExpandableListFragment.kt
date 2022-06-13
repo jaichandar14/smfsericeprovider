@@ -107,7 +107,7 @@ class DayModifyExpandableListFragment : Fragment(),
                         fromDate = currentDate.selectedDate
                         toDate = currentDate.selectedDate
                         listOfDates = currentDate.listOfDays
-                        apiTokenValidation("EventsOnSelectedDate")
+                        apiTokenValidation(AppConstants.EVENTS_ON_SELECTED_DATE)
                     }
                 }
                 Log.d(TAG, "onViewCreated sele: ${currentDate.selectedDate}")
@@ -126,7 +126,7 @@ class DayModifyExpandableListFragment : Fragment(),
         dialogDisposable = RxBus.listen(RxEvent.ModifyDialog::class.java).subscribe {
             if (it.status == AppConstants.DAY) {
                 Log.d(TAG, "onViewCreated listener day: called")
-                apiTokenValidation("Available")
+                apiTokenValidation(AppConstants.AVAILABLE)
             }
         }
     }
@@ -140,7 +140,7 @@ class DayModifyExpandableListFragment : Fragment(),
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
             listOfDates = currentDate.listOfDays
-            expandableListInitialSetUp("InitialDateNoEvents")
+            expandableListInitialSetUp(AppConstants.INITIAL_DATE_NO_EVENTS)
         }
     }
 
@@ -176,7 +176,7 @@ class DayModifyExpandableListFragment : Fragment(),
             when (apiResponse) {
                 is ApisResponse.Success -> {
                     Log.d(TAG, "success ModifyBookedEvent: ${apiResponse.response.data}")
-                    if (caller == "EventsOnSelectedDate") {
+                    if (caller == AppConstants.EVENTS_ON_SELECTED_DATE) {
                         eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
                     } else {
                         setDataToExpandableList(apiResponse, groupPosition)
@@ -301,7 +301,7 @@ class DayModifyExpandableListFragment : Fragment(),
             adapter?.setOnClickListener(this)
         }
 
-        if (caller == "EventsOnSelectedDate") {
+        if (caller == AppConstants.EVENTS_ON_SELECTED_DATE) {
             listOfDates?.indexOf(fromDate)?.let { expandableListView?.expandGroup(it) }
             lastGroupPosition = listOfDates?.indexOf(fromDate)!!
             adapter?.notifyDataSetChanged()
@@ -328,7 +328,7 @@ class DayModifyExpandableListFragment : Fragment(),
             childData[titleDate[groupPosition]] = bookedEventDetails
             parent.collapseGroup(lastGroupPosition)
             parent.expandGroup(listPosition)
-            apiTokenValidation("bookedEventServicesFromSelectedDate")
+            apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE)
         }
         lastGroupPosition = listPosition
     }
@@ -406,7 +406,7 @@ class DayModifyExpandableListFragment : Fragment(),
             when (apiResponse) {
                 is ApisResponse.Success -> {
                     Log.d(TAG, "success ModifyBookedEvent null: ${apiResponse.response.data}")
-                    apiTokenValidation("Null")
+                    apiTokenValidation(AppConstants.NULL)
                 }
                 is ApisResponse.Error -> {
                     Log.d(TAG, "success ModifyBookedEvent null error: ${apiResponse.exception}")

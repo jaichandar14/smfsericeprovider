@@ -119,7 +119,7 @@ class WeekModifyExpandableListFragment : Fragment(),
                             fromDate = listOfDatesArray[groupPosition][0]
                             toDate =
                                 listOfDatesArray[groupPosition][listOfDatesArray[groupPosition].lastIndex]
-                            apiTokenValidation("EventsOnSelectedWeek")
+                            apiTokenValidation(AppConstants.EVENTS_ON_SELECTED_WEEK)
                         }
                     }
                 } else {
@@ -141,7 +141,7 @@ class WeekModifyExpandableListFragment : Fragment(),
         dialogDisposable = RxBus.listen(RxEvent.ModifyDialog::class.java).subscribe {
             if (it.status == AppConstants.WEEK) {
                 Log.d(TAG, "onViewCreated listener week: called")
-                apiTokenValidation("Available")
+                apiTokenValidation(AppConstants.AVAILABLE)
             }
         }
     }
@@ -149,9 +149,11 @@ class WeekModifyExpandableListFragment : Fragment(),
     // 2795 - Method For Check Current Week Booked Events
     private fun checkCurrentWeekHaveEvent(currentWeekDate: ScheduleManagementViewModel.WeekDates): Boolean {
         var status = false
-        listOfDates?.forEach {
-            if (currentWeekDate.weekList.contains(it)) {
-                status = true
+        listOfDates?.let {
+            it.forEach {
+                if (currentWeekDate.weekList.contains(it)) {
+                    status = true
+                }
             }
         }
         return status
@@ -165,7 +167,7 @@ class WeekModifyExpandableListFragment : Fragment(),
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            expandableListInitialSetUp("InitialWeekNoEvents")
+            expandableListInitialSetUp(AppConstants.INITIAL_WEEK_NO_EVENTS)
         }
     }
 
@@ -209,7 +211,7 @@ class WeekModifyExpandableListFragment : Fragment(),
             when (apiResponse) {
                 is ApisResponse.Success -> {
                     Log.d(TAG, "success ModifyBookedEvent week: ${apiResponse.response.data}")
-                    if (caller == "EventsOnSelectedWeek") {
+                    if (caller == AppConstants.EVENTS_ON_SELECTED_WEEK) {
                         eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
                     } else {
                         setDataToExpandableList(apiResponse, groupPosition)
@@ -344,7 +346,7 @@ class WeekModifyExpandableListFragment : Fragment(),
             adapter?.setOnClickListener(this)
         }
 
-        if (caller == "EventsOnSelectedWeek") {
+        if (caller == AppConstants.EVENTS_ON_SELECTED_WEEK) {
             for (i in 0 until listOfDatesArray.size) {
                 if (listOfDatesArray[i][0] == weekList?.get(0) ?: 0) {
                     Log.d(
@@ -382,7 +384,7 @@ class WeekModifyExpandableListFragment : Fragment(),
             childData[titleDate[groupPosition]] = bookedEventDetails
             parent.collapseGroup(lastGroupPosition)
             parent.expandGroup(groupPosition)
-            apiTokenValidation("bookedEventServicesFromSelectedWeek")
+            apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK)
         }
         lastGroupPosition = listPosition
     }
@@ -460,7 +462,7 @@ class WeekModifyExpandableListFragment : Fragment(),
             when (apiResponse) {
                 is ApisResponse.Success -> {
                     Log.d(TAG, "success ModifyBookedEvent null: ${apiResponse.response.data}")
-                    apiTokenValidation("Null")
+                    apiTokenValidation(AppConstants.NULL)
                 }
                 is ApisResponse.Error -> {
                     Log.d(TAG, "success ModifyBookedEvent null error: ${apiResponse.exception}")
