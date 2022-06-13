@@ -30,7 +30,7 @@
             android:layout_centerHorizontal="true"
             android:textSize="@dimen/size_15sp"
             android:visibility="gone"
-            android:layout_marginTop="@dimen/size_80dp"
+            android:layout_marginTop="@dimen/size_30dp"
             android:text="@string/no_events_available" />
 
     </RelativeLayout>

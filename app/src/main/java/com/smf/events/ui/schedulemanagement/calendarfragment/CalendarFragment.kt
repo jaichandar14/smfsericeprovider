@@ -16,12 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentCalendarBinding
 import com.smf.events.helper.*
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.dashboard.model.BranchDatas
 import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.ServicesData
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.schedulemanagement.adapter.CalendarAdapter
-import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -72,6 +73,7 @@ class CalendarFragment : Fragment(),
     private val cmonth = c.get(Calendar.MONTH)
     private val cyear = c.get(Calendar.YEAR)
     private var weekSelectedListAll: HashMap<LocalDate, Int>? = HashMap()
+    private var dateList: ArrayList<String> = ArrayList()
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -107,7 +109,9 @@ class CalendarFragment : Fragment(),
         apiTokenValidationCalendar("AllServices")
         // 2796 Method for observing Exp View Date
         selectedEXPDateObserver()
-
+        mDataBinding.closeCalendar.setOnClickListener {
+            RxBus.publish(RxEvent.ChangingNav(1))
+        }
     }
 
     private fun selectedEXPDateObserver() {
@@ -222,9 +226,9 @@ class CalendarFragment : Fragment(),
     }
 
     // 2622
-    // 2458 Method For Setting Month View in Calendar
+    // 2825 Method For Setting Month View in Calendar
     private fun setMonthView(dayinWeek: ArrayList<String>?, daysPositon: ArrayList<Int>?) {
-        Log.d("TAG", "setMonthView: $dayinWeek")
+        Log.d("TAG", "setMonthView: ${monthFromAndToDate()}")
         monthYearText?.text =
             CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDate(it) }
         yearText?.text = CalendarUtils.selectedDate?.let { calendarUtils.yearAndMonthFromDate(it) }
@@ -353,7 +357,7 @@ class CalendarFragment : Fragment(),
     override fun itemClick(msg: Int) {
         if (serviceList[msg].serviceName == "All Service") {
             val branchSpinner: ArrayList<String> = ArrayList()
-           // branchSpinner.add(0, "Branches")
+            // branchSpinner.add(0, "Branches")
             serviceCategoryId = 0
             sharedViewModel.branches(
                 mDataBinding,
@@ -375,7 +379,7 @@ class CalendarFragment : Fragment(),
         name: String?,
         allServiceposition: Int?,
     ) {
-       // Log.d(TAG, "branchItemClick: ")
+        // Log.d(TAG, "branchItemClick: ")
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
         Log.d("TAG", "branchItemClick: ${this.serviceVendorOnboardingId}")
         apiTokenValidationCalendar("EventDateApiBranches")
@@ -424,7 +428,7 @@ class CalendarFragment : Fragment(),
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         val branchTypeItems: List<DatasNew> = apiResponse.response.datas
-                            // branchListSpinner.add(BranchDatas("Branches", 0))
+                        // branchListSpinner.add(BranchDatas("Branches", 0))
                         for (i in branchTypeItems.indices) {
                             val branchName: String =
                                 branchTypeItems[i].branchName
@@ -504,12 +508,14 @@ class CalendarFragment : Fragment(),
                         Log.d("TAG",
                             "Calendar Event List : ${apiresponse.response.data.serviceDates}")
                         apiresponse.response.data.serviceDates.forEach {
-                            val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
-                           var dateList= LocalDate.parse(it, currentDayFormatter)
-                            if (dateList<= LocalDate.now()){
+                            val currentDayFormatter =
+                                DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                            var dateList = LocalDate.parse(it, currentDayFormatter)
+                            if (dateList <= LocalDate.now()) {
                                 // previous Date
-                            }else{
-                            serviceDate.add(it)}
+                            } else {
+                                serviceDate.add(it)
+                            }
                         }
                         sharedViewModel.setCurrentDate(
                             CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
@@ -573,5 +579,17 @@ class CalendarFragment : Fragment(),
                 }
             }
         }
+    }
+
+    private fun monthFromAndToDate(): ArrayList<String> {
+        dateList.clear()
+        val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
+        val toDateMonth: LocalDate =
+            CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
+        for (i in 0 until toDateMonth.dayOfMonth) {
+            fromDateMonth.plusDays(i.toLong())
+            dateList.add(fromDateMonth.plusDays(i.toLong()).format(CalendarUtils.dateFormatter))
+        }
+        return dateList
     }
 }

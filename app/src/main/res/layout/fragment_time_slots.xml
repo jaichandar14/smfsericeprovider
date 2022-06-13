@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="timeslotsfragmentViewModel"
             type="com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel" />
@@ -12,23 +13,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/size_15dp"
-        android:layout_marginEnd="@dimen/size_15dp"
+        android:layout_marginStart="@dimen/size_18dp"
+        android:layout_marginEnd="@dimen/size_18dp"
         android:orientation="vertical"
         tools:context=".ui.timeslot.TimeSlotsFragment">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_35dp"
-            app:tabBackground="@drawable/tab_selector"
-            app:tabGravity="fill"
-            app:tabIndicatorAnimationMode="elastic"
-            app:tabIndicatorColor="@color/background_gray"
-            app:tabIndicatorGravity="stretch"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/black"
-            app:tabTextAppearance="@style/CustomTextAppearance" />
+            android:layout_height="@dimen/size_60dp"
+            android:backgroundTint="@color/light_gray_background"
+            android:background="@drawable/corner_radius_background">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_40dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="fill"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabIndicatorColor="@color/pairing_theme"
+                app:tabIndicatorGravity="center"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextAppearance="@style/CustomTextAppearance" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"

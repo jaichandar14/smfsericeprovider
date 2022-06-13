@@ -6,7 +6,7 @@
             <corners
                 android:bottomRightRadius="@dimen/size_10dp"
                 android:topRightRadius="@dimen/size_10dp" />
-            <solid android:color="@color/circle_gray"></solid>
+            <solid android:color="@color/blue_week_selection_border"></solid>
         </shape>
     </item><!-- Body -->
     <item
@@ -17,7 +17,7 @@
             <corners
                 android:bottomRightRadius="@dimen/size_10dp"
                 android:topRightRadius="@dimen/size_10dp" />
-            <solid android:color="@color/white"></solid>
+            <solid android:color="@color/blue_week_selection"></solid>
         </shape>
     </item>
 </layer-list>

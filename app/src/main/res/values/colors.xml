@@ -42,5 +42,10 @@
     <color name="gold_cut_off_progess">#FF9100</color>
     <color name="thumps_up_green">#94DA4E</color>
     <color name="thumbs_down_red">#FF0000</color>
+    <color name="blue_week_selection">#F0F8FF</color>
+    <color name="blue_week_selection_border">#D8F2FF</color>
+    <color name="day_blue">#00D0FF</color>
+    <color name="calendar_border_gray">#E9E9F0</color>
+    <color name="light_gray_background">#F6F6F6</color>
 
 </resources>

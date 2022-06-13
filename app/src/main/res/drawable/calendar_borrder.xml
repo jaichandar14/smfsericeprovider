@@ -3,14 +3,14 @@
     <!-- Border -->
     <item>
         <shape>
-            <solid android:color="@color/blue_week_selection_border"></solid>
+            <solid android:color="@color/calendar_border_gray" />
         </shape>
     </item><!-- Body -->
     <item
         android:bottom="@dimen/size_2dp"
-        android:top="@dimen/size_2dp">
+       >
         <shape>
-            <solid android:color="@color/blue_week_selection"></solid>
+            <solid android:color="@color/white" />
         </shape>
     </item>
 </layer-list>

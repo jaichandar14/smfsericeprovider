@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_bold"
             android:text="@string/_4"
+            android:layout_marginBottom="@dimen/size_2dp"
             android:textColor="@color/darkblue_smf_font"
             android:textSize="@dimen/size_22sp" />
 
@@ -35,7 +36,7 @@
             android:layout_width="@dimen/size_82dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_regular"
-            android:lines="2"
+            android:lines="3"
             android:text="@string/new_request"
             android:textColor="@color/darkblue_smf_font"
             android:textSize="@dimen/size_16sp" />

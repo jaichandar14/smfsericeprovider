@@ -222,10 +222,10 @@ class CalendarAdapter(
                         .toInt() == cyear
                 ) {
                     if (dayOfMonth.text.toString().toInt() >= LocalDate.now().dayOfMonth) {
-                        dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
+                        dayOfMonth.setBackgroundResource(R.drawable.hallow_circle)
                     }
                 } else {
-                    dayOfMonth.setBackgroundResource(R.drawable.ic_checkbox_unchecked)
+                    dayOfMonth.setBackgroundResource(R.drawable.hallow_circle)
                 }
             }
         }
