@@ -58,4 +58,28 @@ class DeselectingDialogViewModel @Inject constructor(
                 )
             )
         }
+
+    // 2823 - modify-month-slot
+    fun getModifyMonthSlot(
+        idToken: String,
+        spRegId: Int,
+        fromDate: String,
+        isAvailable: Boolean,
+        modifiedSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(
+                deselectingDialogRepository.getModifyMonthSlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    modifiedSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            )
+        }
 }

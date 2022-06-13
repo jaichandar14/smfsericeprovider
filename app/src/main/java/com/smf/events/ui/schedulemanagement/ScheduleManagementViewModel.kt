@@ -302,6 +302,30 @@ class ScheduleManagementViewModel @Inject constructor(
             )
         }
 
+    // 2823 - modify-week-slot
+    fun getModifyMonthSlot(
+        idToken: String,
+        spRegId: Int,
+        fromDate: String,
+        isAvailable: Boolean,
+        modifiedSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) =
+        liveData(Dispatchers.IO) {
+            emit(
+                scheduleManagementRepository.getModifyMonthSlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    modifiedSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            )
+        }
+
     private var callBackInterface: CallBackInterface? = null
 
     // 2458 Initializing CallBack Interface Method

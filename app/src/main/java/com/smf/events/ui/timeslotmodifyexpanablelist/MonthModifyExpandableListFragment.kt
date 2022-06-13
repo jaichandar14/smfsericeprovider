@@ -16,12 +16,17 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
-import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapter
+import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
+import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapterDay
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.Data
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
-import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -35,10 +40,12 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class MonthModifyExpandableListFragment : Fragment(),
-    CustomModifyExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
+    CustomModifyExpandableListAdapterDay.TimeSlotIconClickListener,
+    Tokens.IdTokenCallBackInterface {
 
+    private var TAG = "MonthModifyExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
-    private var adapter: CustomModifyExpandableListAdapter? = null
+    private var adapter: CustomModifyExpandableListAdapterDay? = null
     private var childData = HashMap<String, List<ListData>>()
     private var titleDate = ArrayList<String>()
     private lateinit var mDataBinding: FragmentTimeSlotsExpandableListBinding
@@ -53,6 +60,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     private var currentDate: String? = null
     private var monthValue: String = ""
     private var groupPosition: Int = 0
+    private lateinit var dialogDisposable: Disposable
 
     @Inject
     lateinit var sharedPreference: SharedPreference
@@ -94,9 +102,22 @@ class MonthModifyExpandableListFragment : Fragment(),
                 currentDate = currentMonthDate.currentDate
                 monthValue = currentMonthDate.monthValue.toString()
                 serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
-                Log.d("TAG", "onViewCreated monthValue: $monthValue")
+                Log.d(TAG, "onViewCreated monthValue: $monthValue")
                 monthValidation()
             })
+
+        // Observe Modify Dialog Result
+        observeModifyDialogResult()
+    }
+
+    // 2823 - Method For Observe Result From ModifyDialog
+    private fun observeModifyDialogResult() {
+        dialogDisposable = RxBus.listen(RxEvent.ModifyDialog::class.java).subscribe {
+            if (it.status == AppConstants.MONTH) {
+                Log.d(TAG, "onViewCreated listener month: called")
+                apiTokenValidation(AppConstants.AVAILABLE)
+            }
+        }
     }
 
     // 2795 - Method For Restrict Previous Month
@@ -105,7 +126,7 @@ class MonthModifyExpandableListFragment : Fragment(),
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
             // 2670 - Api Call Token Validation
-            apiTokenValidation("bookedEventServices")
+            apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_INITIAL)
         } else {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
@@ -118,17 +139,27 @@ class MonthModifyExpandableListFragment : Fragment(),
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
         toDate: String,
+        caller: String
     ) {
-        sharedViewModel.getBookedEventServices(
-            idToken, spRegId, serviceCategoryId,
-            serviceVendorOnBoardingId,
-            fromDate,
-            toDate
+        sharedViewModel.getModifyBookedEventServices(
+            idToken, 167, serviceCategoryId,
+            1701, true,
+            "05/13/2022",
+            "05/30/2022"
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
-                    Log.d("TAG", "check token result success month: ${apiResponse.response.data}")
-                    updateExpandableListData(apiResponse)
+                    Log.d(
+                        "TAG",
+                        "check token result success month mody: ${apiResponse.response.data}"
+                    )
+                    if (caller == AppConstants.BOOKED_EVENTS_SERVICES_INITIAL) {
+                        eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
+                    } else {
+                        setDataToExpandableList(apiResponse, groupPosition)
+                        adapter!!.notifyDataSetChanged()
+                    }
+
                 }
                 is ApisResponse.Error -> {
                     Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -139,37 +170,62 @@ class MonthModifyExpandableListFragment : Fragment(),
         })
     }
 
-    // Method For Updating ExpandableList Data
-    private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
+    // 2795 - Method For Set Data To ExpandableList
+    private fun setDataToExpandableList(
+        apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
+        position: Int
+    ) {
+        Log.d(TAG, "setDataToExpandableList position: $position")
         val bookedEventDetails = ArrayList<ListData>()
-        if (apiResponse.response.data.isNullOrEmpty()) {
-            childData.clear()
-            titleDate.clear()
-            addTitle()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            childData[titleDate[0]] = bookedEventDetails
-        } else {
-            childData.clear()
-            titleDate.clear()
-            addTitle()
-            for (i in apiResponse.response.data.indices) {
+        apiResponse.response.data.forEach { data ->
+            if (data.bookedEventServiceDtos == null) {
+                bookedEventDetails.add(nullListData(data))
+            } else if (data.bookedEventServiceDtos.isEmpty()) {
+                bookedEventDetails.add(isEmptyAvailableListData(data))
+            } else {
                 bookedEventDetails.add(
                     ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
+                        data.serviceSlot,
+                        data.bookedEventServiceDtos
                     )
                 )
             }
-            childData[titleDate[0]] = bookedEventDetails
         }
-        // 2558 - ExpandableList Initialization
+        Log.d(TAG, "setDataToExpandableList pos11: $bookedEventDetails")
+        childData[titleDate[position]] = bookedEventDetails
+    }
+
+    private fun eventsOnSelectedDateApiValueUpdate(
+        apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
+        caller: String
+    ) {
+        childData.clear()
+        titleDate.clear()
+        val bookedEventDetails = ArrayList<ListData>()
+        addTitle()
+        apiResponse.response.data.forEach {
+            if (it.bookedEventServiceDtos == null) {
+                bookedEventDetails.add(nullListData(it))
+            } else if (it.bookedEventServiceDtos.isEmpty()) {
+                bookedEventDetails.add(isEmptyAvailableListData(it))
+            } else {
+                bookedEventDetails.add(
+                    ListData(
+                        it.serviceSlot,
+                        it.bookedEventServiceDtos
+                    )
+                )
+            }
+        }
+        childData[titleDate[0]] = bookedEventDetails
+        Log.d(TAG, "getBookedEventServices childData week: $childData")
         initializeExpandableListSetUp()
     }
 
     // 2558 - Method for ExpandableList Initialization
     private fun initializeExpandableListSetUp() {
         if (expandableListView != null) {
-            adapter = CustomModifyExpandableListAdapter(
+            adapter = CustomModifyExpandableListAdapterDay(
                 requireContext(),
                 getString(R.string.month),
                 titleDate,
@@ -184,13 +240,89 @@ class MonthModifyExpandableListFragment : Fragment(),
         }
     }
 
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        Log.d("TAG", "onGroupClick month: called")
+    override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
+        val branchName =
+            childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
+        val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+        val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
+            TextStyle.FULL,
+            Locale.ENGLISH
+        )
+        val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
+
+        when (branchName) {
+            getString(R.string.available_small) -> {
+//                 TODO next commit will pass the dynamic parameters
+                DeselectingDialogFragment.newInstance(
+                    AppConstants.MONTH,
+                    AppConstants.DESELECTED,
+                    timeSlot,
+                    currentMonth,
+                    1701,
+                    "05/13/2022",
+                    "05/30/2022", statusList
+                )
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        DeselectingDialogFragment.TAG
+                    )
+            }
+            getString(R.string.null_text) -> {
+                Log.d("TAG", "onCreateView viewModel called null $branchName")
+//                TODO next commit will pass the dynamic parameters
+                modifyNullApiUpdate("05/13/2022", true, timeSlot, 1701, "05/30/2022")
+            }
+            else -> {
+                Log.d("TAG", "onCreateView viewModel called else $branchName")
+//                 TODO next commit will pass the dynamic parameters
+                DeselectingDialogFragment.newInstance(
+                    AppConstants.MONTH,
+                    AppConstants.SELECTED,
+                    timeSlot,
+                    currentMonth,
+                    1701,
+                    "05/13/2022",
+                    "05/30/2022",
+                    statusList
+                )
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        DeselectingDialogFragment.TAG
+                    )
+            }
+        }
     }
 
-    override fun onClick(expandedListPosition: Int) {
-        Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
-//        TODO - Click Events
+    // 2815 - Method For getModifyWeekSlot Api call with NULL
+    private fun modifyNullApiUpdate(
+        fromDate: String,
+        isAvailable: Boolean,
+        timeSlot: String,
+        serviceVendorOnBoardingId: Int,
+        toDate: String
+    ) {
+        sharedViewModel.getModifyMonthSlot(
+            idToken, spRegId, fromDate, isAvailable, timeSlot,
+            serviceVendorOnBoardingId,
+            toDate
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+            when (apiResponse) {
+                is ApisResponse.Success -> {
+                    Log.d(TAG, "success ModifyBookedEvent null: ${apiResponse.response.data}")
+                    apiTokenValidation(AppConstants.NULL)
+                }
+                is ApisResponse.Error -> {
+                    Log.d(TAG, "success ModifyBookedEvent null error: ${apiResponse.exception}")
+                }
+                else -> {
+                    Log.d(TAG, "Condition Not Satisfied")
+                }
+            }
+        })
+    }
+
+    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
+        Log.d(TAG, "onGroupClick month: called")
     }
 
     // 2697 - Method For Add ExpandableList Title Group
@@ -203,6 +335,37 @@ class MonthModifyExpandableListFragment : Fragment(),
                     )
                 }
             }"
+        )
+    }
+
+    // 2815 - Method For Set Null Value
+    private fun nullListData(data: Data): ListData {
+        return ListData(
+            data.serviceSlot,
+            listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
+        )
+    }
+
+    // 2815 - Method For Set available Value
+    private fun isEmptyAvailableListData(data: Data): ListData {
+        return ListData(
+            data.serviceSlot,
+            listOf(
+                BookedEventServiceDto(
+                    getString(R.string.available_small),
+                    "",
+                    "",
+                    ""
+                )
+            )
+        )
+    }
+
+    // 2815 - Method For Set Empty Value
+    private fun emptyListData(): ListData {
+        return ListData(
+            "",
+            listOf(BookedEventServiceDto("", "", "", ""))
         )
     }
 
@@ -237,25 +400,19 @@ class MonthModifyExpandableListFragment : Fragment(),
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            when (caller) {
-                "bookedEventServices" -> {
-                    val currentMonthValue = LocalDateTime.now().monthValue.toString()
-                    currentDate = if (monthValue == currentMonthValue) {
-                        currentDate
-                    } else {
-                        fromDate
-                    }
-                    currentDate?.let { currentDate ->
-                        toDate?.let { toDate ->
-                            getBookedEventServices(
-                                idToken, spRegId,
-                                serviceCategoryId, serviceVendorOnboardingId,
-                                currentDate, toDate
-                            )
-                        }
-                    }
-                }
-                else -> {
+            val currentMonthValue = LocalDateTime.now().monthValue.toString()
+            currentDate = if (monthValue == currentMonthValue) {
+                currentDate
+            } else {
+                fromDate
+            }
+            currentDate?.let { currentDate ->
+                toDate?.let { toDate ->
+                    getBookedEventServices(
+                        idToken, spRegId,
+                        serviceCategoryId, serviceVendorOnboardingId,
+                        currentDate, toDate, caller
+                    )
                 }
             }
         }
@@ -291,4 +448,8 @@ class MonthModifyExpandableListFragment : Fragment(),
         return month
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
 }
