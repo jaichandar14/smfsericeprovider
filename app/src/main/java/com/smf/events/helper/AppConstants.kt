@@ -37,7 +37,7 @@ object AppConstants {
     const val AVAILABLE = "Available"
     const val EVENTS_ON_SELECTED_WEEK = "EventsOnSelectedWeek"
     const val BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK = "bookedEventServicesFromSelectedWeek"
-    const val INITIAL_WEEK_NO_EVENTS = "InitialWeekNoEvents"
+    const val INITIAL_WEEK = "InitialWeek"
     // 2823
     const val BOOKED_EVENTS_SERVICES_INITIAL = "bookedEventServicesInitial"
 }
