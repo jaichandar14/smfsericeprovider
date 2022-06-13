@@ -19,6 +19,8 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
@@ -125,6 +127,7 @@ class ActionDetailsFragment :
     // Close Button ClickListener
     private fun clickListeners() {
         closeBtn?.setOnClickListener {
+            RxBus.publish(RxEvent.QuoteBrief1(2))
             var args = Bundle()
             serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
             serviceVendorOnboardingId?.let { it1 -> args.putInt("serviceVendorOnboardingId", it1) }

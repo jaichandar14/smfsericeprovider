@@ -75,9 +75,13 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             if (phoneNumber.isNotEmpty() || eMail.isNotEmpty()) {
                 if (phoneNumber.isEmpty() || eMail.isEmpty()) {
                     if (phoneNumber.isEmpty()) {
+                        mDataBinding?.loginPage?.visibility=View.INVISIBLE
+                        mDataBinding?.progressBar?.visibility=View.VISIBLE
                         getViewModel().getUserDetails(eMail)
                             .observe(viewLifecycleOwner, getUserDetailsObserver)
                     } else {
+                        mDataBinding?.loginPage?.visibility=View.INVISIBLE
+                        mDataBinding?.progressBar?.visibility=View.VISIBLE
                         getViewModel().getUserDetails(encodedMobileNo)
                             .observe(viewLifecycleOwner, getUserDetailsObserver)
                     }
@@ -96,9 +100,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             is ApisResponse.Success -> {
                 userName = apiResponse.response.data.userName
                 getViewModel().signIn(apiResponse.response.data.userName)
+
             }
 
             is ApisResponse.CustomError -> {
+                mDataBinding?.loginPage?.visibility=View.VISIBLE
                 showToast(apiResponse.message)
             }
             else -> {
@@ -121,6 +127,8 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         when (status) {
             "SignInNotCompleted" -> {
                 // Navigate to EmailOTPFragment
+                mDataBinding?.progressBar?.visibility=View.GONE
+                mDataBinding?.loginPage?.visibility=View.VISIBLE
                 findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(
                     userName!!))
             }

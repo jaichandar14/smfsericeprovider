@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -63,7 +64,7 @@ class ActionDetailsAdapter(
         var serviceDate: TextView = view.findViewById(R.id.service_date)
         var unlikeButton: ImageView = view.findViewById(R.id.unlike_imageView)
         var likeButton: ImageView = view.findViewById(R.id.like_imageView)
-        var rightArrowButton: ImageView = view.findViewById(R.id.right_arrow_imageView)
+        var rightArrowButton: LinearLayout = view.findViewById(R.id.right_arrow_imageView)
         var cutoffMonthText: TextView = view.findViewById(R.id.cutoff_month_text)
         var progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
         var progressDateNumber: TextView = view.findViewById(R.id.progress_date_number)

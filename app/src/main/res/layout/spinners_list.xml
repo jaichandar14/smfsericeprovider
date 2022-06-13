@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fontFamily="@font/poppins_medium"
-    android:padding="@dimen/size_8dp"
+    android:fontFamily="@font/mulish_medium"
+    android:padding="@dimen/size_10dp"
     android:textColor="@color/black"
     android:textSize="@dimen/size_18sp" />

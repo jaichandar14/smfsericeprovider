@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +23,8 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
 import com.smf.events.ui.dashboard.model.BranchDatas
@@ -27,24 +32,27 @@ import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.ServicesData
 import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),
-    DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
+    DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface ,View.OnTouchListener,ViewTreeObserver.OnScrollChangedListener{
 
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
     private lateinit var myEventsRecyclerView: RecyclerView
+    private lateinit var myEventsRecyclerView1: RecyclerView
     lateinit var adapter: MyEventsAdapter
+    lateinit var adapter1: MyEventsAdapter
     var serviceList = ArrayList<ServicesData>()
     var serviceCategoryId: Int = 0
     var serviceVendorOnboardingId: Int = 0
     var branchListSpinner = ArrayList<BranchDatas>()
-
+var valueweget=0
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -61,7 +69,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     @Inject
     lateinit var tokens: Tokens
     private var pressedTime: Long = 0
-
+    private lateinit var dialogDisposable: Disposable
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -74,9 +82,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         setIdTokenAndSpRegId()
     }
 
-    @SuppressLint("ResourceType")
+    @SuppressLint("ResourceType", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mDataBinding?.progressBar?.visibility=View.VISIBLE
+        mDataBinding?.calander?.visibility = View.INVISIBLE
+        mDataBinding?.upcomingEvent?.visibility = View.INVISIBLE
+        mDataBinding?.banner1?.visibility = View.INVISIBLE
+        mDataBinding?.banner2?.visibility = View.INVISIBLE
         mDataBinding?.myEventsLayout?.visibility = View.INVISIBLE
         mDataBinding?.spinnerAction?.visibility = View.INVISIBLE
         // Initialize IdTokenCallBackInterface
@@ -85,14 +98,48 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         getViewModel().setCallBackInterface(this)
         // Initialize MyEvent Recycler
         myEventsRecycler()
+        myEventsRecycler1()
         // Id Token Validation
         idTokenValidation()
         // 2458 CalendarIcon Onclick method
         onClickCalendar()
+
+        dialogDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
+            Log.d("TAG", "onViewCreated listener: $it")
+            mDataBinding?.upcomingEvent?.visibility = View.GONE
+                    mDataBinding?.banner1?.visibility = View.GONE
+                    mDataBinding?.banner2?.visibility = View.GONE
+            valueweget=it.bidReqId
+        //  mDataBinding?.loop1?.visibility=View.VISIBLE
+          // mDataBinding?.nestedScroll?.visibility=View.GONE
+        }
+        dialogDisposable = RxBus.listen(RxEvent.QuoteBrief1::class.java).subscribe {
+            Log.d("TAG", "onViewCreated listener: $it")
+            mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
+            mDataBinding?.banner1?.visibility = View.VISIBLE
+            mDataBinding?.banner2?.visibility = View.VISIBLE
+            mDataBinding?.loop1?.visibility=View.GONE
+            mDataBinding?.nestedScroll?.visibility=View.VISIBLE
+
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+      //  mDataBinding?.nestedscroll?.scrollTo(0,0)
+    }
+
+    override fun onPause() {
+        super.onPause()
+      //  mDataBinding?.nestedscroll?.viewTreeObserver?.removeOnScrollChangedListener(this)
     }
 
     private fun onClickCalendar() {
         mDataBinding?.calander?.setOnClickListener {
+            val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
+            startActivity(intent)
+        }
+        mDataBinding?.calander1?.setOnClickListener {
             val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
             startActivity(intent)
         }
@@ -121,6 +168,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         serviceList.forEach {
             allServiceList.add(it.serviceName)
         }
+        mDataBinding?.progressBar?.visibility=View.GONE
+        mDataBinding?.calander?.visibility = View.VISIBLE
+        mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
+        mDataBinding?.banner1?.visibility = View.VISIBLE
+        mDataBinding?.banner2?.visibility = View.VISIBLE
         mDataBinding?.myEventsLayout?.visibility = View.VISIBLE
         mDataBinding?.spinnerAction?.visibility = View.VISIBLE
         //spinner view for all Services
@@ -133,6 +185,13 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         myEventsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myEventsRecyclerView.adapter = adapter
+    }
+    private fun myEventsRecycler1() {
+        myEventsRecyclerView1 = mDataBinding?.eventsRecyclerView1!!
+        adapter1 = MyEventsAdapter()
+        myEventsRecyclerView1.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        myEventsRecyclerView1.adapter = adapter1
     }
 
     // Method for restrict user back button
@@ -308,6 +367,22 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
+    }
+
+    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+//        Log.d("TAG", "onTouch: ${valueweget} ")
+
+       return valueweget==1
+    }
+
+    override fun onScrollChanged() {
+//        var view: View? = mDataBinding?.nestedscroll?.childCount?.let {
+//            mDataBinding?.nestedscroll?.getChildAt(it.minus(1) )
+//        }
+//        var topDector=mDataBinding?.nestedscroll?.scrollY
+//        var bottomDetector= mDataBinding?.nestedscroll?.height?.let { view?.bottom?.minus(it.plus(
+//            mDataBinding?.nestedscroll?.scaleY!!)) }
+
     }
 
 }

@@ -30,5 +30,17 @@
     // 2803
     <color name="pairing_theme">#FF3577</color>
     <color name="pairing_theme_fade">#F9649D</color>
+    <color name="elephant_black">#3B3B3B</color>
+    <color name="light_blue_service_count">#D5F9FF</color>
+    <color name="blue_spinner_drop_down">#297EDF</color>
+    <color name="darkblue_smf_font">#084172</color>
+    <color name="Muli_fade_black">#902E2E2E</color>
+    <color name="dark_blue_amount">#2B2D5C</color>
+    <color name="blue_event_id">#4484DA</color>
+    <color name="black_event_title">#162232</color>
+    <color name="light_blue_service_count_background">#F0F8FF</color>
+    <color name="gold_cut_off_progess">#FF9100</color>
+    <color name="thumps_up_green">#94DA4E</color>
+    <color name="thumbs_down_red">#FF0000</color>
 
 </resources>

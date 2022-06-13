@@ -17,6 +17,8 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
 import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
@@ -110,6 +112,7 @@ class ActionsAndStatusFragment :
 
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
+        RxBus.publish(RxEvent.QuoteBrief(1))
         when (myEvents.titleText) {
             "New request" -> {
                 goToActionDetailsFragment(AppConstants.BID_REQUESTED)

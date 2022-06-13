@@ -4,151 +4,413 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="dashBoardViewModel"
             type="com.smf.events.ui.dashboard.DashBoardViewModel" />
     </data>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/loop1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/txt_dashboard1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_12dp"
+                    android:layout_marginTop="@dimen/size_10dp"
+                    android:fontFamily="@font/mulish_bold"
+                    android:text="@string/dashboard"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/size_22sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/myEvents_layout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/size_18dp"
+                    android:background="@drawable/dashboard_header"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_dashboard1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/size_20dp"
+                        android:layout_marginTop="@dimen/size_15dp"
+                        android:fontFamily="@font/mulish_bold"
+                        android:text="@string/event_overview"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/size_18sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/events_recycler_view1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/size_12dp"
+                        android:layout_marginTop="@dimen/size_10dp"
+                        android:layout_marginBottom="@dimen/size_15dp"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/events_card_view" />
+
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/spinner_action1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/size_140dp"
+                    app:cardCornerRadius="@dimen/size_20dp"
+                    app:cardElevation="@dimen/size_5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/myEvents_layout1">
+
+                    <LinearLayout
+                        android:id="@+id/spinners1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_25dp"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/size_10dp"
+                        android:paddingEnd="@dimen/size_10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/size_10dp"
+                            android:layout_marginEnd="@dimen/size_10dp"
+                            android:background="@drawable/shapes">
+
+                            <Spinner
+                                android:id="@+id/spn_allServices1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/spinner"
+                                android:gravity="center"
+                                android:spinnerMode="dropdown"
+                                android:textSize="@dimen/size_18sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/size_10dp"
+                            android:layout_marginTop="@dimen/size_20dp"
+                            android:layout_marginEnd="@dimen/size_10dp"
+                            android:background="@drawable/shapes">
+
+                            <Spinner
+                                android:id="@+id/spn_Branches1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="All Services"
+                                android:background="@drawable/spinner"
+                                android:spinnerMode="dropdown"
+                                android:textSize="@dimen/size_18sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/container_main1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/size_10dp"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/branch_tx">
+
+                            <androidx.fragment.app.FragmentContainerView
+                                android:id="@+id/action_and_status_layout1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_12dp"
+                                android:layout_marginTop="@dimen/size_20dp"
+                                android:layout_marginEnd="@dimen/size_12dp"
+                                android:layout_marginBottom="@dimen/size_25dp"
+                                android:descendantFocusability="blocksDescendants">
+
+                            </androidx.fragment.app.FragmentContainerView>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <ImageView
+                    android:id="@+id/calander1"
+                    android:layout_width="@dimen/size_60dp"
+                    android:layout_height="@dimen/size_60dp"
+                    android:layout_marginTop="@dimen/size_30dp"
+                    android:src="@drawable/calendar_icon"
+                    app:layout_constraintHorizontal_bias=".90"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/upcoming_event1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_20dp"
+                    android:layout_marginTop="@dimen/size_15dp"
+                    android:fontFamily="@font/mulish_bold"
+                    android:text="@string/upcoming_event"
+                    android:textColor="#52A1FC"
+                    android:textSize="@dimen/size_18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinner_action1" />
+
+                <ImageView
+                    android:id="@+id/banner11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="@dimen/size_18dp"
+                    android:src="@drawable/banner"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/upcoming_event1" />
+
+                <ImageView
+                    android:id="@+id/banner21"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/size_80dp"
+                    android:src="@drawable/banner_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/upcoming_event1" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminateDrawable="@drawable/custom_progrss_bar"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/txt_dashboard"
+            <com.smf.events.helper.LockableNestedScrollView
+                android:id="@+id/nested_scroll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/size_12dp"
-                android:layout_marginTop="@dimen/size_10dp"
-                android:text="@string/dashboard"
-                android:fontFamily="@font/poppins_semibold"
-                android:textColor="@color/black"
-                android:textSize="@dimen/size_20sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/myEvents_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_dashboard"
-                android:background="@color/button_blue"
-                android:orientation="vertical">
-
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:layout_height="match_parent">
 
                     <TextView
-                        android:layout_weight="2.5"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/txt_dashboard"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/services"
                         android:layout_marginStart="@dimen/size_12dp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:textSize="@dimen/size_18sp"
-                        android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/size_15dp" />
+                        android:layout_marginTop="@dimen/size_10dp"
+                        android:fontFamily="@font/mulish_bold"
+                        android:text="@string/dashboard"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_22sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:id="@+id/myEvents_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_18dp"
+                        android:background="@drawable/dashboard_header"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txt_dashboard">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/size_20dp"
+                            android:layout_marginTop="@dimen/size_15dp"
+                            android:fontFamily="@font/mulish_bold"
+                            android:text="@string/event_overview"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/size_18sp" />
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/events_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/size_12dp"
+                            android:layout_marginTop="@dimen/size_10dp"
+                            android:layout_marginBottom="@dimen/size_15dp"
+                            android:orientation="horizontal"
+                            tools:listitem="@layout/events_card_view" />
+
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/spinner_action"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_140dp"
+                        app:cardCornerRadius="@dimen/size_20dp"
+                        app:cardElevation="@dimen/size_5dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/myEvents_layout">
+
+                        <LinearLayout
+                            android:id="@+id/spinners"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/size_25dp"
+                            android:orientation="vertical"
+                            android:paddingStart="@dimen/size_10dp"
+                            android:paddingEnd="@dimen/size_10dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_10dp"
+                                android:layout_marginEnd="@dimen/size_10dp"
+                                android:background="@drawable/shapes">
+
+                                <Spinner
+                                    android:id="@+id/spn_allServices"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/spinner"
+                                    android:gravity="center"
+                                    android:spinnerMode="dropdown"
+                                    android:textSize="@dimen/size_18sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_10dp"
+                                android:layout_marginTop="@dimen/size_20dp"
+                                android:layout_marginEnd="@dimen/size_10dp"
+                                android:background="@drawable/shapes">
+
+                                <Spinner
+                                    android:id="@+id/spn_Branches"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:autofillHints="All Services"
+                                    android:background="@drawable/spinner"
+                                    android:spinnerMode="dropdown"
+                                    android:textSize="@dimen/size_18sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/container_main"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/size_10dp"
+                                android:orientation="vertical"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/branch_tx">
+
+                                <androidx.fragment.app.FragmentContainerView
+                                    android:id="@+id/action_and_status_layout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/size_12dp"
+                                    android:layout_marginTop="@dimen/size_20dp"
+                                    android:layout_marginEnd="@dimen/size_12dp"
+                                    android:layout_marginBottom="@dimen/size_25dp"
+                                    android:descendantFocusability="blocksDescendants">
+
+                                </androidx.fragment.app.FragmentContainerView>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
 
                     <ImageView
-                        android:layout_marginTop="@dimen/size_12dp"
-                        android:layout_weight=".5"
                         android:id="@+id/calander"
+                        android:layout_width="@dimen/size_60dp"
+                        android:layout_height="@dimen/size_60dp"
+                        android:layout_marginTop="@dimen/size_30dp"
+                        android:src="@drawable/calendar_icon"
+                        app:layout_constraintHorizontal_bias=".90"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/upcoming_event"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/calendar_icon" />
-                </LinearLayout>
+                        android:layout_marginStart="@dimen/size_20dp"
+                        android:layout_marginTop="@dimen/size_15dp"
+                        android:fontFamily="@font/mulish_bold"
+                        android:text="@string/upcoming_event"
+                        android:textColor="#52A1FC"
+                        android:textSize="@dimen/size_18sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/spinner_action" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/events_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_12dp"
-                    android:layout_marginBottom="@dimen/size_20dp"
-                    android:orientation="horizontal"
-                    tools:listitem="@layout/events_card_view" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_marginTop="@dimen/size_15dp"
-                android:id="@+id/spinner_action"
-                app:layout_constraintTop_toBottomOf="@id/myEvents_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginStart="@dimen/size_12dp"
-                android:layout_marginEnd="@dimen/size_12dp">
-
-                <LinearLayout
-                    android:layout_width="@dimen/size_20dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/size_30dp"
-                    android:background="@drawable/shapes"
-                    android:layout_weight="1">
-
-                    <Spinner
-                        android:padding="@dimen/size_5dp"
-                        android:id="@+id/spn_allServices"
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:id="@+id/banner1"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/spinner"
-                        android:gravity="center"
-                        android:spinnerMode="dropdown"
-                        android:textSize="@dimen/size_18sp">
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="@dimen/size_18dp"
+                        android:src="@drawable/banner"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/upcoming_event" />
 
-                    </Spinner>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginStart="@dimen/size_30dp"
-                    android:layout_weight="1"
-                    android:layout_width="@dimen/size_18sp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/shapes">
-
-                    <Spinner
-                        android:padding="@dimen/size_5dp"
-                        android:autofillHints="All Services"
-                        android:id="@+id/spn_Branches"
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:id="@+id/banner2"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/spinner"
-                        android:spinnerMode="dropdown"
-                        android:textSize="@dimen/size_20sp">
+                        android:layout_marginRight="@dimen/size_80dp"
+                        android:src="@drawable/banner_2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/upcoming_event" />
 
-                    </Spinner>
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_action">
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/action_and_status_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/size_12dp"
-                    android:layout_marginTop="@dimen/size_20dp"
-                    android:layout_marginEnd="@dimen/size_12dp">
-
-                </androidx.fragment.app.FragmentContainerView>
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminateDrawable="@drawable/custom_progrss_bar"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.smf.events.helper.LockableNestedScrollView>
+        </LinearLayout>
+    </LinearLayout>
 </layout>

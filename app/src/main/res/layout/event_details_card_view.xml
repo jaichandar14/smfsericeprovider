@@ -12,11 +12,12 @@
     android:layout_marginBottom="@dimen/size_15dp"
     android:background="@drawable/event_detail_cardview_background"
     app:cardCornerRadius="@dimen/size_8dp"
-    app:cardElevation="@dimen/size_10dp">
+    app:cardElevation="@dimen/size_8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/size_5dp">
 
         <TextView
             android:id="@+id/event_title_text"
@@ -24,8 +25,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/size_12dp"
             android:layout_marginTop="@dimen/size_12dp"
-            android:fontFamily="@font/poppins_bold"
+            android:fontFamily="@font/mulish_bold"
             android:text="@string/saras_birthday"
+            android:textColor="@color/black_event_title"
             android:textSize="@dimen/size_18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -37,9 +39,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/mulish_regular"
             android:text="@string/quote"
-            android:textSize="@dimen/size_15sp"
+            android:textSize="@dimen/size_14sp"
             app:layout_constraintBottom_toBottomOf="@+id/event_title_text"
             app:layout_constraintEnd_toStartOf="@+id/amount_text"
             app:layout_constraintHorizontal_bias="1.0"
@@ -51,8 +53,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/size_12dp"
-            android:fontFamily="@font/poppins_semibold"
+            android:fontFamily="@font/mulish_bold"
             android:text="@string/_2500"
+            android:textColor="@color/dark_blue_amount"
             android:textSize="@dimen/size_18sp"
             app:layout_constraintBottom_toBottomOf="@+id/quote_text_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,11 +64,12 @@
         <TextView
             android:id="@+id/code_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_20dp"
             android:layout_marginStart="@dimen/size_12dp"
+            android:layout_marginTop="@dimen/size_2dp"
             android:fontFamily="@font/poppins_medium"
             android:text="@string/ca4215254265"
-            android:textColor="@color/blue"
+            android:textColor="@color/blue_event_id"
             android:textSize="@dimen/size_18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -74,7 +78,7 @@
 
         <TextView
             android:id="@+id/event_type_text"
-            android:layout_width="@dimen/size_200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/size_12dp"
             android:fontFamily="@font/poppins_semibold"
@@ -87,12 +91,11 @@
             app:layout_constraintTop_toBottomOf="@+id/code_text" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/size_120dp"
+            android:layout_width="@dimen/size_100dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/corner_radius_background"
-            android:padding="@dimen/size_8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/event_type_text"
+            android:background="@drawable/cut_off_date_background"
+            android:padding="@dimen/size_2dp"
+            android:paddingStart="@dimen/size_10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toEndOf="@+id/event_type_text"
@@ -102,10 +105,10 @@
                 android:id="@+id/text_bid_cut_off"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_regular"
                 android:text="@string/bid_cut_off"
-                android:textColor="@color/dark_gray"
-                android:textSize="@dimen/size_10sp"
+                android:textColor="@color/dark_blue_amount"
+                android:textSize="@dimen/size_14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -115,9 +118,11 @@
                 android:id="@+id/cutoff_month_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/mar"
-                android:textSize="@dimen/size_14sp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/size_16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -128,10 +133,12 @@
                 style="@style/CircularDeterminateProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_8dp"
+                android:layout_marginEnd="@dimen/size_5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/text_bid_cut_off"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/cutoff_month_text"
+                app:layout_constraintTop_toBottomOf="@id/text_bid_cut_off" />
 
             <TextView
                 android:id="@+id/progress_date_number"
@@ -140,6 +147,7 @@
                 android:gravity="center"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@+id/progress_bar"
                 app:layout_constraintStart_toStartOf="@+id/progress_bar"
@@ -152,7 +160,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/size_12dp"
-            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_marginTop="@dimen/size_35dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -161,7 +169,7 @@
             <TextView
                 android:layout_width="@dimen/size_100dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/mulish_regular"
                 android:text="@string/event_date"
                 android:textSize="@dimen/size_15sp" />
 
@@ -169,7 +177,7 @@
                 android:layout_width="@dimen/size_100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_10dp"
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/mulish_regular"
                 android:text="@string/service_date"
                 android:textSize="@dimen/size_15sp" />
 
@@ -190,8 +198,9 @@
                 android:id="@+id/event_date"
                 android:layout_width="@dimen/size_100dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_regular"
                 android:text="@string/aug_26"
+                android:textColor="@color/elephant_black"
                 android:textSize="@dimen/size_18sp" />
 
             <TextView
@@ -199,8 +208,9 @@
                 android:layout_width="@dimen/size_100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_10dp"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_regular"
                 android:text="@string/_12_aug"
+                android:textColor="@color/elephant_black"
                 android:textSize="@dimen/size_18sp" />
 
             <TextView
@@ -208,7 +218,7 @@
                 android:layout_width="@dimen/size_150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_8dp"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_medium"
                 android:paddingStart="@dimen/size_5dp"
                 android:text="@string/change_in_mind"
                 android:textColor="@color/blue"
@@ -229,73 +239,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date_text_layout">
 
-            <ImageView
-                android:id="@+id/right_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/arrow_right"
+            <LinearLayout
+                android:id="@id/right_arrow_imageView"
+                android:layout_width="@dimen/size_150dp"
+                android:layout_height="@dimen/size_35dp"
+                android:layout_marginTop="@dimen/size_2dp"
+                android:background="@drawable/custom_button_round_corner"
+                android:orientation="horizontal"
+                android:paddingEnd="@dimen/size_15dp"
+                android:weightSum="2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/ner_request_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/size_10dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="@string/New_Request"
-                android:textSize="@dimen/size_15sp"
-                app:layout_constraintBottom_toBottomOf="@+id/right_arrow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/right_arrow"
-                app:layout_constraintTop_toTopOf="@+id/right_arrow" />
+                <TextView
+                    android:id="@+id/right_arrow_imageView"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/size_10dp"
+                    android:layout_weight="1.6"
+                    android:fontFamily="@font/mulish_regular"
+                    android:text="@string/New_Request"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_14sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    android:src="@drawable/button_arrow">
+
+                </ImageView>
+            </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/unlike_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_image_view_background"
-                android:backgroundTint="@color/red"
-                android:padding="@dimen/size_5dp"
-                android:src="@drawable/unlike_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
+                android:padding="@dimen/size_8dp"
+                android:src="@drawable/reject_bid_circle"
+                app:layout_constraintBottom_toBottomOf="@+id/right_arrow_imageView"
                 app:layout_constraintEnd_toStartOf="@+id/like_imageView"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
-                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toEndOf="@+id/right_arrow_imageView"
+                app:layout_constraintTop_toTopOf="@+id/right_arrow_imageView" />
 
             <ImageView
                 android:id="@+id/like_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_image_view_background"
-                android:backgroundTint="@color/green"
-                android:padding="@dimen/size_5dp"
-                android:src="@drawable/like_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
-                app:layout_constraintEnd_toStartOf="@+id/right_arrow_imageView"
-                app:layout_constraintHorizontal_bias="0.93"
-                app:layout_constraintStart_toEndOf="@+id/ner_request_text"
-                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
-
-
-            <ImageView
-                android:id="@+id/right_arrow_imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/icon_image_view_background"
-                android:backgroundTint="@color/fade_gray"
-                android:padding="@dimen/size_5dp"
-                android:src="@drawable/right_arrow_forward"
-                app:layout_constraintBottom_toBottomOf="@+id/ner_request_text"
+                android:layout_marginTop="@dimen/size_5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/right_arrow_imageView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/right_arrow"
-                app:layout_constraintTop_toTopOf="@+id/ner_request_text" />
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toEndOf="@+id/right_arrow_imageView"
+                app:layout_constraintTop_toTopOf="@+id/right_arrow_imageView"
+                app:srcCompat="@drawable/accept_button"
+                tools:targetApi="lollipop" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

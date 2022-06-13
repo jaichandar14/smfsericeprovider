@@ -6,10 +6,10 @@
         android:drawable="@drawable/ic_baseline_circle_24" />
     <item
         android:gravity="fill"
-        android:drawable="@drawable/calendar"
-        android:top="@dimen/size_12dp"
-        android:bottom="@dimen/size_12dp"
-        android:left="@dimen/size_12dp"
-        android:right="@dimen/size_12dp" />
+        android:drawable="@drawable/component_183_3"
+        android:top="@dimen/size_15dp"
+        android:bottom="@dimen/size_15dp"
+        android:left="@dimen/size_15dp"
+        android:right="@dimen/size_15dp" />
 
 </layer-list>

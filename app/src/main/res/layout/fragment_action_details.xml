@@ -11,11 +11,9 @@
             type="com.smf.events.ui.actiondetails.ActionDetailsViewModel" />
     </data>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/size_200dp"
+        android:layout_height="wrap_content"
         tools:context=".ui.actiondetails.ActionDetailsFragment">
 
         <TextView
@@ -23,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:fontFamily="@font/poppins_semibold"
+            android:fontFamily="@font/mulish_bold"
             android:text="@string/actions"
             android:textColor="@color/black"
             android:textSize="@dimen/size_18sp"
@@ -36,34 +34,32 @@
             android:id="@+id/text_new_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/mulish_regular"
             android:textSize="@dimen/size_17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_actions" />
 
-
         <ImageView
             android:id="@+id/close_btn"
             android:layout_width="@dimen/size_25dp"
             android:layout_height="@dimen/size_25dp"
-            android:src="@drawable/cancel"
+            android:layout_marginTop="@dimen/size_8dp"
             android:layout_marginEnd="@dimen/size_12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/text_new_request"
+            android:src="@drawable/cancel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/text_new_request"
-            app:layout_constraintTop_toBottomOf="@+id/text_actions" />
+            app:layout_constraintHorizontal_bias="0.97"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_new_request"
-            android:paddingBottom="@dimen/size_170dp"
-            android:layout_marginTop="@dimen/size_10dp">
+            app:layout_constraintTop_toBottomOf="@+id/text_new_request">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/action_details_recyclerview"
@@ -74,8 +70,5 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
