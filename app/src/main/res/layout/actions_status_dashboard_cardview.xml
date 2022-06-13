@@ -1,38 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/action_card_view_layout"
-    android:layout_width="@dimen/size_95dp"
-    android:layout_height="@dimen/size_95dp"
+    android:layout_width="@dimen/size_115dp"
+    android:layout_height="@dimen/size_85dp"
+    android:layout_marginStart="@dimen/size_2dp"
     android:layout_marginTop="@dimen/size_10dp"
     android:layout_marginEnd="@dimen/size_5dp"
     android:layout_marginBottom="@dimen/size_5dp"
+    app:cardBackgroundColor="@color/light_blue_service_count_background"
     app:cardCornerRadius="@dimen/size_8dp"
-   app:cardElevation="@dimen/size_5dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardElevation="@dimen/size_5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/size_10dp"
-        android:layout_marginLeft="@dimen/size_10dp">
+        android:layout_marginStart="@dimen/size_10dp"
+        android:layout_marginTop="@dimen/size_8dp"
+        android:layout_marginEnd="@dimen/size_5dp"
+        android:layout_marginBottom="@dimen/size_8dp"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/action_numbers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/mulish_bold"
             android:text="@string/_4"
-            android:fontFamily="@font/poppins_medium"
-            android:textColor="@color/black"
-            android:textSize="@dimen/size_22sp"/>
+            android:textColor="@color/darkblue_smf_font"
+            android:textSize="@dimen/size_22sp" />
+
         <TextView
             android:id="@+id/actions_list"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/size_82dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/mulish_regular"
+            android:lines="2"
             android:text="@string/new_request"
-            android:textSize="@dimen/size_14sp"
-            />
+            android:textColor="@color/darkblue_smf_font"
+            android:textSize="@dimen/size_16sp" />
 
     </LinearLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/action_btn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_2dp"
+            android:layout_marginEnd="@dimen/size_2dp"
+            android:src="@drawable/arrow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

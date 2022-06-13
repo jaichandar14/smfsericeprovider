@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,22 +11,24 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        tools:context=".ui.emailotp.EmailOTPFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingStart="@dimen/size_20dp"
+        android:paddingTop="@dimen/size_40dp"
         android:paddingEnd="@dimen/size_20dp"
-        android:paddingTop="@dimen/size_40dp">
+        tools:context=".ui.emailotp.EmailOTPFragment">
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/custom_progrss_bar"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/linearLayout"
             app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
@@ -40,9 +42,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_bold"
                 android:text="@string/otp_verification"
-                android:fontFamily="@font/poppins_regular"
-                android:textColor="@color/button_blue"
+                android:textColor="@color/black_event_title"
                 android:textSize="@dimen/size_22sp" />
 
             <LinearLayout
@@ -53,9 +55,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/please_enter_your_verification_code_sent_your_email"
-                    android:textColor="#902E2E2E"
                     android:fontFamily="@font/poppins_regular"
+                    android:text="@string/please_enter_your_verification_code_sent_your_email"
+                    android:textColor="@color/Muli_fade_black"
                     android:textSize="@dimen/size_18sp" />
 
             </LinearLayout>
@@ -64,19 +66,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="@dimen/size_5dp"
-                android:layout_marginTop="@dimen/size_50dp">
+                android:layout_marginTop="@dimen/size_50dp"
+                android:padding="@dimen/size_5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:fontFamily="@font/mulish_bold"
                     android:gravity="center"
-                    android:fontFamily="@font/poppins_medium"
                     android:text="@string/enter_otp_sent_to_your_email"
                     android:textSize="@dimen/size_20sp" />
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -86,12 +87,13 @@
                 <com.chaos.view.PinView
                     android:id="@+id/otpemail"
                     style="@style/PinWidget.PinView"
-                    android:text="@={otpviewmodel.userOtpNumber}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:cursorVisible="true"
+                    android:fontFamily="@font/mulish_bold"
                     android:inputType="number"
+                    android:text="@={otpviewmodel.userOtpNumber}"
                     app:hideLineWhenFilled="false"
                     app:itemCount="4"
                     app:itemHeight="@dimen/size_50dp"
@@ -102,9 +104,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:lineWidth="1dp">
-
-                </com.chaos.view.PinView>
+                    app:lineWidth="1dp" />
 
             </LinearLayout>
 
@@ -117,14 +117,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
+                    android:fontFamily="@font/mulish_regular"
                     android:text="@string/otp_expries_in" />
 
                 <TextView
                     android:id="@+id/otp_timer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
+                    android:fontFamily="@font/mulish_regular"
                     android:text="@string/_00_30" />
 
             </LinearLayout>
@@ -136,7 +136,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
+                    android:fontFamily="@font/mulish_medium"
                     android:text="@string/did_t_receive_otp" />
 
             </LinearLayout>
@@ -149,20 +149,20 @@
                     android:id="@+id/otp_resend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
+                    android:fontFamily="@font/mulish_medium"
                     android:text="Resend"
-                    android:textColor="@color/buttoncolor"/>
+                    android:textColor="@color/buttoncolor" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/submitBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/size_100dp"
-            android:backgroundTint="@color/button_blue"
+            android:background="@drawable/custom_button_corner_ok"
             android:fontFamily="@font/poppins_regular"
             android:text="@string/submit"
             android:textColor="@color/white"
@@ -170,7 +170,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-        </Button>
+        </androidx.appcompat.widget.AppCompatButton>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

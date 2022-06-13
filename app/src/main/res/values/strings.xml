@@ -135,8 +135,8 @@
     // 2527
     <string name="wednesday">Wednesday</string>
     //2560
-    <string name="active">Active</string>
-    <string name="inactive">Inactive</string>
+    <string name="active">ACTIVE</string>
+    <string name="inactive">INACTIVE</string>
     <string-array name="all_services">
         <item>@string/all_services</item>
         <item>@string/sole_properitor</item>
@@ -177,5 +177,8 @@
     <string name="slots_availability">slots availability</string>
     //2815
     <string name="entire_week">slots availability for the entire week of </string>
-
+    // 2805
+    <string name="curabitur_pretium_pellentesque_tristique_donec_nec_nisi_fermentum">Curabitur pretium pellentesque tristique. Donec nec nisi fermentum</string>
+    <string name="upcoming_event">Upcoming Event</string>
+    <string name="event_overview">Event Overview</string>
 </resources>

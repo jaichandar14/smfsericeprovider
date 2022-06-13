@@ -142,11 +142,9 @@ class CalendarUtils @Inject constructor() {
         } else if (endLastDayOfWeekSunday.dayOfMonth <= LocalDateTime.now().dayOfMonth && endOfTheWeekMonthValue >= currentmonthvalue && endLastDayOfWeekSunday.year <= LocalDateTime.now().year) {
             weeksList.put(1,
                 WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday, poslist))
-
         } else {
             weeksList.put(1,
                 WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday, poslist))
-
         }
 
         // getting Saturdays  date of the month
@@ -161,10 +159,11 @@ class CalendarUtils @Inject constructor() {
             } else {
                 startweeklist = startweeklist.plusDays(7)
                 startweeklistSaturday = startweeklistSaturday.plusDays(7)
-                weeksList.put(j, WeekDatesOfMonth(startweeklist, startweeklistSaturday, poslist))
+                    weeksList.put(j, WeekDatesOfMonth(startweeklist, startweeklistSaturday, poslist))
                 j++
             }
         }
+        Log.d("TAG", "fetchWeekOfMonth: $weeksList")
         return weeksList
     }
 }

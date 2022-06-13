@@ -353,7 +353,7 @@ class CalendarFragment : Fragment(),
     override fun itemClick(msg: Int) {
         if (serviceList[msg].serviceName == "All Service") {
             val branchSpinner: ArrayList<String> = ArrayList()
-            branchSpinner.add(0, "Branches")
+           // branchSpinner.add(0, "Branches")
             serviceCategoryId = 0
             sharedViewModel.branches(
                 mDataBinding,
@@ -365,7 +365,7 @@ class CalendarFragment : Fragment(),
             Log.d("TAG", "itemClick services: $serviceCategoryId")
             apiTokenValidationCalendar("Branches")
             branchListSpinner.clear()
-            apiTokenValidationCalendar("EventDateApiAllService")
+            //apiTokenValidationCalendar("EventDateApiAllService")
         }
     }
 
@@ -375,7 +375,9 @@ class CalendarFragment : Fragment(),
         name: String?,
         allServiceposition: Int?,
     ) {
+       // Log.d(TAG, "branchItemClick: ")
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
+        Log.d("TAG", "branchItemClick: ${this.serviceVendorOnboardingId}")
         apiTokenValidationCalendar("EventDateApiBranches")
         //  settingWeekDate()
         settingMonthDate()
@@ -387,8 +389,8 @@ class CalendarFragment : Fragment(),
             .observe(viewLifecycleOwner, { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        serviceList.add(ServicesData("All Service", 0))
-                        branchListSpinner.add(BranchDatas("Branches", 0))
+//                        serviceList.add(ServicesData("All Service", 0))
+//                        branchListSpinner.add(BranchDatas("Branches", 0))
                         apiResponse.response.data.forEach {
                             serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
                         }
@@ -422,7 +424,7 @@ class CalendarFragment : Fragment(),
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         val branchTypeItems: List<DatasNew> = apiResponse.response.datas
-                        branchListSpinner.add(BranchDatas("Branches", 0))
+                            // branchListSpinner.add(BranchDatas("Branches", 0))
                         for (i in branchTypeItems.indices) {
                             val branchName: String =
                                 branchTypeItems[i].branchName

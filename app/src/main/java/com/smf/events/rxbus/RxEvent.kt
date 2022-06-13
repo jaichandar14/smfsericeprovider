@@ -11,6 +11,6 @@ class RxEvent {
     )
 
     data class QuoteBrief(var bidReqId: Int)
-
+    data class QuoteBrief1(var bidReqId: Int)
     data class ModifyDialog(val status: String)
 }
