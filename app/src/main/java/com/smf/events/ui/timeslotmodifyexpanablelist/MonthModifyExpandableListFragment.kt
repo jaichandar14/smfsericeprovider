@@ -102,7 +102,7 @@ class MonthModifyExpandableListFragment : Fragment(),
                 currentDate = currentMonthDate.currentDate
                 monthValue = currentMonthDate.monthValue.toString()
                 serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
-                Log.d(TAG, "onViewCreated monthValue: $monthValue")
+                Log.d(TAG, "onViewCreated mody: ${serviceCategoryId} ${serviceVendorOnboardingId}")
                 monthValidation()
             })
 
@@ -142,24 +142,20 @@ class MonthModifyExpandableListFragment : Fragment(),
         caller: String
     ) {
         sharedViewModel.getModifyBookedEventServices(
-            idToken, 167, serviceCategoryId,
-            1701, true,
-            "05/13/2022",
-            "05/30/2022"
+            idToken, spRegId, serviceCategoryId,
+            serviceVendorOnBoardingId, true,
+            fromDate,
+            toDate
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
-                    Log.d(
-                        "TAG",
-                        "check token result success month mody: ${apiResponse.response.data}"
-                    )
+                    Log.d(TAG, "success month mody: ${apiResponse.response.data}")
                     if (caller == AppConstants.BOOKED_EVENTS_SERVICES_INITIAL) {
                         eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
                     } else {
                         setDataToExpandableList(apiResponse, groupPosition)
                         adapter!!.notifyDataSetChanged()
                     }
-
                 }
                 is ApisResponse.Error -> {
                     Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -249,46 +245,64 @@ class MonthModifyExpandableListFragment : Fragment(),
             Locale.ENGLISH
         )
         val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
-
         when (branchName) {
             getString(R.string.available_small) -> {
-//                 TODO next commit will pass the dynamic parameters
-                DeselectingDialogFragment.newInstance(
-                    AppConstants.MONTH,
-                    AppConstants.DESELECTED,
-                    timeSlot,
-                    currentMonth,
-                    1701,
-                    "05/13/2022",
-                    "05/30/2022", statusList
-                )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        DeselectingDialogFragment.TAG
-                    )
+                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                    fromDate?.let { fromDate ->
+                        toDate?.let { toDate ->
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.MONTH,
+                                AppConstants.DESELECTED,
+                                timeSlot,
+                                currentMonth,
+                                serviceVendorOnboardingId,
+                                fromDate,
+                                toDate, statusList
+                            )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
+                        }
+                    }
+                }
             }
             getString(R.string.null_text) -> {
-                Log.d("TAG", "onCreateView viewModel called null $branchName")
-//                TODO next commit will pass the dynamic parameters
-                modifyNullApiUpdate("05/13/2022", true, timeSlot, 1701, "05/30/2022")
+                fromDate?.let { fromDate ->
+                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                        toDate?.let { toDate ->
+                            modifyNullApiUpdate(
+                                fromDate,
+                                true,
+                                timeSlot,
+                                serviceVendorOnboardingId,
+                                toDate
+                            )
+                        }
+                    }
+                }
             }
             else -> {
-                Log.d("TAG", "onCreateView viewModel called else $branchName")
-//                 TODO next commit will pass the dynamic parameters
-                DeselectingDialogFragment.newInstance(
-                    AppConstants.MONTH,
-                    AppConstants.SELECTED,
-                    timeSlot,
-                    currentMonth,
-                    1701,
-                    "05/13/2022",
-                    "05/30/2022",
-                    statusList
-                )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        DeselectingDialogFragment.TAG
-                    )
+                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                    fromDate?.let { fromDate ->
+                        toDate?.let { toDate ->
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.MONTH,
+                                AppConstants.SELECTED,
+                                timeSlot,
+                                currentMonth,
+                                serviceVendorOnboardingId,
+                                fromDate,
+                                toDate,
+                                statusList
+                            )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
+                        }
+                    }
+                }
             }
         }
     }
