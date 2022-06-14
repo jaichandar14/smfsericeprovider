@@ -57,6 +57,7 @@ class DayModifyExpandableListFragment : Fragment(),
     private var toDate: String? = null
     var parent: ViewGroup? = null
     private var listOfDates: ArrayList<String>? = ArrayList()
+    private var allDaysList: ArrayList<String> = ArrayList()
     private var groupPosition: Int = 0
     private lateinit var dialogDisposable: Disposable
 
@@ -99,24 +100,13 @@ class DayModifyExpandableListFragment : Fragment(),
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
-            if (currentDate.listOfDays.contains(currentDate.selectedDate)) {
-                mDataBinding.expendableList.visibility = View.VISIBLE
-                mDataBinding.noEventsText.visibility = View.GONE
-                currentDate.listOfDays.forEach {
-                    if (it == currentDate.selectedDate) {
-                        fromDate = currentDate.selectedDate
-                        toDate = currentDate.selectedDate
-                        listOfDates = currentDate.listOfDays
-                        apiTokenValidation(AppConstants.EVENTS_ON_SELECTED_DATE)
-                    }
-                }
-                Log.d(TAG, "onViewCreated sele: ${currentDate.selectedDate}")
-            } else {
-                Log.d(TAG, "onViewCreated sele e: ${currentDate.selectedDate}")
-                setListOfDatesArrayList(currentDate)
-            }
+            fromDate = currentDate.selectedDate
+            toDate = currentDate.selectedDate
+            listOfDates = currentDate.listOfDays
+            allDaysList = currentDate.allDaysList
+            Log.d(TAG, "onViewCreated day: ${currentDate.allDaysList} $serviceVendorOnboardingId")
+            initializeExpandableViewData()
         })
-
         // Observe Modify Dialog Result
         observeModifyDialogResult()
     }
@@ -132,31 +122,15 @@ class DayModifyExpandableListFragment : Fragment(),
     }
 
     // 2776 - Method For set Dates ArrayList
-    private fun setListOfDatesArrayList(currentDate: ScheduleManagementViewModel.SelectedDate) {
-        if (currentDate.listOfDays.isNullOrEmpty()) {
+    private fun initializeExpandableViewData() {
+        if (allDaysList.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            listOfDates = currentDate.listOfDays
-            expandableListInitialSetUp(AppConstants.INITIAL_DATE_NO_EVENTS)
+            apiTokenValidation(AppConstants.INITIAL_DAY)
         }
-    }
-
-    // 2776 -  Method For Set titleDate and childData values
-    private fun expandableListInitialSetUp(caller: String) {
-        childData.clear()
-        titleDate.clear()
-        for (i in 0 until (listOfDates?.size ?: 0)) {
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
-            listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
-            childData[titleDate[i]] = bookedEventDetails
-        }
-
-        // 2558 - ExpandableList Initialization
-        initializeExpandableListSetUp(caller)
     }
 
     // 2670 - Method For Get Booked Event Services
@@ -167,18 +141,23 @@ class DayModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-//        TODO Now here passed static values. In next commit will change dynamic values
+        Log.d(TAG, "success ModifyBookedEvent day : $fromDate $toDate ")
         sharedViewModel.getModifyBookedEventServices(
-            idToken, 167, serviceCategoryId,
-            1701,
-            false, "05/25/2022", "05/25/2022"
+            idToken, spRegId, serviceCategoryId,
+            serviceVendorOnBoardingId,
+            false, fromDate, toDate
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
-                    Log.d(TAG, "success ModifyBookedEvent: ${apiResponse.response.data}")
-                    if (caller == AppConstants.EVENTS_ON_SELECTED_DATE) {
+                    Log.d(TAG, "success ModifyBookedEvent day: ${apiResponse.response.data}")
+                    if (caller == AppConstants.INITIAL_DAY) {
+                        Log.d(TAG, "success ModifyBookedEvent day in: ${apiResponse.response.data}")
                         eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
                     } else {
+                        Log.d(
+                            TAG,
+                            "success ModifyBookedEvent day els: ${apiResponse.response.data}"
+                        )
                         setDataToExpandableList(apiResponse, groupPosition)
                         adapter!!.notifyDataSetChanged()
                     }
@@ -201,66 +180,27 @@ class DayModifyExpandableListFragment : Fragment(),
     ) {
         childData.clear()
         titleDate.clear()
-        for (i in 0 until (listOfDates?.size ?: 0)) {
-            if (listOfDates?.get(i) == fromDate) {
-                val bookedEventDetails = ArrayList<ListData>()
-                apiResponse.response.data.forEach {
-                    if (it.bookedEventServiceDtos == null) {
-                        bookedEventDetails.add(nullListData(it))
-                    } else if (it.bookedEventServiceDtos.isEmpty()) {
-                        bookedEventDetails.add(isEmptyAvailableListData(it))
-                    } else {
-                        bookedEventDetails.add(
-                            ListData(
-                                it.serviceSlot,
-                                it.bookedEventServiceDtos
-                            )
+        for (i in 0 until allDaysList.size) {
+            val bookedEventDetails = ArrayList<ListData>()
+            apiResponse.response.data.forEach {
+                if (it.bookedEventServiceDtos == null) {
+                    bookedEventDetails.add(nullListData(it))
+                } else if (it.bookedEventServiceDtos.isEmpty()) {
+                    bookedEventDetails.add(isEmptyAvailableListData(it))
+                } else {
+                    bookedEventDetails.add(
+                        ListData(
+                            it.serviceSlot,
+                            it.bookedEventServiceDtos
                         )
-                    }
+                    )
                 }
-                listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
-                childData[titleDate[i]] = bookedEventDetails
-            } else {
-                val bookedEventDetails = ArrayList<ListData>()
-                bookedEventDetails.add(emptyListData())
-                listOfDates?.get(i)
-                    ?.let { it -> dateFormat(it).let { titleDate.add(it) } }
-                childData[titleDate[i]] = bookedEventDetails
             }
+            allDaysList[i].let { it -> dateFormat(it).let { titleDate.add(it) } }
+            childData[titleDate[i]] = bookedEventDetails
         }
-        Log.d(TAG, "getBookedEventServices childData: $childData")
+        Log.d(TAG, "getBookedEventServices childData day: $childData")
         initializeExpandableListSetUp(caller)
-    }
-
-    // 2815 - Method For Set Null Value
-    private fun nullListData(data: Data): ListData {
-        return ListData(
-            data.serviceSlot,
-            listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
-        )
-    }
-
-    // 2815 - Method For Set available Value
-    private fun isEmptyAvailableListData(data: Data): ListData {
-        return ListData(
-            data.serviceSlot,
-            listOf(
-                BookedEventServiceDto(
-                    getString(R.string.available_small),
-                    "",
-                    "",
-                    ""
-                )
-            )
-        )
-    }
-
-    // 2815 - Method For Set Empty Value
-    private fun emptyListData(): ListData {
-        return ListData(
-            "",
-            listOf(BookedEventServiceDto("", "", "", ""))
-        )
     }
 
     // 2795 - Method For Set Data To ExpandableList
@@ -286,6 +226,7 @@ class DayModifyExpandableListFragment : Fragment(),
         }
         Log.d(TAG, "setDataToExpandableList pos11: $bookedEventDetails")
         childData[titleDate[position]] = bookedEventDetails
+        Log.d(TAG, "setDataToExpandableList pos11: ${childData[titleDate[position]]}")
     }
 
     // 2558 - Method for ExpandableList Initialization
@@ -301,9 +242,9 @@ class DayModifyExpandableListFragment : Fragment(),
             adapter?.setOnClickListener(this)
         }
 
-        if (caller == AppConstants.EVENTS_ON_SELECTED_DATE) {
-            listOfDates?.indexOf(fromDate)?.let { expandableListView?.expandGroup(it) }
-            lastGroupPosition = listOfDates?.indexOf(fromDate)!!
+        if (caller == AppConstants.INITIAL_DAY) {
+            allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
+            lastGroupPosition = allDaysList.indexOf(fromDate)
             adapter?.notifyDataSetChanged()
         }
     }
@@ -311,8 +252,8 @@ class DayModifyExpandableListFragment : Fragment(),
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
         this.parent = parent as ExpandableListView
         this.groupPosition = listPosition
-        fromDate = listOfDates?.get(listPosition)
-        toDate = listOfDates?.get(listPosition)
+        fromDate = allDaysList[listPosition]
+        toDate = allDaysList[listPosition]
         if (isExpanded) {
             parent.collapseGroup(listPosition)
         } else {
@@ -342,47 +283,64 @@ class DayModifyExpandableListFragment : Fragment(),
             Locale.ENGLISH
         )
         val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
-
-        Log.d(TAG, "onChildClick day: called $childData")
         when (branchName) {
             getString(R.string.available_small) -> {
-//                 TODO next commit will pass the dynamic parameters
-                DeselectingDialogFragment.newInstance(
-                    AppConstants.DAY,
-                    AppConstants.DESELECTED,
-                    timeSlot,
-                    currentMonth,
-                    1701,
-                    "05/25/2022",
-                    "05/25/2022", statusList
-                )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        DeselectingDialogFragment.TAG
-                    )
+                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                    fromDate?.let { fromDate ->
+                        toDate?.let { toDate ->
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.DAY,
+                                AppConstants.DESELECTED,
+                                timeSlot,
+                                currentMonth,
+                                serviceVendorOnboardingId,
+                                fromDate,
+                                toDate, statusList
+                            )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
+                        }
+                    }
+                }
             }
             getString(R.string.null_text) -> {
-                Log.d("TAG", "onCreateView viewModel called null $branchName")
-//                TODO next commit will pass the dynamic parameters
-                modifyNullApiUpdate("05/25/2022", true, timeSlot, 1701, "05/25/2022")
+                fromDate?.let { fromDate ->
+                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                        toDate?.let { toDate ->
+                            modifyNullApiUpdate(
+                                fromDate,
+                                true,
+                                timeSlot,
+                                serviceVendorOnboardingId,
+                                toDate
+                            )
+                        }
+                    }
+                }
             }
             else -> {
-                Log.d("TAG", "onCreateView viewModel called else $branchName")
-//                 TODO next commit will pass the dynamic parameters
-                DeselectingDialogFragment.newInstance(
-                    AppConstants.DAY,
-                    AppConstants.SELECTED,
-                    timeSlot,
-                    currentMonth,
-                    1701,
-                    "05/25/2022",
-                    "05/25/2022",
-                    statusList
-                )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        DeselectingDialogFragment.TAG
-                    )
+                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                    fromDate?.let { fromDate ->
+                        toDate?.let { toDate ->
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.DAY,
+                                AppConstants.SELECTED,
+                                timeSlot,
+                                currentMonth,
+                                serviceVendorOnboardingId,
+                                fromDate,
+                                toDate,
+                                statusList
+                            )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
+                        }
+                    }
+                }
             }
         }
         // Setting Position From Selected Calender Date
@@ -416,6 +374,29 @@ class DayModifyExpandableListFragment : Fragment(),
                 }
             }
         })
+    }
+
+    // 2815 - Method For Set Null Value
+    private fun nullListData(data: Data): ListData {
+        return ListData(
+            data.serviceSlot,
+            listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
+        )
+    }
+
+    // 2815 - Method For Set available Value
+    private fun isEmptyAvailableListData(data: Data): ListData {
+        return ListData(
+            data.serviceSlot,
+            listOf(
+                BookedEventServiceDto(
+                    getString(R.string.available_small),
+                    "",
+                    "",
+                    ""
+                )
+            )
+        )
     }
 
     // 2670 - Method For Set IdToken And SpRegId From SharedPreferences

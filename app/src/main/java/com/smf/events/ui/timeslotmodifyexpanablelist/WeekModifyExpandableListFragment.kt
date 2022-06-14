@@ -436,12 +436,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            weekList.forEach {
-                if (it.format(dateFormatter) == LocalDate.now().format(dateFormatter)) {
-                    fromDate = it.format(dateFormatter)
-                }
-            }
-            Log.d(TAG, "tokenCallBack week: $fromDate")
+            Log.d(TAG, "tokenCallBack week: $fromDate $toDate")
             fromDate?.let { fromDate ->
                 toDate?.let { toDate ->
                     getBookedEventServices(

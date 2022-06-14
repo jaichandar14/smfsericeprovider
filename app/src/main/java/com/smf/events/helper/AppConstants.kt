@@ -40,4 +40,6 @@ object AppConstants {
     const val INITIAL_WEEK = "InitialWeek"
     // 2823
     const val BOOKED_EVENTS_SERVICES_INITIAL = "bookedEventServicesInitial"
+    //2836
+    const val INITIAL_DAY = "InitialDate"
 }
