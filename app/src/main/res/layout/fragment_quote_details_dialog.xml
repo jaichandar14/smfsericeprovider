@@ -29,7 +29,7 @@
                 android:id="@+id/quote_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_semibold"
+                android:fontFamily="@font/mulish_bold"
                 android:text="Quote details for "
                 android:textSize="@dimen/size_20sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
                 android:id="@+id/quote_title_service_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_semibold"
+                android:fontFamily="@font/mulish_bold"
                 android:text="Catering"
                 android:textSize="@dimen/size_20sp"
                 app:layout_constraintBottom_toBottomOf="@+id/quote_title"
@@ -261,7 +261,7 @@
                     android:layout_marginTop="18dp"
                     android:layout_marginRight="@dimen/size_5dp"
                     android:layout_weight="1.5"
-                    android:background="@drawable/custom_cancel_button_round_corner"
+                    android:background="@drawable/custom_button_corner_cancel"
                     android:text="Cancel" />
 
                 <androidx.appcompat.widget.AppCompatButton
@@ -271,7 +271,7 @@
                     android:layout_marginLeft="@dimen/size_5dp"
                     android:layout_marginTop="18dp"
                     android:layout_weight="1.5"
-                    android:background="@drawable/custom_button_round_corner"
+                    android:background="@drawable/custom_button_corner_ok"
                     android:text="OK" />
 
 

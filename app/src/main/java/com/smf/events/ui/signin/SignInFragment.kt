@@ -76,7 +76,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 if (phoneNumber.isEmpty() || eMail.isEmpty()) {
                     if (phoneNumber.isEmpty()) {
                         mDataBinding?.loginPage?.visibility=View.INVISIBLE
-                        mDataBinding?.progressBar?.visibility=View.VISIBLE
+                       mDataBinding?.progressBar?.visibility=View.VISIBLE
                         getViewModel().getUserDetails(eMail)
                             .observe(viewLifecycleOwner, getUserDetailsObserver)
                     } else {
@@ -105,6 +105,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
             is ApisResponse.CustomError -> {
                 mDataBinding?.loginPage?.visibility=View.VISIBLE
+                mDataBinding?.progressBar?.visibility=View.GONE
                 showToast(apiResponse.message)
             }
             else -> {

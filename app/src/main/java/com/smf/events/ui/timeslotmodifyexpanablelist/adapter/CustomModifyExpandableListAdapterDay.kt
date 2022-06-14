@@ -72,11 +72,11 @@ class CustomModifyExpandableListAdapterDay internal constructor(
         } else if (expandedListData.status.isEmpty()) {
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = " "+ context.getString(R.string.available)
-            image12To3am?.setImageResource(R.drawable.select)
+            image12To3am?.setImageResource(R.drawable.new_selection)
         } else if (expandedListData.status[0].branchName == context.getString(R.string.available_small)) {
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = " "+ context.getString(R.string.available)
-            image12To3am?.setImageResource(R.drawable.select)
+            image12To3am?.setImageResource(R.drawable.new_selection)
         } else if (expandedListData.status[0].branchName == context.getString(R.string.null_text)) {
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = " "+ context.getString(R.string.not_available)

@@ -1,6 +1,7 @@
 package com.smf.events.ui.dashboard.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,7 +40,6 @@ class MyEventsAdapter: RecyclerView.Adapter<MyEventsAdapter.MyEventViewHolder>()
 
         }
     }
-
     //Method For Refreshing Invoices
     @SuppressLint("NotifyDataSetChanged")
     fun refreshItems(invoice: List<MyEvents>) {

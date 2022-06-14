@@ -36,7 +36,7 @@
                 android:layout_height="@dimen/size_30dp"
                 android:layout_marginTop="@dimen/size_15dp"
                 android:contentDescription="@string/icon"
-                android:src="@drawable/disable"
+                android:src="@drawable/booked"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -116,7 +116,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         // Initialize RegId And RoleId to Shared Preference
-                        setSpRegIdAndRollID(apiResponse)
+                     setSpRegIdAndRollID(apiResponse)
+                        Log.d("TAG", "getLoginApiCall: $apiResponse")
                         // Navigate to DashBoardFragment
                         findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
                     }

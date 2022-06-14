@@ -1,7 +1,6 @@
 package com.smf.events.ui.dashboard.adapter
 
 import android.annotation.SuppressLint
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +30,7 @@ class StatusAdaptor : RecyclerView.Adapter<StatusAdaptor.StatusViewHolder>() {
     ): StatusAdaptor.StatusViewHolder {
         var itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.actions_status_dashboard_cardview, parent, false)
+                .inflate(R.layout.status_card_view, parent, false)
         return StatusViewHolder(itemView)
     }
 

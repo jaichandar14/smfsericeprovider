@@ -47,5 +47,9 @@
     <color name="day_blue">#00D0FF</color>
     <color name="calendar_border_gray">#E9E9F0</color>
     <color name="light_gray_background">#F6F6F6</color>
+    <color name="theme_header_blue">#556CD4</color>
+    <color name="backGroundGray">#DAD8D8</color>
+    <color name="quote_details_blue">#ECF4FA</color>
+    <color name="dark_font">#2B2D5C</color>
 
 </resources>
