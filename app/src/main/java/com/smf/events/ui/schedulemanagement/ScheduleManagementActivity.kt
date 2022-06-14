@@ -10,9 +10,12 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityScheduleManagmentBinding
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.calendarfragment.CalendarFragment
 import com.smf.events.ui.timeslot.TimeSlotsFragment
 import dagger.android.AndroidInjection
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 // 2458
@@ -23,7 +26,7 @@ class ScheduleManagementActivity :
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-
+    private lateinit var dialogDisposable: Disposable
     override fun getContentView(): Int = R.layout.activity_schedule_managment
 
     override fun getViewModel(): ScheduleManagementViewModel =
@@ -39,6 +42,9 @@ class ScheduleManagementActivity :
         calendarUI()
         // 2458 Method for TimeSlots Ui
         timeSlotsUI()
+        dialogDisposable = RxBus.listen(RxEvent.ChangingNav::class.java).subscribe {
+            finish()
+        }
     }
 
     // 2458 - Method for Calendar Ui
@@ -83,10 +89,10 @@ class ScheduleManagementActivity :
             supportFragmentManager //create an instance of fragment manager
         val transaction: FragmentTransaction =
             manager.beginTransaction() //create an instance of Fragment-transaction
-        if (status){
+        if (status) {
             Log.d("TAG", "calendarUI if : $status")
             transaction.replace(R.id.timeslots_fragment, frg, status.toString())
-        }else{
+        } else {
             Log.d("TAG", "calendarUI else: $status")
             transaction.replace(R.id.timeslots_fragment, frg, status.toString())
         }

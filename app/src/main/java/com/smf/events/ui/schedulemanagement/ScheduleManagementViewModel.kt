@@ -262,7 +262,7 @@ class ScheduleManagementViewModel @Inject constructor(
         isAvailable: Boolean,
         modifiedSlot: String,
         serviceVendorOnBoardingId: Int,
-        toDate: String
+        toDate: String,
     ) =
         liveData(Dispatchers.IO) {
             emit(
@@ -286,7 +286,7 @@ class ScheduleManagementViewModel @Inject constructor(
         isAvailable: Boolean,
         modifiedSlot: String,
         serviceVendorOnBoardingId: Int,
-        toDate: String
+        toDate: String,
     ) =
         liveData(Dispatchers.IO) {
             emit(
@@ -310,7 +310,7 @@ class ScheduleManagementViewModel @Inject constructor(
         isAvailable: Boolean,
         modifiedSlot: String,
         serviceVendorOnBoardingId: Int,
-        toDate: String
+        toDate: String,
     ) =
         liveData(Dispatchers.IO) {
             emit(
@@ -331,6 +331,11 @@ class ScheduleManagementViewModel @Inject constructor(
     // 2458 Initializing CallBack Interface Method
     fun setCallBackInterface(callback: CallBackInterface) {
         callBackInterface = callback
+    }
+
+    // 2825
+    fun closedbtn(mDataBinding: FragmentCalendarBinding) {
+
     }
 
     // 2458 CallBack Interface

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="calendarManagementViewModel"
             type="com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel" />
@@ -14,29 +13,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".ui.schedulemanagement.calendarfragment.CalendarFragment">
-
-        <TextView
-            android:id="@+id/calendar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/size_5dp"
-            android:layout_marginBottom="@dimen/size_15dp"
-            android:fontFamily="@font/poppins_semibold"
-            android:text="@string/calendar"
-            android:textColor="@color/black"
-            android:textSize="@dimen/size_20sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:background="#556CD4"
+    app:layout_constraintStart_toStartOf="parent">
+    <TextView
+        android:paddingStart="@dimen/size_18dp"
+        android:paddingTop="@dimen/size_20dp"
+        android:id="@+id/calendar_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_15dp"
+        android:paddingBottom="@dimen/size_12dp"
+        android:fontFamily="@font/mulish_bold"
+        android:text="@string/calendar"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <ImageView
+        android:layout_marginTop="@dimen/size_20dp"
+        android:id="@+id/close_calendar"
+        android:layout_marginEnd="@dimen/size_25dp"
+        android:layout_width="@dimen/size_35dp"
+        android:layout_height="@dimen/size_35dp"
+        app:srcCompat="@drawable/close_calendar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
+            android:padding="@dimen/size_12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/calendar_title"
+            app:layout_constraintTop_toBottomOf="@id/title_layout"
             app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
@@ -92,9 +112,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_10dp"
-                android:layout_marginTop="@dimen/size_35dp"
+                android:layout_marginTop="@dimen/size_25dp"
                 android:layout_marginEnd="@dimen/size_10dp"
-                android:background="@drawable/calendar_background"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -154,6 +173,7 @@
                         app:layout_constraintStart_toEndOf="@+id/monthYearTV"
                         app:layout_constraintTop_toTopOf="parent" />
 
+
                     <ImageButton
                         android:id="@+id/next_month"
                         android:layout_width="wrap_content"
@@ -171,16 +191,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_25dp"
+                    android:layout_marginStart="@dimen/size_8dp"
                     android:layout_marginTop="@dimen/size_15dp"
-                    android:layout_marginEnd="@dimen/size_28dp"
+                    android:background="@drawable/calendar_borrder"
+                    android:layout_marginEnd="@dimen/size_10dp"
+                    android:paddingBottom="@dimen/size_10dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/s"
                         android:textAlignment="center"
                         android:textColor="@color/black"
@@ -190,7 +212,7 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/m"
                         android:textAlignment="center"
                         android:textColor="@color/black"
@@ -200,7 +222,7 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/t"
                         android:textAlignment="center"
                         android:textColor="@color/black"
@@ -210,7 +232,7 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/w"
                         android:textAlignment="center"
                         android:textColor="@color/black"
@@ -220,7 +242,7 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/t"
                         android:textAlignment="center"
                         android:textColor="@color/black"
@@ -230,7 +252,7 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/f"
                         android:textAlignment="center"
                         android:textColor="@color/black"
@@ -240,8 +262,8 @@
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="@string/s"
+                        android:fontFamily="@font/mulish_semi_bold"
+                        android:text="@string/sa"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="@dimen/size_16sp" />
@@ -253,8 +275,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/size_210"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/size_30dp"
-                    android:layout_marginEnd="@dimen/size_30dp" />
+                    android:layout_marginStart="@dimen/size_15dp"
+                    android:layout_marginEnd="@dimen/size_15dp" />
 
             </LinearLayout>
         </LinearLayout>

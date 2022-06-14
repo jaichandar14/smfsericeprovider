@@ -123,11 +123,12 @@
     <string name="_9pm_12am">9pm - 12am</string>
     <string name="available_with_dummy_text">Available dsdssjbjfbjbfjsbfbf sasassasaasasasasasasasasasasasasasasasdsjhdskdbajbjbdjabjbadnadsddadadadadaddaddadadadadadadadadfsmfms</string>
     <string name="_1">1</string>
-    <string name="s">S</string>
-    <string name="f">F</string>
-    <string name="t">T</string>
-    <string name="w">W</string>
-    <string name="m">M</string>
+    <string name="sa">Sa</string>
+    <string name="s">Su</string>
+    <string name="f">Fr</string>
+    <string name="t">Tu</string>
+    <string name="w">We</string>
+    <string name="m">Mo</string>
     <string name="calendar">Calendar</string>
     // 2528
     <string name="switch_to_modify_slots_availability">Switch to Modify Slots Availability</string>
