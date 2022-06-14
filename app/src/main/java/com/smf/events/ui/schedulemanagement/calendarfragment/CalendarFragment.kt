@@ -228,7 +228,6 @@ class CalendarFragment : Fragment(),
     // 2622
     // 2825 Method For Setting Month View in Calendar
     private fun setMonthView(dayinWeek: ArrayList<String>?, daysPositon: ArrayList<Int>?) {
-        Log.d("TAG", "setMonthView: ${monthFromAndToDate()}")
         monthYearText?.text =
             CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDate(it) }
         yearText?.text = CalendarUtils.selectedDate?.let { calendarUtils.yearAndMonthFromDate(it) }
@@ -322,7 +321,8 @@ class CalendarFragment : Fragment(),
                 CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                 serviceCategoryId,
                 serviceVendorOnboardingId,
-                serviceDate
+                serviceDate,
+                monthFromAndToDate()
             )
         }
 
@@ -486,7 +486,7 @@ class CalendarFragment : Fragment(),
                 CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                 this.serviceCategoryId,
                 this.serviceVendorOnboardingId,
-                serviceDate
+                serviceDate, monthFromAndToDate()
             )
             val fromAndToDate = calendarUtils.fromAndToDate()
             val weeksOfMonth = calendarUtils.fetchWeekOfMonth()
@@ -511,7 +511,7 @@ class CalendarFragment : Fragment(),
                             val currentDayFormatter =
                                 DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
                             var dateList = LocalDate.parse(it, currentDayFormatter)
-                            if (dateList <= LocalDate.now()) {
+                            if (dateList < LocalDate.now()) {
                                 // previous Date
                             } else {
                                 serviceDate.add(it)
@@ -521,7 +521,7 @@ class CalendarFragment : Fragment(),
                             CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                             this.serviceCategoryId,
                             this.serviceVendorOnboardingId,
-                            serviceDate
+                            serviceDate, monthFromAndToDate()
                         )
                         // 2796
                         settingWeekDate()
@@ -588,7 +588,9 @@ class CalendarFragment : Fragment(),
             CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
         for (i in 0 until toDateMonth.dayOfMonth) {
             fromDateMonth.plusDays(i.toLong())
-            dateList.add(fromDateMonth.plusDays(i.toLong()).format(CalendarUtils.dateFormatter))
+            if (fromDateMonth.plusDays(i.toLong()) >= LocalDate.now()) {
+                dateList.add(fromDateMonth.plusDays(i.toLong()).format(CalendarUtils.dateFormatter))
+            }
         }
         return dateList
     }

@@ -14,6 +14,7 @@ import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class ScheduleManagementViewModel @Inject constructor(
@@ -31,6 +32,7 @@ class ScheduleManagementViewModel @Inject constructor(
         var seviceId: Int,
         var branchId: Int,
         var listOfDays: ArrayList<String>,
+        var allDaysList:ArrayList<String>,
     )
 
     private var currentDate = MutableLiveData<SelectedDate>()
@@ -40,9 +42,10 @@ class ScheduleManagementViewModel @Inject constructor(
         seviceId: Int,
         branchId: Int,
         listOfDays: ArrayList<String>,
+        allDaysList:ArrayList<String>,
     ) {
-        currentDate.value = SelectedDate(selectedDate, seviceId, branchId, listOfDays)
-        Log.d("TAG", "setCurrentDate: $listOfDays")
+        currentDate.value = SelectedDate(selectedDate, seviceId, branchId, listOfDays,allDaysList)
+        Log.d("TAG", "setCurrentDate: $allDaysList")
     }
 
     // 2795 - From TimeSlot UI Expanded Date Send To Calendar UI
