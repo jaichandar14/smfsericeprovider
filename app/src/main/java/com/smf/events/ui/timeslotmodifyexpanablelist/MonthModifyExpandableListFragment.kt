@@ -102,7 +102,6 @@ class MonthModifyExpandableListFragment : Fragment(),
                 currentDate = currentMonthDate.currentDate
                 monthValue = currentMonthDate.monthValue.toString()
                 serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
-                Log.d(TAG, "onViewCreated mody: ${serviceCategoryId} ${serviceVendorOnboardingId}")
                 monthValidation()
             })
 
@@ -414,13 +413,8 @@ class MonthModifyExpandableListFragment : Fragment(),
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            val currentMonthValue = LocalDateTime.now().monthValue.toString()
-            currentDate = if (monthValue == currentMonthValue) {
-                currentDate
-            } else {
-                fromDate
-            }
-            currentDate?.let { currentDate ->
+            Log.d(TAG, "tokenCallBack month: $fromDate")
+            fromDate?.let { currentDate ->
                 toDate?.let { toDate ->
                     getBookedEventServices(
                         idToken, spRegId,
