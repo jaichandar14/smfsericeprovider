@@ -37,6 +37,7 @@ class CalendarUtils @Inject constructor() {
         val formatter = DateTimeFormatter.ofPattern("MMM")
         return date.format(formatter)
     }
+
     fun monthYearFromDateFull(date: LocalDate): String? {
         val formatter = DateTimeFormatter.ofPattern("MMMM")
         return date.format(formatter)
@@ -136,6 +137,7 @@ class CalendarUtils @Inject constructor() {
         val lastDayOfWeekSunday: DayOfWeek = firstDayOfWeekSunday.plus(6)
         val endLastDayOfWeekSunday: LocalDate =
             fromDateMonth.with(TemporalAdjusters.nextOrSame(lastDayOfWeekSunday))
+        Log.d("TAG", "fetchWeekOfMonth: $endLastDayOfWeekSunday $")
         var poslist: Int = 0
         var endOfTheWeekMonthValue = endLastDayOfWeekSunday.monthValue
         var currentmonthvalue = LocalDateTime.now().monthValue
@@ -158,16 +160,27 @@ class CalendarUtils @Inject constructor() {
             toDateMonth.with(TemporalAdjusters.nextOrSame(lastDayOfWeekSunday))
         var startweeklistSaturday = endLastDayOfWeekSunday
         var startweeklist = startOfFirstWeekSunday
+        val currentDateSunday: LocalDate =
+            LocalDate.now().with(TemporalAdjusters.previousOrSame(firstDayOfWeekSunday))
+
         for (i in 0 until 7) {
-            if (startweeklist == endOfWeek && startweeklistSaturday == endOfMonthWeek) {
-            } else {
+            if (startweeklist != endOfWeek && startweeklistSaturday != endOfMonthWeek) {
                 startweeklist = startweeklist.plusDays(7)
                 startweeklistSaturday = startweeklistSaturday.plusDays(7)
-                    weeksList.put(j, WeekDatesOfMonth(startweeklist, startweeklistSaturday, poslist))
+                weeksList.put(j,
+                    WeekDatesOfMonth(startweeklist, startweeklistSaturday, poslist))
                 j++
             }
         }
-        Log.d("TAG", "fetchWeekOfMonth: $weeksList")
+        var weeksListMap: ArrayList<Int> = ArrayList()
+        weeksList.forEach {
+            if (currentDateSunday > it.value.fromDate) {
+                weeksListMap.add(it.key)
+            }
+        }
+        weeksListMap.forEach {
+            weeksList.remove(it)
+        }
         return weeksList
     }
 }
