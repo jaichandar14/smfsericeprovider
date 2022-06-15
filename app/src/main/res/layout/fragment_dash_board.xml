@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="dashBoardViewModel"
             type="com.smf.events.ui.dashboard.DashBoardViewModel" />
@@ -25,20 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/txt_dashboard1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_12dp"
-                    android:layout_marginTop="@dimen/size_10dp"
-                    android:fontFamily="@font/mulish_bold"
-                    android:text="@string/dashboard"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/size_22sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <LinearLayout
                     android:id="@+id/myEvents_layout1"
                     android:layout_width="match_parent"
@@ -48,7 +33,7 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_dashboard1">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -59,6 +44,7 @@
                         android:text="@string/event_overview"
                         android:textColor="@color/white"
                         android:textSize="@dimen/size_18sp" />
+
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/events_recycler_view1"
@@ -225,49 +211,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/txt_dashboard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/size_12dp"
-                        android:layout_marginTop="@dimen/size_10dp"
-                        android:fontFamily="@font/mulish_bold"
-                        android:text="@string/dashboard"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/size_22sp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
+                        android:paddingTop="@dimen/size_20dp"
                         android:id="@+id/myEvents_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/size_18dp"
-                        android:background="@drawable/dashboard_header"
+                        android:layout_height="@dimen/size_200dp"
+                        android:background="@drawable/panel"
                         android:orientation="vertical"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/txt_dashboard">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
+                            android:layout_marginTop="@dimen/size_12dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_15dp"
                             android:fontFamily="@font/mulish_bold"
                             android:text="@string/event_overview"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/size_18sp" />
+                            android:textSize="@dimen/size_20sp" />
 
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/events_recycler_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_12dp"
-                            android:layout_marginTop="@dimen/size_10dp"
-                            android:layout_marginBottom="@dimen/size_15dp"
+                            android:layout_marginStart="@dimen/size_8dp"
+                            android:layout_marginTop="@dimen/size_30dp"
+                            android:layout_marginBottom="@dimen/size_20dp"
                             android:orientation="horizontal"
                             tools:listitem="@layout/events_card_view" />
 
@@ -277,7 +250,7 @@
                         android:id="@+id/spinner_action"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/size_140dp"
+                        android:layout_marginTop="@dimen/size_180dp"
                         app:cardCornerRadius="@dimen/size_20dp"
                         app:cardElevation="@dimen/size_5dp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -360,12 +333,26 @@
                         android:id="@+id/calander"
                         android:layout_width="@dimen/size_60dp"
                         android:layout_height="@dimen/size_60dp"
-                        android:layout_marginTop="@dimen/size_30dp"
+                        android:layout_marginTop="@dimen/size_12dp"
                         android:src="@drawable/calendar_icon"
-                        app:layout_constraintHorizontal_bias=".90"
+                        app:layout_constraintHorizontal_bias=".93"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/calander_tx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/size_5dp"
+                        android:fontFamily="@font/mulish_semi_bold"
+                        android:text="@string/calendar_view"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/size_15sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/calander"
+                        app:layout_constraintEnd_toStartOf="@+id/calander"
+                        app:layout_constraintTop_toTopOf="@+id/calander" />
 
                     <TextView
                         android:id="@+id/upcoming_event"

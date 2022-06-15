@@ -122,6 +122,8 @@ var valueweget=0
             mDataBinding?.nestedScroll?.visibility=View.VISIBLE
 
         }
+
+
     }
 
     override fun onResume() {

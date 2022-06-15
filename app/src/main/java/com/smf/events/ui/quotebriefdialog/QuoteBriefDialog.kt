@@ -100,6 +100,9 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
+        // 2835
+        mDataBinding?.serviceName?.text=response.data.serviceName
+        mDataBinding?.branchName?.text=response.data.branchName
         mDataBinding?.txJobTitle?.text = response.data.eventName
         // 2354
         val currencyType = setCurrencyType(response)
@@ -147,6 +150,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
+        mDataBinding?.serviceName?.text=response.data.serviceName
+        mDataBinding?.branchName?.text=response.data.branchName
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txJobAmount?.visibility = View.INVISIBLE
         mDataBinding?.viewQuote?.visibility = View.INVISIBLE

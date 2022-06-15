@@ -19,7 +19,7 @@
     android:layout_height="wrap_content"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    android:background="#556CD4"
+    android:background="@color/theme_header_blue"
     app:layout_constraintStart_toStartOf="parent">
     <TextView
         android:paddingStart="@dimen/size_18dp"

@@ -36,9 +36,10 @@
                     android:id="@+id/quote_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/you_rejected_a_catering_1000045"
                     android:textSize="@dimen/size_20sp"
+                    android:textColor="@color/black_event_title"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_15dp"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/reason_for_rejection"
                 android:textSize="@dimen/size_18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +62,7 @@
                 android:layout_width="@dimen/size_250dp"
                 android:layout_height="@dimen/size_45dp"
                 android:layout_gravity="center"
-                android:background="@drawable/shapes"
+                android:background="@drawable/box_login_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_20dp"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_medium"
                 android:text="@string/comments"
                 android:textSize="@dimen/size_18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -94,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/size_10dp"
-                android:background="@drawable/shapes"
+                android:background="@drawable/box_login_text"
                 android:gravity="start"
                 android:lines="6"
                 android:maxLength="1000"
@@ -107,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_5dp"
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/mulish_regular"
                 android:text="@string/comments_is_mandatory_for_thr_option"
                 android:textColor="@color/red"
                 android:textSize="@dimen/size_15sp"
@@ -119,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_4dp"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/if_you_want"
                 android:textSize="@dimen/size_18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -141,7 +142,7 @@
                     android:layout_marginTop="@dimen/size_18dp"
                     android:layout_marginEnd="@dimen/size_5dp"
                     android:layout_weight="1.5"
-                    android:background="@drawable/custom_cancel_button_round_corner"
+                    android:background="@drawable/custom_button_corner_cancel"
                     android:text="@string/cancel"
                     android:textColor="@color/buttoncolor" />
 
@@ -152,7 +153,7 @@
                     android:layout_marginStart="@dimen/size_5dp"
                     android:layout_marginTop="18dp"
                     android:layout_weight="1.5"
-                    android:background="@drawable/custom_button_round_corner"
+                    android:background="@drawable/custom_button_corner_ok"
                     android:text="@string/ok" />
 
             </LinearLayout>

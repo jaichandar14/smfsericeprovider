@@ -30,6 +30,7 @@
             app:layout_constraintVertical_bias="0.15" />
 
         <ImageView
+            android:id="@+id/image_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/landing_screen_image"
@@ -43,16 +44,15 @@
         <TextView
             android:layout_width="@dimen/size_285dp"
             android:layout_height="@dimen/size_70dp"
-            android:text="@string/curabitur_pretium_pellentesque_tristique_donec_nec_nisi_fermentum"
+            android:text="@string/title_splash"
             android:textAlignment="center"
             android:textColor="@color/elephant_black"
             android:textSize="@dimen/size_20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/size_20dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_icon"
             app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.62" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/splashBtn"
