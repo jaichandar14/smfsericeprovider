@@ -137,12 +137,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"
-                        app:srcCompat="@drawable/arrow_left_20"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@+id/monthYearTV"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.05"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/monthYearTV"
+                        app:srcCompat="@drawable/arrow_back_black_new" />
 
                     <TextView
                         android:id="@+id/monthYearTV"
@@ -179,12 +179,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"
-                        app:srcCompat="@drawable/arrow_forward_20"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginTop="@dimen/size_2dp"
+                        android:layout_marginStart="@dimen/size_12dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/monthYearTV"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.07"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/yearTV"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/monthYearTV"
+                        app:layout_constraintVertical_bias="0.133"
+                        app:srcCompat="@drawable/arrow_forward_black" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
