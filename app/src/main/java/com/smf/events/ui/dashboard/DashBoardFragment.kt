@@ -184,6 +184,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         serviceList.forEach {
             allServiceList.add(it.serviceName)
         }
+        widgetAfter()
 
         //spinner view for all Services
         getViewModel().allServices(mDataBinding, allServiceList)
@@ -299,7 +300,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         val serviceList =
                             getViewModel().getServiceCountList(apiResponse.response.data)
                         adapter.refreshItems(serviceList)
-                        widgetAfter()
+                        mDataBinding?.serviceCountLayout?.visibility = View.VISIBLE
+
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -315,7 +317,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // 2839 After Api call Done
     private fun widgetAfter() {
-        mDataBinding?.serviceCountLayout?.visibility = View.VISIBLE
         mDataBinding?.progressBar?.visibility = View.GONE
         mDataBinding?.calander?.visibility = View.VISIBLE
         mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
