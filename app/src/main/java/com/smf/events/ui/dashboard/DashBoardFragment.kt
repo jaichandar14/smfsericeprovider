@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -39,7 +38,8 @@ import javax.inject.Inject
 
 
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),
-    DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface ,View.OnTouchListener,ViewTreeObserver.OnScrollChangedListener{
+    DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface, View.OnTouchListener,
+    ViewTreeObserver.OnScrollChangedListener {
 
     var spRegId: Int = 0
     lateinit var idToken: String
@@ -52,7 +52,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     var serviceCategoryId: Int = 0
     var serviceVendorOnboardingId: Int = 0
     var branchListSpinner = ArrayList<BranchDatas>()
-var valueweget=0
+    var valueweget = 0
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -69,6 +70,7 @@ var valueweget=0
     @Inject
     lateinit var tokens: Tokens
     private var pressedTime: Long = 0
+    var p = 0
     private lateinit var dialogDisposable: Disposable
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -85,13 +87,8 @@ var valueweget=0
     @SuppressLint("ResourceType", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mDataBinding?.progressBar?.visibility=View.VISIBLE
-        mDataBinding?.calander?.visibility = View.INVISIBLE
-        mDataBinding?.upcomingEvent?.visibility = View.INVISIBLE
-        mDataBinding?.banner1?.visibility = View.INVISIBLE
-        mDataBinding?.banner2?.visibility = View.INVISIBLE
-        mDataBinding?.myEventsLayout?.visibility = View.INVISIBLE
-        mDataBinding?.spinnerAction?.visibility = View.INVISIBLE
+        // 2839 Invisible the all the layout before api call
+        widgetBefore()
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
         // DashBoard ViewModel CallBackInterface
@@ -103,38 +100,55 @@ var valueweget=0
         idTokenValidation()
         // 2458 CalendarIcon Onclick method
         onClickCalendar()
+        // 2839 Method for arrow in event count recycler view
+        arrowLeftAndRight()
 
         dialogDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
             Log.d("TAG", "onViewCreated listener: $it")
             mDataBinding?.upcomingEvent?.visibility = View.GONE
-                    mDataBinding?.banner1?.visibility = View.GONE
-                    mDataBinding?.banner2?.visibility = View.GONE
-            valueweget=it.bidReqId
-        //  mDataBinding?.loop1?.visibility=View.VISIBLE
-          // mDataBinding?.nestedScroll?.visibility=View.GONE
+            mDataBinding?.banner1?.visibility = View.GONE
+            mDataBinding?.banner2?.visibility = View.GONE
+            valueweget = it.bidReqId
+            //  mDataBinding?.loop1?.visibility=View.VISIBLE
+            // mDataBinding?.nestedScroll?.visibility=View.GONE
         }
         dialogDisposable = RxBus.listen(RxEvent.QuoteBrief1::class.java).subscribe {
             Log.d("TAG", "onViewCreated listener: $it")
             mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
             mDataBinding?.banner1?.visibility = View.VISIBLE
             mDataBinding?.banner2?.visibility = View.VISIBLE
-            mDataBinding?.loop1?.visibility=View.GONE
-            mDataBinding?.nestedScroll?.visibility=View.VISIBLE
+            mDataBinding?.loop1?.visibility = View.GONE
+            mDataBinding?.nestedScroll?.visibility = View.VISIBLE
 
         }
 
-
     }
 
-    override fun onResume() {
-        super.onResume()
-      //  mDataBinding?.nestedscroll?.scrollTo(0,0)
+    // 2839 Invisible the all the layout before api call
+    private fun widgetBefore() {
+        mDataBinding?.progressBar?.visibility = View.VISIBLE
+        mDataBinding?.calander?.visibility = View.INVISIBLE
+        mDataBinding?.upcomingEvent?.visibility = View.INVISIBLE
+        mDataBinding?.banner1?.visibility = View.INVISIBLE
+        mDataBinding?.banner2?.visibility = View.INVISIBLE
+        mDataBinding?.myEventsLayout?.visibility = View.INVISIBLE
+        mDataBinding?.spinnerAction?.visibility = View.INVISIBLE
+        mDataBinding?.serviceCountLayout?.visibility = View.INVISIBLE
     }
 
-    override fun onPause() {
-        super.onPause()
-      //  mDataBinding?.nestedscroll?.viewTreeObserver?.removeOnScrollChangedListener(this)
+    private fun arrowLeftAndRight() {
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        mDataBinding?.rightBtn?.setOnClickListener {
+            p = linearLayoutManager.findFirstVisibleItemPosition() - 1;
+            myEventsRecyclerView.nestedScrollBy(550, 1)
+        }
+        mDataBinding?.leftDtn?.setOnClickListener {
+            p = linearLayoutManager.findLastVisibleItemPosition() + 1;
+            myEventsRecyclerView.smoothScrollToPosition(p);
+        }
     }
+
 
     private fun onClickCalendar() {
         mDataBinding?.calander?.setOnClickListener {
@@ -170,13 +184,7 @@ var valueweget=0
         serviceList.forEach {
             allServiceList.add(it.serviceName)
         }
-        mDataBinding?.progressBar?.visibility=View.GONE
-        mDataBinding?.calander?.visibility = View.VISIBLE
-        mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
-        mDataBinding?.banner1?.visibility = View.VISIBLE
-        mDataBinding?.banner2?.visibility = View.VISIBLE
-        mDataBinding?.myEventsLayout?.visibility = View.VISIBLE
-        mDataBinding?.spinnerAction?.visibility = View.VISIBLE
+
         //spinner view for all Services
         getViewModel().allServices(mDataBinding, allServiceList)
     }
@@ -187,7 +195,10 @@ var valueweget=0
         myEventsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myEventsRecyclerView.adapter = adapter
+
+
     }
+
     private fun myEventsRecycler1() {
         myEventsRecyclerView1 = mDataBinding?.eventsRecyclerView1!!
         adapter1 = MyEventsAdapter()
@@ -288,9 +299,11 @@ var valueweget=0
                         val serviceList =
                             getViewModel().getServiceCountList(apiResponse.response.data)
                         adapter.refreshItems(serviceList)
+                        widgetAfter()
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        mDataBinding?.serviceCountLayout?.visibility = View.VISIBLE
                     }
                     else -> {
                     }
@@ -298,6 +311,18 @@ var valueweget=0
             })
         // Getting All Service
         getAllServices()
+    }
+
+    // 2839 After Api call Done
+    private fun widgetAfter() {
+        mDataBinding?.serviceCountLayout?.visibility = View.VISIBLE
+        mDataBinding?.progressBar?.visibility = View.GONE
+        mDataBinding?.calander?.visibility = View.VISIBLE
+        mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
+        mDataBinding?.banner1?.visibility = View.VISIBLE
+        mDataBinding?.banner2?.visibility = View.VISIBLE
+        mDataBinding?.myEventsLayout?.visibility = View.VISIBLE
+        mDataBinding?.spinnerAction?.visibility = View.VISIBLE
     }
 
     // Getting All Service
@@ -374,7 +399,7 @@ var valueweget=0
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
 //        Log.d("TAG", "onTouch: ${valueweget} ")
 
-       return valueweget==1
+        return valueweget == 1
     }
 
     override fun onScrollChanged() {

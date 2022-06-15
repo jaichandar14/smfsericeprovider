@@ -51,5 +51,6 @@
     <color name="backGroundGray">#DAD8D8</color>
     <color name="quote_details_blue">#ECF4FA</color>
     <color name="dark_font">#2B2D5C</color>
+    <color name="title_background_blue">#2846B3</color>
 
 </resources>
