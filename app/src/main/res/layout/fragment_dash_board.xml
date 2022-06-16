@@ -246,18 +246,20 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginStart="@dimen/size_15dp"
+                                android:layout_marginStart="@dimen/size_22dp"
                                 android:layout_marginTop="@dimen/size_10dp"
+                                android:layout_marginEnd="@dimen/size_5dp"
                                 android:layout_weight=".5"
                                 app:srcCompat="@drawable/arrow_left_20" />
 
                             <androidx.recyclerview.widget.RecyclerView
+                                android:paddingTop="@dimen/size_8dp"
+                                android:paddingEnd="@dimen/size_5dp"
                                 android:id="@+id/events_recycler_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/size_8dp"
+                                android:layout_marginStart="@dimen/size_12dp"
                                 android:layout_marginTop="@dimen/size_30dp"
-                                android:layout_marginEnd="@dimen/size_10dp"
                                 android:layout_marginBottom="@dimen/size_20dp"
                                 android:layout_weight="2"
                                 android:orientation="horizontal"
@@ -270,7 +272,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="@dimen/size_10dp"
                                 android:layout_marginStart="@dimen/size_5dp"
-                                android:layout_marginEnd="@dimen/size_15dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
                                 android:layout_weight=".5"
                                 app:srcCompat="@drawable/arrow_forward_20" />
 

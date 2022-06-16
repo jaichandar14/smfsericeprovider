@@ -110,8 +110,6 @@ class CalendarFragment : Fragment(),
         // 2796 Method for observing Exp View Date
         selectedEXPDateObserver()
         mDataBinding.closeCalendar.setOnClickListener {
-            // 2843 - Setting TabPosition Value For Close CalendarView
-            CalendarUtils.updatedTabPosition = 0
             RxBus.publish(RxEvent.ChangingNav(1))
         }
     }

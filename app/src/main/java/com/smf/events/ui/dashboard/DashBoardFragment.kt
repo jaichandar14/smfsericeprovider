@@ -18,10 +18,7 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
@@ -136,16 +133,18 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         mDataBinding?.serviceCountLayout?.visibility = View.INVISIBLE
     }
 
+    // 2842 Method for Arrow Left and Right
     private fun arrowLeftAndRight() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mDataBinding?.rightBtn?.setOnClickListener {
             p = linearLayoutManager.findFirstVisibleItemPosition() - 1;
-            myEventsRecyclerView.nestedScrollBy(550, 1)
+            myEventsRecyclerView.nestedScrollBy(275, 0)
         }
         mDataBinding?.leftDtn?.setOnClickListener {
             p = linearLayoutManager.findLastVisibleItemPosition() + 1;
-            myEventsRecyclerView.smoothScrollToPosition(p);
+           // myEventsRecyclerView.smoothScrollToPosition(p);
+            myEventsRecyclerView.nestedScrollBy(-275, 0)
         }
     }
 
@@ -311,8 +310,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     }
                 }
             })
-        // Getting All Service
-        getAllServices()
+        // 2842 Getting All Service
+        getAllServices(idToken)
     }
 
     // 2839 After Api call Done
@@ -326,8 +325,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         mDataBinding?.spinnerAction?.visibility = View.VISIBLE
     }
 
-    // Getting All Service
-    private fun getAllServices() {
+    // 2842 Getting All Service
+    private fun getAllServices(idToken: String) {
         getViewModel().getAllServices(idToken, spRegId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {

@@ -234,7 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/size_10dp"
-                    android:background="@drawable/shapes"
+                    android:background="@drawable/box_login_text"
                     android:gravity="start"
                     android:lines="6"
                     android:maxLength="1000"
