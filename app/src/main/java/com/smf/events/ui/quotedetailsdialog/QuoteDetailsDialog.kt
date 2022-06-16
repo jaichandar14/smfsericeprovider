@@ -48,7 +48,7 @@ class QuoteDetailsDialog(
     var cost: String?,
     var latestBidValue: String?,
     var branchName: String,
-    var serviceName: String
+    var serviceName: String,
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
@@ -71,7 +71,7 @@ class QuoteDetailsDialog(
             cost: String?,
             latestBidValue: String?,
             branchName: String,
-            serviceName: String
+            serviceName: String,
         ): QuoteDetailsDialog {
 
             return QuoteDetailsDialog(
@@ -300,7 +300,10 @@ class QuoteDetailsDialog(
             try {
                 var gallaryIntent = Intent(Intent.ACTION_GET_CONTENT);
                 gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                gallaryIntent.type = "*/*"
+                // 2842 Restricting file selection
+                val mimetypes = arrayOf("application/*|image/*", "application/*|text/*","application/*|vnd.ms-excel/*")
+                gallaryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+                gallaryIntent.type = "*/pdf*"
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
                 Toast.makeText(
@@ -329,7 +332,11 @@ class QuoteDetailsDialog(
                 fileContent = Base64.encodeToString(bytes, Base64.DEFAULT)
                 fileSize = bytes.size.toString()
             } else {
-                Toast.makeText(activity, "upload file below 100kb", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "File is not uploaded. Please Upload file below 100kb", Toast.LENGTH_SHORT).show()
+                mDataBinding?.btnFileUpload?.text = "Choose File"
+                mDataBinding?.btnFileUpload?.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context?.applicationContext!!, R.color.gray))
             }
         } catch (e: Exception) {
             e.printStackTrace()

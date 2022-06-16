@@ -128,10 +128,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         when (status) {
             "SignInNotCompleted" -> {
                 // Navigate to EmailOTPFragment
-                mDataBinding?.progressBar?.visibility=View.GONE
-                mDataBinding?.loginPage?.visibility=View.VISIBLE
+                // 2842 Hiding the login page
+               //  mDataBinding?.loginPage?.visibility=View.VISIBLE
                 findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(
                     userName!!))
+                mDataBinding?.progressBar?.visibility=View.GONE
             }
             "signInCompletedGoToDashBoard" -> {
                 //Navigate to DashBoardFragment

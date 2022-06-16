@@ -20,16 +20,16 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_60dp"
+            android:layout_height="@dimen/size_45dp"
             android:backgroundTint="@color/light_gray_background"
             android:background="@drawable/corner_radius_background">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_40dp"
+                android:layout_height="@dimen/size_35dp"
                 android:layout_gravity="center"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/size_5dp"
                 app:tabBackground="@drawable/tab_selector"
                 app:tabGravity="fill"
                 app:tabIndicatorAnimationMode="elastic"

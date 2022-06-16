@@ -10,6 +10,7 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityScheduleManagmentBinding
+import com.smf.events.helper.CalendarUtils
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.calendarfragment.CalendarFragment
@@ -42,6 +43,8 @@ class ScheduleManagementActivity :
         calendarUI()
         // 2458 Method for TimeSlots Ui
         timeSlotsUI()
+        // 2842 Setting the updatedTabPosition when we press back button
+        CalendarUtils.updatedTabPosition=0
         dialogDisposable = RxBus.listen(RxEvent.ChangingNav::class.java).subscribe {
             finish()
         }
