@@ -16,6 +16,7 @@ class CalendarUtils @Inject constructor() {
     companion object {
         var selectedDate: LocalDate? = null
         var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+        var updatedTabPosition = 0
     }
 
     fun formattedDate(date: LocalDate): String? {

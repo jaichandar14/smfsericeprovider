@@ -1,6 +1,7 @@
 package com.smf.events.ui.timeslot
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.smf.events.R
 import com.smf.events.databinding.FragmentTimeSlotsBinding
+import com.smf.events.helper.CalendarUtils
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.adapter.TimeSlotViewPagerBookedEventsAdapter
 import com.smf.events.ui.timeslot.adapter.TimeSlotViewPagerModifyAvailabilityAdapter
@@ -17,6 +19,7 @@ import com.smf.events.ui.timeslot.adapter.TimeSlotViewPagerModifyAvailabilityAda
 // 2487
 class TimeSlotsFragment : Fragment() {
 
+    private var TAG = "TimeSlotsFragment"
     lateinit var tabLayout: TabLayout
     lateinit var viewPager: ViewPager2
     private lateinit var mDataBinding: FragmentTimeSlotsBinding
@@ -41,6 +44,8 @@ class TimeSlotsFragment : Fragment() {
         viewPager = mDataBinding.viewPager
         // 2527 - tabLayout And ViewPager Initialization
         tabLayoutAndViewPagerSetUp()
+        // 2843 - Initial Tab Position
+        updatePosition()
     }
 
     private fun tabLayoutAndViewPagerSetUp() {
@@ -68,7 +73,8 @@ class TimeSlotsFragment : Fragment() {
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewPager.currentItem = tab!!.position
+                CalendarUtils.updatedTabPosition = tab!!.position
+                updatePosition()
                 when (tab.position) {
                     0 -> sharedViewModel.setCalendarFormat(getString(R.string.day))
                     1 -> sharedViewModel.setCalendarFormat(getString(R.string.week))
@@ -85,11 +91,17 @@ class TimeSlotsFragment : Fragment() {
             }
         })
 
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                tabLayout.selectTab(tabLayout.getTabAt(position))
-            }
-        })
+        // 2843 - Disable ViewPager Swipe
+        viewPager.isUserInputEnabled = false
+    }
+
+    // 2843 - Method For Set Tab Position
+    private fun updatePosition() {
+        Log.d(TAG, "updatePosition: inside called ${CalendarUtils.updatedTabPosition}")
+        tabLayout.selectTab(tabLayout.getTabAt(CalendarUtils.updatedTabPosition))
+        viewPager.post {
+            viewPager.setCurrentItem(CalendarUtils.updatedTabPosition, true)
+        }
     }
 
 }
