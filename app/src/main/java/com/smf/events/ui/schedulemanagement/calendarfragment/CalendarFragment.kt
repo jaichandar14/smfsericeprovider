@@ -110,6 +110,8 @@ class CalendarFragment : Fragment(),
         // 2796 Method for observing Exp View Date
         selectedEXPDateObserver()
         mDataBinding.closeCalendar.setOnClickListener {
+            // 2843 - Setting TabPosition Value For Close CalendarView
+            CalendarUtils.updatedTabPosition = 0
             RxBus.publish(RxEvent.ChangingNav(1))
         }
     }
@@ -505,8 +507,10 @@ class CalendarFragment : Fragment(),
                 serviceDate.clear()
                 when (apiresponse) {
                     is ApisResponse.Success -> {
-                        Log.d("TAG",
-                            "Calendar Event List : ${apiresponse.response.data.serviceDates}")
+                        Log.d(
+                            "TAG",
+                            "Calendar Event List : ${apiresponse.response.data.serviceDates}"
+                        )
                         apiresponse.response.data.serviceDates.forEach {
                             val currentDayFormatter =
                                 DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
