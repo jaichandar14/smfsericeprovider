@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "67357311326",
+    "project_id": "festo-for-vendors",
+    "storage_bucket": "festo-for-vendors.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67357311326:android:c9bad8e4e5c07844a4cfcf",
+        "android_client_info": {
+          "package_name": "com.smf.events"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "67357311326-73ng4nia1pe5dnpkodds4phn89cnqah7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGqiod-YsQFv84OgkGTARhzOeaZ2KvoNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "67357311326-73ng4nia1pe5dnpkodds4phn89cnqah7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67357311326:android:de2349a45cf29ca5a4cfcf",
+        "android_client_info": {
+          "package_name": "com.smf.events.qa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "67357311326-73ng4nia1pe5dnpkodds4phn89cnqah7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGqiod-YsQFv84OgkGTARhzOeaZ2KvoNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "67357311326-73ng4nia1pe5dnpkodds4phn89cnqah7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
