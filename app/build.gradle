@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -15,7 +16,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         applicationId "com.smf.events"
-        minSdk 17
+        minSdk 19
         targetSdk 31
         versionCode 5
         versionName "1.05"
@@ -152,11 +153,14 @@ dependencies {
     //For AWSMobileClient only:
     implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.36.0'
 
-
     // Rx Dependencies
     implementation "io.reactivex.rxjava2:rxjava:2.2.9"
     implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
     implementation "io.reactivex.rxjava2:rxkotlin:2.2.0"
 
     implementation 'pub.devrel:easypermissions:0.2.0'
+
+    // FireBase
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 }
