@@ -18,7 +18,7 @@ class Tokens @Inject constructor() {
     fun checkTokenExpiry(application: SMFApp, caller: String, idToken: String) {
         val newTime = Date().time / 1000
         val splitToken = idToken.split('.')
-        val decodedBytes = Base64.getDecoder().decode(splitToken[1])
+        val decodedBytes = android.util.Base64.decode(splitToken[1], android.util.Base64.DEFAULT)
         val decodeToken = String(decodedBytes)
         val tokenObj = JSONObject(decodeToken)
         val tokenObjExp = tokenObj.getString("exp").toLong()
