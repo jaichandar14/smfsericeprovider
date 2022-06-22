@@ -9,6 +9,7 @@
         android:id="@+id/image_view_12_3am"
         android:layout_width="@dimen/size_18dp"
         android:layout_height="@dimen/size_18dp"
+        android:layout_marginStart="@dimen/size_2dp"
         android:contentDescription="@string/icon"
         android:src="@drawable/booked_event"
         app:layout_constraintBottom_toBottomOf="parent"

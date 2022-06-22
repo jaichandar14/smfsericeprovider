@@ -195,7 +195,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         data.bookedEventServiceDtos?.forEach { objectList ->
             val currentDayFormatter =
-                DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
             val eventDate = LocalDate.parse(objectList.eventDate, currentDayFormatter)
             if (eventDate >= LocalDate.now()) {
                 bookedEventServiceDtos.add(objectList)

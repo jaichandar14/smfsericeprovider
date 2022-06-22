@@ -231,7 +231,7 @@ class WeekModifyExpandableListFragment : Fragment(),
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         data.bookedEventServiceDtos?.forEach { objectList ->
             val currentDayFormatter =
-                DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
             val eventDate = LocalDate.parse(objectList.eventDate, currentDayFormatter)
             if (eventDate >= LocalDate.now()) {
                 bookedEventServiceDtos.add(objectList)
@@ -466,7 +466,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     // 2670 - Method For Date And Day Arrangement To Display UI
     private fun dateFormat(input: String): String {
         val date = input.substring(3, 5)
-        val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+        val currentDayFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
         val currentDay = LocalDate.parse(input, currentDayFormatter).dayOfWeek.getDisplayName(
             TextStyle.SHORT, Locale.ENGLISH
         )
