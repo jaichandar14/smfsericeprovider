@@ -106,7 +106,7 @@ class DeselectingDialogFragment(
             window.attributes = params
             //dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.setBackgroundDrawableResource(R.drawable.shape_dailog_curved)
-            dialog?.window?.setLayout(1000, 560)
+            dialog?.window?.setLayout(1000, ConstraintLayout.LayoutParams.WRAP_CONTENT)
         } else {
             val window: Window? = dialog?.window
             val params: WindowManager.LayoutParams = window!!.attributes

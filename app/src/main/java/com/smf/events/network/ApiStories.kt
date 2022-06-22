@@ -1,5 +1,6 @@
 package com.smf.events.network
 
+import com.smf.events.BuildConfig
 import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.dashboard.model.ActionAndStatus
@@ -21,35 +22,35 @@ import retrofit2.http.*
 
 interface ApiStories {
 
-    @POST("epm-no-auth/api/authentication/user-info")
+    @POST(BuildConfig.apiType + "no-auth/api/authentication/user-info")
     suspend fun addUserDetails(@Body userDetails: UserDetails): UserDetailsResponse
 
-    @GET("epm-no-auth/api/authentication/user-info")
+    @GET(BuildConfig.apiType + "no-auth/api/authentication/user-info")
     suspend fun getUserDetails(@Query("loginName") loginName: String): GetUserDetails
 
-    @GET("epm-user/api/app-authentication/login")
+    @GET(BuildConfig.apiType +"user/api/app-authentication/login")
     suspend fun getLoginInfo(@Header("Authorization") idToken: String): GetLoginInfo
 
-    @GET("epm-service/api/app-services/service-counts/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/service-counts/{sp-reg-id}")
     suspend fun getServiceCount(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
     ): ServiceCount
 
-    @GET("epm-service/api/app-services/services/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/services/{sp-reg-id}")
     suspend fun getAllServices(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
     ): AllServices
 
-    @GET("epm-service/api/app-services/service-branches/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/service-branches/{sp-reg-id}")
     suspend fun getServicesBranches(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int,
     ): Branches
 
-    @GET("epm-service/api/app-services/service-provider-bidding-counts/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/service-provider-bidding-counts/{sp-reg-id}")
     suspend fun getActionAndStatus(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
@@ -57,7 +58,7 @@ interface ApiStories {
         @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int?,
     ): ActionAndStatus
 
-    @GET("epm-service/api/app-services/bidding-status-info/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/bidding-status-info/{sp-reg-id}")
     suspend fun getBidActions(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
@@ -66,7 +67,7 @@ interface ApiStories {
         @Query("bidStatus") bidStatus: List<String>,
     ): NewRequestList
 
-    @PUT("epm-service/api/app-services/accept-bid/{bid-request-id}")
+    @PUT(BuildConfig.apiType +"service/api/app-services/accept-bid/{bid-request-id}")
     suspend fun postQuoteDetails(
         @Header("Authorization") idToken: String,
         @Path("bid-request-id") bidRequestId: Int,
@@ -74,20 +75,20 @@ interface ApiStories {
     ): NewRequestList
 
 
-    @GET("epm-service/api/app-services/order-info/{bid-request-Id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/order-info/{bid-request-Id}")
     suspend fun getQuoteBrief(
         @Header("Authorization") idToken: String,
         @Path("bid-request-Id") bidRequestId: Int,
     ): QuoteBrief
 
-    @PUT("epm-service/api/app-services/bid-request-info")
+    @PUT(BuildConfig.apiType +"service/api/app-services/bid-request-info")
     suspend fun putBidRejection(
         @Header("Authorization") idToken: String,
         @Body serviceProviderBidRequestDto: ServiceProviderBidRequestDto,
     ): NewRequestList
 
     //2402 - ViewOrderDetails API
-    @GET("epm-service/api/app-services/order-description/{event-id}/{event-service-desc-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/order-description/{event-id}/{event-service-desc-id}")
     suspend fun getViewOrderDetails(
         @Header("Authorization") idToken: String,
         @Path("event-id") eventId: Int,
@@ -95,7 +96,7 @@ interface ApiStories {
     ): OrderDetails
 
     // 2670 - Booked Event Services API
-    @GET("epm-service/api/app-services/booked-service-slots/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/booked-service-slots/{sp-reg-id}")
     suspend fun getBookedEventServices(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
@@ -106,7 +107,7 @@ interface ApiStories {
     ): BookedServiceList
 
     // 2622 EventDates for Calendar Api
-    @GET("epm-service/api/app-services/calendar-events/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/calendar-events/{sp-reg-id}")
     suspend fun getEventDates(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
@@ -117,7 +118,7 @@ interface ApiStories {
     ): EventDates
 
     // 2801 - Booked Event Services API For Modify Slots
-    @GET("epm-service/api/app-services/slot-availability/{sp-reg-id}")
+    @GET(BuildConfig.apiType +"service/api/app-services/slot-availability/{sp-reg-id}")
     suspend fun getModifyBookedEventServices(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
@@ -129,7 +130,7 @@ interface ApiStories {
     ): ModifyBookedServiceEvents
 
     // 2814 - modify-day-slot
-    @PUT("epm-service/api/app-services/modify-day-slot/{sp-reg-id}")
+    @PUT(BuildConfig.apiType +"service/api/app-services/modify-day-slot/{sp-reg-id}")
     suspend fun getModifyDaySlot(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
@@ -141,7 +142,7 @@ interface ApiStories {
     ): ModifyDaySlotResponse
 
     // 2815 - modify-week-slot
-    @PUT("epm-service/api/app-services/modify-week-slot/{sp-reg-id}")
+    @PUT(BuildConfig.apiType +"service/api/app-services/modify-week-slot/{sp-reg-id}")
     suspend fun getModifyWeekSlot(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
@@ -153,7 +154,7 @@ interface ApiStories {
     ): ModifyDaySlotResponse
 
     // 2823 - modify-month-slot
-    @PUT("epm-service/api/app-services/modify-month-slot/{sp-reg-id}")
+    @PUT(BuildConfig.apiType +"service/api/app-services/modify-month-slot/{sp-reg-id}")
     suspend fun getModifyMonthSlot(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
