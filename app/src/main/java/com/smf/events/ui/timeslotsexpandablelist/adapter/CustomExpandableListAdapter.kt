@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
+import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventsList
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import java.time.Month
 import java.util.*
@@ -53,6 +56,8 @@ class CustomExpandableListAdapter internal constructor(
         val layoutLinear12To3am = convertView?.findViewById<View>(R.id.layout_linear_12_3am)
         val textNoEventsAvailable = convertView?.findViewById<View>(R.id.text_no_events_available)
         val progressBar = convertView?.findViewById<ProgressBar>(R.id.progress_bar_child)
+        val recyclerViewBookedSlot =
+            convertView?.findViewById<RecyclerView>(R.id.slot_list_recycler_view)
         address12To3am?.text = null
 
         image12To3am?.setOnClickListener {
@@ -69,26 +74,19 @@ class CustomExpandableListAdapter internal constructor(
             textNoEventsAvailable?.visibility = View.INVISIBLE
             progressBar?.visibility = View.VISIBLE
         } else {
-            // Get Booked Event Lists Line By Line
-            val addressText = StringBuffer()
+            val list = ArrayList<BookedEventsList>()
             for (i in expandedListData.status.indices) {
-                if (i == 0) {
-                    // Condition For Remove Event Date Inside Day Event Display
-                    if (classTag == context.getString(R.string.day)){
-                        addressText.append(" " + expandedListData.status[i].eventName + " " + context.getString(R.string.event))
-                    }else{
-                        addressText.append(" " + dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
-                    }
-                } else {
-                    addressText.append(dateFormat(expandedListData.status[i].eventDate) + expandedListData.status[i].eventName + " " + "Event")
-                }
-                addressText.append("\n\r")
-                addressText.append(expandedListData.status[i].branchName)
-                if (i != (expandedListData.status.size - 1)) {
-                    addressText.append("\n\r")
-                }
+                list.add(
+                    BookedEventsList(
+                        dateFormat(expandedListData.status[i].eventDate),
+                        expandedListData.status[i].eventName
+                    )
+                )
             }
-            address12To3am?.text = addressText
+            recyclerViewBookedSlot?.layoutManager = LinearLayoutManager(context)
+            val bookedSlotsRecyclerViewAdapter = BookedSlotsRecyclerViewAdapter(list)
+            recyclerViewBookedSlot?.adapter = bookedSlotsRecyclerViewAdapter
+            address12To3am?.text = context.getString(R.string.slot_booked)
             timeSlot12To3am?.text = expandedListData.timeSlot
 
             // Loop For Last ChildView View Invisible
@@ -179,6 +177,6 @@ class CustomExpandableListAdapter internal constructor(
                 .lowercase(Locale.getDefault()) + month.substring(2, 3)
                 .lowercase(Locale.getDefault())
         }
-        return "$month $date, "
+        return "$month $date"
     }
 }

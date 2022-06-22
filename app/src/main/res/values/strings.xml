@@ -176,7 +176,7 @@
     <string name="available_small">available</string>
     <string name="null_text">null</string>
     <string name="slots_availability">slots availability</string>
-    //2815
+    // 2815
     <string name="entire_week">slots availability for the entire week of </string>
     // 2805
     <string name="title_splash">View and act on event requests, Update availability and much more....Step inside...</string>
@@ -184,4 +184,7 @@
     <string name="event_overview">My Services</string>
     <string name="calendar_view">Calendar</string>
     <string name="review_feedback">Review Feedback</string>
+    // 2873
+    <string name="slot_booked">Slot Booked</string>
+
 </resources>
