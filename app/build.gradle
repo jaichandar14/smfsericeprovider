@@ -32,12 +32,14 @@ android {
             buildConfigField "String", "base_url", "\"https://www.epm-dev.demo-bpmlinks.com/\""
             buildConfigField "String", "apiType",  "\"epm-\""
         }
+
         qa{
             dimension "festo"
             applicationIdSuffix".qa"
             buildConfigField "String", "base_url", "\"https://www.epm-qa.demo-bpmlinks.com/\""
             buildConfigField "String", "apiType", "\"epm-\""
         }
+
         uat{
             dimension "festo"
             applicationIdSuffix".uat"
