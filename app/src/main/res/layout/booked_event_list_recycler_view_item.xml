@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/size_5dp">
+
+    <ImageView
+        android:id="@+id/image_view_12_3am"
+        android:layout_width="@dimen/size_18dp"
+        android:layout_height="@dimen/size_18dp"
+        android:layout_marginStart="@dimen/size_2dp"
+        android:contentDescription="@string/icon"
+        android:src="@drawable/booked_event"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/event_date_display"
+        android:layout_width="@dimen/size_80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/size_8dp"
+        android:layout_marginTop="@dimen/size_4dp"
+        android:fontFamily="@font/mulish_medium"
+        android:text="@string/aug_26"
+        android:textSize="@dimen/size_14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_12_3am"
+        app:layout_constraintStart_toEndOf="@+id/image_view_12_3am"
+        app:layout_constraintTop_toTopOf="@+id/image_view_12_3am" />
+
+    <TextView
+        android:id="@+id/event_name_display"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/size_5dp"
+        android:fontFamily="@font/mulish_medium"
+        android:text="@string/saras_birthday"
+        android:textSize="@dimen/size_14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/event_date_display"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/event_date_display"
+        app:layout_constraintTop_toTopOf="@+id/event_date_display" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

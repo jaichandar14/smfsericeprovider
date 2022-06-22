@@ -30,7 +30,6 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -178,16 +177,31 @@ class MonthModifyExpandableListFragment : Fragment(),
             } else if (data.bookedEventServiceDtos.isEmpty()) {
                 bookedEventDetails.add(isEmptyAvailableListData(data))
             } else {
+               val bookedEventServiceDtos = updateUpcomingEvents(data)
                 bookedEventDetails.add(
                     ListData(
                         data.serviceSlot,
-                        data.bookedEventServiceDtos
+                        bookedEventServiceDtos
                     )
                 )
             }
         }
         Log.d(TAG, "setDataToExpandableList pos11: $bookedEventDetails")
         childData[titleDate[position]] = bookedEventDetails
+    }
+
+    // 2873 - Restrict Completed Dates
+    private fun updateUpcomingEvents(data: Data): ArrayList<BookedEventServiceDto> {
+        val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
+        data.bookedEventServiceDtos?.forEach { objectList ->
+            val currentDayFormatter =
+                DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+            val eventDate = LocalDate.parse(objectList.eventDate, currentDayFormatter)
+            if (eventDate >= LocalDate.now()) {
+                bookedEventServiceDtos.add(objectList)
+            }
+        }
+        return bookedEventServiceDtos
     }
 
     private fun eventsOnSelectedDateApiValueUpdate(
@@ -204,10 +218,11 @@ class MonthModifyExpandableListFragment : Fragment(),
             } else if (it.bookedEventServiceDtos.isEmpty()) {
                 bookedEventDetails.add(isEmptyAvailableListData(it))
             } else {
+                val bookedEventServiceDtos = updateUpcomingEvents(it)
                 bookedEventDetails.add(
                     ListData(
                         it.serviceSlot,
-                        it.bookedEventServiceDtos
+                        bookedEventServiceDtos
                     )
                 )
             }
