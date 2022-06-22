@@ -22,9 +22,38 @@ android {
         versionName "1.05"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "base_url", "\"https://www.epm-dev.demo-bpmlinks.com/\""
     }
+    flavorDimensions "festo"
 
+    productFlavors{
+        dev{
+            dimension "festo"
+            applicationIdSuffix".dev"
+            buildConfigField "String", "base_url", "\"https://www.epm-dev.demo-bpmlinks.com/\""
+            buildConfigField "String", "apiType",  "\"epm-\""
+        }
+
+        qa{
+            dimension "festo"
+            applicationIdSuffix".qa"
+            buildConfigField "String", "base_url", "\"https://www.epm-qa.demo-bpmlinks.com/\""
+            buildConfigField "String", "apiType", "\"epm-\""
+        }
+
+        uat{
+            dimension "festo"
+            applicationIdSuffix".uat"
+            buildConfigField "String", "base_url", "\"https://www.smf-uat.demo-bpmlinks.com/\""
+            buildConfigField "String", "apiType",  "\"smf-\""
+           }
+
+        prod{
+            dimension "festo"
+            applicationIdSuffix""
+            buildConfigField "String", "base_url", "\"https://www.smf-uat.demo-bpmlinks.com/\""
+            buildConfigField "String", "apiType",  "\"smf-\""
+          }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -163,4 +192,6 @@ dependencies {
     // FireBase
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    // To auto-generate google map api key of google-services.json
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 }

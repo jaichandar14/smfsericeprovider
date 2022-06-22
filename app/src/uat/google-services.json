@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "480548290694",
+    "project_id": "festo-for-vendor-uat",
+    "storage_bucket": "festo-for-vendor-uat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480548290694:android:a6f4410232d797c035d107",
+        "android_client_info": {
+          "package_name": "com.smf.events.uat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480548290694-ebhkqb2qqgtekji3k6kbu4i5n6hcjtgb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3CshZCw36bkr6n_SKX8X8tVq_wyXdCTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480548290694-ebhkqb2qqgtekji3k6kbu4i5n6hcjtgb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

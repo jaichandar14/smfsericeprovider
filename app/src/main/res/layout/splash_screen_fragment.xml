@@ -42,6 +42,7 @@
             app:layout_constraintVertical_bias="0.05" />
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="@dimen/size_285dp"
             android:layout_height="@dimen/size_70dp"
             android:text="@string/title_splash"
@@ -58,7 +59,8 @@
             android:id="@+id/splashBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/size_10dp"
+            android:layout_marginBottom="@dimen/size_15dp"
+            android:layout_marginTop="@dimen/size_10dp"
             android:background="@drawable/custom_button_corner_ok"
             android:fontFamily="@font/poppins_regular"
             android:text="@string/get_started"
@@ -66,7 +68,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
             app:layout_constraintVertical_bias="0.92">
 
         </androidx.appcompat.widget.AppCompatButton>

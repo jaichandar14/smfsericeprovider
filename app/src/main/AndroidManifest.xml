@@ -18,6 +18,9 @@
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.ServiceManagment">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="api_key" />
         <activity android:name="com.smf.events.ui.schedulemanagement.ScheduleManagementActivity" />
         <activity
             android:name=".MainActivity"
