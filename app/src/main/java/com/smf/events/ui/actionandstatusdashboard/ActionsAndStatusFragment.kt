@@ -135,7 +135,6 @@ class ActionsAndStatusFragment :
                 Log.d("TAG", "newRequestApiCallsample :else block")
             }
         }
-
     }
 
     // Method For AWS Token Validation Action And Status
