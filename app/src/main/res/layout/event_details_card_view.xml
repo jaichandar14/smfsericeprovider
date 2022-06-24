@@ -330,7 +330,7 @@
                     android:layout_marginStart="@dimen/size_10dp"
                     android:layout_weight="1.6"
                     android:fontFamily="@font/mulish_regular"
-                    android:text="Order Details"
+                    android:text="@string/order_details"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="@dimen/size_14sp" />

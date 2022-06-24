@@ -50,4 +50,9 @@ object AppConstants {
 
     //2873
     const val DATE_FORMAT = "MM/dd/yyyy"
+
+    // 2879
+    const val DATE_FORMAT_MONTH_YEAR="MMMM yyyy"
+    const val DATE_FORMAT_YEAR="yyyy"
+    const val DATE_FORMAT_MONTH="MMM"
 }

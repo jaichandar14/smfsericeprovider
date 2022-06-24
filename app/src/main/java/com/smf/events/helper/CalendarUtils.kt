@@ -19,47 +19,28 @@ class CalendarUtils @Inject constructor() {
         var updatedTabPosition = 0
     }
 
-    fun formattedDate(date: LocalDate): String? {
-        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-        return date.format(formatter)
-    }
-
-    fun formattedTime(time: LocalTime): String? {
-        val formatter = DateTimeFormatter.ofPattern("hh:mm:ss a")
-        return time.format(formatter)
-    }
-
-    fun formattedShortTime(time: LocalTime): String? {
-        val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        return time.format(formatter)
-    }
-
     fun monthYearFromDate(date: LocalDate): String? {
-        val formatter = DateTimeFormatter.ofPattern("MMM")
+        val formatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT_MONTH)
         return date.format(formatter)
     }
 
     fun monthYearFromDateFull(date: LocalDate): String? {
-        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
+        val formatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT_MONTH_YEAR)
         return date.format(formatter)
     }
 
     fun yearAndMonthFromDate(date: LocalDate): String? {
-        val formatter = DateTimeFormatter.ofPattern("yyyy")
+        val formatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT_YEAR)
         return date.format(formatter)
     }
 
-    fun monthDayFromDate(date: LocalDate): String? {
-        val formatter = DateTimeFormatter.ofPattern("MMMM d")
-        return date.format(formatter)
-    }
 
     // 2686 WeekDate
     data class WeekDates(var fromDate: String, var toDate: String, val weekList: ArrayList<String>)
 
     // 2686 Method for Getting Week Start and End Date
     fun fromAndToDate(): WeekDates {
-        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT)
         val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
         val startOfCurrentWeek: LocalDate =
             CalendarUtils.selectedDate!!.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))

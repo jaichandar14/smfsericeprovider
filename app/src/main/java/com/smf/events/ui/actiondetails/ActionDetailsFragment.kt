@@ -237,13 +237,13 @@ class ActionDetailsFragment :
         newRequestCount = myList.size
         when (bidStatus) {
             AppConstants.BID_REQUESTED -> mDataBinding?.textNewRequest?.text =
-                "$newRequestCount New request"
+                "$newRequestCount ${AppConstants.NEW_REQUEST}"
             AppConstants.PENDING_FOR_QUOTE -> mDataBinding?.textNewRequest?.text =
-                "$newRequestCount pending quote"
+                "$newRequestCount ${AppConstants.PENDING_QUOTE}"
             AppConstants.BID_REJECTED -> mDataBinding?.textNewRequest?.text =
-                "$newRequestCount Rejections"
+                "$newRequestCount ${AppConstants.REJECTED}"
             AppConstants.BID_SUBMITTED -> mDataBinding?.textNewRequest?.text =
-                "$newRequestCount Bid Submitted"
+                "$newRequestCount ${AppConstants.SUBMITTED_BID}"
             // 2884 for won Bid flow
             AppConstants.WON_BID -> mDataBinding?.textNewRequest?.text =
                 "$newRequestCount Won Bid"
