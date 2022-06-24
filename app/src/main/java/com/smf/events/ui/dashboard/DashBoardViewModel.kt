@@ -27,7 +27,6 @@ class DashBoardViewModel @Inject constructor(
     fun allServices(mDataBinding: FragmentDashBoardBinding?, resources: ArrayList<String>) {
 
         val spin = mDataBinding!!.spnAllServices
-        val spin1 = mDataBinding!!.spnAllServices1
         spin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -54,25 +53,6 @@ class DashBoardViewModel @Inject constructor(
         // Set the ArrayAdapter (ad) data on the
         // Spinner which binds data to spinner
         spin.adapter = ad
-        spin1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long,
-            ) {
-                allServiceposition = position
-                callBackInterface?.itemClick(position)
-
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-        spin1.adapter = ad
-
-
-
     }
 
     @SuppressLint("ResourceType")
@@ -87,18 +67,9 @@ class DashBoardViewModel @Inject constructor(
         }
 
         var spin = mDataBinding!!.spnBranches
-        var spin1 = mDataBinding!!.spnBranches1
+
         spin.onItemSelectedListener = this
-        spin1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                p0: AdapterView<*>?, p1: View?, position1: Int, p3: Long
-            ) {
-                callBackInterface?.branchItemClick(position1, name, allServiceposition)
 
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
         var ad: ArrayAdapter<*> =
             ArrayAdapter<Any?>(
                 getApplication(), com.smf.events.R.layout.spinners_list,
@@ -107,7 +78,6 @@ class DashBoardViewModel @Inject constructor(
         ad.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
         ad.notifyDataSetChanged()
         mDataBinding.spnBranches.adapter = ad
-        mDataBinding.spnBranches1.adapter = ad
     }
 
     private var callBackInterface: CallBackInterface? = null

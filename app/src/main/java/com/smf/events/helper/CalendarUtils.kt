@@ -40,7 +40,7 @@ class CalendarUtils @Inject constructor() {
     }
 
     fun monthYearFromDateFull(date: LocalDate): String? {
-        val formatter = DateTimeFormatter.ofPattern("MMMM")
+        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
         return date.format(formatter)
     }
 

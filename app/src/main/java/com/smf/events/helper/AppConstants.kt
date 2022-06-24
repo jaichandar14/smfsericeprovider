@@ -15,17 +15,20 @@ object AppConstants {
     const val NEW_REQUEST = "New request"
     const val PENDING_QUOTE = "Pending Quote"
     const val SUBMITTED_BID = "Bid Submitted"
-    const val BID_WON = "Won Bid"
-    const val PENDING_FOR_REVIEW = "Pending For Review"
+    const val BID_WON = "Won Bid\n"
+    const val PENDING_FOR_REVIEW = "Pending Review"
     const val REQUEST_CLOSED = "Request closed"
     const val REJECTED_BID = "Bid Rejected"
-    const val TIMED_OUT = "Timed Out"
-    const val BID_LOST = "Lost Bid"
+    const val TIMED_OUT = "Timed Out\n"
+    const val BID_LOST = "Lost Bid\n"
+    const val REJECTED = "Rejected"
 
     //2801
     const val DESELECTED = "Deselected"
+
     //2814
     const val SELECTED = "selected"
+
     //2815
     const val DAY = "Day"
     const val WEEK = "Week"
@@ -38,10 +41,13 @@ object AppConstants {
     const val EVENTS_ON_SELECTED_WEEK = "EventsOnSelectedWeek"
     const val BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK = "bookedEventServicesFromSelectedWeek"
     const val INITIAL_WEEK = "InitialWeek"
+
     // 2823
     const val BOOKED_EVENTS_SERVICES_INITIAL = "bookedEventServicesInitial"
+
     // 2836
     const val INITIAL_DAY = "InitialDate"
+
     //2873
     const val DATE_FORMAT = "MM/dd/yyyy"
 }

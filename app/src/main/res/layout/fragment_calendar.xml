@@ -137,14 +137,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"
-                        app:layout_constraintBottom_toBottomOf="@+id/monthYearTV"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.05"
+                        app:layout_constraintBottom_toBottomOf="@+id/month_year_tx"
+                   android:layout_marginStart="@dimen/size_15dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/monthYearTV"
+                        app:layout_constraintTop_toTopOf="@+id/month_year_tx"
                         app:srcCompat="@drawable/arrow_back_black_new" />
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/monthYearTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -159,6 +159,7 @@
                         app:layout_constraintStart_toEndOf="@+id/previous_month"
                         app:layout_constraintTop_toTopOf="parent" />
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/yearTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -173,6 +174,20 @@
                         app:layout_constraintStart_toEndOf="@+id/monthYearTV"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <TextView
+                        android:id="@+id/month_year_tx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:text="@string/_2022"
+                        android:textAlignment="center"
+                        android:fontFamily="@font/mulish_semi_bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/size_22sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/next_month"
+                        app:layout_constraintStart_toEndOf="@+id/previous_month"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
                         android:id="@+id/next_month"
@@ -181,11 +196,11 @@
                         android:background="@null"
                         android:layout_marginTop="@dimen/size_2dp"
                         android:layout_marginStart="@dimen/size_12dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/monthYearTV"
+                        android:layout_marginEnd="@dimen/size_15dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/month_year_tx"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@+id/yearTV"
-                        app:layout_constraintTop_toTopOf="@+id/monthYearTV"
+                        app:layout_constraintTop_toTopOf="@+id/month_year_tx"
                         app:layout_constraintVertical_bias="0.133"
                         app:srcCompat="@drawable/arrow_forward_black" />
 

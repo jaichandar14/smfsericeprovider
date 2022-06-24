@@ -113,18 +113,23 @@ class ActionsAndStatusFragment :
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
         RxBus.publish(RxEvent.QuoteBrief(1))
+        //
         when (myEvents.titleText) {
-            "New request" -> {
+            AppConstants.NEW_REQUEST -> {
                 goToActionDetailsFragment(AppConstants.BID_REQUESTED)
             }
-            "Pending Quote" -> {
+            AppConstants.PENDING_QUOTE -> {
                 goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
             }
-            "Rejected" -> {
+            AppConstants.REJECTED -> {
                 goToActionDetailsFragment(AppConstants.BID_REJECTED)
             }
-            "Bid Submitted" -> {
+            AppConstants.SUBMITTED_BID -> {
                 goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
+            }
+            // 2884 for won Bid flow
+            AppConstants.BID_WON -> {
+                goToActionDetailsFragment(AppConstants.WON_BID)
             }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")

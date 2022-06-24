@@ -92,7 +92,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         getViewModel().setCallBackInterface(this)
         // Initialize MyEvent Recycler
         myEventsRecycler()
-        myEventsRecycler1()
         // Id Token Validation
         idTokenValidation()
         // 2458 CalendarIcon Onclick method
@@ -114,7 +113,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
             mDataBinding?.banner1?.visibility = View.VISIBLE
             mDataBinding?.banner2?.visibility = View.VISIBLE
-            mDataBinding?.loop1?.visibility = View.GONE
             mDataBinding?.nestedScroll?.visibility = View.VISIBLE
 
         }
@@ -151,10 +149,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     private fun onClickCalendar() {
         mDataBinding?.calander?.setOnClickListener {
-            val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
-            startActivity(intent)
-        }
-        mDataBinding?.calander1?.setOnClickListener {
             val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
             startActivity(intent)
         }
@@ -199,13 +193,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     }
 
-    private fun myEventsRecycler1() {
-        myEventsRecyclerView1 = mDataBinding?.eventsRecyclerView1!!
-        adapter1 = MyEventsAdapter()
-        myEventsRecyclerView1.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        myEventsRecyclerView1.adapter = adapter1
-    }
+
 
     // Method for restrict user back button
     private fun restrictBackButton() {
