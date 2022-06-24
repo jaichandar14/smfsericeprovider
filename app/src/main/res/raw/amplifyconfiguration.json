@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "plugins": {
+      "awsCognitoAuthPlugin": {
+        "IdentityManager": {
+          "Default": {}
+        },
+        "CredentialsProvider": {
+          "CognitoIdentity": {
+            "Default": {
+              "PoolId": "us-east-1:50ed20ce-b65b-48b0-95d1-26dfc30816cf",
+              "Region": "us-east-1"
+            }
+          }
+        },
+        "CognitoUserPool": {
+          "Default": {
+            "PoolId": "us-east-1_WQ1SdIlC5",
+            "AppClientId": "4qhsse2id0aa9aafq9d47bkfqs",
+            "Region": "us-east-1"
+          }
+        },
+        "Auth": {
+          "Default": {
+            "authenticationFlowType": "CUSTOM_AUTH",
+            "OAuth": {
+              "WebDomain": "smf-dev1.auth.us-east-1.amazoncognito.com",
+              "AppClientId": "4qhsse2id0aa9aafq9d47bkfqs",
+              "SignInRedirectURI": "[CUSTOM REDIRECT SCHEME AFTER SIGN IN, e.g. myapp://]",
+              "SignOutRedirectURI": "[CUSTOM REDIRECT SCHEME AFTER SIGN OUT, e.g. myapp://]",
+              "Scopes": [
+                "phone",
+                "email",
+                "profile",
+                "openid",
+                "aws.cognito.signin.user.admin"
+              ],
+              "responseType": "code"
+            }
+          }
+        }
+      }
+    }
+  }
+}
