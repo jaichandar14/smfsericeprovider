@@ -99,6 +99,11 @@ class ActionDetailsAdapter(
                 //Change of Mind For Rejection the submitted Bid
                 holder.changeOfMind.setOnClickListener { holder.bidRejection(position) }
             }
+            // 2884 for won Bid flow
+            if(bidStatus == AppConstants.WON_BID){
+                holder.likeButton.visibility = View.INVISIBLE
+                holder.unlikeButton.visibility = View.INVISIBLE
+            }
             // Like For Submitting the Bid
             holder.likeButton.setOnClickListener {
                 holder.bidSubmitted(position)

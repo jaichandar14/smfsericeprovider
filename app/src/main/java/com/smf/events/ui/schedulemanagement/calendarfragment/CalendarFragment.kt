@@ -63,6 +63,7 @@ class CalendarFragment : Fragment(),
     var spRegId: Int = 0
     lateinit var idToken: String
     private var monthYearText: TextView? = null
+    private var fullMonthYearText: TextView? = null
     private var yearText: TextView? = null
     private var calendarRecyclerView: RecyclerView? = null
     private var dayinWeek: ArrayList<String>? = null
@@ -141,6 +142,7 @@ class CalendarFragment : Fragment(),
         calendarRecyclerView = mDataBinding.calendarRecyclerView
         monthYearText = mDataBinding.monthYearTV
         yearText = mDataBinding.yearTV
+        fullMonthYearText=mDataBinding.monthYearTx
         // 2686 Set Current Date
         CalendarUtils.selectedDate = LocalDate.now()
         // 2458 Method for  previousMonth
@@ -230,6 +232,8 @@ class CalendarFragment : Fragment(),
     private fun setMonthView(dayinWeek: ArrayList<String>?, daysPositon: ArrayList<Int>?) {
         monthYearText?.text =
             CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDate(it) }
+        fullMonthYearText?.text =
+            CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDateFull(it) }
         yearText?.text = CalendarUtils.selectedDate?.let { calendarUtils.yearAndMonthFromDate(it) }
         CalendarUtils.selectedDate?.let { calendarUtils.monthYearFromDate(it) }
         val thisYear: Int = Calendar.getInstance().get(Calendar.YEAR)

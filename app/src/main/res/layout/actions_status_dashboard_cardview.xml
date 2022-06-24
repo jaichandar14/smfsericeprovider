@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/action_card_view_layout"
     android:layout_width="@dimen/size_115dp"
-    android:layout_height="@dimen/size_85dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/size_2dp"
     android:layout_marginTop="@dimen/size_10dp"
     android:layout_marginEnd="@dimen/size_5dp"
@@ -36,7 +36,7 @@
             android:layout_width="@dimen/size_82dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_regular"
-            android:lines="3"
+            android:maxLines="2"
             android:text="@string/new_request"
             android:textColor="@color/darkblue_smf_font"
             android:textSize="@dimen/size_16sp" />
