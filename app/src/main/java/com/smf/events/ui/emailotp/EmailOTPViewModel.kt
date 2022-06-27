@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -18,6 +17,7 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentEmailOtpBinding
+import com.smf.events.helper.AppConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,13 +27,12 @@ class EmailOTPViewModel @Inject constructor(
     application: Application,
 ) : BaseViewModel(application) {
 
+    private val TAG = "EmailOTPViewModel"
     val userOtpNumber = MutableLiveData<String>()
     private var idToken: String? = null
 
     // Custom Confirm SignIn Function
     fun confirmSignIn(otp: String, mDataBinding: FragmentEmailOtpBinding) {
-        mDataBinding.linearLayout.visibility = View.INVISIBLE
-        mDataBinding.progressBar.visibility = View.VISIBLE
         Amplify.Auth.confirmSignIn(otp,
             {
                 // Aws method for Fetching Id Token
@@ -43,19 +42,19 @@ class EmailOTPViewModel @Inject constructor(
             },
             {
                 Log.e(
-                    "AuthQuickstart",
+                    TAG,
                     "Failed to confirm signIn ${it.cause!!.message!!.split(".")[0]}",
                     it
                 )
                 viewModelScope.launch {
                     val errMsg = mDataBinding.otpemail.text.toString()
                     if (errMsg.isEmpty()) {
-                        toastMessage = "Enter OTP"
+                        toastMessage = AppConstants.ENTER_OTP
                         callBackInterface!!.awsErrorResponse()
                     } else {
-                        toastMessage = "Multiple Entry of Invalid Otp"
+                        toastMessage = AppConstants.INVALID_OTP
                         callBackInterface!!.awsErrorResponse()
-                        callBackInterface!!.navigatingPage()
+//                        callBackInterface!!.navigatingPage()
                     }
                 }
             })
@@ -69,16 +68,16 @@ class EmailOTPViewModel @Inject constructor(
                 idToken = AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
                 setTokenToSharedPref(idToken)
             },
-            { Log.e("AuthQuickStart", "Failed to fetch session", it) }
+            { Log.e(TAG, "Failed to fetch session", it) }
         )
     }
 
     // Method for save IdToken
     private fun setTokenToSharedPref(token: String?) {
         val sharedPreferences =
-            getApplication<SMFApp>().getSharedPreferences("MyUser", Context.MODE_PRIVATE)
-        var editor = sharedPreferences?.edit()
-        editor?.putString("IdToken", token)
+            getApplication<SMFApp>().getSharedPreferences(AppConstants.MY_USER, Context.MODE_PRIVATE)
+        val editor = sharedPreferences?.edit()
+        editor?.putString(AppConstants.ID_TOKEN, token)
         editor?.apply()
     }
 
@@ -86,19 +85,19 @@ class EmailOTPViewModel @Inject constructor(
     private fun emailCodeValidationCheck() {
         Amplify.Auth.fetchUserAttributes(
             { result ->
-                if (result[1].value.equals("false")) {
+                if (result[1].value.equals(AppConstants.FALSE)) {
                     eMailVerification()
                 } else {
-                    Log.i("AuthDemo", "User attributes = successfully entered dashboard")
+                    Log.i(TAG, "User attributes = successfully entered dashboard")
                     viewModelScope.launch {
                         callBackInterface?.callBack("EMailVerifiedTrueGoToDashBoard")
                     }
                 }
             },
             {
-                Log.e("AuthDemo", "Failed to fetch user attributes", it)
+                Log.e(TAG, "Failed to fetch user attributes", it)
                 viewModelScope.launch {
-                    toastMessage = "Invalid OTP"
+                    toastMessage = AppConstants.INVALID_OTP
                     callBackInterface!!.awsErrorResponse()
                 }
             })
@@ -118,9 +117,9 @@ class EmailOTPViewModel @Inject constructor(
                 }
             },
             {
-                Log.e("AuthDemo", "Failed to resend code", it)
+                Log.e(TAG, "Failed to resend code", it)
                 viewModelScope.launch {
-                    var errMsg = it.cause!!.message!!.split(".")[0]
+                    val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
                     callBackInterface!!.awsErrorResponse()
                 }
@@ -131,13 +130,13 @@ class EmailOTPViewModel @Inject constructor(
     // OTP Resend SignIn Method
     fun reSendOTP(userName: String, mDataBinding: FragmentEmailOtpBinding) {
         Amplify.Auth.signIn(userName, null, {
-            Log.d("TAG", "reSendOTP: called code resented successfully")
+            Log.d(TAG, "reSendOTP: called code resented successfully")
             viewModelScope.launch {
                 otpTimerValidation(mDataBinding, userName)
             }
         },
             {
-                Log.e("AuthQuickstart", "Failed to sign in", it)
+                Log.e(TAG, "Failed to sign in", it)
                 viewModelScope.launch {
                     val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
@@ -163,9 +162,12 @@ class EmailOTPViewModel @Inject constructor(
     // 2351 Android-OTP expires Validation Method
     fun otpTimerValidation(mDataBinding: FragmentEmailOtpBinding?, userName: String) {
         var counter = 30
-        var countTime: TextView = mDataBinding!!.otpTimer
-        mDataBinding.otpResend.setTextColor(ContextCompat.getColor(
-            getApplication(), R.color.buttoncolor))
+        val countTime: TextView = mDataBinding!!.otpTimer
+        mDataBinding.otpResend.setTextColor(
+            ContextCompat.getColor(
+                getApplication(), R.color.buttoncolor
+            )
+        )
         mDataBinding.otpResend.isClickable = false
         object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -178,10 +180,13 @@ class EmailOTPViewModel @Inject constructor(
             }
 
             override fun onFinish() {
-                mDataBinding.otpResend.setTextColor(ContextCompat.getColor(
-                    getApplication(), R.color.button_blue))
+                mDataBinding.otpResend.setTextColor(
+                    ContextCompat.getColor(
+                        getApplication(), R.color.button_blue
+                    )
+                )
                 mDataBinding.otpResend.isClickable = true
-                countTime.text = " 00:00"
+                countTime.text = AppConstants.INITIAL_TIME
                 mDataBinding.otpResend.setOnClickListener {
                     reSendOTP(userName, mDataBinding)
                 }

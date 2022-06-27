@@ -23,6 +23,7 @@ import javax.inject.Inject
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
     EmailOTPViewModel.CallBackInterface {
 
+    private val TAG = "EmailOTPFragment"
     private val args: EmailOTPFragmentArgs by navArgs()
     private lateinit var userName: String
 
@@ -52,7 +53,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         getViewModel().setCallBackInterface(this)
         // Submit Button Listener
         submitBtnClicked()
-        // Auto suubmit pin
+        // Auto submit pin
         autoSubmit()
         // 2351 Android-OTP expires Validation Method
         getViewModel().otpTimerValidation(mDataBinding, userName)
@@ -75,20 +76,44 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     private fun autoSubmit() {
         getViewModel().userOtpNumber.observe(viewLifecycleOwner, Observer {
             if (it.length == 4) {
-                mDataBinding?.submitBtn?.visibility = View.INVISIBLE
+                showProgress()
                 getViewModel().confirmSignIn(it, mDataBinding!!)
             } else {
-                mDataBinding?.submitBtn?.visibility = View.VISIBLE
+                hideProgress()
             }
         })
     }
 
+    private fun showProgress() {
+        mDataBinding?.textView8?.visibility = View.GONE
+        mDataBinding?.textView9?.visibility = View.GONE
+        mDataBinding?.textView10?.visibility = View.GONE
+        mDataBinding?.otpemail?.visibility = View.GONE
+        mDataBinding?.linearLayout4?.visibility = View.GONE
+        mDataBinding?.textView11?.visibility = View.GONE
+        mDataBinding?.otpResend?.visibility = View.GONE
+        mDataBinding?.submitBtn?.visibility = View.GONE
+        mDataBinding?.progressBar?.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        mDataBinding?.textView8?.visibility = View.VISIBLE
+        mDataBinding?.textView9?.visibility = View.VISIBLE
+        mDataBinding?.textView10?.visibility = View.VISIBLE
+        mDataBinding?.otpemail?.visibility = View.VISIBLE
+        mDataBinding?.linearLayout4?.visibility = View.VISIBLE
+        mDataBinding?.textView11?.visibility = View.VISIBLE
+        mDataBinding?.otpResend?.visibility = View.VISIBLE
+        mDataBinding?.submitBtn?.visibility = View.VISIBLE
+        mDataBinding?.progressBar?.visibility = View.INVISIBLE
+    }
+
     // CallBackInterface Override Method
     override suspend fun callBack(status: String) {
-        if (status == "goToEmailVerificationCodePage") {
+        if (status == AppConstants.EMAIL_VERIFICATION_CODE_PAGE) {
             // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
-        } else if (status == "EMailVerifiedTrueGoToDashBoard") {
+        } else if (status == AppConstants.EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD) {
             val idToken =
                 "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
             getLoginApiCall(idToken)
@@ -97,8 +122,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // AWS Error response
     override fun awsErrorResponse() {
-        mDataBinding?.linearLayout?.visibility = View.VISIBLE
-        mDataBinding?.progressBar?.visibility = View.INVISIBLE
+        hideProgress()
         showToast(getViewModel().toastMessage)
     }
 
@@ -116,13 +140,13 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         // Initialize RegId And RoleId to Shared Preference
-                     setSpRegIdAndRollID(apiResponse)
-                        Log.d("TAG", "getLoginApiCall: $apiResponse")
+                        setSpRegIdAndRollID(apiResponse)
+                        Log.d(TAG, "getLoginApiCall: $apiResponse")
                         // Navigate to DashBoardFragment
                         findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
                     }
                     is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
                     }
                     else -> {
                     }
@@ -132,9 +156,13 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // Method For Set SpRegId And RollID to SharedPreference From Login Api
     private fun setSpRegIdAndRollID(apiResponse: ApisResponse.Success<GetLoginInfo>) {
-        sharedPreference.putInt(SharedPreference.SP_REG_ID,
-            apiResponse.response.data.spRegId)
-        sharedPreference.putInt(SharedPreference.ROLE_ID,
-            apiResponse.response.data.roleId)
+        sharedPreference.putInt(
+            SharedPreference.SP_REG_ID,
+            apiResponse.response.data.spRegId
+        )
+        sharedPreference.putInt(
+            SharedPreference.ROLE_ID,
+            apiResponse.response.data.roleId
+        )
     }
 }

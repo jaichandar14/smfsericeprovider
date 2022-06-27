@@ -17,7 +17,6 @@ import dagger.android.support.AndroidSupportInjection
 import java.net.URLEncoder
 import javax.inject.Inject
 
-
 class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     SignInViewModel.CallBackInterface {
 
@@ -57,15 +56,13 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         signInClicked()
         // SignUp Button Listener
         onSignUpClicked()
-
-
     }
 
     // Method for SignIn Button
     private fun signInClicked() {
         mDataBinding!!.signinbtn.setOnClickListener {
-            var phoneNumber = mDataBinding?.editTextMobileNumber?.text.toString().trim()
-            var countryCode = mDataBinding?.cppSignIn?.selectedCountryCode
+            val phoneNumber = mDataBinding?.editTextMobileNumber?.text.toString().trim()
+            val countryCode = mDataBinding?.cppSignIn?.selectedCountryCode
             mobileNumberWithCountryCode = "+".plus(countryCode).plus(phoneNumber)
 
             //SingleEncoding
@@ -75,13 +72,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             if (phoneNumber.isNotEmpty() || eMail.isNotEmpty()) {
                 if (phoneNumber.isEmpty() || eMail.isEmpty()) {
                     if (phoneNumber.isEmpty()) {
-                        mDataBinding?.loginPage?.visibility=View.INVISIBLE
-                       mDataBinding?.progressBar?.visibility=View.VISIBLE
+                        showProgress()
                         getViewModel().getUserDetails(eMail)
                             .observe(viewLifecycleOwner, getUserDetailsObserver)
                     } else {
-                        mDataBinding?.loginPage?.visibility=View.INVISIBLE
-                        mDataBinding?.progressBar?.visibility=View.VISIBLE
+                        showProgress()
                         getViewModel().getUserDetails(encodedMobileNo)
                             .observe(viewLifecycleOwner, getUserDetailsObserver)
                     }
@@ -100,12 +95,9 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             is ApisResponse.Success -> {
                 userName = apiResponse.response.data.userName
                 getViewModel().signIn(apiResponse.response.data.userName)
-
             }
-
             is ApisResponse.CustomError -> {
-                mDataBinding?.loginPage?.visibility=View.VISIBLE
-                mDataBinding?.progressBar?.visibility=View.GONE
+                hideProgress()
                 showToast(apiResponse.message)
             }
             else -> {
@@ -113,10 +105,32 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         }
     }
 
+    private fun showProgress() {
+        mDataBinding?.textView4?.visibility = View.GONE
+        mDataBinding?.textView5?.visibility = View.GONE
+        mDataBinding?.phnumerlayout?.visibility = View.GONE
+        mDataBinding?.textView7?.visibility = View.GONE
+        mDataBinding?.textView6?.visibility = View.GONE
+        mDataBinding?.mailidLayout?.visibility = View.GONE
+        mDataBinding?.signinbtn?.visibility = View.GONE
+        mDataBinding?.progressBar?.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        mDataBinding?.textView4?.visibility = View.VISIBLE
+        mDataBinding?.textView5?.visibility = View.VISIBLE
+        mDataBinding?.phnumerlayout?.visibility = View.VISIBLE
+        mDataBinding?.textView7?.visibility = View.VISIBLE
+        mDataBinding?.textView6?.visibility = View.VISIBLE
+        mDataBinding?.mailidLayout?.visibility = View.VISIBLE
+        mDataBinding?.signinbtn?.visibility = View.VISIBLE
+        mDataBinding?.progressBar?.visibility = View.GONE
+    }
+
     // Method for SignUp Button
     private fun onSignUpClicked() {
         mDataBinding!!.signupaccbtn.setOnClickListener {
-            var action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+            val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
             // Navigate to SignUpFragment
             findNavController().navigate(action)
         }
@@ -124,15 +138,17 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     // CallBackInterface Override Method
     override fun callBack(status: String) {
-
         when (status) {
             "SignInNotCompleted" -> {
                 // Navigate to EmailOTPFragment
                 // 2842 Hiding the login page
-               //  mDataBinding?.loginPage?.visibility=View.VISIBLE
-                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(
-                    userName!!))
-                mDataBinding?.progressBar?.visibility=View.GONE
+                //  mDataBinding?.loginPage?.visibility=View.VISIBLE
+                findNavController().navigate(
+                    SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(
+                        userName!!
+                    )
+                )
+                mDataBinding?.progressBar?.visibility = View.GONE
             }
             "signInCompletedGoToDashBoard" -> {
                 //Navigate to DashBoardFragment
@@ -140,8 +156,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             }
             "resend success" -> {
                 //Navigate to MobileVerificationCode
-                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToVerificationCodeFrgment(
-                    userName!!))
+                findNavController().navigate(
+                    SignInFragmentDirections.actionSignInFragmentToVerificationCodeFrgment(
+                        userName!!
+                    )
+                )
             }
             "resend failure" -> {
 
