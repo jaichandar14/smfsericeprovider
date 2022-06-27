@@ -186,6 +186,8 @@
     <string name="review_feedback">Review Feedback</string>
     // 2873
     <string name="slot_booked">Slot Booked</string>
+    // 2886
+    <string name="resend">Resend</string>
 
 
 </resources>

@@ -55,4 +55,15 @@ object AppConstants {
     const val DATE_FORMAT_MONTH_YEAR="MMMM yyyy"
     const val DATE_FORMAT_YEAR="yyyy"
     const val DATE_FORMAT_MONTH="MMM"
+
+    //2886
+    const val EMAIL_VERIFICATION_CODE_PAGE = "goToEmailVerificationCodePage"
+    const val EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD = "EMailVerifiedTrueGoToDashBoard"
+    const val ENTER_OTP = "Enter OTP"
+    const val INVALID_OTP = "Invalid Otp"
+    const val MY_USER =  "MyUser"
+    const val ID_TOKEN = "IdToken"
+    const val FALSE = "false"
+    const val INITIAL_TIME = " 00:00"
+
 }
