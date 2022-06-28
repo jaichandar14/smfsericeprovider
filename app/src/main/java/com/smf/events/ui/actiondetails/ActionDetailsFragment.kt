@@ -247,6 +247,9 @@ class ActionDetailsFragment :
             // 2884 for won Bid flow
             AppConstants.WON_BID -> mDataBinding?.textNewRequest?.text =
                 "$newRequestCount Won Bid"
+            // 2885 Lost Bid flow
+            AppConstants.LOST_BID -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount ${AppConstants.BID_LOST}"
         }
         val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)

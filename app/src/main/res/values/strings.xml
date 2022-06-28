@@ -9,8 +9,7 @@
     <string name="colonen">|</string>
     <string name="phonenumber">PhoneNumber</string>
     <string name="or">OR</string>
-    <string name="perter_gmail_com">perter@gmail.com</string>
-    <string name="emailid">Emailid</string>
+    <string name="emailid">Email Id</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_upsmall">Sign up</string>
     <string name="firstname">FirstName</string>
@@ -188,6 +187,7 @@
     <string name="slot_booked">Slot Booked</string>
     // 2886
     <string name="resend">Resend</string>
+    <string name="perter_gmail_com">aaa@bbb.com</string>
 
 
 </resources>

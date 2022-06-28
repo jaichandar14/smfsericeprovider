@@ -104,6 +104,11 @@ class ActionDetailsAdapter(
                 holder.likeButton.visibility = View.INVISIBLE
                 holder.unlikeButton.visibility = View.INVISIBLE
             }
+            // 2885 for Lost Bid flow
+            if(bidStatus == AppConstants.LOST_BID){
+                holder.likeButton.visibility = View.INVISIBLE
+                holder.unlikeButton.visibility = View.INVISIBLE
+            }
             // Like For Submitting the Bid
             holder.likeButton.setOnClickListener {
                 holder.bidSubmitted(position)

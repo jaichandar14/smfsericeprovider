@@ -121,7 +121,8 @@ class ActionsAndStatusFragment :
             AppConstants.PENDING_QUOTE -> {
                 goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
             }
-            AppConstants.REJECTED -> {
+            // 2885 Bid Rejected flow
+            AppConstants.REJECTED_BID -> {
                 goToActionDetailsFragment(AppConstants.BID_REJECTED)
             }
             AppConstants.SUBMITTED_BID -> {
@@ -130,6 +131,10 @@ class ActionsAndStatusFragment :
             // 2884 for won Bid flow
             AppConstants.BID_WON -> {
                 goToActionDetailsFragment(AppConstants.WON_BID)
+            }
+            // 2885 Lost Bid flow
+            AppConstants.BID_LOST -> {
+                goToActionDetailsFragment(AppConstants.LOST_BID)
             }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")

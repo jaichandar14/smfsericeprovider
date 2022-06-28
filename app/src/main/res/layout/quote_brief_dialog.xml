@@ -114,6 +114,8 @@
                             android:text="@string/ca457845264162"
                             android:textColor="@color/blue_event_id"
                             android:textSize="@dimen/size_18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/tx_job_title" />
 
@@ -127,29 +129,37 @@
                             android:textColor="@color/blue_event_id"
                             android:textSize="@dimen/size_15sp"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toEndOf="@+id/tx_job_idnum"
                             app:layout_constraintTop_toBottomOf="@+id/tx_job_amount" />
 
                         <TextView
                             android:id="@id/service_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/tx_job_idnum"
-                            android:fontFamily="@font/mulish_semi_bold"
-                            android:textSize="@dimen/size_16sp"
                             android:layout_marginTop="@dimen/size_15dp"
+                            android:fontFamily="@font/mulish_semi_bold"
+                            android:text="@string/fork_amp_spoon"
+                            android:textSize="@dimen/size_16sp"
+                            app:layout_constraintEnd_toEndOf="@+id/tx_job_idnum"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            android:text="@string/fork_amp_spoon"/>
+                            app:layout_constraintTop_toBottomOf="@id/tx_job_idnum" />
+
                         <TextView
                             android:id="@+id/branch_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@id/service_name"
-                            android:fontFamily="@font/mulish_bold"
-                            android:textSize="@dimen/size_16sp"
                             android:layout_marginTop="@dimen/size_2dp"
+                            android:fontFamily="@font/mulish_bold"
+                            android:text="@string/fork_amp_spoon"
                             android:textColor="@color/dark_font"
+                            android:textSize="@dimen/size_16sp"
+                            app:layout_constraintEnd_toEndOf="@+id/service_name"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            android:text="@string/fork_amp_spoon"/>
+                            app:layout_constraintTop_toBottomOf="@id/service_name" />
+
                         <LinearLayout
                             android:id="@+id/linear_spn_layout"
                             android:layout_width="match_parent"
@@ -157,21 +167,26 @@
                             android:layout_marginTop="@dimen/size_20dp"
                             android:weightSum="3"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/branch_name">
 
-                            <ImageView
+                            <TextView
                                 android:id="@+id/exp_btn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight=".2"
-                                app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24" />
+                                android:textSize="@dimen/size_15sp"
+                                android:text="Status:"
+                                android:gravity="start"
+                                android:layout_marginTop="@dimen/size_5dp"
+                                android:fontFamily="@font/mulish_semi_bold" />
 
                             <TextView
                                 android:id="@+id/spn_Bid_accepted"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/size_5dp"
-                                android:layout_weight="2.8"
+                                android:layout_weight="2"
                                 android:fontFamily="@font/mulish_regular"
                                 android:gravity="start"
                                 android:text="@string/bid_accepted"
@@ -185,7 +200,7 @@
                             android:id="@+id/expandable_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             android:paddingBottom="@dimen/size_10dp"
                             android:layout_marginTop="@dimen/size_8dp"
                             android:background="@color/quote_details_blue"

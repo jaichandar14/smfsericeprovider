@@ -23,6 +23,7 @@ object AppConstants {
     const val BID_LOST = "Lost Bid\n"
     const val REJECTED = "Rejected"
 
+
     //2801
     const val DESELECTED = "Deselected"
 
@@ -66,4 +67,6 @@ object AppConstants {
     const val FALSE = "false"
     const val INITIAL_TIME = " 00:00"
 
+    // 2885
+    const val ZERO = "0"
 }
