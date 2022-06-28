@@ -41,7 +41,7 @@ class ActionsAndStatusViewModel @Inject constructor(
         var list = ArrayList<MyEvents>()
         list.add(
             MyEvents(
-                "0",
+                AppConstants.ZERO,
                 AppConstants.REQUEST_CLOSED
             )
         )
@@ -49,7 +49,7 @@ class ActionsAndStatusViewModel @Inject constructor(
          //   AppConstants.REJECTED_BID))
         list.add(MyEvents(actionAndStatusData.bidTimedOutCount.toString(), AppConstants.TIMED_OUT))
        // list.add(MyEvents(actionAndStatusData.lostBidCount.toString(), AppConstants.BID_LOST))
-        list.add(MyEvents("0", AppConstants.PENDING_FOR_REVIEW))
+        list.add(MyEvents(AppConstants.ZERO, AppConstants.PENDING_FOR_REVIEW))
         return list
     }
 
