@@ -67,6 +67,7 @@
                 app:ccp_arrowSize="@dimen/size_80dp"
                 app:ccp_autoDetectCountry="true"
                 app:ccp_showNameCode="true"
+                android:fontFamily="@font/mulish_bold"
                 app:ccp_textSize="@dimen/size_14sp" />
 
             <TextView
@@ -88,7 +89,8 @@
                 android:hint="@string/phonenumber"
                 android:inputType="numberDecimal"
                 android:maxLength="10"
-                android:textColor="@color/fade_black" />
+                android:textColor="@color/fade_black"
+                android:textSize="@dimen/size_14sp"/>
 
         </LinearLayout>
 
@@ -144,7 +146,7 @@
                 android:fontFamily="@font/mulish_bold"
                 android:hint="@string/perter_gmail_com"
                 android:inputType="textEmailAddress"
-                android:textColor="#F0333333"
+                android:textColor="@color/fade_black"
                 android:textSize="@dimen/size_14sp" />
 
         </LinearLayout>
