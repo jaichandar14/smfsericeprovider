@@ -20,7 +20,8 @@ android {
         targetSdk 31
         versionCode 5
         versionName "1.05"
-
+        buildConfigField "String", "base_url", "\"https://www.smf-uat.demo-bpmlinks.com/\""
+        buildConfigField "String", "apiType",  "\"smf-\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     flavorDimensions "festo"
@@ -47,7 +48,7 @@ android {
             buildConfigField "String", "apiType",  "\"smf-\""
            }
 
-        prod{
+        prod {
             dimension "festo"
             applicationIdSuffix""
             buildConfigField "String", "base_url", "\"https://www.smf-uat.demo-bpmlinks.com/\""

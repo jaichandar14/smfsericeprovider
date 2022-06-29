@@ -13,10 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ExpandableListView
+        <com.smf.events.ui.timeslotmodifyexpanablelist.SMFExpandableListView
             android:id="@+id/expendableList"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_1000dp"
+            android:layout_height="wrap_content"
             android:childDivider="@color/white"
             android:divider="@color/white"
             android:dividerHeight="@dimen/dp_0"
