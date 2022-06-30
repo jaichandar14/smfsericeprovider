@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,13 +16,13 @@ import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
-import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
 import java.time.Month
 
 class ActionDetailsAdapter(
     val context: Context,
     var bidStatus: String,
     val sharedPreference: SharedPreference,
+    var status: Boolean?,
 ) :
     RecyclerView.Adapter<ActionDetailsAdapter.ActionDetailsViewHolder>() {
     private var myEventsList = ArrayList<ActionDetails>()
@@ -34,7 +33,7 @@ class ActionDetailsAdapter(
     ): ActionDetailsViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.event_details_card_view, parent, false)
+                .inflate(R.layout.detailscardview, parent, false)
         return ActionDetailsViewHolder(itemView)
     }
 
@@ -64,11 +63,13 @@ class ActionDetailsAdapter(
         var serviceDate: TextView = view.findViewById(R.id.service_date)
         var unlikeButton: ImageView = view.findViewById(R.id.unlike_imageView)
         var likeButton: ImageView = view.findViewById(R.id.like_imageView)
-        var rightArrowButton: LinearLayout = view.findViewById(R.id.right_arrow_imageView)
+        var rightArrowButton: ImageView = view.findViewById(R.id.imageView)
         var cutoffMonthText: TextView = view.findViewById(R.id.cutoff_month_text)
         var progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
         var progressDateNumber: TextView = view.findViewById(R.id.progress_date_number)
         var changeOfMind: TextView = view.findViewById(R.id.change_of_mind)
+        var startserviceBtn: TextView = view.findViewById(R.id.btn_start_service)
+        var quote_status_tx: TextView = view.findViewById(R.id.quote_status)
 
         @SuppressLint("SetTextI18n")
         fun onBind(actionDetails: ActionDetails) {
@@ -79,8 +80,8 @@ class ActionDetailsAdapter(
             eventType.text = "${actionDetails.branchName} - ${actionDetails.serviceName}"
             code.text = actionDetails.eventServiceDescriptionId.toString()
             progressBar.progress = actionDetails.timeLeft.toInt()
-            eventDate.text = dateFormat(actionDetails.eventDate)
-            serviceDate.text = dateFormat(actionDetails.serviceDate)
+            eventDate.text = (actionDetails.eventDate)
+            serviceDate.text = (actionDetails.serviceDate)
             cutoffMonthText.text = dateFormat(actionDetails.serviceDate).substring(3, 6)
             progressDateNumber.text = dateFormat(actionDetails.biddingCutOffDate).substring(0, 2)
         }
@@ -96,16 +97,36 @@ class ActionDetailsAdapter(
             if (bidStatus == AppConstants.BID_SUBMITTED) {
                 //Button Visibility
                 holder.buttonVisibility(holder)
+                holder.quote_status_tx.text = AppConstants.BIDDING_IN_PROGRESS
+                holder.quote_status_tx.setOnClickListener {
+                    // 2904 Dialog Fragement Which show the Status for the Bid Submitted
+                    callBackInterface?.showDialog(position)
+                }
                 //Change of Mind For Rejection the submitted Bid
                 holder.changeOfMind.setOnClickListener { holder.bidRejection(position) }
             }
             // 2884 for won Bid flow
-            if(bidStatus == AppConstants.WON_BID){
+            if (bidStatus == AppConstants.WON_BID) {
                 holder.likeButton.visibility = View.INVISIBLE
                 holder.unlikeButton.visibility = View.INVISIBLE
+                holder.startserviceBtn.visibility = View.VISIBLE
+                holder.quote_status_tx.text = AppConstants.BID_WON
+                holder.quote_status_tx.setOnClickListener {
+                    callBackInterface?.showDialog(position)
+                }
+                holder.startserviceBtn.setOnClickListener {
+                    // 2904 Dialog to For confirmation of Start service
+                    CommonInfoDialog.newInstance(
+                        position, AppConstants.WON_BID
+                    )
+                        .show(
+                            (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                            CommonInfoDialog.TAG
+                        )
+                }
             }
             // 2885 for Lost Bid flow
-            if(bidStatus == AppConstants.LOST_BID){
+            if (bidStatus == AppConstants.LOST_BID) {
                 holder.likeButton.visibility = View.INVISIBLE
                 holder.unlikeButton.visibility = View.INVISIBLE
             }
@@ -119,14 +140,8 @@ class ActionDetailsAdapter(
             }
             // 2402 View Order details onCLickArrow Button
             holder.rightArrowButton.setOnClickListener {
-                ViewOrderDetailsDialogFragment.newInstance(position.eventId,
-                    position.eventServiceDescriptionId,
-                    position.eventDate,
-                    position.eventName)
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        ViewOrderDetailsDialogFragment.TAG
-                    )
+                // 2904 Method to show the Quote Details Status Dialog
+                callBackInterface?.showDialog(position)
             }
         }
 
@@ -136,7 +151,7 @@ class ActionDetailsAdapter(
                 // Update Latest bidRequestId To Shared Preference
                 updateBidRequestId(position.bidRequestId)
                 // Create Common Info Dialog
-                CommonInfoDialog.newInstance(position).show(
+                CommonInfoDialog.newInstance(position, "cost").show(
                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                     CommonInfoDialog.TAG
                 )
@@ -271,5 +286,7 @@ class ActionDetailsAdapter(
             latestBidValue: String?,
             branchName: String,
         )
+
+        fun showDialog(status: ActionDetails)
     }
 }

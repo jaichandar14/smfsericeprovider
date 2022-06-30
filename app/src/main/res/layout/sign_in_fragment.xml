@@ -23,7 +23,7 @@
             android:fontFamily="@font/mulish_bold"
             android:text="@string/signin"
             android:textColor="@color/black_event_title"
-            android:textSize="@dimen/size_22sp"
+            android:textSize="@dimen/size_25sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,12 +37,12 @@
             android:fontFamily="@font/mulish_bold"
             android:text="@string/mobile"
             android:textColor="@color/elephant_black"
-            android:textSize="@dimen/size_14sp"
+            android:textSize="@dimen/size_18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView4"
-            app:layout_constraintVertical_bias="0.01999998" />
+            app:layout_constraintVertical_bias="0.04" />
 
         <LinearLayout
             android:id="@+id/phnumerlayout"
@@ -62,13 +62,13 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 app:ccpDialog_backgroundColor="@color/white"
-                app:ccpDialog_textColor="@color/buttoncolor"
+                app:ccpDialog_textColor="@color/fade_black"
                 app:ccp_arrowColor="@color/black"
                 app:ccp_arrowSize="@dimen/size_80dp"
                 app:ccp_autoDetectCountry="true"
                 app:ccp_showNameCode="true"
                 android:fontFamily="@font/mulish_bold"
-                app:ccp_textSize="@dimen/size_14sp" />
+                app:ccp_textSize="@dimen/size_16sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
                 android:inputType="numberDecimal"
                 android:maxLength="10"
                 android:textColor="@color/fade_black"
-                android:textSize="@dimen/size_14sp"/>
+                android:textSize="@dimen/size_16sp"/>
 
         </LinearLayout>
 
@@ -101,6 +101,8 @@
             android:fontFamily="@font/mulish_bold"
             android:gravity="center"
             android:text="@string/or"
+            android:textSize="@dimen/size_18sp"
+            android:textColor="@color/elephant_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -113,7 +115,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_bold"
             android:text="@string/emailid"
-            android:textSize="@dimen/size_14sp"
+            android:textSize="@dimen/size_18sp"
+            android:textColor="@color/elephant_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -147,7 +150,7 @@
                 android:hint="@string/perter_gmail_com"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/fade_black"
-                android:textSize="@dimen/size_14sp" />
+                android:textSize="@dimen/size_16sp" />
 
         </LinearLayout>
 

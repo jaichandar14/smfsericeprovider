@@ -28,7 +28,7 @@ class ScheduleManagementActivity :
     @Inject
     lateinit var factory: ViewModelProvider.Factory
     private lateinit var dialogDisposable: Disposable
-    override fun getContentView(): Int = R.layout.activity_schedule_managment
+    override fun getContentView(): Int = com.smf.events.R.layout.activity_schedule_managment
 
     override fun getViewModel(): ScheduleManagementViewModel =
         ViewModelProvider(this, factory).get(ScheduleManagementViewModel::class.java)
@@ -44,9 +44,17 @@ class ScheduleManagementActivity :
         // 2458 Method for TimeSlots Ui
         timeSlotsUI()
         // 2842 Setting the updatedTabPosition when we press back button
-        CalendarUtils.updatedTabPosition=0
+        CalendarUtils.updatedTabPosition = 0
         dialogDisposable = RxBus.listen(RxEvent.ChangingNav::class.java).subscribe {
             finish()
+
+        }
+        // 2904 Refresh the Schedule management layout
+        mViewDataBinding?.refreshLayout?.setOnRefreshListener {
+            // Your code to refresh the list here.
+            finish()
+            startActivity(intent)
+            mViewDataBinding?.refreshLayout?.isRefreshing = true
         }
     }
 
@@ -56,7 +64,7 @@ class ScheduleManagementActivity :
         mViewDataBinding?.switchBtn?.setOnClickListener {
             if (mViewDataBinding?.switchBtn?.isChecked == false)
                 mViewDataBinding?.switchBtnTx?.text =
-                    resources.getString(R.string.switch_to_modify_slots_availability)
+                    resources.getString(com.smf.events.R.string.switch_to_modify_slots_availability)
             else mViewDataBinding?.switchBtnTx?.text =
                 resources.getString(R.string.switch_to_View_Event_List)
 

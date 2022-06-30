@@ -15,6 +15,9 @@ object AppConstants {
     const val NEW_REQUEST = "New request"
     const val PENDING_QUOTE = "Pending Quote"
     const val SUBMITTED_BID = "Bid Submitted"
+    // 2904
+    const val QUOTE_SENT = "Quote\nSent"
+    const val SENT_QUOTE = "Quote Sent"
     const val BID_WON = "Won Bid\n"
     const val PENDING_FOR_REVIEW = "Pending Review"
     const val REQUEST_CLOSED = "Request closed"
@@ -22,7 +25,8 @@ object AppConstants {
     const val TIMED_OUT = "Timed Out\n"
     const val BID_LOST = "Lost Bid\n"
     const val REJECTED = "Rejected"
-
+    // 2904
+    const val BIDDING_IN_PROGRESS = "Bidding in Progress"
 
     //2801
     const val DESELECTED = "Deselected"
@@ -53,16 +57,16 @@ object AppConstants {
     const val DATE_FORMAT = "MM/dd/yyyy"
 
     // 2879
-    const val DATE_FORMAT_MONTH_YEAR="MMMM yyyy"
-    const val DATE_FORMAT_YEAR="yyyy"
-    const val DATE_FORMAT_MONTH="MMM"
+    const val DATE_FORMAT_MONTH_YEAR = "MMMM yyyy"
+    const val DATE_FORMAT_YEAR = "yyyy"
+    const val DATE_FORMAT_MONTH = "MMM"
 
     //2886
     const val EMAIL_VERIFICATION_CODE_PAGE = "goToEmailVerificationCodePage"
     const val EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD = "EMailVerifiedTrueGoToDashBoard"
     const val ENTER_OTP = "Enter OTP"
     const val INVALID_OTP = "Invalid Otp"
-    const val MY_USER =  "MyUser"
+    const val MY_USER = "MyUser"
     const val ID_TOKEN = "IdToken"
     const val FALSE = "false"
     const val INITIAL_TIME = " 00:00"

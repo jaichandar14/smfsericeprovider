@@ -13,12 +13,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
@@ -36,8 +40,8 @@ import javax.inject.Inject
 
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface, View.OnTouchListener,
-    ViewTreeObserver.OnScrollChangedListener {
-
+    ViewTreeObserver.OnScrollChangedListener, SwipeRefreshLayout.OnRefreshListener {
+    private val TAG = "DashBoardFragment"
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
@@ -63,6 +67,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override fun getBindingVariable(): Int = BR.dashBoardViewModel
 
     override fun getContentView(): Int = R.layout.fragment_dash_board
+
+    companion object {
+        fun newInstance(): DashBoardFragment {
+            return DashBoardFragment()
+        }
+    }
 
     @Inject
     lateinit var tokens: Tokens
@@ -116,6 +126,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             mDataBinding?.nestedScroll?.visibility = View.VISIBLE
 
         }
+        // 2904 Scroll Down Refresh Method
+        mDataBinding?.refreshLayout?.setOnRefreshListener(this)
+
 
     }
 
@@ -136,12 +149,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         val linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         mDataBinding?.rightBtn?.setOnClickListener {
-            p = linearLayoutManager.findFirstVisibleItemPosition() - 1;
+            p = linearLayoutManager.findFirstVisibleItemPosition() - 1
             myEventsRecyclerView.nestedScrollBy(275, 0)
         }
         mDataBinding?.leftDtn?.setOnClickListener {
-            p = linearLayoutManager.findLastVisibleItemPosition() + 1;
-           // myEventsRecyclerView.smoothScrollToPosition(p);
+            p = linearLayoutManager.findLastVisibleItemPosition() + 1
+            // myEventsRecyclerView.smoothScrollToPosition(p);
             myEventsRecyclerView.nestedScrollBy(-275, 0)
         }
     }
@@ -190,9 +203,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myEventsRecyclerView.adapter = adapter
 
-
     }
-
 
 
     // Method for restrict user back button
@@ -246,17 +257,17 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
         var serviceName = (serviceList[allServiceposition!!].serviceName)
         if (serviceName == "All Service" && branchesName == "Branches") {
-            actionAndStatusFragment(
+            actionAndStatusFragmentMethod(
                 serviceCategoryId,
                 0
             )
         } else if (serviceName != "All Service" && branchesName == "Branches") {
-            actionAndStatusFragment(
+            actionAndStatusFragmentMethod(
                 serviceCategoryId,
                 0
             )
         } else {
-            actionAndStatusFragment(
+            actionAndStatusFragmentMethod(
                 serviceCategoryId,
                 branchListSpinner[serviceVendorOnboardingId].branchId
             )
@@ -264,7 +275,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     // Action And Status UI setUp
-    private fun actionAndStatusFragment(serviceCategoryId: Int, branchId: Int) {
+    private fun actionAndStatusFragmentMethod(serviceCategoryId: Int, branchId: Int) {
         var args = Bundle()
         args.putInt("serviceCategoryId", serviceCategoryId)
         args.putInt("serviceVendorOnboardingId", branchId)
@@ -280,6 +291,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     // Counts And AllService ApiCall
     private fun getAllServiceAndCounts(idToken: String) {
         // Getting Service Provider Service Counts Status
+        mDataBinding?.serviceCountLayout?.visibility = View.INVISIBLE
         getViewModel().getServiceCount(idToken, spRegId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -385,8 +397,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-//        Log.d("TAG", "onTouch: ${valueweget} ")
-
         return valueweget == 1
     }
 
@@ -397,7 +407,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 //        var topDector=mDataBinding?.nestedscroll?.scrollY
 //        var bottomDetector= mDataBinding?.nestedscroll?.height?.let { view?.bottom?.minus(it.plus(
 //            mDataBinding?.nestedscroll?.scaleY!!)) }
-
     }
 
+    // 2904 Scroll Refresh Method
+    override fun onRefresh() {
+        idTokenValidation()
+        actionAndStatusFragmentMethod(serviceCategoryId, serviceVendorOnboardingId)
+        mDataBinding?.refreshLayout?.isRefreshing = false
+    }
 }

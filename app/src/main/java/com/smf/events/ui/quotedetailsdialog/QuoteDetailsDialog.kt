@@ -229,7 +229,7 @@ class QuoteDetailsDialog(
                     is ApisResponse.Success -> {
                         Log.d("TAG", " quote for dialog Success: ${(apiResponse.response)}")
 
-                        QuoteBriefDialog.newInstance()
+                        QuoteBriefDialog.newInstance(bidRequestId)
                             .show(
                                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                                 QuoteBriefDialog.TAG

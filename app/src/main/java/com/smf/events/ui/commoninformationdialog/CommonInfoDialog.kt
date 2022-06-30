@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -14,19 +13,20 @@ import androidx.lifecycle.ViewModelProvider
 import com.smf.events.R
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.CommonInformationDialogBinding
+import com.smf.events.helper.AppConstants
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 // 2401
-class CommonInfoDialog(var position: ActionDetails) :
+class CommonInfoDialog(var position: ActionDetails, var status: String) :
     BaseDialogFragment<CommonInformationDialogBinding, CommonInfoDialogViewModel>(),
     View.OnClickListener {
 
     companion object {
         const val TAG = "CommonInfoDialog"
-        fun newInstance(position: ActionDetails): CommonInfoDialog {
-            return CommonInfoDialog(position)
+        fun newInstance(position: ActionDetails, status: String): CommonInfoDialog {
+            return CommonInfoDialog(position, status)
         }
     }
 
@@ -53,8 +53,24 @@ class CommonInfoDialog(var position: ActionDetails) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mDataBinding?.btnCancel?.setOnClickListener(this)
-        mDataBinding?.btnOk?.setOnClickListener(this)
+        if (status == "cost") {
+            mDataBinding?.btnCancel?.setOnClickListener(this)
+            mDataBinding?.btnOk?.setOnClickListener(this)
+        } else {
+            // 2904 Changes made for Start Service flow in Won Bid
+            mDataBinding?.textInformation?.text = getText(R.string.start_service_text)
+            mDataBinding?.btnOk?.setOnClickListener {
+                var status = true
+                parentFragmentManager.setFragmentResult(
+                    AppConstants.WON_BID, // Same request key ActionDetailsFragment used to register its listener
+                    bundleOf(
+                        "status" to status,
+                    ) // The data to be passed to ActionDetailsFragment
+                )
+                dismiss()
+            }
+            mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
+        }
     }
 
     // Setting Dialog Fragment Size
@@ -63,7 +79,7 @@ class CommonInfoDialog(var position: ActionDetails) :
         var params: WindowManager.LayoutParams = window!!.attributes
         params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
         window.attributes = params
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     override fun onClick(v: View?) {

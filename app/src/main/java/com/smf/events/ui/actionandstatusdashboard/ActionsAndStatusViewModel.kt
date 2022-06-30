@@ -29,10 +29,10 @@ class ActionsAndStatusViewModel @Inject constructor(
             )
         )
         list.add(MyEvents(actionAndStatusData.bidSubmittedCount.toString(),
-            AppConstants.SUBMITTED_BID))
+            AppConstants.QUOTE_SENT))
         list.add(MyEvents(actionAndStatusData.bidRejectedCount.toString(), AppConstants.REJECTED_BID))
         list.add(MyEvents(actionAndStatusData.wonBidCount.toString(), AppConstants.BID_WON))
-        list.add(MyEvents(actionAndStatusData.lostBidCount.toString(), AppConstants.BID_LOST))
+       // list.add(MyEvents(actionAndStatusData.lostBidCount.toString(), AppConstants.BID_LOST))
         return list
     }
 
@@ -48,7 +48,7 @@ class ActionsAndStatusViewModel @Inject constructor(
       //  list.add(MyEvents(actionAndStatusData.bidRejectedCount.toString(),
          //   AppConstants.REJECTED_BID))
         list.add(MyEvents(actionAndStatusData.bidTimedOutCount.toString(), AppConstants.TIMED_OUT))
-       // list.add(MyEvents(actionAndStatusData.lostBidCount.toString(), AppConstants.BID_LOST))
+        list.add(MyEvents(actionAndStatusData.lostBidCount.toString(), AppConstants.BID_LOST))
         list.add(MyEvents(AppConstants.ZERO, AppConstants.PENDING_FOR_REVIEW))
         return list
     }

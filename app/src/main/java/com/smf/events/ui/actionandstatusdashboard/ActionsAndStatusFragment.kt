@@ -125,7 +125,7 @@ class ActionsAndStatusFragment :
             AppConstants.REJECTED_BID -> {
                 goToActionDetailsFragment(AppConstants.BID_REJECTED)
             }
-            AppConstants.SUBMITTED_BID -> {
+            AppConstants.QUOTE_SENT -> {
                 goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
             }
             // 2884 for won Bid flow
