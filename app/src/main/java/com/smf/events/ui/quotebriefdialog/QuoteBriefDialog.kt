@@ -2,9 +2,11 @@ package com.smf.events.ui.quotebriefdialog
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
@@ -21,7 +23,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
-class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
+class QuoteBriefDialog(var status: Int) :
+    BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
     Tokens.IdTokenCallBackInterface {
 
     var bidRequestId: Int? = 0
@@ -31,9 +34,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
 
     companion object {
         const val TAG = "CustomDialogFragment"
-        fun newInstance(): QuoteBriefDialog {
-            return QuoteBriefDialog()
+        fun newInstance(status: Int): QuoteBriefDialog {
+            return QuoteBriefDialog(status)
         }
+    }
+
+    init {
+        bidRequestId = status
     }
 
     @Inject
@@ -61,6 +68,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogTheme)
         // Initialize Local Variables
+        Log.d(TAG, "onCreate: new data and design")
         setIdTokenAndBidReqId()
     }
 
@@ -101,8 +109,8 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         // 2835
-        mDataBinding?.serviceName?.text=response.data.serviceName
-        mDataBinding?.branchName?.text=response.data.branchName
+        mDataBinding?.serviceName?.text = response.data.serviceName
+        mDataBinding?.branchName?.text = response.data.branchName
         mDataBinding?.txJobTitle?.text = response.data.eventName
         // 2354
         val currencyType = setCurrencyType(response)
@@ -150,14 +158,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
-        mDataBinding?.serviceName?.text=response.data.serviceName
-        mDataBinding?.branchName?.text=response.data.branchName
+        mDataBinding?.serviceName?.text = response.data.serviceName
+        mDataBinding?.branchName?.text = response.data.branchName
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txJobAmount?.visibility = View.INVISIBLE
         mDataBinding?.viewQuote?.visibility = View.INVISIBLE
         mDataBinding?.spnBidAccepted?.text = "Pending For Quote"
         mDataBinding?.check1?.visibility = View.INVISIBLE
-        mDataBinding?.check1inprogress?.visibility = View.VISIBLE
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
         mDataBinding?.txEventdateValue?.text = DateFormatter.getDateFormat(response.data.eventDate)
         mDataBinding?.txBidProposalDateValue?.text =
@@ -190,6 +197,10 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                         when (bidStatus) {
                             "BID SUBMITTED" -> setBidSubmitQuoteBrief(apiResponse.response)
                             "PENDING FOR QUOTE" -> setPendingQuoteBrief(apiResponse.response)
+                            // 2904 Won Bid Flow for Start Sevice
+                            AppConstants.WON_BID -> {
+                                setBidSubmitQuoteBrief(apiResponse.response)
+                            }
                         }
                     }
                     is ApisResponse.Error -> {

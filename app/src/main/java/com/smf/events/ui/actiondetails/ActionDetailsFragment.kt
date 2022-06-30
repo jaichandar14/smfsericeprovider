@@ -25,6 +25,7 @@ import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter.CallBackInterface
+import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
@@ -90,7 +91,7 @@ class ActionDetailsFragment :
         //Close Button Click Listener
         clickListeners()
         //Actions Recycler view
-        myActionsStatusRecycler()
+        myActionsStatusRecycler(false)
     }
 
     override fun onResume() {
@@ -113,11 +114,17 @@ class ActionDetailsFragment :
                     result["branchName"] as String
                 )
             })
+        parentFragmentManager.setFragmentResultListener(AppConstants.WON_BID, viewLifecycleOwner,
+            FragmentResultListener { _: String, result: Bundle ->
+                result["status"] as Boolean
+
+            })
     }
 
     // Method For ActionDetails RecyclerView
-    private fun myActionsStatusRecycler() {
-        actionDetailsAdapter = ActionDetailsAdapter(requireContext(), bidStatus, sharedPreference)
+    private fun myActionsStatusRecycler(status: Boolean) {
+        actionDetailsAdapter =
+            ActionDetailsAdapter(requireContext(), bidStatus, sharedPreference, status)
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
@@ -154,6 +161,15 @@ class ActionDetailsFragment :
         postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
     }
 
+    override fun showDialog(status: ActionDetails) {
+
+        QuoteBriefDialog.newInstance(status.bidRequestId)
+            .show(
+                (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                QuoteBriefDialog.TAG
+            )
+    }
+
     // Method For postQuoteDetails Api Call
     private fun postQuoteDetails(
         bidRequestId: Int,
@@ -186,7 +202,7 @@ class ActionDetailsFragment :
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        QuoteBriefDialog.newInstance()
+                        QuoteBriefDialog.newInstance(bidRequestId)
                             .show(
                                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                                 QuoteBriefDialog.TAG
@@ -242,8 +258,9 @@ class ActionDetailsFragment :
                 "$newRequestCount ${AppConstants.PENDING_QUOTE}"
             AppConstants.BID_REJECTED -> mDataBinding?.textNewRequest?.text =
                 "$newRequestCount ${AppConstants.REJECTED}"
+            // 2904 Quote Sent Flow
             AppConstants.BID_SUBMITTED -> mDataBinding?.textNewRequest?.text =
-                "$newRequestCount ${AppConstants.SUBMITTED_BID}"
+                "$newRequestCount ${AppConstants.SENT_QUOTE}"
             // 2884 for won Bid flow
             AppConstants.WON_BID -> mDataBinding?.textNewRequest?.text =
                 "$newRequestCount Won Bid"

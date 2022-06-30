@@ -9,12 +9,14 @@
             name="dashBoardViewModel"
             type="com.smf.events.ui.dashboard.DashBoardViewModel" />
     </data>
-
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
 
             <com.smf.events.helper.LockableNestedScrollView
                 android:id="@+id/nested_scroll"
@@ -245,4 +247,5 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.smf.events.helper.LockableNestedScrollView>
         </LinearLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

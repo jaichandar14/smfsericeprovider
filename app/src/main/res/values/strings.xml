@@ -80,7 +80,7 @@
     <string name="comments_is_mandatory_for_thr_option">Comments is mandatory for the option "Others"</string>
     <string name="cost_is_mandatory">Cost is mandatory !</string>
     <string name="you_rejected_a_catering_1000045">You Rejected a Catering #1000045</string>
-    <string name="change_in_mind">Change in Mind ?</string>
+    <string name="change_in_mind">Change in Mind?</string>
     <string name="amount">Amount</string>
     <string name="bid_proposal_date">Bid proposal date</string>
     <string name="_9_aug_2021">9 Aug 2021</string>
@@ -188,6 +188,16 @@
     // 2886
     <string name="resend">Resend</string>
     <string name="perter_gmail_com">aaa@bbb.com</string>
+    // 2904
+    <string name="start_service_text">I hereby confirm the service \n has been successfully started</string>
+    <string name="confirm__">Confirm</string>
+    <string name="choose_file">Choose file</string>
+    <string name="quote_sent">Quote Sent</string>
+    <string name="bidding_in_progress">Bidding in progress</string>
+    <string name="won_bid">Won Bid</string>
 
-
+    <!--to toggle the open close button
+        of the navigation drawer-->
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>

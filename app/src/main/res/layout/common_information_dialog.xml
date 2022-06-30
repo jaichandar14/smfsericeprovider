@@ -19,10 +19,11 @@
             android:id="@+id/text_information"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/mulish_regular"
             android:gravity="center"
             android:text="@string/Do_you_want_to_accept_the_Bid"
             android:textSize="@dimen/size_18sp"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,8 +44,8 @@
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="@dimen/size_5dp"
                 android:layout_weight="1.5"
-                android:background="@drawable/custom_cancel_button_round_corner"
-                android:fontFamily="@font/poppins_regular"
+                android:background="@drawable/custom_button_corner_cancel"
+                android:fontFamily="@font/mulish_regular"
                 android:text="@string/cancel" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -54,9 +55,9 @@
                 android:layout_marginStart="@dimen/size_5dp"
                 android:layout_marginTop="18dp"
                 android:layout_weight="1.5"
-                android:background="@drawable/custom_button_round_corner"
-                android:fontFamily="@font/poppins_regular"
-                android:text="@string/ok" />
+                android:background="@drawable/custom_button_corner_ok"
+                android:fontFamily="@font/mulish_regular"
+                android:text="@string/confirm__" />
 
         </LinearLayout>
 
