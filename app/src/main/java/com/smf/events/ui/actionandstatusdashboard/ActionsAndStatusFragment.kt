@@ -136,6 +136,9 @@ class ActionsAndStatusFragment :
             AppConstants.BID_LOST -> {
                 goToActionDetailsFragment(AppConstants.LOST_BID)
             }
+            AppConstants.SERVICE_PROGRESS -> {
+                goToActionDetailsFragment(AppConstants.SERVICE_IN_PROGRESS)
+            }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")
             }
@@ -174,7 +177,8 @@ class ActionsAndStatusFragment :
                             apiResponse.response.actionandStatus.bidTimedOutCount,
                             apiResponse.response.actionandStatus.serviceDoneCount,
                             apiResponse.response.actionandStatus.statusCount,
-                            apiResponse.response.actionandStatus.actionCount
+                            apiResponse.response.actionandStatus.actionCount,
+                            apiResponse.response.actionandStatus.serviceInProgressCount
                         )
                         recyclerViewListUpdate()
                     }

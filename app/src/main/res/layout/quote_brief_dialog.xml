@@ -231,16 +231,17 @@
                                 app:layout_constraintTop_toTopOf="@+id/check1" />
 
                             <View
-                                android:id="@+id/view"
+                                android:id="@+id/view1"
                                 android:layout_width="1dp"
                                 android:layout_height="@dimen/dp_0"
-                                android:background="@color/darkblue_smf_font"
+                                android:background="@color/blue_event_id"
                                 app:layout_constraintBottom_toTopOf="@+id/check2"
                                 app:layout_constraintEnd_toEndOf="@+id/check1"
                                 app:layout_constraintStart_toStartOf="@+id/check1"
                                 app:layout_constraintTop_toBottomOf="@+id/check1" />
 
                             <ImageView
+                                android:contentDescription="@string/icon"
                                 android:layout_marginStart="@dimen/size_10dp"
                                 android:id="@+id/check2"
                                 android:layout_width="@dimen/size_35dp"
@@ -263,7 +264,7 @@
                                 android:textSize="@dimen/size_14sp"
                                 app:layout_constraintBottom_toBottomOf="@+id/check2"
                                 app:layout_constraintStart_toEndOf="@id/check2"
-                                app:layout_constraintTop_toBottomOf="@+id/view" />
+                                app:layout_constraintTop_toBottomOf="@+id/view1" />
 
 
                             <View
@@ -289,8 +290,8 @@
                                 app:srcCompat="@drawable/notstated" />
 
 
-                            <TextView
-                                android:id="@+id/tx_service_status"
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tx_won_bid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/mulish_bold"
@@ -327,7 +328,7 @@
 
 
                             <TextView
-                                android:id="@+id/tx_review_feedback"
+                                android:id="@+id/tx_service_progress"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/mulish_bold"

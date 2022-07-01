@@ -14,7 +14,7 @@ data class DataActionAndStatus(
     val bidRejectedCount: Int, val pendingForQuoteCount: Int,
     val wonBidCount: Int, val lostBidCount: Int,
     val bidTimedOutCount: Int, val serviceDoneCount: Int,
-    val statusCount: Int, val actionCount: Int,
+    val statusCount: Int, val actionCount: Int, val serviceInProgressCount: Int,
 )
 
 data class Results(val info: String)

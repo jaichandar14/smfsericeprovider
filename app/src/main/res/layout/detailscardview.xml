@@ -236,27 +236,30 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/mulish_regular"
-            android:text="@string/new_request"
+            android:text="@string/order_details"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="@dimen/size_14sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/service_date"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.50" />
+            app:layout_constraintVertical_bias="0.40" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="@dimen/size_30dp"
-            android:layout_height="@dimen/size_30dp"
+            android:layout_width="@dimen/size_35dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/size_25dp"
             android:src="@drawable/view"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/event_date_tx"
+            app:layout_constraintHorizontal_bias="0.03"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_date"
-            app:layout_constraintVertical_bias="0.50">
+            app:layout_constraintVertical_bias="0.0">
 
         </ImageView>
 

@@ -9,12 +9,14 @@ object AppConstants {
     const val WON_BID = "WON BID"
     const val LOST_BID = "LOST BID"
     const val BID_TIMED_OUT = "BID TIMED OUT"
-    const val SERVICE_DONE = "SERVICE DONE"
+    const val SERVICE_DONE = "SERVICE COMPLETED"
+    const val SERVICE_IN_PROGRESS = "SERVICE IN PROGRESS"
 
     // 2560 For UI screen
     const val NEW_REQUEST = "New request"
     const val PENDING_QUOTE = "Pending Quote"
     const val SUBMITTED_BID = "Bid Submitted"
+
     // 2904
     const val QUOTE_SENT = "Quote\nSent"
     const val SENT_QUOTE = "Quote Sent"
@@ -25,6 +27,9 @@ object AppConstants {
     const val TIMED_OUT = "Timed Out\n"
     const val BID_LOST = "Lost Bid\n"
     const val REJECTED = "Rejected"
+    const val SERVICE_PROGRESS = "Service\nProgress"
+    const val PROGRESS_SERVICE = "Service Progress"
+
     // 2904
     const val BIDDING_IN_PROGRESS = "Bidding in Progress"
 

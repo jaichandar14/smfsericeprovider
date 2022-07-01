@@ -3,6 +3,7 @@ package com.smf.events.network
 import com.smf.events.BuildConfig
 import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
+import com.smf.events.ui.commoninformationdialog.model.StartService
 import com.smf.events.ui.dashboard.model.ActionAndStatus
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
@@ -164,4 +165,16 @@ interface ApiStories {
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int,
         @Query("toDate") toDate: String
     ): ModifyDaySlotResponse
+
+// 2904
+    //API to update service status and Initiate closer
+    @PUT(BuildConfig.apiType +"service/api/app-services/service-progress/{bid-request-id}")
+    suspend fun updateServiceStatus(
+        @Header("Authorization") idToken: String,
+        @Path("bid-request-id") bidRequestId : Int,
+        @Query("eventId") eventId: Int,
+        @Query("eventServiceDescriptionId") eventServiceDescriptionId: Int,
+        @Query("status") status: String,
+    ): StartService
+
 }

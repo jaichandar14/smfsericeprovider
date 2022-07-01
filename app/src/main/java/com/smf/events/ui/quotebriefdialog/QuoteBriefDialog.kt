@@ -2,11 +2,10 @@ package com.smf.events.ui.quotebriefdialog
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
@@ -78,7 +77,7 @@ class QuoteBriefDialog(var status: Int) :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         // Back Button Pressed
@@ -187,19 +186,25 @@ class QuoteBriefDialog(var status: Int) :
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
-    // Get Api Call for getting the Quote Brief
+    // 2904 Get Api Call for getting the Quote Brief
     private fun quoteBriefApiCall(idToken: String) {
-        getViewModel().getQuoteBrief(idToken, bidRequestId!!)
+        getViewModel().getQuoteBrief(idToken, status)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         bidStatus = apiResponse.response.data.bidStatus
                         when (bidStatus) {
-                            "BID SUBMITTED" -> setBidSubmitQuoteBrief(apiResponse.response)
+                            "BID SUBMITTED" -> {
+                                setBidSubmitQuoteBrief(apiResponse.response)
+                                mDataBinding?.spnBidAccepted?.text = "Bidding in progress"
+                            }
                             "PENDING FOR QUOTE" -> setPendingQuoteBrief(apiResponse.response)
                             // 2904 Won Bid Flow for Start Sevice
                             AppConstants.WON_BID -> {
-                                setBidSubmitQuoteBrief(apiResponse.response)
+                                widgetWonBid(apiResponse)
+                            }
+                            AppConstants.SERVICE_IN_PROGRESS -> {
+                                widgetServiceProgress(apiResponse)
                             }
                         }
                     }
@@ -210,6 +215,29 @@ class QuoteBriefDialog(var status: Int) :
                     }
                 }
             })
+    }
+
+    // 2904 Method for won bid service start flow
+    fun widgetWonBid(apiResponse: ApisResponse.Success<QuoteBrief>) {
+        mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
+        mDataBinding?.spnBidAccepted?.text = "Bid won"
+        mDataBinding?.txWonBid?.setTextColor(ContextCompat.getColor(
+            context?.applicationContext!!, R.color.dark_font
+        ))
+        mDataBinding?.check2?.setImageResource(R.drawable.green_check)
+        mDataBinding?.check3?.setImageResource(R.drawable.inprogress)
+        setBidSubmitQuoteBrief(apiResponse.response)
+    }
+
+    // 2904 Method for Initiate closer flow
+    fun widgetServiceProgress(apiResponse: ApisResponse.Success<QuoteBrief>) {
+        mDataBinding?.check2?.setImageResource(R.drawable.green_check)
+        mDataBinding?.check3?.setImageResource(R.drawable.green_check)
+        mDataBinding?.check4?.setImageResource(R.drawable.inprogress)
+        mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
+        mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
+        mDataBinding?.spnBidAccepted?.text = "Service in progress"
+        setBidSubmitQuoteBrief(apiResponse.response)
     }
 
     // Call Back From Token Class
