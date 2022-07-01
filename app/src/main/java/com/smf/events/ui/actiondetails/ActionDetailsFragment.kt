@@ -102,6 +102,11 @@ class ActionDetailsFragment :
                 apiTokenValidationBidActions()
             })
 
+        parentFragmentManager.setFragmentResultListener("2", viewLifecycleOwner,
+            FragmentResultListener { _: String, _: Bundle ->
+                apiTokenValidationBidActions()
+            })
+
         // 2401 - ResultListener For Observe Data From CommonInfo Dialog
         parentFragmentManager.setFragmentResultListener("fromCommonInfoDialog", viewLifecycleOwner,
             FragmentResultListener { _: String, result: Bundle ->
@@ -267,6 +272,9 @@ class ActionDetailsFragment :
             // 2885 Lost Bid flow
             AppConstants.LOST_BID -> mDataBinding?.textNewRequest?.text =
                 "$newRequestCount ${AppConstants.BID_LOST}"
+            // 2885 Lost Bid flow
+            AppConstants.SERVICE_IN_PROGRESS -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount ${AppConstants.PROGRESS_SERVICE}"
         }
         val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)

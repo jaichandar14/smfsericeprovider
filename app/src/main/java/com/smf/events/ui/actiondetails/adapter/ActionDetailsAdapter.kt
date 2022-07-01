@@ -16,6 +16,7 @@ import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
+import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
 import java.time.Month
 
 class ActionDetailsAdapter(
@@ -95,40 +96,23 @@ class ActionDetailsAdapter(
                 holder.changeOfMind.setOnClickListener { costingType(position, holder) }
             }
             if (bidStatus == AppConstants.BID_SUBMITTED) {
-                //Button Visibility
-                holder.buttonVisibility(holder)
-                holder.quote_status_tx.text = AppConstants.BIDDING_IN_PROGRESS
-                holder.quote_status_tx.setOnClickListener {
-                    // 2904 Dialog Fragement Which show the Status for the Bid Submitted
-                    callBackInterface?.showDialog(position)
-                }
-                //Change of Mind For Rejection the submitted Bid
-                holder.changeOfMind.setOnClickListener { holder.bidRejection(position) }
+                // 2904
+                widgetQuoteSent(holder, position)
             }
             // 2884 for won Bid flow
             if (bidStatus == AppConstants.WON_BID) {
-                holder.likeButton.visibility = View.INVISIBLE
-                holder.unlikeButton.visibility = View.INVISIBLE
-                holder.startserviceBtn.visibility = View.VISIBLE
-                holder.quote_status_tx.text = AppConstants.BID_WON
-                holder.quote_status_tx.setOnClickListener {
-                    callBackInterface?.showDialog(position)
-                }
-                holder.startserviceBtn.setOnClickListener {
-                    // 2904 Dialog to For confirmation of Start service
-                    CommonInfoDialog.newInstance(
-                        position, AppConstants.WON_BID
-                    )
-                        .show(
-                            (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                            CommonInfoDialog.TAG
-                        )
-                }
+                 // 2904
+                widgetWonBid(holder, position)
             }
             // 2885 for Lost Bid flow
             if (bidStatus == AppConstants.LOST_BID) {
                 holder.likeButton.visibility = View.INVISIBLE
                 holder.unlikeButton.visibility = View.INVISIBLE
+            }
+            // 2885 for Lost Bid flow
+            if (bidStatus == AppConstants.SERVICE_IN_PROGRESS) {
+                // 2904
+                widgetServiceProgress(holder, position)
             }
             // Like For Submitting the Bid
             holder.likeButton.setOnClickListener {
@@ -138,11 +122,88 @@ class ActionDetailsAdapter(
             holder.unlikeButton.setOnClickListener {
                 holder.bidRejection(position)
             }
-            // 2402 View Order details onCLickArrow Button
-            holder.rightArrowButton.setOnClickListener {
-                // 2904 Method to show the Quote Details Status Dialog
+            // 2904
+            if (bidStatus == AppConstants.BID_REQUESTED || bidStatus == AppConstants.BID_REJECTED) {
+                // 2402 View Order details onCLickArrow Button
+                holder.rightArrowButton.setOnClickListener {
+                    // 2904 Method to show the Quote Details Status Dialog
+                    orderDetailsDialog(position)
+                }
+                holder.quote_status_tx.setOnClickListener { orderDetailsDialog(position) }
+            }
+        }
+
+        // 2904
+        private fun widgetWonBid(holder: ActionDetailsViewHolder, position: ActionDetails) {
+            holder.likeButton.visibility = View.INVISIBLE
+            holder.unlikeButton.visibility = View.INVISIBLE
+            holder.startserviceBtn.visibility = View.VISIBLE
+            holder.quote_status_tx.text = "Won bid"
+            holder.quote_status_tx.setOnClickListener {
                 callBackInterface?.showDialog(position)
             }
+            holder.startserviceBtn.setOnClickListener {
+                // 2904 Dialog to For confirmation of Start service
+                CommonInfoDialog.newInstance(
+                    position, AppConstants.WON_BID
+                )
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        CommonInfoDialog.TAG
+                    )
+            }
+            holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
+        }
+
+        // 2904
+        private fun widgetServiceProgress(
+            holder: ActionDetailsViewHolder,
+            position: ActionDetails,
+        ) {
+            holder.likeButton.visibility = View.INVISIBLE
+            holder.unlikeButton.visibility = View.INVISIBLE
+            holder.quote_status_tx.text = "Service in Progress"
+            holder.quote_status_tx.setOnClickListener {
+                callBackInterface?.showDialog(position)
+            }
+            holder.startserviceBtn.visibility = View.VISIBLE
+            holder.startserviceBtn.text = "Initiate closer"
+            holder.startserviceBtn.setOnClickListener {
+                // 2904 Dialog to For confirmation of Start service
+                CommonInfoDialog.newInstance(
+                    position, AppConstants.SERVICE_DONE
+                )
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        CommonInfoDialog.TAG
+                    )
+            }
+            holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
+        }
+
+        // 2904
+        private fun widgetQuoteSent(holder: ActionDetailsViewHolder, position: ActionDetails) {
+            //Button Visibility
+            holder.buttonVisibility(holder)
+            holder.quote_status_tx.text = AppConstants.BIDDING_IN_PROGRESS
+            holder.quote_status_tx.setOnClickListener {
+                // 2904 Dialog Fragement Which show the Status for the Bid Submitted
+                callBackInterface?.showDialog(position)
+            }
+            //Change of Mind For Rejection the submitted Bid
+            holder.changeOfMind.setOnClickListener { holder.bidRejection(position) }
+        }
+
+        // 2904  Method for order Details
+        private fun orderDetailsDialog(position: ActionDetails) {
+            ViewOrderDetailsDialogFragment.newInstance(position.eventId,
+                position.eventServiceDescriptionId,
+                position.eventDate,
+                position.eventName)
+                .show(
+                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    ViewOrderDetailsDialogFragment.TAG
+                )
         }
 
         // 2401 - Based On Costing Type Redirection To Other Dialogs

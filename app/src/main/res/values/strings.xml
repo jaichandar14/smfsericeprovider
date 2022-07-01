@@ -190,6 +190,7 @@
     <string name="perter_gmail_com">aaa@bbb.com</string>
     // 2904
     <string name="start_service_text">I hereby confirm the service \n has been successfully started</string>
+    <string name="initiate_closer_text">I hereby confirm the service request \n has been successfully completed \n Proceed with Service Closer</string>
     <string name="confirm__">Confirm</string>
     <string name="choose_file">Choose file</string>
     <string name="quote_sent">Quote Sent</string>
