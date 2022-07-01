@@ -15,6 +15,8 @@ class SharedPreference @Inject constructor(var application: Application) {
         const val BID_REQUEST_ID = "bidRequestId"
         const val ROLE_ID = "roleId"
         const val SP_REG_ID = "spRegId"
+        const val FIRST_NAME = "userName"
+        const val EMAIL_ID = "emailId"
     }
 
     private var sharedPreference: SharedPreferences =

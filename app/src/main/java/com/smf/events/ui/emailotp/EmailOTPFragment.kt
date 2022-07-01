@@ -26,6 +26,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     private val TAG = "EmailOTPFragment"
     private val args: EmailOTPFragmentArgs by navArgs()
     private lateinit var userName: String
+    private lateinit var firstName: String
+    private lateinit var emailId: String
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -62,6 +64,14 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     // Method For set UserName And SharedPreferences
     private fun setUserNameAndSharedPref() {
         userName = args.userName
+        sharedPreference.putString(
+            SharedPreference.FIRST_NAME,
+            args.firstName
+        )
+        sharedPreference.putString(
+            SharedPreference.EMAIL_ID,
+            args.emailId
+        )
     }
 
     // For confirmSignIn aws

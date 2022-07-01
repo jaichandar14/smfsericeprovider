@@ -69,6 +69,12 @@
         <argument
             android:name="userName"
             app:argType="string" />
+        <argument
+            android:name="firstName"
+            app:argType="string" />
+        <argument
+            android:name="emailId"
+            app:argType="string" />
         <action
             android:id="@+id/action_eMailOTPFragment_to_dashBoardFragment"
             app:destination="@id/dashBoardFragment" />
