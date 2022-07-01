@@ -82,6 +82,9 @@
     <dimen name="size_115dp">115dp</dimen>
     <dimen name="size_82dp">82dp</dimen>
     <dimen name="size_230dp">230dp</dimen>
+    <dimen name="size_272dp">272dp</dimen>
+    <dimen name="size_240dp">240dp</dimen>
+    <dimen name="size_52dp">52dp</dimen>
 
 
 </resources>
