@@ -24,6 +24,8 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     private lateinit var encodedMobileNo: String
     private lateinit var eMail: String
     private var userName: String? = null
+    private var firstName: String? = null
+    private var emailId: String? = null
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -94,6 +96,8 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         when (apiResponse) {
             is ApisResponse.Success -> {
                 userName = apiResponse.response.data.userName
+                firstName = apiResponse.response.data.firstName
+                emailId = apiResponse.response.data.email
                 getViewModel().signIn(apiResponse.response.data.userName)
             }
             is ApisResponse.CustomError -> {
@@ -145,7 +149,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 //  mDataBinding?.loginPage?.visibility=View.VISIBLE
                 findNavController().navigate(
                     SignInFragmentDirections.actionSignInFragmentToEMailOTPFragment(
-                        userName!!
+                        userName!!, firstName!!, emailId!!
                     )
                 )
                 mDataBinding?.progressBar?.visibility = View.GONE

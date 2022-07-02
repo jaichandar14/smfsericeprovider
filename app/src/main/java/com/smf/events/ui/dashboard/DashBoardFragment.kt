@@ -3,17 +3,30 @@ package com.smf.events.ui.dashboard
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.addCallback
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.amplifyframework.core.Amplify
+import com.google.android.material.navigation.NavigationView
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.SMFApp
@@ -34,26 +47,32 @@ import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface, View.OnTouchListener,
-    ViewTreeObserver.OnScrollChangedListener, SwipeRefreshLayout.OnRefreshListener {
-    private val TAG = "DashBoardFragment"
+    ViewTreeObserver.OnScrollChangedListener, SwipeRefreshLayout.OnRefreshListener,
+    NavigationView.OnNavigationItemSelectedListener {
+
+    val TAG = DashBoardFragment::class.java.toString()
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
+    var firstName: String = ""
+    var emailId: String = ""
     private lateinit var myEventsRecyclerView: RecyclerView
-    private lateinit var myEventsRecyclerView1: RecyclerView
     lateinit var adapter: MyEventsAdapter
-    lateinit var adapter1: MyEventsAdapter
     var serviceList = ArrayList<ServicesData>()
     var serviceCategoryId: Int = 0
     var serviceVendorOnboardingId: Int = 0
     var branchListSpinner = ArrayList<BranchDatas>()
     var valueweget = 0
+    lateinit var drawerLayout: DrawerLayout
+    lateinit var navigationView: NavigationView
+    lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -94,6 +113,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     @SuppressLint("ResourceType", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // 2888 SideNavBar SetUp
+        sideNavBarInitialization()
         // 2839 Invisible the all the layout before api call
         widgetBefore()
         // Initialize IdTokenCallBackInterface
@@ -129,6 +150,43 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         // 2904 Scroll Down Refresh Method
         mDataBinding?.refreshLayout?.setOnRefreshListener(this)
 
+    }
+
+    // 2888 - SideNav Initialization
+    private fun sideNavBarInitialization() {
+        drawerLayout = mDataBinding!!.drawerLayout
+        navigationView = mDataBinding!!.navView
+        toolbar = mDataBinding?.toolBar!!
+        val activity = activity as AppCompatActivity
+        activity.setSupportActionBar(toolbar)
+//        activity.supportActionBar?.title = "Welcome $firstName"
+        navigationView.bringToFront()
+        val toggle = ActionBarDrawerToggle(
+            requireActivity(),
+            drawerLayout,
+            toolbar, R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        toggle.setHomeAsUpIndicator(R.drawable.plus)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        activity.supportActionBar?.setHomeButtonEnabled(true)
+        val drawable= ResourcesCompat.getDrawable(resources, R.drawable.menu, null)
+        val bitmap = (drawable as (BitmapDrawable)).bitmap
+        val sideNavIcon = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
+        activity.supportActionBar?.setHomeAsUpIndicator(sideNavIcon)
+        activity.supportActionBar?.setDisplayShowTitleEnabled(false)
+        navigationView.setNavigationItemSelectedListener(this)
+        navigationView.setCheckedItem(R.id.nav_dashboard)
+
+        // 2888 - Side Navigation Header Inside Close Button ClickListener
+        navigationView.getHeaderView(0).findViewById<ImageView>(R.id.side_nav_close_btn)
+            .setOnClickListener {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.user_name).text = firstName
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.user_email).text = emailId
 
     }
 
@@ -158,7 +216,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             myEventsRecyclerView.nestedScrollBy(-275, 0)
         }
     }
-
 
     private fun onClickCalendar() {
         mDataBinding?.calander?.setOnClickListener {
@@ -205,16 +262,20 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     }
 
-
     // Method for restrict user back button
     private fun restrictBackButton() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (pressedTime + 1500 > System.currentTimeMillis()) {
-                requireActivity().finish()
+            // 2888 - Condition For Check Side nav Open Status
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
             } else {
-                showToast(getString(R.string.Press_back_again_to_exit))
+                if (pressedTime + 1500 > System.currentTimeMillis()) {
+                    requireActivity().finish()
+                } else {
+                    showToast(getString(R.string.Press_back_again_to_exit))
+                }
+                pressedTime = System.currentTimeMillis()
             }
-            pressedTime = System.currentTimeMillis()
         }
     }
 
@@ -283,7 +344,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         actionAndStatusFragment.arguments = args
 
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.action_and_status_layout, actionAndStatusFragment)
+            .replace(com.smf.events.R.id.action_and_status_layout, actionAndStatusFragment)
             .setReorderingAllowed(true)
             .commit()
     }
@@ -394,6 +455,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
+        firstName = sharedPreference.getString(SharedPreference.FIRST_NAME).toString()
+        emailId = sharedPreference.getString(SharedPreference.EMAIL_ID).toString()
     }
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
@@ -414,5 +477,38 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         idTokenValidation()
         actionAndStatusFragmentMethod(serviceCategoryId, serviceVendorOnboardingId)
         mDataBinding?.refreshLayout?.isRefreshing = false
+    }
+
+    // 2888 - NavigationView ItemSelected Override Method
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_dashboard -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+            R.id.nav_availability -> {
+                val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.nav_logout -> {
+                logOut()
+            }
+        }
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    private fun logOut() {
+        widgetBefore()
+        Amplify.Auth.signOut(
+            {
+                sharedPreference.putString(SharedPreference.ID_Token, "")
+                GlobalScope.launch(Main) {
+                    // Navigate to SignInFragment
+                    findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToSignInFragment())
+                    widgetAfter()
+                }
+            },
+            { Log.e("AuthQuickstart", "Sign out failed", it) }
+        )
     }
 }
