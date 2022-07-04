@@ -276,9 +276,11 @@ class QuoteDetailsDialog(
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     // There are no request codes
+                    Log.d(TAG, "fileUploader: ${result.data}")
                     val data: Intent? = result.data
                     var fileUri: Uri = data?.data!!
                     var filePath = fileUri.path
+                    Log.d(TAG, "fileUploader:$filePath ")
                     file = File(filePath)
                     if (!filePath.isNullOrEmpty()) {
                         mDataBinding?.btnFileUpload?.text = "File Uploaded"
@@ -336,7 +338,7 @@ class QuoteDetailsDialog(
                 mDataBinding?.btnFileUpload?.text = "Choose File"
                 mDataBinding?.btnFileUpload?.setBackgroundColor(
                     ContextCompat.getColor(
-                        context?.applicationContext!!, R.color.gray))
+                        context?.applicationContext!!, R.color.green))
             }
         } catch (e: Exception) {
             e.printStackTrace()

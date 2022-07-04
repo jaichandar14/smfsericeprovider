@@ -22,13 +22,15 @@ object AppConstants {
     const val SENT_QUOTE = "Quote Sent"
     const val BID_WON = "Won Bid\n"
     const val PENDING_FOR_REVIEW = "Pending Review"
-    const val REQUEST_CLOSED = "Request closed"
+    const val REQUEST_CLOSED = "Service Closer"
     const val REJECTED_BID = "Bid Rejected"
-    const val TIMED_OUT = "Timed Out\n"
+    const val TIMED_OUT = "Timed Out"
+    const val TIMED_OUT_BID = "Timed\nOut"
     const val BID_LOST = "Lost Bid\n"
     const val REJECTED = "Rejected"
     const val SERVICE_PROGRESS = "Service\nProgress"
     const val PROGRESS_SERVICE = "Service Progress"
+    const val SERVICE_CLOSER = "Service Closer"
 
     // 2904
     const val BIDDING_IN_PROGRESS = "Bidding in Progress"

@@ -77,7 +77,9 @@ class QuoteBriefDialog(var status: Int) :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
+        mDataBinding?.progressBar?.visibility=View.VISIBLE
+
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         // Back Button Pressed
@@ -86,11 +88,6 @@ class QuoteBriefDialog(var status: Int) :
         }
         // Expandable view
         getViewModel().expandableView(mDataBinding, expand)
-
-//        //state progress three completed
-//        getViewModel()?.progress3Completed(mDataBinding)
-//        //state progress four completed
-//        getViewModel()?.progress4Completed(mDataBinding)
     }
 
     // Back Button Pressed
@@ -105,6 +102,7 @@ class QuoteBriefDialog(var status: Int) :
     // Setting Bid Submitted Quote
     private fun setBidSubmitQuoteBrief(response: QuoteBrief) {
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
+        mDataBinding?.progressBar?.visibility=View.INVISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         // 2835
@@ -132,6 +130,9 @@ class QuoteBriefDialog(var status: Int) :
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
         mDataBinding?.customerRating?.text = "NA"
+
+        mDataBinding?.progressBar?.visibility=View.INVISIBLE
+
     }
 
     // 2354 - Method For Setting CurrencyType
@@ -155,6 +156,7 @@ class QuoteBriefDialog(var status: Int) :
     @SuppressLint("SetTextI18n")
     private fun setPendingQuoteBrief(response: QuoteBrief) {
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
+        mDataBinding?.progressBar?.visibility=View.INVISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.serviceName?.text = response.data.serviceName
@@ -206,10 +208,14 @@ class QuoteBriefDialog(var status: Int) :
                             AppConstants.SERVICE_IN_PROGRESS -> {
                                 widgetServiceProgress(apiResponse)
                             }
+                            AppConstants.SERVICE_DONE -> {
+                                widgetServiceCloser(apiResponse)
+                            }
                         }
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        mDataBinding?.progressBar?.visibility=View.INVISIBLE
                     }
                     else -> {
                     }
@@ -235,6 +241,17 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.check3?.setImageResource(R.drawable.green_check)
         mDataBinding?.check4?.setImageResource(R.drawable.inprogress)
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
+        mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
+        mDataBinding?.spnBidAccepted?.text = "Service in progress"
+        setBidSubmitQuoteBrief(apiResponse.response)
+    }
+    fun widgetServiceCloser(apiResponse: ApisResponse.Success<QuoteBrief>) {
+        mDataBinding?.check2?.setImageResource(R.drawable.green_check)
+        mDataBinding?.check3?.setImageResource(R.drawable.green_check)
+        mDataBinding?.check4?.setImageResource(R.drawable.green_check)
+        mDataBinding?.check5?.setImageResource(R.drawable.green_check)
+        mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
+        mDataBinding?.processflow5?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = "Service in progress"
         setBidSubmitQuoteBrief(apiResponse.response)
