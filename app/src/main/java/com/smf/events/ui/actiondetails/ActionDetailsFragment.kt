@@ -275,9 +275,17 @@ class ActionDetailsFragment :
             // 2885 Lost Bid flow
             AppConstants.SERVICE_IN_PROGRESS -> mDataBinding?.textNewRequest?.text =
                 "$newRequestCount ${AppConstants.PROGRESS_SERVICE}"
+            // 2922
+            AppConstants.SERVICE_DONE -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount ${AppConstants.SERVICE_CLOSER}"
+            // 2922
+            AppConstants.BID_TIMED_OUT -> mDataBinding?.textNewRequest?.text =
+                "$newRequestCount ${AppConstants.TIMED_OUT}"
         }
         val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)
+
+        mDataBinding?.progressBar?.visibility=View.GONE
     }
 
     //Setting Bid action list if the value is null

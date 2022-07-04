@@ -82,10 +82,12 @@
             android:paddingTop="@dimen/size_2dp"
             android:text="@string/fork_amp_spoon_catering"
             android:textSize="@dimen/size_15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/code_text"
-            app:layout_constraintTop_toBottomOf="@+id/code_text" />
+            app:layout_constraintTop_toBottomOf="@+id/code_text"
+            app:layout_constraintVertical_bias="0.04" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
@@ -235,11 +237,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/mulish_regular"
+            android:fontFamily="@font/mulish_bold"
             android:text="@string/order_details"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/size_14sp"
+            android:textSize="@dimen/size_15sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="@+id/service_date"
             app:layout_constraintHorizontal_bias="0.0"

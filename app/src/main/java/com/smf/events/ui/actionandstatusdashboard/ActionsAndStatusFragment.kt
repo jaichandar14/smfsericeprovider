@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 class ActionsAndStatusFragment :
     BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(),
-    ActionsAdapter.OnActionCardClickListener, Tokens.IdTokenCallBackInterface {
+    ActionsAdapter.OnActionCardClickListener, StatusAdaptor.OnActionCardClickListener, Tokens.IdTokenCallBackInterface {
 
     private lateinit var myActionRecyclerView: RecyclerView
     lateinit var actionAdapter: ActionsAdapter
@@ -108,6 +108,7 @@ class ActionsAndStatusFragment :
         myStatusRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         myStatusRecyclerView.adapter = statusAdapter
+        statusAdapter.setOnClickListener(this)
     }
 
     // Action Card Click Listener Interface Method
@@ -138,6 +139,12 @@ class ActionsAndStatusFragment :
             }
             AppConstants.SERVICE_PROGRESS -> {
                 goToActionDetailsFragment(AppConstants.SERVICE_IN_PROGRESS)
+            }
+            AppConstants.REQUEST_CLOSED -> {
+                goToActionDetailsFragment(AppConstants.SERVICE_DONE)
+            }
+            AppConstants.TIMED_OUT_BID -> {
+                goToActionDetailsFragment(AppConstants.BID_TIMED_OUT)
             }
             else -> {
                 Log.d("TAG", "newRequestApiCallsample :else block")

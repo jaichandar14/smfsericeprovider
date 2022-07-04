@@ -109,11 +109,21 @@ class ActionDetailsAdapter(
                 holder.likeButton.visibility = View.INVISIBLE
                 holder.unlikeButton.visibility = View.INVISIBLE
             }
+            // 2922 for Timed Out flow
+            if (bidStatus == AppConstants.BID_TIMED_OUT) {
+                holder.likeButton.visibility = View.INVISIBLE
+                holder.unlikeButton.visibility = View.INVISIBLE
+            }
             // 2885 for Lost Bid flow
             if (bidStatus == AppConstants.SERVICE_IN_PROGRESS) {
                 // 2904
                 widgetServiceProgress(holder, position)
             }
+            if (bidStatus == AppConstants.SERVICE_DONE) {
+                // 2904
+                widgetServiceCloser(holder, position)
+            }
+
             // Like For Submitting the Bid
             holder.likeButton.setOnClickListener {
                 holder.bidSubmitted(position)
@@ -154,6 +164,20 @@ class ActionDetailsAdapter(
             }
             holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
         }
+ // 2922
+ private fun widgetServiceCloser(
+     holder: ActionDetailsViewHolder,
+     position: ActionDetails,
+ ) {
+     holder.likeButton.visibility = View.INVISIBLE
+     holder.unlikeButton.visibility = View.INVISIBLE
+     holder.quote_status_tx.text = "Service Completed"
+     holder.quote_status_tx.setOnClickListener {
+         callBackInterface?.showDialog(position)
+     }
+     holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
+ }
+
 
         // 2904
         private fun widgetServiceProgress(
