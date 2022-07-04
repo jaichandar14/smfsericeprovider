@@ -9,6 +9,7 @@
     <dimen name="size_3dp">3dp</dimen>
     <dimen name="size_5dp">5dp</dimen>
     <dimen name="size_4dp">4dp</dimen>
+    <dimen name="size_7dp">7dp</dimen>
     <dimen name="size_8dp">8dp</dimen>
     <dimen name="size_10dp">10dp</dimen>
     <dimen name="size_12dp">12dp</dimen>

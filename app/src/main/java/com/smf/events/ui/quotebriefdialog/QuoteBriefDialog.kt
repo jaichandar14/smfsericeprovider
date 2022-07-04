@@ -67,7 +67,6 @@ class QuoteBriefDialog(var status: Int) :
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogTheme)
         // Initialize Local Variables
-        Log.d(TAG, "onCreate: new data and design")
         setIdTokenAndBidReqId()
     }
 
@@ -111,7 +110,7 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.txJobTitle?.text = response.data.eventName
         // 2354
         val currencyType = setCurrencyType(response)
-        if (response.data.costingType == "Bidding") {
+        if (response.data.costingType == AppConstants.BIDDING) {
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.latestBidValue}"
         } else {
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.cost}"
@@ -196,11 +195,11 @@ class QuoteBriefDialog(var status: Int) :
                     is ApisResponse.Success -> {
                         bidStatus = apiResponse.response.data.bidStatus
                         when (bidStatus) {
-                            "BID SUBMITTED" -> {
+                            AppConstants.BID_SUBMITTED -> {
                                 setBidSubmitQuoteBrief(apiResponse.response)
-                                mDataBinding?.spnBidAccepted?.text = "Bidding in progress"
+                                mDataBinding?.spnBidAccepted?.text = AppConstants.BIDDING_IN_PROGRESS
                             }
-                            "PENDING FOR QUOTE" -> setPendingQuoteBrief(apiResponse.response)
+                            AppConstants.PENDING_FOR_QUOTE -> setPendingQuoteBrief(apiResponse.response)
                             // 2904 Won Bid Flow for Start Sevice
                             AppConstants.WON_BID -> {
                                 widgetWonBid(apiResponse)
@@ -214,7 +213,7 @@ class QuoteBriefDialog(var status: Int) :
                         }
                     }
                     is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
                         mDataBinding?.progressBar?.visibility=View.INVISIBLE
                     }
                     else -> {
@@ -226,7 +225,7 @@ class QuoteBriefDialog(var status: Int) :
     // 2904 Method for won bid service start flow
     fun widgetWonBid(apiResponse: ApisResponse.Success<QuoteBrief>) {
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
-        mDataBinding?.spnBidAccepted?.text = "Bid won"
+        mDataBinding?.spnBidAccepted?.text = AppConstants.BID_WON_SMALL
         mDataBinding?.txWonBid?.setTextColor(ContextCompat.getColor(
             context?.applicationContext!!, R.color.dark_font
         ))
@@ -240,9 +239,15 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.check2?.setImageResource(R.drawable.green_check)
         mDataBinding?.check3?.setImageResource(R.drawable.green_check)
         mDataBinding?.check4?.setImageResource(R.drawable.inprogress)
+        mDataBinding?.txWonBid?.setTextColor(ContextCompat.getColor(
+            context?.applicationContext!!, R.color.dark_font
+        ))
+        mDataBinding?.txServiceProgress?.setTextColor(ContextCompat.getColor(
+            context?.applicationContext!!, R.color.dark_font
+        ))
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
-        mDataBinding?.spnBidAccepted?.text = "Service in progress"
+        mDataBinding?.spnBidAccepted?.text = AppConstants.SERVICE_IN_PROGRESS_SMALL
         setBidSubmitQuoteBrief(apiResponse.response)
     }
     fun widgetServiceCloser(apiResponse: ApisResponse.Success<QuoteBrief>) {
@@ -250,10 +255,19 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.check3?.setImageResource(R.drawable.green_check)
         mDataBinding?.check4?.setImageResource(R.drawable.green_check)
         mDataBinding?.check5?.setImageResource(R.drawable.green_check)
+        mDataBinding?.txWonBid?.setTextColor(ContextCompat.getColor(
+            context?.applicationContext!!, R.color.dark_font
+        ))
+        mDataBinding?.txServiceProgress?.setTextColor(ContextCompat.getColor(
+            context?.applicationContext!!, R.color.dark_font
+        ))
+        mDataBinding?.txServiceCompleted?.setTextColor(ContextCompat.getColor(
+            context?.applicationContext!!, R.color.dark_font
+        ))
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow5?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
-        mDataBinding?.spnBidAccepted?.text = "Service in progress"
+        mDataBinding?.spnBidAccepted?.text = AppConstants.SERVICE_COMPLETED
         setBidSubmitQuoteBrief(apiResponse.response)
     }
 
