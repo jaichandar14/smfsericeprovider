@@ -154,7 +154,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/progress_bar"
                 app:layout_constraintStart_toStartOf="@+id/progress_bar"
                 app:layout_constraintTop_toTopOf="@+id/progress_bar" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
