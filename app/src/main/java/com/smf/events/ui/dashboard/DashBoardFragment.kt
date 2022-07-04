@@ -514,4 +514,5 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             { Log.e("AuthQuickstart", "Sign out failed", it) }
         )
     }
+
 }
