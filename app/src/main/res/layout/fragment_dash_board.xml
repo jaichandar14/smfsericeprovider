@@ -22,6 +22,10 @@
             android:layout_gravity="start"
             android:background="@android:color/white"
             app:headerLayout="@layout/side_nav_header"
+            app:itemBackground="@android:color/transparent"
+            app:itemIconTint="@color/side_nav_menu_selection"
+            app:itemTextAppearance="@style/CustomTextStyle"
+            app:itemTextColor="@color/side_nav_menu_selection"
             app:menu="@menu/side_nav_menu" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -42,8 +46,6 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-
-
 
                         <LinearLayout
                             android:id="@+id/myEvents_layout"
@@ -204,18 +206,34 @@
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
                         <androidx.appcompat.widget.Toolbar
                             android:id="@+id/tool_bar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/size_2dp"
-                            android:layout_marginStart="@dimen/size_2dp"
+                            android:layout_width="@dimen/size_50dp"
+                            android:layout_height="@dimen/size_40dp"
+                            android:layout_marginStart="@dimen/size_7dp"
+                            android:layout_marginTop="@dimen/size_8dp"
                             android:background="#00EAE7E7"
                             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:titleTextColor="@color/white" />
+
+                        <TextView
+                            android:id="@+id/welcome_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/mulish_semi_bold"
+                            android:text="@string/event_overview"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/size_18sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tool_bar"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toEndOf="@+id/tool_bar"
+                            app:layout_constraintTop_toTopOf="@+id/tool_bar" />
 
                         <TextView
                             android:id="@+id/calander_tx"

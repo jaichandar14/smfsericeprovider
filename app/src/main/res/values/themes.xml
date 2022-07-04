@@ -27,4 +27,13 @@
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/custom_progress_bar</item>
     </style>
+
+    <style name="CustomTextStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/mulish_medium</item>
+        <item name="android:textSize">@dimen/size_16sp</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

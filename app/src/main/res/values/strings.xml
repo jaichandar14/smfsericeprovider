@@ -206,4 +206,9 @@
     <string name="logout">Logout</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="catering">Catering</string>
+    <string name="post_any_discount">(post any discount)</string>
+    <string name="quote_details">Quote details</string>
+    <string name="quote_details_for">Quote details for</string>
+    <string name="login_message">The phone number you have mentioned does not match our account. Please try again</string>
 </resources>

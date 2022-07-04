@@ -154,7 +154,8 @@
                     android:layout_marginTop="18dp"
                     android:layout_weight="1.5"
                     android:background="@drawable/custom_button_corner_ok"
-                    android:text="@string/ok" />
+                    android:text="@string/ok"
+                    android:textColor="@color/white"/>
 
             </LinearLayout>
 

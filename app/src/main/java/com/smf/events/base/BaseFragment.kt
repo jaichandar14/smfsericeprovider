@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -32,7 +33,6 @@ abstract class BaseFragment<V: ViewDataBinding,out T:BaseViewModel>: Fragment() 
         return mDataBinding?.root
     }
 
-
     private fun performDataBinding() {
         getViewModel()?.let { viewModel ->
             mViewModel = ViewModelProvider(this).get(viewModel::class.java)
@@ -46,6 +46,12 @@ abstract class BaseFragment<V: ViewDataBinding,out T:BaseViewModel>: Fragment() 
         Toast.makeText(activity?.applicationContext, msg, Toast.LENGTH_LONG).show()
     }
 
-
+    // 2845 - Hiding Progress Bar
+    fun hideKeyBoard(){
+        val view: View? = requireActivity().currentFocus
+        val inputManager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
 
 }

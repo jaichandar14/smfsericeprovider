@@ -8,9 +8,9 @@
 
     <ImageView
         android:id="@+id/side_nav_close_btn"
-        android:layout_width="@dimen/size_35dp"
-        android:layout_height="@dimen/size_35dp"
-        android:layout_marginTop="@dimen/size_50dp"
+        android:layout_width="@dimen/size_32dp"
+        android:layout_height="@dimen/size_32dp"
+        android:layout_marginTop="@dimen/size_28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.11"
@@ -19,24 +19,24 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/close_calendar" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/user_image"
         android:layout_width="@dimen/size_70dp"
         android:layout_height="@dimen/size_70dp"
         android:layout_marginBottom="@dimen/size_15dp"
-        android:src="@drawable/select"
+        android:src="@drawable/blank_profile_picture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.88"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
     <TextView
         android:id="@+id/user_name"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_5dp"
         android:fontFamily="@font/poppins_semibold"
         android:paddingStart="@dimen/size_20dp"
         android:text="@string/firstname"

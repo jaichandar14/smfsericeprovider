@@ -57,7 +57,8 @@
                 android:layout_weight="1.5"
                 android:background="@drawable/custom_button_corner_ok"
                 android:fontFamily="@font/mulish_regular"
-                android:text="@string/confirm__" />
+                android:text="@string/confirm__"
+                android:textColor="@color/white"/>
 
         </LinearLayout>
 

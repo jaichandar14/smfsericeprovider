@@ -80,4 +80,16 @@ object AppConstants {
 
     // 2885
     const val ZERO = "0"
+    // 2845
+    const val SERVICE_PROVIDER = "SERVICE_PROVIDER"
+    const val SIGN_IN_NOT_COMPLETED = "SignInNotCompleted"
+    const val SIGN_IN_COMPLETED_GOTO_DASH_BOARD = "signInCompletedGoToDashBoard"
+    const val RESEND_SUCCESS = "resend success"
+    const val RESEND_FAILURE = "resend failure"
+    const val WELCOME = "Welcome"
+    const val BIDDING = "Bidding"
+    const val SERVICE_IN_PROGRESS_SMALL =  "Service in progress"
+    const val BID_WON_SMALL = "Bid won"
+    const val SERVICE_COMPLETED = "Service completed"
+
 }

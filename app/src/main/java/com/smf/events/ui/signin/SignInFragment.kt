@@ -4,14 +4,18 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SignInFragmentBinding
 import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
 import com.smf.events.ui.signup.model.GetUserDetails
 import dagger.android.support.AndroidSupportInjection
 import java.net.URLEncoder
@@ -26,6 +30,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     private var userName: String? = null
     private var firstName: String? = null
     private var emailId: String? = null
+    private lateinit var constraintLayout: ConstraintLayout
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -52,6 +57,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        constraintLayout = mDataBinding?.loginPage!!
         // Initialize CallBackInterface
         getViewModel().setCallBackInterface(this)
         // SignIn Button Listener
@@ -63,6 +69,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     // Method for SignIn Button
     private fun signInClicked() {
         mDataBinding!!.signinbtn.setOnClickListener {
+            if (mDataBinding?.loginMessageText?.isVisible == true){
+                mDataBinding?.loginMessageText?.visibility = View.GONE
+            }
+            // 2845 - Hiding Progress Bar
+            hideKeyBoard()
             val phoneNumber = mDataBinding?.editTextMobileNumber?.text.toString().trim()
             val countryCode = mDataBinding?.cppSignIn?.selectedCountryCode
             mobileNumberWithCountryCode = "+".plus(countryCode).plus(phoneNumber)
@@ -98,7 +109,12 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 userName = apiResponse.response.data.userName
                 firstName = apiResponse.response.data.firstName
                 emailId = apiResponse.response.data.email
-                getViewModel().signIn(apiResponse.response.data.userName)
+                if (AppConstants.SERVICE_PROVIDER == apiResponse.response.data.role) {
+                    getViewModel().signIn(apiResponse.response.data.userName)
+                } else {
+                    hideProgress()
+                    mDataBinding?.loginMessageText?.visibility = View.VISIBLE
+                }
             }
             is ApisResponse.CustomError -> {
                 hideProgress()
@@ -143,7 +159,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     // CallBackInterface Override Method
     override fun callBack(status: String) {
         when (status) {
-            "SignInNotCompleted" -> {
+            AppConstants.SIGN_IN_NOT_COMPLETED -> {
                 // Navigate to EmailOTPFragment
                 // 2842 Hiding the login page
                 //  mDataBinding?.loginPage?.visibility=View.VISIBLE
@@ -154,11 +170,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 )
                 mDataBinding?.progressBar?.visibility = View.GONE
             }
-            "signInCompletedGoToDashBoard" -> {
+            AppConstants.SIGN_IN_COMPLETED_GOTO_DASH_BOARD -> {
                 //Navigate to DashBoardFragment
                 findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
             }
-            "resend success" -> {
+            AppConstants.RESEND_SUCCESS -> {
                 //Navigate to MobileVerificationCode
                 findNavController().navigate(
                     SignInFragmentDirections.actionSignInFragmentToVerificationCodeFrgment(
@@ -166,7 +182,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                     )
                 )
             }
-            "resend failure" -> {
+            AppConstants.RESEND_FAILURE -> {
 
             }
         }

@@ -153,13 +153,15 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     // 2888 - SideNav Initialization
+    @SuppressLint("SetTextI18n")
     private fun sideNavBarInitialization() {
         drawerLayout = mDataBinding!!.drawerLayout
         navigationView = mDataBinding!!.navView
         toolbar = mDataBinding?.toolBar!!
         val activity = activity as AppCompatActivity
         activity.setSupportActionBar(toolbar)
-//        activity.supportActionBar?.title = "Welcome $firstName"
+        // Setting DashBoard Title
+        mDataBinding?.welcomeText?.text = AppConstants.WELCOME + " "+ firstName
         navigationView.bringToFront()
         val toggle = ActionBarDrawerToggle(
             requireActivity(),
@@ -174,7 +176,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         activity.supportActionBar?.setHomeButtonEnabled(true)
         val drawable= ResourcesCompat.getDrawable(resources, R.drawable.menu, null)
         val bitmap = (drawable as (BitmapDrawable)).bitmap
-        val sideNavIcon = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true))
+        val sideNavIcon = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 55, 45, true))
         activity.supportActionBar?.setHomeAsUpIndicator(sideNavIcon)
         activity.supportActionBar?.setDisplayShowTitleEnabled(false)
         navigationView.setNavigationItemSelectedListener(this)
@@ -187,6 +189,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             }
         navigationView.getHeaderView(0).findViewById<TextView>(R.id.user_name).text = firstName
         navigationView.getHeaderView(0).findViewById<TextView>(R.id.user_email).text = emailId
+
 
     }
 
