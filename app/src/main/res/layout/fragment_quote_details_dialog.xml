@@ -238,7 +238,7 @@
                     android:background="@drawable/box_login_text"
                     android:gravity="start"
                     android:lines="6"
-                    android:maxLength="1000"
+                    android:maxLength="200"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tx_comments" />

@@ -57,7 +57,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/custom_button_corner_cancel"
                 android:text="@string/cancel"
-                android:textColor="@color/white" />
+                android:textColor="@color/black" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ok_btn"

@@ -106,6 +106,10 @@ class ActionDetailsFragment :
             FragmentResultListener { _: String, _: Bundle ->
                 apiTokenValidationBidActions()
             })
+        parentFragmentManager.setFragmentResultListener("3", viewLifecycleOwner,
+            FragmentResultListener { _: String, _: Bundle ->
+                apiTokenValidationBidActions()
+            })
 
         // 2401 - ResultListener For Observe Data From CommonInfo Dialog
         parentFragmentManager.setFragmentResultListener("fromCommonInfoDialog", viewLifecycleOwner,

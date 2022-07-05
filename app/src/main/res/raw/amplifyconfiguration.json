@@ -8,15 +8,15 @@
         "CredentialsProvider": {
           "CognitoIdentity": {
             "Default": {
-              "PoolId": "us-east-1:50ed20ce-b65b-48b0-95d1-26dfc30816cf",
+              "PoolId": "us-east-1:9d8686fa-21cf-4b79-9154-da64d3c9b3dd",
               "Region": "us-east-1"
             }
           }
         },
         "CognitoUserPool": {
           "Default": {
-            "PoolId": "us-east-1_WQ1SdIlC5",
-            "AppClientId": "4qhsse2id0aa9aafq9d47bkfqs",
+            "PoolId": "us-east-1_monXQBrf3",
+            "AppClientId": "1atran4h4tds21pgifop6jhpmt",
             "Region": "us-east-1"
           }
         },
@@ -24,8 +24,8 @@
           "Default": {
             "authenticationFlowType": "CUSTOM_AUTH",
             "OAuth": {
-              "WebDomain": "smf-dev1.auth.us-east-1.amazoncognito.com",
-              "AppClientId": "4qhsse2id0aa9aafq9d47bkfqs",
+              "WebDomain": "smf-qa.auth.us-east-1.amazoncognito.com",
+              "AppClientId": "1atran4h4tds21pgifop6jhpmt",
               "SignInRedirectURI": "[CUSTOM REDIRECT SCHEME AFTER SIGN IN, e.g. myapp://]",
               "SignOutRedirectURI": "[CUSTOM REDIRECT SCHEME AFTER SIGN OUT, e.g. myapp://]",
               "Scopes": [

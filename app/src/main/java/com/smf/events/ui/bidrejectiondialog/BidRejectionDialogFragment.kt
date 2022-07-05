@@ -100,7 +100,7 @@ class BidRejectionDialogFragment(
         // On cancel button click
         cancelBtnClick()
         // Setting Service ID and Service Name
-        mDataBinding!!.quoteTitle.text = "You Rejected a $serviceName #$code"
+        mDataBinding!!.quoteTitle.text = "You are rejecting a $serviceName #$code"
     }
 
     // 2405 - Method for invisible Alert message textView

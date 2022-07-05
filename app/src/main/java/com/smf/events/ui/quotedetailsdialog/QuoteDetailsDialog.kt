@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -229,11 +230,14 @@ class QuoteDetailsDialog(
                     is ApisResponse.Success -> {
                         Log.d("TAG", " quote for dialog Success: ${(apiResponse.response)}")
 
-                        QuoteBriefDialog.newInstance(bidRequestId)
-                            .show(
-                                (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                QuoteBriefDialog.TAG
-                            )
+                        if(biddingQuote.bidStatus!=AppConstants.PENDING_FOR_QUOTE){
+                            QuoteBriefDialog.newInstance(bidRequestId)
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    QuoteBriefDialog.TAG
+                                )
+                        }
+                        actionDetailsFragmentListUpdate()
                         dismiss()
                     }
                     is ApisResponse.Error -> {
@@ -243,6 +247,13 @@ class QuoteDetailsDialog(
                     }
                 }
             })
+    }  // Method For Send Data To actionDetails Fragment
+    private fun actionDetailsFragmentListUpdate() {
+        // Result to Send ActionDetails Fragment
+        parentFragmentManager.setFragmentResult(
+            "3", // Same request key ActionDetailsFragment used to register its listener
+            bundleOf("key" to "value") // The data to be passed to ActionDetailsFragment
+        )
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
