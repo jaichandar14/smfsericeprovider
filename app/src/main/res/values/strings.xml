@@ -5,10 +5,10 @@
     <string name="signin">Sign in</string>
     <string name="sign_up">Sign Up</string>
     <string name="new_user">New User?</string>
-    <string name="mobile">Mobile</string>
+    <string name="mobile">Mobile number</string>
     <string name="colonen">|</string>
     <string name="phonenumber">PhoneNumber</string>
-    <string name="or">OR</string>
+    <string name="or">or</string>
     <string name="emailid">Email Id</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_upsmall">Sign up</string>
@@ -211,4 +211,5 @@
     <string name="quote_details">Quote details</string>
     <string name="quote_details_for">Quote details for</string>
     <string name="login_message">The phone number you have mentioned does not match our account. Please try again</string>
+    <string name="login_email_message">The email address you have mentioned does not match our account. Please try again</string>
 </resources>

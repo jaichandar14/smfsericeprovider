@@ -91,5 +91,8 @@ object AppConstants {
     const val SERVICE_IN_PROGRESS_SMALL =  "Service in progress"
     const val BID_WON_SMALL = "Bid won"
     const val SERVICE_COMPLETED = "Service completed"
+    // 2938
+    const val EMAIL= "Email"
+    const val MOBILE= "Mobile"
 
 }

@@ -52,5 +52,7 @@
     <color name="quote_details_blue">#ECF4FA</color>
     <color name="dark_font">#2B2D5C</color>
     <color name="title_background_blue">#2846B3</color>
+    <color name="theme_color">#556CD4</color>
+    <color name="gray_text">#707070</color>
 
 </resources>

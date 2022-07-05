@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_200dp"
-    android:background="@color/theme_header_blue">
+    android:background="@color/theme_color">
 
     <ImageView
         android:id="@+id/side_nav_close_btn"

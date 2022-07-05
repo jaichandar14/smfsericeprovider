@@ -9,7 +9,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
@@ -31,6 +30,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     private var firstName: String? = null
     private var emailId: String? = null
     private lateinit var constraintLayout: ConstraintLayout
+    private var userInfo: String = ""
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -64,14 +64,30 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         signInClicked()
         // SignUp Button Listener
         onSignUpClicked()
+        // Hiding Error Message Listeners
+        errorMessageListeners()
+    }
+
+    private fun errorMessageListeners() {
+        getViewModel().getMobileNumber.observe(viewLifecycleOwner, Observer {
+            if (mDataBinding?.loginMessageText?.isVisible == true || mDataBinding?.loginEmailMessageText?.isVisible == true) {
+                mDataBinding?.loginMessageText?.visibility = View.GONE
+                mDataBinding?.loginEmailMessageText?.visibility = View.GONE
+            }
+        })
+
+        getViewModel().getEmailId.observe(viewLifecycleOwner, Observer {
+            if (mDataBinding?.loginMessageText?.isVisible == true || mDataBinding?.loginEmailMessageText?.isVisible == true) {
+                mDataBinding?.loginMessageText?.visibility = View.GONE
+                mDataBinding?.loginEmailMessageText?.visibility = View.GONE
+            }
+        })
     }
 
     // Method for SignIn Button
     private fun signInClicked() {
         mDataBinding!!.signinbtn.setOnClickListener {
-            if (mDataBinding?.loginMessageText?.isVisible == true){
-                mDataBinding?.loginMessageText?.visibility = View.GONE
-            }
+
             // 2845 - Hiding Progress Bar
             hideKeyBoard()
             val phoneNumber = mDataBinding?.editTextMobileNumber?.text.toString().trim()
@@ -86,10 +102,12 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 if (phoneNumber.isEmpty() || eMail.isEmpty()) {
                     if (phoneNumber.isEmpty()) {
                         showProgress()
+                        userInfo = AppConstants.EMAIL
                         getViewModel().getUserDetails(eMail)
                             .observe(viewLifecycleOwner, getUserDetailsObserver)
                     } else {
                         showProgress()
+                        userInfo = AppConstants.MOBILE
                         getViewModel().getUserDetails(encodedMobileNo)
                             .observe(viewLifecycleOwner, getUserDetailsObserver)
                     }
@@ -113,7 +131,12 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                     getViewModel().signIn(apiResponse.response.data.userName)
                 } else {
                     hideProgress()
-                    mDataBinding?.loginMessageText?.visibility = View.VISIBLE
+                    if (userInfo == AppConstants.EMAIL) {
+                        mDataBinding?.loginEmailMessageText?.visibility = View.VISIBLE
+                    } else {
+                        mDataBinding?.loginMessageText?.visibility = View.VISIBLE
+                    }
+
                 }
             }
             is ApisResponse.CustomError -> {
@@ -149,11 +172,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     // Method for SignUp Button
     private fun onSignUpClicked() {
-        mDataBinding!!.signupaccbtn.setOnClickListener {
-            val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
-            // Navigate to SignUpFragment
-            findNavController().navigate(action)
-        }
+//        mDataBinding!!.signupaccbtn.setOnClickListener {
+//            val action = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+//            // Navigate to SignUpFragment
+//            findNavController().navigate(action)
+//        }
     }
 
     // CallBackInterface Override Method
