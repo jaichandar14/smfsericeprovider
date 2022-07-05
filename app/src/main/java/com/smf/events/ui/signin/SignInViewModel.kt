@@ -2,10 +2,13 @@ package com.smf.events.ui.signin
 
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.core.Amplify
 import com.smf.events.base.BaseViewModel
+import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,6 +17,11 @@ class SignInViewModel @Inject constructor(
     private val signInRepository: SignInRepository,
     application: Application
 ) : BaseViewModel(application) {
+
+    val mobileNumber = MutableLiveData<String>()
+    val getMobileNumber : LiveData<String> = mobileNumber
+    val emailId = MutableLiveData<String>()
+    val getEmailId : LiveData<String> = emailId
 
     //SignIn Method
     fun signIn(userName: String) {

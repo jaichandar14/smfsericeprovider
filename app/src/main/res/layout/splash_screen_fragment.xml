@@ -18,33 +18,22 @@
         tools:context=".ui.splash.SplashFragment">
 
         <ImageView
-            android:id="@+id/logo"
-            android:layout_width="match_parent"
+            android:id="@+id/image_icon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/festologo"
+            android:src="@drawable/festo_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.10" />
-
-        <ImageView
-            android:id="@+id/image_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/landing_screen_image"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logo"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.15" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="@dimen/size_285dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_10dp"
+            android:fontFamily="@font/mulish_medium"
             android:text="@string/title_splash"
             android:textAlignment="center"
             android:textColor="@color/elephant_black"
@@ -53,23 +42,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image_icon"
-            app:layout_constraintVertical_bias="0.050000012" />
+            app:layout_constraintVertical_bias="0.070" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/splashBtn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_40dp"
+            android:layout_marginStart="@dimen/size_16dp"
+            android:layout_marginEnd="@dimen/size_16dp"
             android:background="@drawable/custom_button_corner_ok"
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/mulish_bold"
             android:text="@string/get_started"
+            android:textAllCaps="false"
             android:textColor="@color/white"
+            android:textSize="@dimen/size_16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:layout_constraintVertical_bias="0.7">
+            app:layout_constraintVertical_bias="0.80">
 
         </androidx.appcompat.widget.AppCompatButton>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>
