@@ -20,8 +20,8 @@ android {
         targetSdk 31
         versionCode 5
         versionName "1.05"
-        buildConfigField "String", "base_url", "\"https://www.smf-uat.demo-bpmlinks.com/\""
-        buildConfigField "String", "apiType",  "\"smf-\""
+        buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
+        buildConfigField "String", "apiType",  "\"festo-\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     flavorDimensions "festo"
@@ -37,15 +37,15 @@ android {
         qa{
             dimension "festo"
             applicationIdSuffix".qa"
-            buildConfigField "String", "base_url", "\"https://www.epm-qa.demo-bpmlinks.com/\""
-            buildConfigField "String", "apiType", "\"epm-\""
+            buildConfigField "String", "base_url", "\"https://qa1.festocloud.com/\""
+            buildConfigField "String", "apiType", "\"festo-\""
         }
 
         uat{
             dimension "festo"
             applicationIdSuffix".uat"
-            buildConfigField "String", "base_url", "\"https://www.smf-uat.demo-bpmlinks.com/\""
-            buildConfigField "String", "apiType",  "\"smf-\""
+            buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
+            buildConfigField "String", "apiType",  "\"festo-\""
            }
 
         prod {
