@@ -143,12 +143,10 @@ class ViewOrderDetailsDialogFragment(
         mDataBinding?.question?.text = "Questions"
         mDataBinding?.txJobTitle?.text = eventName
         mDataBinding?.txJobIdnum?.text = eventServiceDescriptionId.toString()
-        mDataBinding?.etEventDate?.text = DateFormatter.getDateFormat(eventDate)
+        mDataBinding?.etEventDate?.text =(eventDate)
         mDataBinding?.etZipCode?.text = venueInfo.zipCode.toString()
-        mDataBinding?.etServiceDate?.text =
-            DateFormatter.getDateFormat(serviceDetails?.serviceDate.toString())
-        mDataBinding?.etBidCutOffDate?.text =
-            DateFormatter.getDateFormat(serviceDetails?.biddingCutOffDate.toString())
+        mDataBinding?.etServiceDate?.text =(serviceDetails?.serviceDate.toString())
+        mDataBinding?.etBidCutOffDate?.text =(serviceDetails?.biddingCutOffDate.toString())
         mDataBinding?.etEstimationBudget?.text =
             serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
         mDataBinding?.etServiceRadius?.text = radius

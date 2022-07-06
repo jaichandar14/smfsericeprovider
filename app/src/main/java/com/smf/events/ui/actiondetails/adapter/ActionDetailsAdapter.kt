@@ -133,7 +133,8 @@ class ActionDetailsAdapter(
                 holder.bidRejection(position)
             }
             // 2904
-            if (bidStatus == AppConstants.BID_REQUESTED || bidStatus == AppConstants.BID_REJECTED) {
+            // 2940 showing Order Deatils for Timed out,Lostbid and Oending for review
+            if (bidStatus == AppConstants.BID_REQUESTED || bidStatus == AppConstants.BID_REJECTED || bidStatus ==AppConstants.BID_TIMED_OUT || bidStatus ==AppConstants.LOST_BID || bidStatus ==AppConstants.PENDING_FOR_QUOTE) {
                 // 2402 View Order details onCLickArrow Button
                 holder.rightArrowButton.setOnClickListener {
                     // 2904 Method to show the Quote Details Status Dialog
@@ -148,7 +149,7 @@ class ActionDetailsAdapter(
             holder.likeButton.visibility = View.INVISIBLE
             holder.unlikeButton.visibility = View.INVISIBLE
             holder.startserviceBtn.visibility = View.VISIBLE
-            holder.quote_status_tx.text = "Won bid"
+            holder.quote_status_tx.text = AppConstants.WON_BID_SMALL
             holder.quote_status_tx.setOnClickListener {
                 callBackInterface?.showDialog(position)
             }
@@ -171,7 +172,7 @@ class ActionDetailsAdapter(
  ) {
      holder.likeButton.visibility = View.INVISIBLE
      holder.unlikeButton.visibility = View.INVISIBLE
-     holder.quote_status_tx.text = "Service Completed"
+     holder.quote_status_tx.text = AppConstants.SERVICE_COMPLETED
      holder.quote_status_tx.setOnClickListener {
          callBackInterface?.showDialog(position)
      }
@@ -186,12 +187,12 @@ class ActionDetailsAdapter(
         ) {
             holder.likeButton.visibility = View.INVISIBLE
             holder.unlikeButton.visibility = View.INVISIBLE
-            holder.quote_status_tx.text = "Service in Progress"
+            holder.quote_status_tx.text =AppConstants.SERVICE_IN_PROGRESS_SMALL
             holder.quote_status_tx.setOnClickListener {
                 callBackInterface?.showDialog(position)
             }
             holder.startserviceBtn.visibility = View.VISIBLE
-            holder.startserviceBtn.text = "Initiate closer"
+            holder.startserviceBtn.text = AppConstants.INITIATE_CLOSER
             holder.startserviceBtn.setOnClickListener {
                 // 2904 Dialog to For confirmation of Start service
                 CommonInfoDialog.newInstance(
@@ -251,7 +252,7 @@ class ActionDetailsAdapter(
                 if (actionDetails.latestBidValue.isNullOrEmpty()) {
                     amount.text = ""
                 } else {
-                    amount.text = "$currencyType${actionDetails.latestBidValue}"
+                    amount.text = currencyType+actionDetails.latestBidValue
                 }
             } else {
                 amount.text = "$currencyType${actionDetails.cost}"

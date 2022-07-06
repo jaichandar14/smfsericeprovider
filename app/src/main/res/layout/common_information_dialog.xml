@@ -44,6 +44,7 @@
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="@dimen/size_5dp"
                 android:layout_weight="1.5"
+                android:textAllCaps="false"
                 android:background="@drawable/custom_button_corner_cancel"
                 android:fontFamily="@font/mulish_regular"
                 android:text="@string/cancel" />
@@ -55,6 +56,7 @@
                 android:layout_marginStart="@dimen/size_5dp"
                 android:layout_marginTop="18dp"
                 android:layout_weight="1.5"
+                android:textAllCaps="false"
                 android:background="@drawable/custom_button_corner_ok"
                 android:fontFamily="@font/mulish_regular"
                 android:text="@string/confirm__"
