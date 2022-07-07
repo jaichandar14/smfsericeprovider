@@ -17,7 +17,9 @@ import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
+import java.time.LocalDateTime
 import java.time.Month
+import java.time.format.DateTimeFormatter
 
 class ActionDetailsAdapter(
     val context: Context,
@@ -101,7 +103,7 @@ class ActionDetailsAdapter(
             }
             // 2884 for won Bid flow
             if (bidStatus == AppConstants.WON_BID) {
-                 // 2904
+                // 2904
                 widgetWonBid(holder, position)
             }
             // 2885 for Lost Bid flow
@@ -134,7 +136,7 @@ class ActionDetailsAdapter(
             }
             // 2904
             // 2940 showing Order Deatils for Timed out,Lostbid and Oending for review
-            if (bidStatus == AppConstants.BID_REQUESTED || bidStatus == AppConstants.BID_REJECTED || bidStatus ==AppConstants.BID_TIMED_OUT || bidStatus ==AppConstants.LOST_BID || bidStatus ==AppConstants.PENDING_FOR_QUOTE) {
+            if (bidStatus == AppConstants.BID_REQUESTED || bidStatus == AppConstants.BID_REJECTED || bidStatus == AppConstants.BID_TIMED_OUT || bidStatus == AppConstants.LOST_BID || bidStatus == AppConstants.PENDING_FOR_QUOTE) {
                 // 2402 View Order details onCLickArrow Button
                 holder.rightArrowButton.setOnClickListener {
                     // 2904 Method to show the Quote Details Status Dialog
@@ -148,7 +150,13 @@ class ActionDetailsAdapter(
         private fun widgetWonBid(holder: ActionDetailsViewHolder, position: ActionDetails) {
             holder.likeButton.visibility = View.INVISIBLE
             holder.unlikeButton.visibility = View.INVISIBLE
-            holder.startserviceBtn.visibility = View.VISIBLE
+            val currentDateValue = LocalDateTime.now()
+            val formatterDay = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+            val formattedDay: String = currentDateValue.format(formatterDay)
+            // Restricting the start service flow based previous and today service Date
+            if (position.serviceDate <= formattedDay) {
+                holder.startserviceBtn.visibility = View.VISIBLE
+            }
             holder.quote_status_tx.text = AppConstants.WON_BID_SMALL
             holder.quote_status_tx.setOnClickListener {
                 callBackInterface?.showDialog(position)
@@ -165,19 +173,20 @@ class ActionDetailsAdapter(
             }
             holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
         }
- // 2922
- private fun widgetServiceCloser(
-     holder: ActionDetailsViewHolder,
-     position: ActionDetails,
- ) {
-     holder.likeButton.visibility = View.INVISIBLE
-     holder.unlikeButton.visibility = View.INVISIBLE
-     holder.quote_status_tx.text = AppConstants.SERVICE_COMPLETED
-     holder.quote_status_tx.setOnClickListener {
-         callBackInterface?.showDialog(position)
-     }
-     holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
- }
+
+        // 2922
+        private fun widgetServiceCloser(
+            holder: ActionDetailsViewHolder,
+            position: ActionDetails,
+        ) {
+            holder.likeButton.visibility = View.INVISIBLE
+            holder.unlikeButton.visibility = View.INVISIBLE
+            holder.quote_status_tx.text = AppConstants.SERVICE_COMPLETED
+            holder.quote_status_tx.setOnClickListener {
+                callBackInterface?.showDialog(position)
+            }
+            holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
+        }
 
 
         // 2904
@@ -187,7 +196,7 @@ class ActionDetailsAdapter(
         ) {
             holder.likeButton.visibility = View.INVISIBLE
             holder.unlikeButton.visibility = View.INVISIBLE
-            holder.quote_status_tx.text =AppConstants.SERVICE_IN_PROGRESS_SMALL
+            holder.quote_status_tx.text = AppConstants.SERVICE_IN_PROGRESS_SMALL
             holder.quote_status_tx.setOnClickListener {
                 callBackInterface?.showDialog(position)
             }
@@ -252,7 +261,7 @@ class ActionDetailsAdapter(
                 if (actionDetails.latestBidValue.isNullOrEmpty()) {
                     amount.text = ""
                 } else {
-                    amount.text = currencyType+actionDetails.latestBidValue
+                    amount.text = currencyType + actionDetails.latestBidValue
                 }
             } else {
                 amount.text = "$currencyType${actionDetails.cost}"
