@@ -98,7 +98,7 @@ class DayModifyExpandableListFragment : Fragment(),
         tokens.setCallBackInterface(this)
 
         // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
+        sharedViewModel.getCurrentDate.observe(viewLifecycleOwner, { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
             fromDate = currentDate.selectedDate
             toDate = currentDate.selectedDate

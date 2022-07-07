@@ -94,7 +94,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         tokens.setCallBackInterface(this)
 
         // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getCurrentMonthDate.observe(requireActivity(),
+        sharedViewModel.getCurrentMonthDate.observe(viewLifecycleOwner,
             { currentMonthDate ->
                 fromDate = currentMonthDate.fromDate
                 toDate = currentMonthDate.toDate

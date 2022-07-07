@@ -101,7 +101,7 @@ class WeekModifyExpandableListFragment : Fragment(),
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
 
-        sharedViewModel.getCurrentWeekDate.observe(requireActivity(),
+        sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner,
             { currentWeekDate ->
                 serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
                 weekMap = getWeekListMap(currentWeekDate)

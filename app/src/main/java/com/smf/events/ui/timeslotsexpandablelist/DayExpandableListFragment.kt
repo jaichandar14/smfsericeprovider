@@ -89,7 +89,7 @@ class DayExpandableListFragment : Fragment(),
         tokens.setCallBackInterface(this)
 
         // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getCurrentDate.observe(requireActivity(), { currentDate ->
+        sharedViewModel.getCurrentDate.observe(viewLifecycleOwner, { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
