@@ -57,6 +57,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/custom_button_corner_cancel"
                 android:text="@string/cancel"
+                android:textAllCaps="false"
                 android:textColor="@color/black" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -66,6 +67,7 @@
                 android:layout_marginStart="@dimen/size_8dp"
                 android:background="@drawable/custom_button_corner_ok"
                 android:text="@string/ok"
+                android:textAllCaps="false"
                 android:textColor="@color/white" />
 
         </LinearLayout>

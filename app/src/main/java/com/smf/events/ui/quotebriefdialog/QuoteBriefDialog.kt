@@ -116,13 +116,10 @@ class QuoteBriefDialog(var status: Int) :
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.cost}"
         }
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text = DateFormatter.getDateFormat(response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text =
-            DateFormatter.getDateFormat(response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text =
-            DateFormatter.getDateFormat(response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text =
-            DateFormatter.getDateFormat(response.data.serviceDate)
+        mDataBinding?.txEventdateValue?.text =(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text =(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text =(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text =(response.data.serviceDate)
         mDataBinding?.paymentStatusValue?.text = "NA"
         mDataBinding?.servicedBy?.text = "NA"
         mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
@@ -166,13 +163,10 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.spnBidAccepted?.text = "Pending For Quote"
         mDataBinding?.check1?.visibility = View.INVISIBLE
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text = DateFormatter.getDateFormat(response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text =
-            DateFormatter.getDateFormat(response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text =
-            DateFormatter.getDateFormat(response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text =
-            DateFormatter.getDateFormat(response.data.serviceDate)
+        mDataBinding?.txEventdateValue?.text =(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text =(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text =(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text =(response.data.serviceDate)
         mDataBinding?.paymentStatusValue?.text = "NA"
         mDataBinding?.servicedBy?.text = "NA"
         mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +

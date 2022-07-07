@@ -51,28 +51,31 @@
             android:id="@+id/amount_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/size_8dp"
             android:fontFamily="@font/mulish_bold"
             android:text="@string/_2500"
             android:textColor="@color/dark_blue_amount"
             android:textSize="@dimen/size_18sp"
             app:layout_constraintBottom_toBottomOf="@+id/quote_text_view"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/quote_text_view" />
 
         <TextView
             android:id="@+id/code_text"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/size_20dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_2dp"
             android:fontFamily="@font/poppins_medium"
             android:text="@string/ca4215254265"
             android:textColor="@color/blue_event_id"
             android:textSize="@dimen/size_18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/event_title_text"
-            app:layout_constraintTop_toBottomOf="@+id/event_title_text" />
+            app:layout_constraintTop_toBottomOf="@+id/event_title_text"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/event_type_text"
@@ -216,8 +219,8 @@
 
         <TextView
             android:id="@+id/change_of_mind"
-            android:layout_width="112dp"
-            android:layout_height="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_medium"
             android:text="@string/change_in_mind"
             android:textColor="@color/blue"
@@ -225,7 +228,7 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/quote_status"
             app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.93"
             app:layout_constraintStart_toEndOf="@+id/quote_status"
             app:layout_constraintTop_toBottomOf="@+id/service_date"
             app:layout_constraintVertical_bias="0.56" />
@@ -296,7 +299,8 @@
             android:fontFamily="@font/mulish_semi_bold"
             android:paddingStart="@dimen/size_10dp"
             android:paddingEnd="@dimen/size_10dp"
-            android:text="Start service"
+            android:textAllCaps="false"
+            android:text="@string/start_service"
             android:textColor="@color/white"
             android:textSize="@dimen/size_12sp"
             android:visibility="invisible"

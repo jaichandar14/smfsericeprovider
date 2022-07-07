@@ -1,13 +1,16 @@
 package com.smf.events.ui.quotedetailsdialog
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -41,7 +44,6 @@ import java.io.IOException
 import java.io.InputStream
 import javax.inject.Inject
 
-
 class QuoteDetailsDialog(
     var bidRequestId: Int,
     var costingType: String,
@@ -52,7 +54,6 @@ class QuoteDetailsDialog(
     var serviceName: String,
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
-
     lateinit var biddingQuote: BiddingQuotDto
     lateinit var file: File
     var fileName: String? = null
@@ -228,9 +229,7 @@ class QuoteDetailsDialog(
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        Log.d("TAG", " quote for dialog Success: ${(apiResponse.response)}")
-
-                        if(biddingQuote.bidStatus!=AppConstants.PENDING_FOR_QUOTE){
+                        if (biddingQuote.bidStatus != AppConstants.PENDING_FOR_QUOTE) {
                             QuoteBriefDialog.newInstance(bidRequestId)
                                 .show(
                                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -248,6 +247,7 @@ class QuoteDetailsDialog(
                 }
             })
     }  // Method For Send Data To actionDetails Fragment
+
     private fun actionDetailsFragmentListUpdate() {
         // Result to Send ActionDetails Fragment
         parentFragmentManager.setFragmentResult(
@@ -277,76 +277,110 @@ class QuoteDetailsDialog(
         var window: Window? = dialog?.window
         var params: WindowManager.LayoutParams = window!!.attributes
         params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
-
         window.attributes = params
-        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
+    // 2940 Method to Select the file from the documents
+    @SuppressLint("RestrictedApi", "Range")
     private fun fileUploader() {
         var logoUploadActivity =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     // There are no request codes
-                    Log.d(TAG, "fileUploader: ${result.data}")
                     val data: Intent? = result.data
                     var fileUri: Uri = data?.data!!
                     var filePath = fileUri.path
-                    Log.d(TAG, "fileUploader:$filePath ")
                     file = File(filePath)
                     if (!filePath.isNullOrEmpty()) {
-                        mDataBinding?.btnFileUpload?.text = "File Uploaded"
-                        mDataBinding?.btnFileUpload?.setTextColor(Color.WHITE)
-                        mDataBinding?.btnFileUpload?.setBackgroundColor(
-                            ContextCompat.getColor(
-                                context?.applicationContext!!, R.color.green
-                            )
-                        )
-                    }
-                    fileName = filePath?.substring(filePath.lastIndexOf("/") + 1);
-                    Log.d(TAG, "logoUploader: $fileUri")
-                    if (!fileUri.path.isNullOrEmpty()) {
+                        fileName = filePath.substring(filePath.lastIndexOf("/") + 1)
                         convertToString(fileUri)
+                        gettingDocName(fileUri)
                     }
                 }
             }
         view?.findViewById<Button>(R.id.btn_file_upload)?.setOnClickListener {
             try {
-                var gallaryIntent = Intent(Intent.ACTION_GET_CONTENT);
-                gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                var gallaryIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                gallaryIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
                 // 2842 Restricting file selection
-                val mimetypes = arrayOf("application/*|image/*", "application/*|text/*","application/*|vnd.ms-excel/*")
-                gallaryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-                gallaryIntent.type = "*/pdf*"
+                val mimetypes = arrayOf("application/*|image/*",
+                    "application/*|text/*",
+                    "application/*|vnd.ms-excel/*")
+                gallaryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+                gallaryIntent.type = "*/*"
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
                 Toast.makeText(
                     activity, "Please install a File Manager.",
                     Toast.LENGTH_SHORT
-                ).show();
+                ).show()
             }
+        }
+        mDataBinding?.fileImgDelete?.setOnClickListener {
+            mDataBinding?.fileImgDelete?.visibility = View.GONE
+            mDataBinding?.filenameTx?.visibility = View.GONE
+            mDataBinding?.fileImg?.visibility = View.GONE
+            fileName = null
+            fileSize = null
+            fileContent = null
         }
     }
 
+    // 2940 Method to get the doc name
+    @SuppressLint("Range")
+    private fun gettingDocName(fileUri: Uri) {
+        var cursor: Cursor? = null
+        var displayName: String? = null
+        var fileEndName: String? = null
+        if (fileUri.toString().startsWith("content://")) {
+            try {
+                cursor = requireContext().contentResolver.query(fileUri,
+                    null,
+                    null,
+                    null,
+                    null)
+                if (cursor != null && cursor.moveToFirst()) {
+                    displayName =
+                        cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    Log.d(TAG,
+                        "gettingDocName: ${displayName.substring(displayName.lastIndexOf("."))}")
+                    fileEndName = displayName.substring(displayName.lastIndexOf("."))
+                    mDataBinding?.filenameTx?.text = displayName.take(10) + "..." + fileEndName
+                }
+            } finally {
+                cursor!!.close()
+            }
+        } else if (fileUri.toString().startsWith("file://")) {
+            displayName = file.name
+            fileEndName = displayName.substring(displayName.lastIndexOf("."))
+            mDataBinding?.filenameTx?.text = displayName.take(10) + "..." + fileEndName
+        }
+    }
+
+    // 2940 converting to string
     private fun convertToString(uri: Uri) {
-        var uriString = uri.toString()
-        Log.d("data", "onActivityResult: uri$uriString")
         try {
             val input: InputStream? = activity?.contentResolver?.openInputStream(uri)
             var bytes = getBytes(input!!)
-            Log.d("data", "onActivityResult: bytes size=" + bytes?.size)
             if (bytes?.size!! <= 181204) {
-                Log.d(
-                    "data",
-                    "onActivityResult: Base64string=" + Base64.encodeToString(
-                        bytes,
-                        Base64.DEFAULT
-                    )
-                )
+                mDataBinding?.fileImg?.visibility = View.VISIBLE
+                mDataBinding?.filenameTx?.visibility = View.VISIBLE
+                mDataBinding?.fileImgDelete?.visibility = View.VISIBLE
                 fileContent = Base64.encodeToString(bytes, Base64.DEFAULT)
                 fileSize = bytes.size.toString()
             } else {
-                Toast.makeText(activity, "File is not uploaded. Please Upload file below 100kb", Toast.LENGTH_SHORT).show()
-                mDataBinding?.btnFileUpload?.text = "Choose File"
+                mDataBinding?.fileImg?.visibility = View.GONE
+                mDataBinding?.filenameTx?.text = fileName
+                fileName = null
+                fileContent = null
+                fileSize = null
+                mDataBinding?.filenameTx?.visibility = View.GONE
+                mDataBinding?.fileImgDelete?.visibility = View.GONE
+                Toast.makeText(activity,
+                    "File is not uploaded. Please Upload file below 100kb",
+                    Toast.LENGTH_SHORT).show()
                 mDataBinding?.btnFileUpload?.setBackgroundColor(
                     ContextCompat.getColor(
                         context?.applicationContext!!, R.color.green))

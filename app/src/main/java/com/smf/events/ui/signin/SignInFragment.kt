@@ -87,7 +87,8 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     // Method for SignIn Button
     private fun signInClicked() {
         mDataBinding!!.signinbtn.setOnClickListener {
-
+            mDataBinding?.loginMessageText?.visibility = View.GONE
+            mDataBinding?.loginEmailMessageText?.visibility = View.GONE
             // 2845 - Hiding Progress Bar
             hideKeyBoard()
             val phoneNumber = mDataBinding?.editTextMobileNumber?.text.toString().trim()

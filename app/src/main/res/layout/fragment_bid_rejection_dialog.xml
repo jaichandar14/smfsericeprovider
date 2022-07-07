@@ -142,6 +142,7 @@
                     android:layout_marginTop="@dimen/size_18dp"
                     android:layout_marginEnd="@dimen/size_5dp"
                     android:layout_weight="1.5"
+                    android:textAllCaps="false"
                     android:background="@drawable/custom_button_corner_cancel"
                     android:text="@string/cancel"
                     android:textColor="@color/black" />
@@ -153,6 +154,7 @@
                     android:layout_marginStart="@dimen/size_5dp"
                     android:layout_marginTop="18dp"
                     android:layout_weight="1.5"
+                    android:textAllCaps="false"
                     android:background="@drawable/custom_button_corner_ok"
                     android:text="@string/ok"
                     android:textColor="@color/white"/>

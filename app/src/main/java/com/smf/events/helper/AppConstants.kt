@@ -25,13 +25,15 @@ object AppConstants {
     const val REQUEST_CLOSED = "Service Closed"
     const val REJECTED_BID = "Bid Rejected"
     const val TIMED_OUT = "Timed Out"
+    // 2940
     const val TIMED_OUT_BID = "Timed\nOut"
     const val BID_LOST = "Lost Bid\n"
     const val REJECTED = "Rejected"
     const val SERVICE_PROGRESS = "Service\nProgress"
     const val PROGRESS_SERVICE = "Service Progress"
     const val SERVICE_CLOSER = "Service Closed"
-
+    const val WON_BID_SMALL  ="Won bid"
+    const val INITIATE_CLOSER  ="Initiate closer"
     // 2904
     const val BIDDING_IN_PROGRESS = "Bidding in Progress"
 
