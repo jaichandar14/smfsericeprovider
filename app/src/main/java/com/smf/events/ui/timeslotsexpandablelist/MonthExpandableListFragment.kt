@@ -119,24 +119,26 @@ class MonthExpandableListFragment : Fragment(),
         fromDate: String,
         toDate: String,
     ) {
-        sharedViewModel.getBookedEventServices(
-            idToken, spRegId, serviceCategoryId,
-            serviceVendorOnBoardingId,
-            fromDate,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d("TAG", "check token result success month: ${apiResponse.response.data}")
-                    updateExpandableListData(apiResponse)
+        if (view != null){
+            sharedViewModel.getBookedEventServices(
+                idToken, spRegId, serviceCategoryId,
+                serviceVendorOnBoardingId,
+                fromDate,
+                toDate
+            ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "check token result success month: ${apiResponse.response.data}")
+                        updateExpandableListData(apiResponse)
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
                 }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result: ${apiResponse.exception}")
-                }
-                else -> {
-                }
-            }
-        })
+            })
+        }
     }
 
     // Method For Updating ExpandableList Data

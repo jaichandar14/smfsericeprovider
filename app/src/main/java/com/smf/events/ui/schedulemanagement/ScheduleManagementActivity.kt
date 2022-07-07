@@ -100,13 +100,7 @@ class ScheduleManagementActivity :
             supportFragmentManager //create an instance of fragment manager
         val transaction: FragmentTransaction =
             manager.beginTransaction() //create an instance of Fragment-transaction
-        if (status) {
-            Log.d("TAG", "calendarUI if : $status")
-            transaction.replace(R.id.timeslots_fragment, frg, status.toString())
-        } else {
-            Log.d("TAG", "calendarUI else: $status")
-            transaction.replace(R.id.timeslots_fragment, frg, status.toString())
-        }
+        transaction.replace(R.id.timeslots_fragment, frg, status.toString())
         transaction.commit()
     }
 }
