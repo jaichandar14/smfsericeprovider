@@ -215,4 +215,6 @@
     <string name="start_service">Start service</string>
     <string name="quotesite_pdf">Quotesite.pdf</string>
     <string name="Uploaded">Upload</string>
+    <string name="trueText">true</string>
+
 </resources>

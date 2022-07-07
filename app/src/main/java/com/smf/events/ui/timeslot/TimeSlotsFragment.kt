@@ -87,21 +87,21 @@ class TimeSlotsFragment : Fragment() {
     private fun updateTimeSlotsUI(status: String) {
         val frg = when (CalendarUtils.updatedTabPosition) {
             0 -> {
-                if (tag == "true") {
+                if (tag == getString(R.string.trueText)) {
                     DayModifyExpandableListFragment()
                 } else {
                     DayExpandableListFragment()
                 }
             }
             1 -> {
-                if (tag == "true") {
+                if (tag == getString(R.string.trueText)) {
                     WeekModifyExpandableListFragment()
                 } else {
                     WeekExpandableListFragment()
                 }
             }
             2 -> {
-                if (tag == "true") {
+                if (tag == getString(R.string.trueText)) {
                     MonthModifyExpandableListFragment()
                 } else {
                     MonthExpandableListFragment()
