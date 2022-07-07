@@ -107,10 +107,6 @@ class WeekExpandableListFragment : Fragment(),
                 Log.d("TAG", "onViewCreated booked datemap: ${weekMap}")
 
                 listOfDates = currentWeekDate.bookedWeekList
-//                listOfDates.add("06/08/2022")
-//                listOfDates.add("06/13/2022")
-//                listOfDates.add("06/20/2022")
-//                listOfDates.add("06/24/2022")
 
                 if (checkCurrentWeekHaveEvent(currentWeekDate)) {
                     mDataBinding.expendableList.visibility = View.VISIBLE
@@ -195,24 +191,26 @@ class WeekExpandableListFragment : Fragment(),
         toDate: String,
         caller: String,
     ) {
-        sharedViewModel.getBookedEventServices(
-            idToken, spRegId, serviceCategoryId,
-            serviceVendorOnBoardingId,
-            fromDate,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d("TAG", "check token response: ${apiResponse.response}")
-                    updateExpandableListData(apiResponse, caller)
+        if (view != null){
+            sharedViewModel.getBookedEventServices(
+                idToken, spRegId, serviceCategoryId,
+                serviceVendorOnBoardingId,
+                fromDate,
+                toDate
+            ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "check token response: ${apiResponse.response}")
+                        updateExpandableListData(apiResponse, caller)
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
                 }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result: ${apiResponse.exception}")
-                }
-                else -> {
-                }
-            }
-        })
+            })
+        }
     }
 
     // Method For Updating ExpandableList Data

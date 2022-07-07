@@ -20,7 +20,7 @@ import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
-import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapterDay
+import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapter
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.Data
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -39,12 +39,12 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class MonthModifyExpandableListFragment : Fragment(),
-    CustomModifyExpandableListAdapterDay.TimeSlotIconClickListener,
+    CustomModifyExpandableListAdapter.TimeSlotIconClickListener,
     Tokens.IdTokenCallBackInterface {
 
     private var TAG = "MonthModifyExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
-    private var adapter: CustomModifyExpandableListAdapterDay? = null
+    private var adapter: CustomModifyExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
     private var titleDate = ArrayList<String>()
     private lateinit var mDataBinding: FragmentTimeSlotsExpandableListBinding
@@ -139,29 +139,31 @@ class MonthModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        sharedViewModel.getModifyBookedEventServices(
-            idToken, spRegId, serviceCategoryId,
-            serviceVendorOnBoardingId, true,
-            fromDate,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d(TAG, "success month mody: ${apiResponse.response.data}")
-                    if (caller == AppConstants.BOOKED_EVENTS_SERVICES_INITIAL) {
-                        eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
-                    } else {
-                        setDataToExpandableList(apiResponse, groupPosition)
-                        adapter!!.notifyDataSetChanged()
+        if (view != null) {
+            sharedViewModel.getModifyBookedEventServices(
+                idToken, spRegId, serviceCategoryId,
+                serviceVendorOnBoardingId, true,
+                fromDate,
+                toDate
+            ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d(TAG, "success month mody: ${apiResponse.response.data}")
+                        if (caller == AppConstants.BOOKED_EVENTS_SERVICES_INITIAL) {
+                            eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
+                        } else {
+                            setDataToExpandableList(apiResponse, groupPosition)
+                            adapter!!.notifyDataSetChanged()
+                        }
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
                     }
                 }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result: ${apiResponse.exception}")
-                }
-                else -> {
-                }
-            }
-        })
+            })
+        }
     }
 
     // 2795 - Method For Set Data To ExpandableList
@@ -177,7 +179,7 @@ class MonthModifyExpandableListFragment : Fragment(),
             } else if (data.bookedEventServiceDtos.isEmpty()) {
                 bookedEventDetails.add(isEmptyAvailableListData(data))
             } else {
-               val bookedEventServiceDtos = updateUpcomingEvents(data)
+                val bookedEventServiceDtos = updateUpcomingEvents(data)
                 bookedEventDetails.add(
                     ListData(
                         data.serviceSlot,
@@ -235,7 +237,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     // 2558 - Method for ExpandableList Initialization
     private fun initializeExpandableListSetUp() {
         if (expandableListView != null) {
-            adapter = CustomModifyExpandableListAdapterDay(
+            adapter = CustomModifyExpandableListAdapter(
                 requireContext(),
                 getString(R.string.month),
                 titleDate,

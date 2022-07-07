@@ -100,7 +100,6 @@ class DayExpandableListFragment : Fragment(),
                         toDate = currentDate.selectedDate
                         listOfDates = currentDate.listOfDays
                         apiTokenValidation("EventsOnSelectedDate")
-//                        expandableListView?.collapseGroup(lastGroupPosition)
                     }
                 }
             } else {
@@ -183,24 +182,26 @@ class DayExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        sharedViewModel.getBookedEventServices(
-            idToken, spRegId, serviceCategoryId,
-            serviceVendorOnBoardingId,
-            fromDate,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d("TAG", "check token result success BookedEvent: ${apiResponse.response}")
-                    updateExpandableListDataSelectedDate(apiResponse, caller)
+        if (view != null){
+            sharedViewModel.getBookedEventServices(
+                idToken, spRegId, serviceCategoryId,
+                serviceVendorOnBoardingId,
+                fromDate,
+                toDate
+            ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d("TAG", "check token result success BookedEvent: ${apiResponse.response}")
+                        updateExpandableListDataSelectedDate(apiResponse, caller)
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result BookedEvent exp: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
                 }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result BookedEvent exp: ${apiResponse.exception}")
-                }
-                else -> {
-                }
-            }
-        })
+            })
+        }
     }
 
     // 2773 - Method For Update SelectedDate To ExpandableList

@@ -20,7 +20,7 @@ import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
-import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapterDay
+import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapter
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.Data
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -39,12 +39,12 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class DayModifyExpandableListFragment : Fragment(),
-    CustomModifyExpandableListAdapterDay.TimeSlotIconClickListener,
+    CustomModifyExpandableListAdapter.TimeSlotIconClickListener,
     Tokens.IdTokenCallBackInterface {
 
     var TAG = "DayModifyExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
-    private var adapter: CustomModifyExpandableListAdapterDay? = null
+    private var adapter: CustomModifyExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
     private var titleDate = ArrayList<String>()
     private lateinit var mDataBinding: FragmentTimeSlotsExpandableListBinding
@@ -141,37 +141,38 @@ class DayModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        Log.d(TAG, "success ModifyBookedEvent day : $fromDate $toDate ")
-        sharedViewModel.getModifyBookedEventServices(
-            idToken, spRegId, serviceCategoryId,
-            serviceVendorOnBoardingId,
-            false, fromDate, toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d(TAG, "success ModifyBookedEvent day: ${apiResponse.response.data}")
-                    if (caller == AppConstants.INITIAL_DAY) {
-                        Log.d(TAG, "success ModifyBookedEvent day in: ${apiResponse.response.data}")
-                        eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
-                    } else {
+        if (view != null){
+            sharedViewModel.getModifyBookedEventServices(
+                idToken, spRegId, serviceCategoryId,
+                serviceVendorOnBoardingId,
+                false, fromDate, toDate
+            ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d(TAG, "success ModifyBookedEvent day: ${apiResponse.response.data}")
+                        if (caller == AppConstants.INITIAL_DAY) {
+                            Log.d(TAG, "success ModifyBookedEvent day in: ${apiResponse.response.data}")
+                            eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
+                        } else {
+                            Log.d(
+                                TAG,
+                                "success ModifyBookedEvent day els: ${apiResponse.response.data}"
+                            )
+                            setDataToExpandableList(apiResponse, groupPosition)
+                            adapter!!.notifyDataSetChanged()
+                        }
+                    }
+                    is ApisResponse.Error -> {
                         Log.d(
                             TAG,
-                            "success ModifyBookedEvent day els: ${apiResponse.response.data}"
+                            "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
                         )
-                        setDataToExpandableList(apiResponse, groupPosition)
-                        adapter!!.notifyDataSetChanged()
+                    }
+                    else -> {
                     }
                 }
-                is ApisResponse.Error -> {
-                    Log.d(
-                        TAG,
-                        "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
-                    )
-                }
-                else -> {
-                }
-            }
-        })
+            })
+        }
     }
 
     private fun eventsOnSelectedDateApiValueUpdate(
@@ -232,7 +233,7 @@ class DayModifyExpandableListFragment : Fragment(),
     // 2558 - Method for ExpandableList Initialization
     private fun initializeExpandableListSetUp(caller: String) {
         if (expandableListView != null) {
-            adapter = CustomModifyExpandableListAdapterDay(
+            adapter = CustomModifyExpandableListAdapter(
                 requireContext(),
                 getString(R.string.day),
                 titleDate,
