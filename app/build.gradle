@@ -18,8 +18,8 @@ android {
         applicationId "com.smf.events"
         minSdk 19
         targetSdk 31
-        versionCode 5
-        versionName "1.05"
+        versionCode 6
+        versionName "1.06"
         buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
         buildConfigField "String", "apiType",  "\"festo-\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
