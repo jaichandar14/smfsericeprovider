@@ -123,6 +123,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     // 2815 - Method For Observe Result From ModifyDialog
     private fun observeModifyDialogResult() {
         dialogDisposable = RxBus.listen(RxEvent.ModifyDialog::class.java).subscribe {
+            showProgress()
             if (it.status == AppConstants.WEEK) {
                 Log.d(TAG, "onViewCreated listener week: called")
                 apiTokenValidation(AppConstants.AVAILABLE)
@@ -371,6 +372,7 @@ class WeekModifyExpandableListFragment : Fragment(),
                 fromDate?.let { fromDate ->
                     serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
                         toDate?.let { toDate ->
+                            showProgress()
                             modifyNullApiUpdate(
                                 fromDate,
                                 true,
@@ -529,6 +531,19 @@ class WeekModifyExpandableListFragment : Fragment(),
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
+    }
+
+    // 2952 - Visible Progress bar during Modify Availability
+    private fun showProgress(){
+        val bookedEventDetails = ArrayList<ListData>()
+        bookedEventDetails.add(
+            ListData(
+                getString(R.string.empty),
+                listOf(BookedEventServiceDto("", "", "", ""))
+            )
+        )
+        childData[titleDate[groupPosition]] = bookedEventDetails
+        adapter!!.notifyDataSetChanged()
     }
 
     override fun onDestroy() {
