@@ -111,6 +111,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     // 2823 - Method For Observe Result From ModifyDialog
     private fun observeModifyDialogResult() {
         dialogDisposable = RxBus.listen(RxEvent.ModifyDialog::class.java).subscribe {
+            showProgress()
             if (it.status == AppConstants.MONTH) {
                 Log.d(TAG, "onViewCreated listener month: called")
                 apiTokenValidation(AppConstants.AVAILABLE)
@@ -287,6 +288,7 @@ class MonthModifyExpandableListFragment : Fragment(),
                 fromDate?.let { fromDate ->
                     serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
                         toDate?.let { toDate ->
+                            showProgress()
                             modifyNullApiUpdate(
                                 fromDate,
                                 true,
@@ -473,8 +475,22 @@ class MonthModifyExpandableListFragment : Fragment(),
         return month
     }
 
+    // 2952 - Visible Progress bar during Modify Availability
+    private fun showProgress(){
+        val bookedEventDetails = ArrayList<ListData>()
+        bookedEventDetails.add(
+            ListData(
+                getString(R.string.empty),
+                listOf(BookedEventServiceDto("", "", "", ""))
+            )
+        )
+        childData[titleDate[groupPosition]] = bookedEventDetails
+        adapter!!.notifyDataSetChanged()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
+
 }
