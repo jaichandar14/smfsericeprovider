@@ -41,7 +41,7 @@ class CalendarUtils @Inject constructor() {
     // 2686 Method for Getting Week Start and End Date
     fun fromAndToDate(): WeekDates {
         val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT)
-        val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek
         val startOfCurrentWeek: LocalDate =
             CalendarUtils.selectedDate!!.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
         val weekList = ArrayList<String>()
@@ -113,7 +113,7 @@ class CalendarUtils @Inject constructor() {
         val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
         val toDateMonth: LocalDate =
             CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)
-        val firstDayOfWeekSunday: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        val firstDayOfWeekSunday: DayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek
         val startOfFirstWeekSunday: LocalDate =
             fromDateMonth.with(TemporalAdjusters.previousOrSame(firstDayOfWeekSunday))
         val lastDayOfWeekSunday: DayOfWeek = firstDayOfWeekSunday.plus(6)

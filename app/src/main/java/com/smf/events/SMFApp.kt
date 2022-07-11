@@ -36,6 +36,7 @@ class SMFApp:Application(), HasAndroidInjector {
             Amplify.addPlugin(AWSCognitoAuthPlugin())
             var resourceId = if(BuildConfig.FLAVOR=="dev")R.raw.amplifyconfiguration
             else if(BuildConfig.FLAVOR=="qa") R.raw.qa_aws
+            else if(BuildConfig.FLAVOR=="uat")R.raw.amplifyconfigurationuat
             else R.raw.amplifyconfigurationuat
             val config=AmplifyConfiguration.fromConfigFile(applicationContext,resourceId)
             Amplify.configure(config,applicationContext)

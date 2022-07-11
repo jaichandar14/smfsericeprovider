@@ -18,8 +18,8 @@ android {
         applicationId "com.smf.events"
         minSdk 19
         targetSdk 31
-        versionCode 6
-        versionName "1.06"
+        versionCode 7
+        versionName "1.07"
         buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
         buildConfigField "String", "apiType",  "\"festo-\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -51,8 +51,8 @@ android {
         prod {
             dimension "festo"
             applicationIdSuffix""
-            buildConfigField "String", "base_url", "\"https://www.smf-uat.demo-bpmlinks.com/\""
-            buildConfigField "String", "apiType",  "\"smf-\""
+            buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
+            buildConfigField "String", "apiType",  "\"festo-\""
           }
     }
     buildTypes {
