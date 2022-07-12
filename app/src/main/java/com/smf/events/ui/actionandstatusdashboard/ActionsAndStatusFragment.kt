@@ -204,10 +204,15 @@ class ActionsAndStatusFragment :
         actionAdapter.refreshItems(listActions1)
         val listStatus = getViewModel().getStatusList(actionAndStatusData)
         statusAdapter.refreshItems(listStatus)
+        // 2891 fetching all the active and inactive count
+        var activeCounts=actionAndStatusData.bidRequestedCount+actionAndStatusData.pendingForQuoteCount+
+                actionAndStatusData.bidSubmittedCount+actionAndStatusData.wonBidCount+actionAndStatusData.serviceInProgressCount
+        var inActiveCounts=actionAndStatusData.serviceDoneCount+actionAndStatusData.bidRejectedCount+
+                actionAndStatusData.bidTimedOutCount+actionAndStatusData.lostBidCount
         mDataBinding?.txPendtingitems?.text =
-            "${actionAndStatusData.actionCount} PendingItems"
+            "$activeCounts PendingItems"
         mDataBinding?.txPendingstatus?.text =
-            "${actionAndStatusData.statusCount} Status"
+            "$inActiveCounts Status"
     }
 
     // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
