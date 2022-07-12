@@ -5,7 +5,6 @@ import com.smf.events.network.ApiStories
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.schedulemanagement.model.EventDates
-import com.smf.events.ui.timeslot.deselectingdialog.model.ModifyDaySlotResponse
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import retrofit2.HttpException
@@ -66,12 +65,19 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
         idToken: String,
         spRegId: Int,
         serviceCategoryId: Int?,
-        serviceVendorOnboardingId:Int?,
-        fromDate:String,
-        toDate:String,
+        serviceVendorOnboardingId: Int?,
+        fromDate: String,
+        toDate: String,
     ): ApisResponse<EventDates> {
         return try {
-            val getResponse =apiStories.getEventDates(idToken,spRegId, serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate)
+            val getResponse = apiStories.getEventDates(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnboardingId,
+                fromDate,
+                toDate
+            )
             ApisResponse.Success(getResponse)
         } catch (e: HttpException) {
             ApisResponse.Error(e)
@@ -102,81 +108,4 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
         }
     }
 
-    // 2814 - modify-day-slot
-    suspend fun getModifyDaySlot(
-        idToken: String,
-        spRegId: Int,
-        fromDate: String,
-        isAvailable: Boolean,
-        modifiedSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String
-    ): ApisResponse<ModifyDaySlotResponse> {
-        return try {
-            val getResponse = apiStories.getModifyDaySlot(
-                idToken,
-                spRegId,
-                fromDate,
-                isAvailable,
-                modifiedSlot,
-                serviceVendorOnBoardingId,
-                toDate
-            )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
-    }
-
-    // 2815 - modify-week-slot
-    suspend fun getModifyWeekSlot(
-        idToken: String,
-        spRegId: Int,
-        fromDate: String,
-        isAvailable: Boolean,
-        modifiedSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String
-    ): ApisResponse<ModifyDaySlotResponse> {
-        return try {
-            val getResponse = apiStories.getModifyWeekSlot(
-                idToken,
-                spRegId,
-                fromDate,
-                isAvailable,
-                modifiedSlot,
-                serviceVendorOnBoardingId,
-                toDate
-            )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
-    }
-
-    // 2823 - modify-month-slot
-    suspend fun getModifyMonthSlot(
-        idToken: String,
-        spRegId: Int,
-        fromDate: String,
-        isAvailable: Boolean,
-        modifiedSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String
-    ): ApisResponse<ModifyDaySlotResponse> {
-        return try {
-            val getResponse = apiStories.getModifyMonthSlot(
-                idToken,
-                spRegId,
-                fromDate,
-                isAvailable,
-                modifiedSlot,
-                serviceVendorOnBoardingId,
-                toDate
-            )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
-    }
 }

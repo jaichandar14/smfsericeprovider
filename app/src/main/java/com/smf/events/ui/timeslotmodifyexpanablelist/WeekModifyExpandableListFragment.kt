@@ -151,7 +151,7 @@ class WeekModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String,
     ) {
-        if (view != null){
+        if (view != null) {
             sharedViewModel.getModifyBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -339,7 +339,8 @@ class WeekModifyExpandableListFragment : Fragment(),
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
         val branchName =
             childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
-        val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+        val currentDayFormatter =
+            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
         val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
             TextStyle.FULL,
             Locale.ENGLISH
@@ -372,14 +373,19 @@ class WeekModifyExpandableListFragment : Fragment(),
                 fromDate?.let { fromDate ->
                     serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
                         toDate?.let { toDate ->
-                            showProgress()
-                            modifyNullApiUpdate(
-                                fromDate,
-                                true,
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.WEEK,
+                                AppConstants.NULL_TO_SELECT,
                                 timeSlot,
+                                currentMonth,
                                 serviceVendorOnboardingId,
-                                toDate
+                                fromDate,
+                                toDate, statusList
                             )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
                         }
                     }
                 }
@@ -413,34 +419,6 @@ class WeekModifyExpandableListFragment : Fragment(),
         lastGroupPosition = listPosition
     }
 
-    // 2815 - Method For getModifyWeekSlot Api call with NULL
-    private fun modifyNullApiUpdate(
-        fromDate: String,
-        isAvailable: Boolean,
-        timeSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String
-    ) {
-        sharedViewModel.getModifyWeekSlot(
-            idToken, spRegId, fromDate, isAvailable, timeSlot,
-            serviceVendorOnBoardingId,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d(TAG, "success ModifyBookedEvent null: ${apiResponse.response.data}")
-                    apiTokenValidation(AppConstants.NULL)
-                }
-                is ApisResponse.Error -> {
-                    Log.d(TAG, "success ModifyBookedEvent null error: ${apiResponse.exception}")
-                }
-                else -> {
-                    Log.d(TAG, "Condition Not Satisfied")
-                }
-            }
-        })
-    }
-
     // 2670 - Method For AWS Token Validation
     private fun apiTokenValidation(caller: String) {
         if (idToken.isNotEmpty()) {
@@ -470,7 +448,8 @@ class WeekModifyExpandableListFragment : Fragment(),
     // 2670 - Method For Date And Day Arrangement To Display UI
     private fun dateFormat(input: String): String {
         val date = input.substring(3, 5)
-        val currentDayFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+        val currentDayFormatter =
+            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
         val currentDay = LocalDate.parse(input, currentDayFormatter).dayOfWeek.getDisplayName(
             TextStyle.SHORT, Locale.ENGLISH
         )
@@ -534,7 +513,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     }
 
     // 2952 - Visible Progress bar during Modify Availability
-    private fun showProgress(){
+    private fun showProgress() {
         val bookedEventDetails = ArrayList<ListData>()
         bookedEventDetails.add(
             ListData(

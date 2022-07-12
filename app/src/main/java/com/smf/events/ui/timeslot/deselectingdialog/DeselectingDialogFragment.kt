@@ -99,7 +99,7 @@ class DeselectingDialogFragment(
 
     override fun onStart() {
         super.onStart()
-        if (purpose == AppConstants.DESELECTED) {
+        if (purpose == AppConstants.DESELECTED || purpose == AppConstants.NULL_TO_SELECT) {
             val window: Window? = dialog?.window
             val params: WindowManager.LayoutParams = window!!.attributes
             params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
@@ -129,6 +129,9 @@ class DeselectingDialogFragment(
         if (purpose == AppConstants.DESELECTED) {
             isAvailable = false
             deselectedDialog()
+        } else if (purpose == AppConstants.NULL_TO_SELECT) {
+            isAvailable = true
+            nullToSelectDialog()
         } else if (purpose == AppConstants.SELECTED) {
             modifyDialog()
         }
@@ -144,7 +147,9 @@ class DeselectingDialogFragment(
         mDataBinding?.let {
             it.okBtn.setOnClickListener {
                 if (purpose == AppConstants.DESELECTED) {
-                    apiTokenValidation("deSelectDialog")
+                    apiTokenValidation(AppConstants.DESELECTED)
+                } else if (purpose == AppConstants.NULL_TO_SELECT) {
+                    apiTokenValidation(AppConstants.NULL_TO_SELECT)
                 } else if (purpose == AppConstants.SELECTED) {
                     dismiss()
                 }
@@ -251,19 +256,20 @@ class DeselectingDialogFragment(
         })
     }
 
-    private fun callBackToModifyFragments(){
-        when(classTag){
+    private fun callBackToModifyFragments() {
+        when (classTag) {
             AppConstants.DAY -> {
                 RxBus.publish(RxEvent.ModifyDialog(AppConstants.DAY))
             }
-            AppConstants.WEEK ->{
+            AppConstants.WEEK -> {
                 RxBus.publish(RxEvent.ModifyDialog(AppConstants.WEEK))
             }
-            AppConstants.MONTH ->{
+            AppConstants.MONTH -> {
                 RxBus.publish(RxEvent.ModifyDialog(AppConstants.MONTH))
             }
         }
     }
+
     // 2801 - method For CancelButton
     private fun cancelBtnClick() {
         mDataBinding?.let {
@@ -301,13 +307,13 @@ class DeselectingDialogFragment(
                         R.string.you_are_deselecting_second
                     )
             }
-            AppConstants.WEEK ->{
+            AppConstants.WEEK -> {
                 mDataBinding?.txTitle?.text =
                     getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + currentMonth + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }
-            AppConstants.MONTH ->{
+            AppConstants.MONTH -> {
                 mDataBinding?.txTitle?.text =
                     getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
                         R.string.you_are_deselecting_second
@@ -315,6 +321,29 @@ class DeselectingDialogFragment(
             }
         }
 
+    }
+
+    private fun nullToSelectDialog() {
+        when (classTag) {
+            AppConstants.DAY -> {
+                mDataBinding?.txTitle?.text =
+                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                        R.string.you_are_deselecting_second
+                    )
+            }
+            AppConstants.WEEK -> {
+                mDataBinding?.txTitle?.text =
+                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + currentMonth + "." + " " + getString(
+                        R.string.you_are_deselecting_second
+                    )
+            }
+            AppConstants.MONTH -> {
+                mDataBinding?.txTitle?.text =
+                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                        R.string.you_are_deselecting_second
+                    )
+            }
+        }
     }
 
     // 2814 - Method For AWS Token Validation
@@ -330,41 +359,86 @@ class DeselectingDialogFragment(
     // 2814 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
-            when (classTag) {
-                AppConstants.DAY -> {
-                    getModifyDaySlot(
-                        idToken,
-                        spRegId,
-                        fromDate,
-                        isAvailable,
-                        timeSlot,
-                        serviceVendorOnBoardingId,
-                        toDate
-                    )
-                }
-                AppConstants.WEEK ->{
+            if (caller == AppConstants.DESELECTED) {
+                callDeSelectedApi()
+            } else if (caller == AppConstants.NULL_TO_SELECT) {
+                callNullToSelectApi()
+            }
+        }
+    }
 
-                    getModifyWeekSlot(
-                        idToken,
-                        spRegId,
-                        fromDate,
-                        isAvailable,
-                        timeSlot,
-                        serviceVendorOnBoardingId,
-                        toDate
-                    )
-                }
-                AppConstants.MONTH ->{
-                    getModifyMonthSlot(
-                        idToken,
-                        spRegId,
-                        fromDate,
-                        isAvailable,
-                        timeSlot,
-                        serviceVendorOnBoardingId,
-                        toDate
-                    )
-                }
+    private fun callDeSelectedApi() {
+        when (classTag) {
+            AppConstants.DAY -> {
+                getModifyDaySlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    timeSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            }
+            AppConstants.WEEK -> {
+                getModifyWeekSlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    timeSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            }
+            AppConstants.MONTH -> {
+                getModifyMonthSlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    timeSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            }
+        }
+    }
+
+    private fun callNullToSelectApi() {
+        when (classTag) {
+            AppConstants.DAY -> {
+                getModifyDaySlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    timeSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            }
+            AppConstants.WEEK -> {
+                getModifyWeekSlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    timeSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
+            }
+            AppConstants.MONTH -> {
+                getModifyMonthSlot(
+                    idToken,
+                    spRegId,
+                    fromDate,
+                    isAvailable,
+                    timeSlot,
+                    serviceVendorOnBoardingId,
+                    toDate
+                )
             }
         }
     }

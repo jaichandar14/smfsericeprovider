@@ -25,6 +25,7 @@ object AppConstants {
     const val REQUEST_CLOSED = "Service Closed"
     const val REJECTED_BID = "Bid Rejected"
     const val TIMED_OUT = "Timed Out"
+
     // 2940
     const val TIMED_OUT_BID = "Timed\nOut"
     const val BID_LOST = "Lost Bid\n"
@@ -32,8 +33,9 @@ object AppConstants {
     const val SERVICE_PROGRESS = "Service\nProgress"
     const val PROGRESS_SERVICE = "Service Progress"
     const val SERVICE_CLOSER = "Service Closed"
-    const val WON_BID_SMALL  ="Won bid"
-    const val INITIATE_CLOSER  ="Initiate closer"
+    const val WON_BID_SMALL = "Won bid"
+    const val INITIATE_CLOSER = "Initiate closer"
+
     // 2904
     const val BIDDING_IN_PROGRESS = "Bidding in Progress"
 
@@ -82,6 +84,7 @@ object AppConstants {
 
     // 2885
     const val ZERO = "0"
+
     // 2845
     const val SERVICE_PROVIDER = "SERVICE_PROVIDER"
     const val SIGN_IN_NOT_COMPLETED = "SignInNotCompleted"
@@ -90,11 +93,15 @@ object AppConstants {
     const val RESEND_FAILURE = "resend failure"
     const val WELCOME = "Welcome"
     const val BIDDING = "Bidding"
-    const val SERVICE_IN_PROGRESS_SMALL =  "Service in progress"
+    const val SERVICE_IN_PROGRESS_SMALL = "Service in progress"
     const val BID_WON_SMALL = "Bid won"
     const val SERVICE_COMPLETED = "Service completed"
+
     // 2938
-    const val EMAIL= "Email"
-    const val MOBILE= "Mobile"
+    const val EMAIL = "Email"
+    const val MOBILE = "Mobile"
+
+    // 2963
+    const val NULL_TO_SELECT = "nullToSelect"
 
 }

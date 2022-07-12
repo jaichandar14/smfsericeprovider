@@ -167,6 +167,7 @@
     // 2803
     <string name="event">Event</string>
     <string name="you_are_deselecting">You are deselecting </string>
+    <string name="you_are_selecting">You are selecting </string>
     <string name="you_are_deselecting_first">slots availability for the entire month of </string>
     <string name="you_are_deselecting_second">This will modify all you existing slots availability.Please click OK to proceed </string>
     <string name="event_booked_on">Event Booked on the below mentioned dates.Hence you can not modify the </string>

@@ -256,7 +256,8 @@ class MonthModifyExpandableListFragment : Fragment(),
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
         val branchName =
             childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
-        val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+        val currentDayFormatter =
+            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
         val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
             TextStyle.FULL,
             Locale.ENGLISH
@@ -288,14 +289,19 @@ class MonthModifyExpandableListFragment : Fragment(),
                 fromDate?.let { fromDate ->
                     serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
                         toDate?.let { toDate ->
-                            showProgress()
-                            modifyNullApiUpdate(
-                                fromDate,
-                                true,
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.MONTH,
+                                AppConstants.NULL_TO_SELECT,
                                 timeSlot,
+                                currentMonth,
                                 serviceVendorOnboardingId,
-                                toDate
+                                fromDate,
+                                toDate, statusList
                             )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
                         }
                     }
                 }
@@ -323,34 +329,6 @@ class MonthModifyExpandableListFragment : Fragment(),
                 }
             }
         }
-    }
-
-    // 2815 - Method For getModifyWeekSlot Api call with NULL
-    private fun modifyNullApiUpdate(
-        fromDate: String,
-        isAvailable: Boolean,
-        timeSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String
-    ) {
-        sharedViewModel.getModifyMonthSlot(
-            idToken, spRegId, fromDate, isAvailable, timeSlot,
-            serviceVendorOnBoardingId,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d(TAG, "success ModifyBookedEvent null: ${apiResponse.response.data}")
-                    apiTokenValidation(AppConstants.NULL)
-                }
-                is ApisResponse.Error -> {
-                    Log.d(TAG, "success ModifyBookedEvent null error: ${apiResponse.exception}")
-                }
-                else -> {
-                    Log.d(TAG, "Condition Not Satisfied")
-                }
-            }
-        })
     }
 
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
@@ -476,7 +454,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2952 - Visible Progress bar during Modify Availability
-    private fun showProgress(){
+    private fun showProgress() {
         val bookedEventDetails = ArrayList<ListData>()
         bookedEventDetails.add(
             ListData(
