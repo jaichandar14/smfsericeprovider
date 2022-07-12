@@ -14,7 +14,6 @@ import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class ScheduleManagementViewModel @Inject constructor(
@@ -32,7 +31,7 @@ class ScheduleManagementViewModel @Inject constructor(
         var seviceId: Int,
         var branchId: Int,
         var listOfDays: ArrayList<String>,
-        var allDaysList:ArrayList<String>,
+        var allDaysList: ArrayList<String>,
     )
 
     private var currentDate = MutableLiveData<SelectedDate>()
@@ -42,9 +41,9 @@ class ScheduleManagementViewModel @Inject constructor(
         seviceId: Int,
         branchId: Int,
         listOfDays: ArrayList<String>,
-        allDaysList:ArrayList<String>,
+        allDaysList: ArrayList<String>,
     ) {
-        currentDate.value = SelectedDate(selectedDate, seviceId, branchId, listOfDays,allDaysList)
+        currentDate.value = SelectedDate(selectedDate, seviceId, branchId, listOfDays, allDaysList)
         Log.d("TAG", "setCurrentDate: $allDaysList")
     }
 
@@ -257,88 +256,11 @@ class ScheduleManagementViewModel @Inject constructor(
             )
         }
 
-    // 2814 - modify-day-slot
-    fun getModifyDaySlot(
-        idToken: String,
-        spRegId: Int,
-        fromDate: String,
-        isAvailable: Boolean,
-        modifiedSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String,
-    ) =
-        liveData(Dispatchers.IO) {
-            emit(
-                scheduleManagementRepository.getModifyDaySlot(
-                    idToken,
-                    spRegId,
-                    fromDate,
-                    isAvailable,
-                    modifiedSlot,
-                    serviceVendorOnBoardingId,
-                    toDate
-                )
-            )
-        }
-
-    // 2815 - modify-week-slot
-    fun getModifyWeekSlot(
-        idToken: String,
-        spRegId: Int,
-        fromDate: String,
-        isAvailable: Boolean,
-        modifiedSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String,
-    ) =
-        liveData(Dispatchers.IO) {
-            emit(
-                scheduleManagementRepository.getModifyWeekSlot(
-                    idToken,
-                    spRegId,
-                    fromDate,
-                    isAvailable,
-                    modifiedSlot,
-                    serviceVendorOnBoardingId,
-                    toDate
-                )
-            )
-        }
-
-    // 2823 - modify-week-slot
-    fun getModifyMonthSlot(
-        idToken: String,
-        spRegId: Int,
-        fromDate: String,
-        isAvailable: Boolean,
-        modifiedSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String,
-    ) =
-        liveData(Dispatchers.IO) {
-            emit(
-                scheduleManagementRepository.getModifyMonthSlot(
-                    idToken,
-                    spRegId,
-                    fromDate,
-                    isAvailable,
-                    modifiedSlot,
-                    serviceVendorOnBoardingId,
-                    toDate
-                )
-            )
-        }
-
     private var callBackInterface: CallBackInterface? = null
 
     // 2458 Initializing CallBack Interface Method
     fun setCallBackInterface(callback: CallBackInterface) {
         callBackInterface = callback
-    }
-
-    // 2825
-    fun closedbtn(mDataBinding: FragmentCalendarBinding) {
-
     }
 
     // 2458 CallBack Interface

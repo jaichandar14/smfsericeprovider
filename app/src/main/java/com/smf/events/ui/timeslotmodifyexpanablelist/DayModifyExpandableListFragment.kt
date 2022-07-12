@@ -142,7 +142,7 @@ class DayModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        if (view != null){
+        if (view != null) {
             sharedViewModel.getModifyBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -152,7 +152,10 @@ class DayModifyExpandableListFragment : Fragment(),
                     is ApisResponse.Success -> {
                         Log.d(TAG, "success ModifyBookedEvent day: ${apiResponse.response.data}")
                         if (caller == AppConstants.INITIAL_DAY) {
-                            Log.d(TAG, "success ModifyBookedEvent day in: ${apiResponse.response.data}")
+                            Log.d(
+                                TAG,
+                                "success ModifyBookedEvent day in: ${apiResponse.response.data}"
+                            )
                             eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
                         } else {
                             Log.d(
@@ -279,7 +282,8 @@ class DayModifyExpandableListFragment : Fragment(),
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
         val branchName =
             childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
-        val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+        val currentDayFormatter =
+            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
         val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
             TextStyle.FULL,
             Locale.ENGLISH
@@ -311,14 +315,19 @@ class DayModifyExpandableListFragment : Fragment(),
                 fromDate?.let { fromDate ->
                     serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
                         toDate?.let { toDate ->
-                            showProgress()
-                            modifyNullApiUpdate(
-                                fromDate,
-                                true,
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.DAY,
+                                AppConstants.NULL_TO_SELECT,
                                 timeSlot,
+                                currentMonth,
                                 serviceVendorOnboardingId,
-                                toDate
+                                fromDate,
+                                toDate, statusList
                             )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
                         }
                     }
                 }
@@ -349,34 +358,6 @@ class DayModifyExpandableListFragment : Fragment(),
         // Setting Position From Selected Calender Date
         this.groupPosition = listPosition
         lastGroupPosition = listPosition
-    }
-
-    // 2814 - Method For getModifyDaySlot Api call with NULL
-    private fun modifyNullApiUpdate(
-        fromDate: String,
-        isAvailable: Boolean,
-        timeSlot: String,
-        serviceVendorOnBoardingId: Int,
-        toDate: String
-    ) {
-        sharedViewModel.getModifyDaySlot(
-            idToken, spRegId, fromDate, isAvailable, timeSlot,
-            serviceVendorOnBoardingId,
-            toDate
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    Log.d(TAG, "success ModifyBookedEvent null: ${apiResponse.response.data}")
-                    apiTokenValidation(AppConstants.NULL)
-                }
-                is ApisResponse.Error -> {
-                    Log.d(TAG, "success ModifyBookedEvent null error: ${apiResponse.exception}")
-                }
-                else -> {
-                    Log.d(TAG, "Condition Not Satisfied")
-                }
-            }
-        })
     }
 
     // 2815 - Method For Set Null Value
@@ -473,7 +454,7 @@ class DayModifyExpandableListFragment : Fragment(),
     }
 
     // 2952 - Visible Progress bar during Modify Availability
-    private fun showProgress(){
+    private fun showProgress() {
         val bookedEventDetails = ArrayList<ListData>()
         bookedEventDetails.add(
             ListData(
