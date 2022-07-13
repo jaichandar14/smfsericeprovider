@@ -15,41 +15,27 @@
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/quote_brief_dialog_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:context=".ui.quotebriefdialog.QuoteBriefDialog">
+            android:layout_height="wrap_content">
 
-          <ProgressBar
-              android:id="@+id/progress_bar"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:visibility="gone"
-              app:layout_constraintTop_toTopOf="parent"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintBottom_toBottomOf="parent"
-              android:indeterminateDrawable="@drawable/custom_progrss_bar">
-
-          </ProgressBar>
             <RelativeLayout
                 android:id="@+id/linear_catering"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:paddingTop="@dimen/size_10dp"
+                android:gravity="center"
                 android:paddingStart="@dimen/size_15dp"
+                android:paddingTop="@dimen/size_15dp"
                 android:paddingBottom="@dimen/size_10dp"
-                android:gravity="center">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_marginTop="@dimen/size_5dp"
                     android:id="@+id/btn_back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
+                    android:layout_marginTop="@dimen/size_5dp"
                     android:layout_marginRight="@dimen/size_8dp"
                     app:srcCompat="@drawable/arrow_back" />
 
@@ -65,61 +51,706 @@
                     android:textSize="@dimen/size_24sp" />
             </RelativeLayout>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_view"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/quote_brief_dialog_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_20dp"
-                android:layout_marginTop="@dimen/size_20dp"
-                android:layout_marginRight="@dimen/size_20dp"
-                app:cardCornerRadius="@dimen/size_12dp"
-                app:cardElevation="@dimen/size_10dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linear_catering">
+                app:layout_constraintTop_toBottomOf="@+id/linear_catering"
+                tools:context=".ui.quotebriefdialog.QuoteBriefDialog">
 
-                <LinearLayout
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminateDrawable="@drawable/custom_progrss_bar"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </ProgressBar>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/size_10dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_20dp"
+                    android:layout_marginTop="@dimen/size_5dp"
+                    android:layout_marginRight="@dimen/size_20dp"
+                    app:cardCornerRadius="@dimen/size_12dp"
+                    app:cardElevation="@dimen/size_10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/size_20dp">
+                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:orientation="vertical">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/size_15dp">
+
+                            <TextView
+                                android:id="@+id/tx_job_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/mulish_bold"
+                                android:text="@string/saras_birthday"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/size_18sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tx_job_amount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/mulish_semi_bold"
+                                android:text="@string/_2500"
+                                android:textColor="@color/black_event_title"
+                                android:textSize="@dimen/size_22sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toEndOf="@+id/tx_job_title"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <TextView
+                                android:id="@+id/tx_job_idnum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/size_5dp"
+                                android:fontFamily="@font/poppins_regular"
+                                android:text="@string/ca457845264162"
+                                android:textColor="@color/blue_event_id"
+                                android:textSize="@dimen/size_18sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/tx_job_title" />
+
+                            <TextView
+                                android:id="@+id/view_quote"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/size_10dp"
+                                android:fontFamily="@font/mulish_regular"
+                                android:text="@string/view_quote"
+                                android:textColor="@color/blue_event_id"
+                                android:textSize="@dimen/size_15sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toEndOf="@+id/tx_job_idnum"
+                                app:layout_constraintTop_toBottomOf="@+id/tx_job_amount" />
+
+                            <TextView
+                                android:id="@id/service_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/size_15dp"
+                                android:fontFamily="@font/mulish_semi_bold"
+                                android:text="@string/fork_amp_spoon"
+                                android:textSize="@dimen/size_16sp"
+                                app:layout_constraintEnd_toEndOf="@+id/tx_job_idnum"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tx_job_idnum" />
+
+                            <TextView
+                                android:id="@+id/branch_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/size_2dp"
+                                android:fontFamily="@font/mulish_bold"
+                                android:text="@string/fork_amp_spoon"
+                                android:textColor="@color/dark_font"
+                                android:textSize="@dimen/size_16sp"
+                                app:layout_constraintEnd_toEndOf="@+id/service_name"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/service_name" />
+
+                            <LinearLayout
+                                android:id="@+id/linear_spn_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/size_20dp"
+                                android:weightSum="3"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/branch_name">
+
+                                <TextView
+                                    android:id="@+id/exp_btn"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/size_5dp"
+                                    android:fontFamily="@font/mulish_semi_bold"
+                                    android:gravity="start"
+                                    android:text="Status:"
+                                    android:textSize="@dimen/size_15sp" />
+
+                                <TextView
+                                    android:id="@+id/spn_Bid_accepted"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/size_5dp"
+                                    android:layout_marginTop="@dimen/size_5dp"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:gravity="start"
+                                    android:text="@string/bid_accepted"
+                                    android:textColor="@color/pairing_theme"
+                                    android:textSize="@dimen/size_15sp"
+                                    app:layout_constraintTop_toBottomOf="@+id/tx_job_idnum" />
+
+                            </LinearLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/expandable_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:background="@color/quote_details_blue"
+                                android:paddingBottom="@dimen/size_10dp"
+                                android:visibility="visible"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/linear_spn_layout">
+
+                                <ImageView
+                                    android:id="@+id/check1"
+                                    android:layout_width="@dimen/size_35dp"
+                                    android:layout_height="@dimen/size_35dp"
+                                    android:layout_marginStart="@dimen/size_10dp"
+                                    android:layout_marginTop="@dimen/size_10dp"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:srcCompat="@drawable/green_check" />
+
+
+                                <TextView
+                                    android:id="@+id/tx_bid_accpeted"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/mulish_bold"
+                                    android:padding="@dimen/size_2dp"
+                                    android:text="@string/quote_sent"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_15sp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/check1"
+                                    app:layout_constraintStart_toEndOf="@+id/check1"
+                                    app:layout_constraintTop_toTopOf="@+id/check1" />
+
+                                <View
+                                    android:id="@+id/view1"
+                                    android:layout_width="1dp"
+                                    android:layout_height="@dimen/dp_0"
+                                    android:background="@color/blue_event_id"
+                                    app:layout_constraintBottom_toTopOf="@+id/check2"
+                                    app:layout_constraintEnd_toEndOf="@+id/check1"
+                                    app:layout_constraintStart_toStartOf="@+id/check1"
+                                    app:layout_constraintTop_toBottomOf="@+id/check1" />
+
+                                <ImageView
+                                    android:id="@+id/check2"
+                                    android:layout_width="@dimen/size_35dp"
+                                    android:layout_height="@dimen/size_35dp"
+                                    android:layout_marginStart="@dimen/size_10dp"
+                                    android:layout_marginTop="@dimen/size_30dp"
+                                    android:contentDescription="@string/icon"
+                                    android:src="@drawable/inprogress"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/check1" />
+
+                                <TextView
+                                    android:id="@+id/tx_won_reject"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/mulish_bold"
+                                    android:padding="@dimen/size_2dp"
+                                    android:text="@string/bidding_in_progress"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_14sp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/check2"
+                                    app:layout_constraintStart_toEndOf="@id/check2"
+                                    app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+
+                                <View
+                                    android:id="@+id/processflow2"
+                                    android:layout_width="1dp"
+                                    android:layout_height="@dimen/dp_0"
+                                    android:background="#CDCBCB"
+                                    app:layout_constraintBottom_toTopOf="@+id/check3"
+                                    app:layout_constraintEnd_toEndOf="@id/check3"
+                                    app:layout_constraintStart_toStartOf="@+id/check2"
+                                    app:layout_constraintTop_toBottomOf="@+id/check2" />
+
+                                <ImageView
+                                    android:id="@+id/check3"
+                                    android:layout_width="@dimen/size_35dp"
+                                    android:layout_height="@dimen/size_35dp"
+                                    android:layout_marginStart="@dimen/size_10dp"
+                                    android:layout_marginTop="@dimen/size_30dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/check2"
+                                    app:srcCompat="@drawable/notstated" />
+
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/tx_won_bid"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/mulish_bold"
+                                    android:padding="@dimen/size_2dp"
+                                    android:text="@string/won_bid"
+                                    android:textSize="@dimen/size_14sp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/check3"
+                                    app:layout_constraintStart_toEndOf="@+id/check3"
+                                    app:layout_constraintTop_toTopOf="@+id/check3" />
+
+
+                                <View
+                                    android:id="@+id/processflow3"
+                                    android:layout_width="1dp"
+                                    android:layout_height="@dimen/dp_0"
+                                    android:background="#CDCBCB"
+                                    app:layout_constraintBottom_toTopOf="@+id/check4"
+                                    app:layout_constraintEnd_toEndOf="@id/check4"
+                                    app:layout_constraintStart_toStartOf="@+id/check3"
+                                    app:layout_constraintTop_toBottomOf="@+id/check3" />
+
+
+                                <ImageView
+                                    android:id="@+id/check4"
+                                    android:layout_width="@dimen/size_35dp"
+                                    android:layout_height="@dimen/size_35dp"
+                                    android:layout_marginStart="@dimen/size_10dp"
+                                    android:layout_marginTop="@dimen/size_30dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/check3"
+                                    app:srcCompat="@drawable/notstated" />
+
+
+                                <TextView
+                                    android:id="@+id/tx_service_progress"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/mulish_bold"
+                                    android:padding="@dimen/size_2dp"
+                                    android:text="Service in Progress"
+                                    android:textSize="@dimen/size_14sp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/check4"
+                                    app:layout_constraintStart_toEndOf="@+id/check4"
+                                    app:layout_constraintTop_toBottomOf="@+id/processflow3" />
+
+                                <View
+                                    android:id="@+id/processflow5"
+                                    android:layout_width="1dp"
+                                    android:layout_height="@dimen/size_30dp"
+                                    android:background="#CDCBCB"
+                                    app:layout_constraintBottom_toTopOf="@id/check5"
+                                    app:layout_constraintEnd_toEndOf="@+id/check5"
+                                    app:layout_constraintStart_toStartOf="@+id/check5"
+                                    app:layout_constraintTop_toBottomOf="@id/check4" />
+
+
+                                <ImageView
+                                    android:id="@+id/check5"
+                                    android:layout_width="@dimen/size_35dp"
+                                    android:layout_height="@dimen/size_35dp"
+                                    android:layout_marginStart="@dimen/size_10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.0"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/processflow5"
+                                    app:srcCompat="@drawable/notstated" />
+
+
+                                <TextView
+                                    android:id="@+id/tx_service_completed"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/mulish_bold"
+                                    android:padding="@dimen/size_2dp"
+                                    android:text="Service completed"
+                                    android:textSize="@dimen/size_14sp"
+                                    app:layout_constraintBottom_toBottomOf="@+id/check5"
+                                    app:layout_constraintStart_toEndOf="@+id/check5"
+                                    app:layout_constraintTop_toTopOf="@+id/check5" />
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_15dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:fontFamily="@font/mulish_bold"
+                                android:text="EVENT DETAILS"
+                                android:textColor="@color/darkblue_smf_font"
+                                android:textSize="@dimen/size_18sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginLeft="@dimen/size_10dp"
+                                android:layout_marginTop="@dimen/size_5dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:id="@+id/tx_eventdate"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/event_date"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/tx_eventdate_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/_9_aug_2022"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginLeft="@dimen/size_10dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:id="@+id/tx_bid_proposal_date"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/bid_proposal_date"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/tx_bid_proposal_date_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/_9_aug_2021"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:id="@+id/tx_cut_off_date"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/cut_off_date"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/tx_cut_off_date_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/_9_aug_2022"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:id="@+id/service_date"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/service_date_"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/service_date_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/_9_aug_2022"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:id="@+id/payment_status"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/payment_status"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/payment_status_value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/_9_aug_2022"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/serviced_by"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/serviced_by"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/na"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/address"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/address"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:lines="3"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/customer_rating"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:id="@+id/customer_rating"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:lines="2"
+                                    android:text="@string/_9_aug_2021"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/size_20dp"
+                                android:layout_marginTop="@dimen/size_8dp"
+                                android:layout_marginEnd="@dimen/size_20dp"
+                                android:layout_marginBottom="@dimen/size_30dp"
+                                android:weightSum="3">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/review_comment"
+                                    android:textSize="@dimen/size_16sp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:fontFamily="@font/mulish_regular"
+                                    android:text="@string/na"
+                                    android:textColor="@color/dark_font"
+                                    android:textSize="@dimen/size_16sp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_20dp"
+                    android:background="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_view" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/view_quotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linear_catering"
+                app:layout_constraintVertical_bias="0.0">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_view1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_20dp"
+                    android:layout_marginTop="@dimen/size_10dp"
+                    android:layout_marginEnd="@dimen/size_20dp"
+                    android:layout_marginBottom="@dimen/size_20dp"
+                    app:cardCornerRadius="@dimen/size_12dp"
+                    app:cardElevation="@dimen/size_10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.29000002">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/size_20dp"
+                        android:layout_marginTop="@dimen/size_15dp"
+                        android:layout_marginRight="@dimen/size_15dp"
+                        android:layout_marginBottom="@dimen/size_15dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/radiogroup">
 
                         <TextView
-                            android:id="@+id/tx_job_title"
+                            android:id="@+id/tx_job_title_vo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
                             android:fontFamily="@font/mulish_bold"
                             android:text="@string/saras_birthday"
                             android:textColor="@color/black"
                             android:textSize="@dimen/size_18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tx_job_amount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:fontFamily="@font/mulish_semi_bold"
-                            android:text="@string/_2500"
-                            android:textColor="@color/black_event_title"
-                            android:textSize="@dimen/size_22sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintStart_toEndOf="@+id/tx_job_title"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintVertical_bias="0.0" />
 
                         <TextView
-                            android:id="@+id/tx_job_idnum"
+                            android:id="@+id/tx_job_idnum_vo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/size_5dp"
@@ -127,40 +758,31 @@
                             android:text="@string/ca457845264162"
                             android:textColor="@color/blue_event_id"
                             android:textSize="@dimen/size_18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tx_job_title" />
+                            app:layout_constraintTop_toBottomOf="@+id/tx_job_title_vo"
+                            app:layout_constraintVertical_bias="0.0" />
+
 
                         <TextView
-                            android:id="@+id/view_quote"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/size_10dp"
-                            android:fontFamily="@font/mulish_regular"
-                            android:text="@string/view_quote"
-                            android:textColor="@color/blue_event_id"
-                            android:textSize="@dimen/size_15sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintStart_toEndOf="@+id/tx_job_idnum"
-                            app:layout_constraintTop_toBottomOf="@+id/tx_job_amount" />
-
-                        <TextView
-                            android:id="@id/service_name"
+                            android:id="@id/service_name_vo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/size_15dp"
                             android:fontFamily="@font/mulish_semi_bold"
                             android:text="@string/fork_amp_spoon"
                             android:textSize="@dimen/size_16sp"
-                            app:layout_constraintEnd_toEndOf="@+id/tx_job_idnum"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/tx_job_idnum_vo"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tx_job_idnum" />
+                            app:layout_constraintTop_toBottomOf="@id/tx_job_idnum_vo"
+                            app:layout_constraintVertical_bias="0.0" />
 
                         <TextView
-                            android:id="@+id/branch_name"
+                            android:id="@+id/branch_name_vo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/size_2dp"
@@ -168,514 +790,169 @@
                             android:text="@string/fork_amp_spoon"
                             android:textColor="@color/dark_font"
                             android:textSize="@dimen/size_16sp"
-                            app:layout_constraintEnd_toEndOf="@+id/service_name"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/service_name_vo"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/service_name" />
-
-                        <LinearLayout
-                            android:id="@+id/linear_spn_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/size_20dp"
-                            android:weightSum="3"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/branch_name">
-
-                            <TextView
-                                android:id="@+id/exp_btn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="@dimen/size_15sp"
-                                android:text="Status:"
-                                android:gravity="start"
-                                android:layout_marginTop="@dimen/size_5dp"
-                                android:fontFamily="@font/mulish_semi_bold" />
-
-                            <TextView
-                                android:layout_marginStart="@dimen/size_5dp"
-                                android:id="@+id/spn_Bid_accepted"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/size_5dp"
-                                android:fontFamily="@font/mulish_regular"
-                                android:gravity="start"
-                                android:text="@string/bid_accepted"
-                                android:textColor="@color/pairing_theme"
-                                android:textSize="@dimen/size_15sp"
-                                app:layout_constraintTop_toBottomOf="@+id/tx_job_idnum" />
-
-                        </LinearLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/expandable_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="visible"
-                            android:paddingBottom="@dimen/size_10dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:background="@color/quote_details_blue"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/linear_spn_layout">
-
-                            <ImageView
-                                android:id="@+id/check1"
-                                android:layout_width="@dimen/size_35dp"
-                                android:layout_height="@dimen/size_35dp"
-                                android:layout_marginStart="@dimen/size_10dp"
-                                android:layout_marginTop="@dimen/size_10dp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/green_check" />
-
-
-                            <TextView
-                                android:id="@+id/tx_bid_accpeted"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/mulish_bold"
-                                android:padding="@dimen/size_2dp"
-                                android:text="@string/quote_sent"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_15sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/check1"
-                                app:layout_constraintStart_toEndOf="@+id/check1"
-                                app:layout_constraintTop_toTopOf="@+id/check1" />
-
-                            <View
-                                android:id="@+id/view1"
-                                android:layout_width="1dp"
-                                android:layout_height="@dimen/dp_0"
-                                android:background="@color/blue_event_id"
-                                app:layout_constraintBottom_toTopOf="@+id/check2"
-                                app:layout_constraintEnd_toEndOf="@+id/check1"
-                                app:layout_constraintStart_toStartOf="@+id/check1"
-                                app:layout_constraintTop_toBottomOf="@+id/check1" />
-
-                            <ImageView
-                                android:contentDescription="@string/icon"
-                                android:layout_marginStart="@dimen/size_10dp"
-                                android:id="@+id/check2"
-                                android:layout_width="@dimen/size_35dp"
-                                android:layout_height="@dimen/size_35dp"
-                                android:layout_marginTop="@dimen/size_30dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/check1"
-                                android:src="@drawable/inprogress" />
-
-                            <TextView
-                                android:id="@+id/tx_won_reject"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/mulish_bold"
-                                android:padding="@dimen/size_2dp"
-                                android:text="@string/bidding_in_progress"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_14sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/check2"
-                                app:layout_constraintStart_toEndOf="@id/check2"
-                                app:layout_constraintTop_toBottomOf="@+id/view1" />
-
-
-                            <View
-                                android:id="@+id/processflow2"
-                                android:layout_width="1dp"
-                                android:layout_height="@dimen/dp_0"
-                                android:background="#CDCBCB"
-                                app:layout_constraintBottom_toTopOf="@+id/check3"
-                                app:layout_constraintEnd_toEndOf="@id/check3"
-                                app:layout_constraintStart_toStartOf="@+id/check2"
-                                app:layout_constraintTop_toBottomOf="@+id/check2" />
-
-                            <ImageView
-                                android:layout_marginStart="@dimen/size_10dp"
-                                android:id="@+id/check3"
-                                android:layout_width="@dimen/size_35dp"
-                                android:layout_height="@dimen/size_35dp"
-                                android:layout_marginTop="@dimen/size_30dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/check2"
-                                app:srcCompat="@drawable/notstated" />
-
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/tx_won_bid"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/mulish_bold"
-                                android:padding="@dimen/size_2dp"
-                                android:text="@string/won_bid"
-                                android:textSize="@dimen/size_14sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/check3"
-                                app:layout_constraintStart_toEndOf="@+id/check3"
-                                app:layout_constraintTop_toTopOf="@+id/check3" />
-
-
-                            <View
-                                android:id="@+id/processflow3"
-                                android:layout_width="1dp"
-                                android:layout_height="@dimen/dp_0"
-                                android:background="#CDCBCB"
-                                app:layout_constraintBottom_toTopOf="@+id/check4"
-                                app:layout_constraintEnd_toEndOf="@id/check4"
-                                app:layout_constraintStart_toStartOf="@+id/check3"
-                                app:layout_constraintTop_toBottomOf="@+id/check3" />
-
-
-                            <ImageView
-                                android:layout_marginStart="@dimen/size_10dp"
-                                android:id="@+id/check4"
-                                android:layout_width="@dimen/size_35dp"
-                                android:layout_height="@dimen/size_35dp"
-                                android:layout_marginTop="@dimen/size_30dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/check3"
-                                app:srcCompat="@drawable/notstated" />
-
-
-                            <TextView
-                                android:id="@+id/tx_service_progress"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/mulish_bold"
-                                android:padding="@dimen/size_2dp"
-                                android:text="Service in Progress"
-                                android:textSize="@dimen/size_14sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/check4"
-                                app:layout_constraintStart_toEndOf="@+id/check4"
-                                app:layout_constraintTop_toBottomOf="@+id/processflow3" />
-
-                            <View
-                                android:id="@+id/processflow5"
-                                android:layout_width="1dp"
-                                android:layout_height="@dimen/size_30dp"
-                                android:background="#CDCBCB"
-                                app:layout_constraintBottom_toTopOf="@id/check5"
-                                app:layout_constraintEnd_toEndOf="@+id/check5"
-                                app:layout_constraintStart_toStartOf="@+id/check5"
-                                app:layout_constraintTop_toBottomOf="@id/check4" />
-
-
-                            <ImageView
-                                android:layout_marginStart="@dimen/size_10dp"
-                                android:id="@+id/check5"
-                                android:layout_width="@dimen/size_35dp"
-                                android:layout_height="@dimen/size_35dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/processflow5"
-                                app:srcCompat="@drawable/notstated" />
-
-
-                            <TextView
-                                android:id="@+id/tx_service_completed"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/mulish_bold"
-                                android:padding="@dimen/size_2dp"
-                                android:text="Service completed"
-                                android:textSize="@dimen/size_14sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/check5"
-                                app:layout_constraintStart_toEndOf="@+id/check5"
-                                app:layout_constraintTop_toTopOf="@+id/check5" />
-
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                            app:layout_constraintTop_toBottomOf="@id/service_name_vo"
+                            app:layout_constraintVertical_bias="0.0" />
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:id="@+id/costing_type"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_15dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:text="EVENT DETAILS"
-                            android:textColor="@color/darkblue_smf_font"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="@string/bidding_"
                             android:textSize="@dimen/size_18sp"
-                            android:fontFamily="@font/mulish_bold"
-                            />
-                        <LinearLayout
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/branch_name_vo"
+                            app:layout_constraintVertical_bias="0.04000002" />
+
+
+                        <TextView
+                            android:id="@+id/cost_estimation_"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginLeft="@dimen/size_10dp"
                             android:layout_marginTop="@dimen/size_5dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
+                            android:fontFamily="@font/mulish_medium"
+                            android:text="@string/cost_estimation"
+                            android:textSize="@dimen/size_16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/costing_type"
+                            app:layout_constraintVertical_bias="0.0" />
 
-                            <TextView
-                                android:id="@+id/tx_eventdate"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/event_date"
-                                android:textSize="@dimen/size_16sp" />
+                        <TextView
+                            android:id="@+id/cost_estimation_discout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/mulish_medium"
+                            android:text="@string/post_any_discount"
+                            android:textSize="@dimen/size_16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/cost_estimation_"
+                            app:layout_constraintVertical_bias="0.0" />
 
-                            <TextView
-                                android:id="@+id/tx_eventdate_value"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/_9_aug_2022"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/cost_estimation_amount"
+                            android:layout_width="@dimen/size_140dp"
+                            android:layout_height="@dimen/size_45dp"
+                            android:background="@drawable/shape_dailog_curved"
+                            android:gravity="start|center"
+                            android:hint="@string/amount"
+                            android:inputType="number"
+                            android:paddingStart="@dimen/size_8dp"
+                            android:textSize="@dimen/size_20sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/cost_estimation_discout"
+                            app:layout_constraintVertical_bias="0.04000002" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/tx_quote_details"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/mulish_bold"
+                            android:text="@string/quote_details__"
+                            android:textSize="@dimen/size_18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/cost_estimation_amount"
+                            app:layout_constraintVertical_bias="0.06" />
+
+                        <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/file_img"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/size_10dp"
+                            android:src="@drawable/doc"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tx_quote_details"
+                            app:layout_constraintVertical_bias="0.0" />
+
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/filename_tx"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/size_10dp"
+                            android:text="@string/quotesite_pdf"
+                            android:textColor="@color/calendar_border_darl_gray"
+                            android:textSize="@dimen/size_18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toEndOf="@+id/file_img"
+                            app:layout_constraintTop_toBottomOf="@+id/tx_quote_details"
+                            app:layout_constraintVertical_bias="0.0" />
+
+                        <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/file_img_delete"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/size_8dp"
+                            android:layout_marginTop="@dimen/size_10dp"
+                            android:src="@drawable/trash"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.05"
+                            app:layout_constraintStart_toEndOf="@+id/filename_tx"
+                            app:layout_constraintTop_toBottomOf="@+id/tx_quote_details"
+                            app:layout_constraintVertical_bias="0.0" />
+
+                        <TextView
+                            android:id="@+id/tx_comments"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginLeft="@dimen/size_10dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
+                            android:layout_marginTop="@dimen/size_10dp"
+                            android:fontFamily="@font/mulish_bold"
+                            android:text="@string/comments"
+                            android:textSize="@dimen/size_18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/filename_tx"
+                            app:layout_constraintVertical_bias="0.0" />
 
-                            <TextView
-                                android:id="@+id/tx_bid_proposal_date"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/bid_proposal_date"
-                                android:textSize="@dimen/size_16sp" />
-
-                            <TextView
-                                android:id="@+id/tx_bid_proposal_date_value"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/_9_aug_2021"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/et_comments"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
+                            android:layout_marginRight="@dimen/size_10dp"
+                            android:fontFamily="@font/mulish_medium"
+                            android:gravity="start"
+                            android:lines="6"
+                            android:maxLength="200"
+                            android:paddingStart="@dimen/size_15dp"
+                            android:text="@string/no_comments_available"
+                            android:textSize="@dimen/size_16sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tx_comments" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                            <TextView
-                                android:id="@+id/tx_cut_off_date"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/cut_off_date"
-                                android:textSize="@dimen/size_16sp" />
 
-                            <TextView
-                                android:id="@+id/tx_cut_off_date_value"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/_9_aug_2022"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:id="@+id/service_date"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/service_date_"
-                                android:textSize="@dimen/size_16sp" />
-
-                            <TextView
-                                android:id="@+id/service_date_value"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/_9_aug_2022"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:id="@+id/payment_status"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/payment_status"
-                                android:textSize="@dimen/size_16sp" />
-
-                            <TextView
-                                android:id="@+id/payment_status_value"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/_9_aug_2022"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/serviced_by"
-                                android:textSize="@dimen/size_16sp" />
-
-                            <TextView
-                                android:id="@+id/serviced_by"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/na"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/address"
-                                android:textSize="@dimen/size_16sp" />
-
-                            <TextView
-                                android:id="@+id/address"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:lines="3"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/customer_rating"
-                                android:textSize="@dimen/size_16sp" />
-
-                            <TextView
-                                android:id="@+id/customer_rating"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:lines="2"
-                                android:text="@string/_9_aug_2021"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
-                            android:layout_marginBottom="@dimen/size_30dp"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/review_comment"
-                                android:textSize="@dimen/size_16sp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1.5"
-                                android:fontFamily="@font/mulish_regular"
-                                android:text="@string/na"
-                                android:textColor="@color/dark_font"
-                                android:textSize="@dimen/size_16sp" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/size_20dp"
-                android:background="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/card_view" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

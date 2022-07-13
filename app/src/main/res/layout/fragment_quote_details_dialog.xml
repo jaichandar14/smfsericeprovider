@@ -89,7 +89,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/radiogroup">
 
                 <TextView
-                    android:id="@+id/Forks_spoon"
+                    android:id="@+id/Forks_spoon_"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/size_10dp"
@@ -100,7 +100,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/cost_estimation"
+                    android:id="@+id/cost_estimation_"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/size_5dp"
@@ -108,7 +108,7 @@
                     android:text="@string/cost_estimation"
                     android:textSize="@dimen/size_16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/Forks_spoon" />
+                    app:layout_constraintTop_toBottomOf="@id/Forks_spoon_" />
 
                 <LinearLayout
                     android:id="@+id/linearlayout_fork_spoon"
@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:weightSum="3"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cost_estimation">
+                    app:layout_constraintTop_toBottomOf="@id/cost_estimation_">
 
                     <TextView
                         android:id="@+id/cost_estimation_discout"
@@ -219,12 +219,12 @@
                         app:layout_constraintTop_toBottomOf="@+id/quote_details_upload" />
 
                     <ImageView
-                        android:visibility="gone"
-                        android:layout_marginTop="@dimen/size_10dp"
                         android:id="@+id/file_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_10dp"
                         android:src="@drawable/doc"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -233,14 +233,14 @@
                         app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
-                        android:visibility="gone"
-                        android:layout_marginTop="@dimen/size_10dp"
                         android:id="@+id/filename_tx"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_10dp"
                         android:text="@string/quotesite_pdf"
                         android:textColor="@color/calendar_border_darl_gray"
                         android:textSize="@dimen/size_18sp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -248,13 +248,13 @@
                         app:layout_constraintTop_toBottomOf="@+id/btn_file_upload" />
 
                     <ImageView
-                        android:visibility="gone"
-                        android:layout_marginTop="@dimen/size_10dp"
                         android:id="@+id/file_img_delete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/trash"
                         android:layout_marginStart="@dimen/size_8dp"
+                        android:layout_marginTop="@dimen/size_10dp"
+                        android:src="@drawable/trash"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.05"
@@ -303,8 +303,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:layout_marginBottom="@dimen/size_8dp"
                     android:layout_marginRight="@dimen/size_5dp"
+                    android:layout_marginBottom="@dimen/size_8dp"
                     android:layout_weight="1.5"
                     android:background="@drawable/custom_button_corner_cancel"
                     android:text="@string/cancel"
@@ -316,13 +316,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/size_5dp"
                     android:layout_marginTop="@dimen/size_18dp"
+                    android:layout_marginBottom="@dimen/size_8dp"
                     android:layout_weight="1.5"
                     android:background="@drawable/custom_button_corner_ok"
                     android:text="@string/ok"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
 
-                    android:layout_marginBottom="@dimen/size_8dp"/>
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 

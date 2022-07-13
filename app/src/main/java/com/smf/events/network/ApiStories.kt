@@ -10,6 +10,7 @@ import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import com.smf.events.ui.quotebrief.model.QuoteBrief
+import com.smf.events.ui.quotebriefdialog.model.ViewQuotes
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import com.smf.events.ui.schedulemanagement.model.EventDates
 import com.smf.events.ui.signup.model.GetUserDetails
@@ -19,6 +20,7 @@ import com.smf.events.ui.timeslot.deselectingdialog.model.ModifyDaySlotResponse
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.vieworderdetails.model.OrderDetails
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface ApiStories {
@@ -176,5 +178,12 @@ interface ApiStories {
         @Query("eventServiceDescriptionId") eventServiceDescriptionId: Int,
         @Query("status") status: String,
     ): StartService
+
+    // 2962 - View Quotes Api Call
+    @GET(BuildConfig.apiType +"service/api/app-services/quote/{bid-request-id}")
+    suspend fun getViewQuotes(
+        @Header("Authorization") idToken: String,
+        @Path("bid-request-id") bidRequestId : Int,
+    ): ViewQuotes
 
 }
