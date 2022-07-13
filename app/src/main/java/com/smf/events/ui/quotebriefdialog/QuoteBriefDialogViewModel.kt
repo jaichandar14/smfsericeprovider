@@ -51,15 +51,15 @@ class QuoteBriefDialogViewModel @Inject constructor(
 
     fun progress2Completed(mDataBinding: FragmentQuoteBriefBinding?) {
         mDataBinding!!.check2Complete.visibility = View.VISIBLE
-        mDataBinding!!.check3Inprogress.visibility = View.VISIBLE
-        mDataBinding!!.processflow2.setBackgroundColor(Color.BLACK)
+        mDataBinding.check3Inprogress.visibility = View.VISIBLE
+        mDataBinding.processflow2.setBackgroundColor(Color.BLACK)
 
     }
 
     fun progress3Completed(mDataBinding: FragmentQuoteBriefBinding?) {
         mDataBinding!!.check3Completed.visibility = View.VISIBLE
-        mDataBinding!!.check4Inprogress.visibility = View.VISIBLE
-        mDataBinding!!.processflow3.setBackgroundColor(Color.BLACK)
+        mDataBinding.check4Inprogress.visibility = View.VISIBLE
+        mDataBinding.processflow3.setBackgroundColor(Color.BLACK)
     }
 
     fun progress4Completed(mDataBinding: FragmentQuoteBriefBinding?) {
@@ -70,5 +70,10 @@ class QuoteBriefDialogViewModel @Inject constructor(
     fun getQuoteBrief(idToken: String, bidRequestId: Int) = liveData(
         Dispatchers.IO) {
         emit(quoteBriefDialogRepository.getQuoteBrief(idToken, bidRequestId))
+    }
+
+    fun getViewQuote(idToken: String, bidRequestId: Int) = liveData(
+        Dispatchers.IO) {
+        emit(quoteBriefDialogRepository.getViewQuote(idToken, bidRequestId))
     }
 }

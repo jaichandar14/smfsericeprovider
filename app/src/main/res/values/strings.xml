@@ -216,5 +216,8 @@
     <string name="quotesite_pdf">Quotesite.pdf</string>
     <string name="Uploaded">Upload</string>
     <string name="trueText">true</string>
+    <string name="bidding_">Bidding</string>
+    <string name="no_comments_available">No comments available</string>
+    <string name="quote_details__">Quote details</string>
 
 </resources>
