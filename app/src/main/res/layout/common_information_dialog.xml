@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="commonInfoDialogViewModel"
             type="com.smf.events.ui.commoninformationdialog.CommonInfoDialogViewModel" />
@@ -11,9 +12,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/size_20dp"
         android:background="@drawable/dialog_background"
-        android:padding="@dimen/size_25dp">
+        android:padding="@dimen/_18sdp">
 
         <TextView
             android:id="@+id/text_information"
@@ -22,17 +22,21 @@
             android:fontFamily="@font/mulish_regular"
             android:gravity="center"
             android:text="@string/Do_you_want_to_accept_the_Bid"
-            android:textSize="@dimen/size_18sp"
             android:textColor="@color/black"
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_65dp"
-            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:weightSum="3"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_information">
@@ -40,27 +44,30 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:layout_marginEnd="@dimen/size_5dp"
+                android:layout_height="@dimen/_27sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_3sdp"
                 android:layout_weight="1.5"
-                android:textAllCaps="false"
                 android:background="@drawable/custom_button_corner_cancel"
-                android:fontFamily="@font/mulish_regular"
-                android:text="@string/cancel" />
+                android:fontFamily="@font/mulish_medium"
+                android:text="@string/cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_ok"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/size_5dp"
-                android:layout_marginTop="18dp"
+                android:layout_height="@dimen/_27sdp"
+                android:layout_marginStart="@dimen/_3sdp"
+                android:layout_marginTop="@dimen/_6sdp"
                 android:layout_weight="1.5"
-                android:textAllCaps="false"
                 android:background="@drawable/custom_button_corner_ok"
-                android:fontFamily="@font/mulish_regular"
+                android:fontFamily="@font/mulish_medium"
                 android:text="@string/confirm__"
-                android:textColor="@color/white"/>
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_11sdp" />
 
         </LinearLayout>
 

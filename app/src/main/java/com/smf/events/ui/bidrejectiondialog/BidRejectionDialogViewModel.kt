@@ -1,6 +1,5 @@
 package com.smf.events.ui.bidrejectiondialog
 
-import android.R
 import android.annotation.SuppressLint
 import android.app.Application
 import android.view.View
@@ -36,15 +35,18 @@ class BidRejectionDialogViewModel @Inject constructor(
             ) {
                 callBackInterface?.callBack(resources[position])
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+        // 2974
         val ad: ArrayAdapter<String> =
-            ArrayAdapter<String>(getApplication(), R.layout.simple_spinner_item, resources)
+            ArrayAdapter<String>(getApplication(), com.smf.events.R.layout.spinners_list, resources)
         // set simple layout resource file
         // for each item of spinner
         ad.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
+            com.smf.events.R.layout.spinners_list
         )
+
         // Set the ArrayAdapter (ad) data on the
         // Spinner which binds data to spinner
         spin.adapter = ad

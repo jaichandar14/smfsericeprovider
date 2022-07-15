@@ -220,5 +220,9 @@
     <string name="bidding_">Bidding</string>
     <string name="no_comments_available">No comments available</string>
     <string name="quote_details__">Quote details</string>
+    <string name="service_in_progress__">Service in Progress</string>
+    <string name="service_completed__">Service completed</string>
+    <string name="event_details__">EVENT DETAILS</string>
+    <string name="minimum_1mb_npdf_txt_docx">Minimum 1MB \nPDF,txt,docx</string>
 
 </resources>

@@ -210,9 +210,9 @@ class ActionsAndStatusFragment :
         var inActiveCounts=actionAndStatusData.serviceDoneCount+actionAndStatusData.bidRejectedCount+
                 actionAndStatusData.bidTimedOutCount+actionAndStatusData.lostBidCount
         mDataBinding?.txPendtingitems?.text =
-            "$activeCounts PendingItems"
+            "$activeCounts Active Status "
         mDataBinding?.txPendingstatus?.text =
-            "$inActiveCounts Status"
+            "$inActiveCounts Inactive Status"
     }
 
     // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call

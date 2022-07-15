@@ -19,70 +19,83 @@
             android:id="@+id/tx_actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_20dp"
             android:fontFamily="@font/mulish_bold"
             android:text="@string/active"
             android:textColor="@color/black"
-            android:textSize="@dimen/size_18sp"
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/tx_pendtingitems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/size_10dp"
-            android:fontFamily="@font/mulish_regular"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:fontFamily="@font/mulish_medium"
             android:hint="@string/_0_pending_items"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tx_actions" />
+            app:layout_constraintTop_toBottomOf="@+id/tx_actions"
+            app:layout_constraintVertical_bias="0.0" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/actions_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_5dp"
+            android:layout_marginTop="@dimen/_3sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tx_pendtingitems" />
+            app:layout_constraintTop_toBottomOf="@+id/tx_pendtingitems"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/tx_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_20dp"
-            android:fontFamily="@font/poppins_semibold"
+            android:layout_marginTop="@dimen/_14sdp"
+            android:fontFamily="@font/mulish_bold"
             android:text="@string/inactive"
             android:textColor="@color/black"
-            android:textSize="@dimen/size_18sp"
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/actions_recyclerview" />
+            app:layout_constraintTop_toBottomOf="@id/actions_recyclerview"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/tx_pendingstatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/size_10dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:fontFamily="@font/mulish_medium"
             android:hint="@string/_0_status"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tx_status" />
+            app:layout_constraintTop_toBottomOf="@+id/tx_status"
+            app:layout_constraintVertical_bias="0.0" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/status_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_5dp"
-            android:layout_marginEnd="@dimen/size_10dp"
-            android:layout_marginBottom="@dimen/size_10dp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tx_pendingstatus" />
+            app:layout_constraintTop_toBottomOf="@+id/tx_pendingstatus"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

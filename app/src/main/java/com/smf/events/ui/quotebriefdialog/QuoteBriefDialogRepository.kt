@@ -20,7 +20,6 @@ class QuoteBriefDialogRepository @Inject constructor(var apiStories: ApiStories)
     }
 
     suspend fun getViewQuote(idToken: String, bidRequestId: Int): ApisResponse<ViewQuotes> {
-
         return try {
             val getResponse = apiStories.getViewQuotes(idToken, bidRequestId)
             ApisResponse.Success(getResponse)

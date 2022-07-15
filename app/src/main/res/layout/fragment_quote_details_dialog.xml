@@ -12,18 +12,18 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/dialog_background"
-        app:cardCornerRadius="@dimen/size_10dp"
+        app:cardCornerRadius="@dimen/_8sdp"
         tools:context=".ui.quotedetailsdialog.QuoteDetailsDialog">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_15dp"
-            android:layout_marginTop="@dimen/size_20dp"
-            android:layout_marginRight="@dimen/size_20dp"
-            android:layout_marginBottom="@dimen/size_20dp">
+            android:layout_marginLeft="@dimen/_13sdp"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:layout_marginRight="@dimen/_18sdp"
+            android:layout_marginBottom="@dimen/_8sdp">
 
             <TextView
                 android:id="@+id/quote_title"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/mulish_bold"
                 android:text="@string/quote_details_for"
-                android:textSize="@dimen/size_20sp"
+                android:textSize="@dimen/_16sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/mulish_bold"
                 android:text="@string/catering"
-                android:textSize="@dimen/size_20sp"
+                android:textSize="@dimen/_16sdp"
                 app:layout_constraintBottom_toBottomOf="@+id/quote_title"
                 app:layout_constraintStart_toEndOf="@+id/quote_title"
                 app:layout_constraintTop_toTopOf="@+id/quote_title" />
@@ -55,36 +55,36 @@
 
                 <RadioButton
                     android:id="@+id/ihavequote"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginTop="@dimen/_7sdp"
                     android:buttonTint="@color/button_blue"
                     android:checked="true"
                     android:fontFamily="@font/mulish_regular"
                     android:text="@string/i_have_quotes_details"
-                    android:textColor="#B5232323"
-                    android:textSize="@dimen/size_18sp" />
+                    android:textColor="@color/quote_details_check_black"
+                    android:textSize="@dimen/_13sdp" />
 
                 <RadioButton
                     android:id="@+id/quotelater"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
                     android:buttonTint="@color/button_blue"
                     android:checked="false"
                     android:fontFamily="@font/mulish_regular"
                     android:text="@string/will_provide_quotes_later"
-                    android:textColor="#B5232323"
-                    android:textSize="@dimen/size_18sp" />
-
-
+                    android:textColor="@color/quote_details_check_black"
+                    android:textSize="@dimen/_13sdp" />
             </RadioGroup>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_20dp"
-                android:layout_marginRight="@dimen/size_8dp"
+                android:layout_marginStart="@dimen/_17sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radiogroup">
 
@@ -92,21 +92,26 @@
                     android:id="@+id/Forks_spoon_"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_10dp"
                     android:fontFamily="@font/mulish_bold"
                     android:text="@string/fork_amp_spoon"
-                    android:textSize="@dimen/size_18sp"
+                    android:textSize="@dimen/_15sdp"
+                    app:layout_constraintBottom_toTopOf="@+id/cost_estimation_"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                     android:id="@+id/cost_estimation_"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_5dp"
+                    android:layout_marginTop="@dimen/_3sdp"
                     android:fontFamily="@font/mulish_medium"
                     android:text="@string/cost_estimation"
-                    android:textSize="@dimen/size_16sp"
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintBottom_toTopOf="@+id/linearlayout_fork_spoon"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/Forks_spoon_" />
 
@@ -125,7 +130,7 @@
                         android:layout_weight="1.2"
                         android:fontFamily="@font/mulish_medium"
                         android:text="@string/post_any_discount"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                 </LinearLayout>
 
@@ -133,19 +138,19 @@
                     android:id="@+id/linearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_2dp"
+                    android:layout_marginTop="@dimen/_3sdp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/linearlayout_fork_spoon">
 
                     <Spinner
                         android:id="@+id/currency_type"
-                        android:layout_width="@dimen/size_105dp"
-                        android:layout_height="@dimen/size_45dp"
+                        android:layout_width="@dimen/_90sdp"
+                        android:layout_height="@dimen/_35sdp"
                         android:background="@drawable/corner_radius_spinner"
                         android:gravity="center"
-                        android:padding="@dimen/size_5dp"
+                        android:padding="@dimen/_3sdp"
                         android:spinnerMode="dropdown"
-                        android:textSize="@dimen/size_18sp"
+                        android:textSize="@dimen/_12sdp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -154,13 +159,13 @@
 
                     <EditText
                         android:id="@+id/cost_estimation_amount"
-                        android:layout_width="@dimen/size_140dp"
-                        android:layout_height="@dimen/size_45dp"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_35sdp"
                         android:background="@drawable/shape_dailog_curved"
                         android:hint="@string/amount"
                         android:inputType="number"
-                        android:paddingStart="@dimen/size_8dp"
-                        android:textSize="@dimen/size_20sp"
+                        android:paddingStart="@dimen/_6sdp"
+                        android:textSize="@dimen/_13sdp"
                         app:layout_constraintBottom_toBottomOf="@+id/currency_type"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.15"
@@ -175,8 +180,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/cost_is_mandatory"
                     android:textColor="#EF0A0A"
-                    android:textSize="@dimen/size_16sp"
-                    android:visibility="invisible"
+                    android:textSize="@dimen/_11sdp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
@@ -184,6 +189,7 @@
                     android:id="@+id/btn_file_upload_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/alert_cost">
@@ -194,7 +200,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/mulish_medium"
                         android:text="Upload quote document"
-                        android:textSize="@dimen/size_16sp"
+                        android:textSize="@dimen/_14sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -202,14 +208,14 @@
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_file_upload"
-                        android:layout_width="@dimen/size_150dp"
-                        android:layout_height="@dimen/size_40dp"
-                        android:layout_marginStart="@dimen/size_1dp"
-                        android:layout_marginTop="@dimen/size_12dp"
+                        android:layout_width="@dimen/_110sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_marginStart="@dimen/_1sdp"
+                        android:layout_marginTop="@dimen/_6sdp"
                         android:background="@drawable/custom_button_edge"
                         android:backgroundTint="@color/gray"
-                        android:paddingStart="@dimen/size_30dp"
-                        android:paddingEnd="@dimen/size_30dp"
+                        android:paddingStart="@dimen/_20sdp"
+                        android:paddingEnd="@dimen/_20sdp"
                         android:text="@string/Uploaded"
                         android:textAllCaps="false"
                         android:textColor="@color/calendar_background"
@@ -218,11 +224,27 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/quote_details_upload" />
 
+                    <TextView
+                        android:id="@+id/format_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:gravity="center"
+                        android:text="@string/minimum_1mb_npdf_txt_docx"
+                        android:textAlignment="center"
+                        android:textColor="@color/calendar_border_darl_gray"
+                        android:textSize="@dimen/_8sdp"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_file_upload"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/btn_file_upload"
+                        app:layout_constraintTop_toTopOf="@+id/btn_file_upload" />
+
                     <ImageView
                         android:id="@+id/file_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/size_10dp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:src="@drawable/doc"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -236,10 +258,10 @@
                         android:id="@+id/filename_tx"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/size_10dp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:text="@string/quotesite_pdf"
                         android:textColor="@color/calendar_border_darl_gray"
-                        android:textSize="@dimen/size_18sp"
+                        android:textSize="@dimen/_12sdp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -251,8 +273,8 @@
                         android:id="@+id/file_img_delete"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/size_8dp"
-                        android:layout_marginTop="@dimen/size_10dp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:src="@drawable/trash"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -267,10 +289,10 @@
                     android:id="@+id/tx_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_10dp"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:fontFamily="@font/mulish_medium"
                     android:text="@string/comments"
-                    android:textSize="@dimen/size_18sp"
+                    android:textSize="@dimen/_14sdp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btn_file_upload_layout" />
 
@@ -278,7 +300,7 @@
                     android:id="@+id/et_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/size_10dp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:background="@drawable/box_login_text"
                     android:gravity="start"
                     android:lines="6"
@@ -292,7 +314,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/size_65dp"
-                android:layout_marginTop="@dimen/size_32dp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:weightSum="3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -301,7 +323,7 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_cancel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_27sdp"
                     android:layout_marginTop="18dp"
                     android:layout_marginRight="@dimen/size_5dp"
                     android:layout_marginBottom="@dimen/size_8dp"
@@ -313,7 +335,7 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_ok"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_27sdp"
                     android:layout_marginLeft="@dimen/size_5dp"
                     android:layout_marginTop="@dimen/size_18dp"
                     android:layout_marginBottom="@dimen/size_8dp"
@@ -321,7 +343,6 @@
                     android:background="@drawable/custom_button_corner_ok"
                     android:text="@string/ok"
                     android:textAllCaps="false"
-
                     android:textColor="@color/white" />
 
             </LinearLayout>

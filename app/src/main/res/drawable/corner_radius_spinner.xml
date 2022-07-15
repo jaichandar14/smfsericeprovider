@@ -4,17 +4,17 @@
         <layer-list>
             <item>
                 <shape android:shape="rectangle">
-                    <stroke android:width="@dimen/size_2dp"
+                    <stroke android:width="@dimen/_2sdp"
                         android:color="@color/buttoncolor"/>
                     <solid android:color="@color/white" />
-                    <corners android:radius="@dimen/size_5dp" />
-                    <padding android:left="@dimen/size_10dp" android:right="@dimen/size_10dp" />
+                    <corners android:radius="@dimen/_3sdp" />
+                    <padding android:left="@dimen/_8sdp" android:right="@dimen/_8sdp" />
                 </shape>
             </item>
             <item android:drawable="@drawable/ic_baseline_keyboard_arrow_down_24"
                 android:gravity="center|end"
-                android:height="@dimen/size_40dp"
-                android:width="@dimen/size_30dp"/>
+                android:height="@dimen/_30sdp"
+                android:width="@dimen/_20sdp"/>
         </layer-list>
     </item>
 </selector>

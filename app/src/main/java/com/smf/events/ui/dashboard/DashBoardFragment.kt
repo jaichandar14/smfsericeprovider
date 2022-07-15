@@ -161,7 +161,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         val activity = activity as AppCompatActivity
         activity.setSupportActionBar(toolbar)
         // Setting DashBoard Title
-        mDataBinding?.welcomeText?.text = AppConstants.WELCOME + " "+ firstName
+        mDataBinding?.welcomeText?.text = AppConstants.WELCOME + " " + firstName
         navigationView.bringToFront()
         val toggle = ActionBarDrawerToggle(
             requireActivity(),
@@ -174,10 +174,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         toggle.syncState()
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         activity.supportActionBar?.setHomeButtonEnabled(true)
-        val drawable= ResourcesCompat.getDrawable(resources, R.drawable.menu, null)
+        val drawable = ResourcesCompat.getDrawable(resources, R.drawable.menu, null)
         val bitmap = (drawable as (BitmapDrawable)).bitmap
         val sideNavIcon = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 55, 45, true))
-        activity.supportActionBar?.setHomeAsUpIndicator(sideNavIcon)
+        activity.supportActionBar?.setHomeAsUpIndicator(drawable)
         activity.supportActionBar?.setDisplayShowTitleEnabled(false)
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.setCheckedItem(R.id.nav_dashboard)

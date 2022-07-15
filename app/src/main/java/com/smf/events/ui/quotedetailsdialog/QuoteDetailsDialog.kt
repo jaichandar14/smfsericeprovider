@@ -62,6 +62,7 @@ class QuoteDetailsDialog(
     lateinit var idToken: String
     var currencyTypeList = ArrayList<String>()
     var latestBidValueQuote: Int = 0
+    var displayName: String? = null
 
     companion object {
         const val TAG = "CustomDialogFragment"
@@ -205,6 +206,7 @@ class QuoteDetailsDialog(
                 latestBidValueQuote
             )
         } else {
+            Log.d(TAG, "putQuoteDetailsnewjc: $displayName")
             biddingQuote = BiddingQuotDto(
                 bidRequestId,
                 bidStatus,
@@ -214,7 +216,7 @@ class QuoteDetailsDialog(
                 costingType,
                 currencyType,
                 fileContent,
-                fileName,
+                displayName,
                 fileSize,
                 "QUOTE_DETAILS",
                 latestBidValueQuote
@@ -305,9 +307,10 @@ class QuoteDetailsDialog(
                 gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE)
                 gallaryIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
                 // 2842 Restricting file selection
-                val mimetypes = arrayOf("application/*|image/*",
-                    "application/*|text/*",
-                    "application/*|vnd.ms-excel/*")
+                val mimetypes =
+                    arrayOf("application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "application/*|text/*", "audio/*",
+                        "application/*|vnd.ms-excel/*")
                 gallaryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
                 gallaryIntent.type = "*/*"
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
@@ -332,7 +335,6 @@ class QuoteDetailsDialog(
     @SuppressLint("Range")
     private fun gettingDocName(fileUri: Uri) {
         var cursor: Cursor? = null
-        var displayName: String? = null
         var fileEndName: String? = null
         if (fileUri.toString().startsWith("content://")) {
             try {
@@ -345,17 +347,17 @@ class QuoteDetailsDialog(
                     displayName =
                         cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                     Log.d(TAG,
-                        "gettingDocName: ${displayName.substring(displayName.lastIndexOf("."))}")
-                    fileEndName = displayName.substring(displayName.lastIndexOf("."))
-                    mDataBinding?.filenameTx?.text = displayName.take(10) + "..." + fileEndName
+                        "gettingDocName: ${displayName?.substring(displayName!!.lastIndexOf("."))}")
+                    fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
+                    mDataBinding?.filenameTx?.text = displayName?.take(10) + "..." + fileEndName
                 }
             } finally {
                 cursor!!.close()
             }
         } else if (fileUri.toString().startsWith("file://")) {
             displayName = file.name
-            fileEndName = displayName.substring(displayName.lastIndexOf("."))
-            mDataBinding?.filenameTx?.text = displayName.take(10) + "..." + fileEndName
+            fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
+            mDataBinding?.filenameTx?.text = displayName!!.take(10) + "..." + fileEndName
         }
     }
 
@@ -364,7 +366,7 @@ class QuoteDetailsDialog(
         try {
             val input: InputStream? = activity?.contentResolver?.openInputStream(uri)
             var bytes = getBytes(input!!)
-            if (bytes?.size!! <= 181204) {
+            if (bytes?.size!! <= 5000000) {
                 mDataBinding?.fileImg?.visibility = View.VISIBLE
                 mDataBinding?.filenameTx?.visibility = View.VISIBLE
                 mDataBinding?.fileImgDelete?.visibility = View.VISIBLE
@@ -379,7 +381,7 @@ class QuoteDetailsDialog(
                 mDataBinding?.filenameTx?.visibility = View.GONE
                 mDataBinding?.fileImgDelete?.visibility = View.GONE
                 Toast.makeText(activity,
-                    "File is not uploaded. Please Upload file below 100kb",
+                    "File is not uploaded. File Size Should Not Exceed 5MB.",
                     Toast.LENGTH_SHORT).show()
                 mDataBinding?.btnFileUpload?.setBackgroundColor(
                     ContextCompat.getColor(

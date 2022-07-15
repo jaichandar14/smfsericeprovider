@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="scheduleManagementViewModel"
             type="com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel" />
@@ -37,27 +38,25 @@
                     android:id="@+id/switch_btn_tx"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/size_5dp"
-                    android:layout_marginBottom="@dimen/size_10dp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:fontFamily="@font/poppins_regular"
                     android:gravity="end"
                     android:text="@string/switch_to_modify_slots_availability"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/size_15sp"
-                    app:layout_constraintBottom_toTopOf="@id/timeslots_fragment"
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintBottom_toBottomOf="@+id/switch_btn"
                     app:layout_constraintEnd_toStartOf="@+id/switch_btn"
-                    app:layout_constraintHorizontal_bias="0.7"
+                    app:layout_constraintHorizontal_bias="0.91"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/calendar_fragment" />
+                    app:layout_constraintTop_toTopOf="@+id/switch_btn"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <ToggleButton
                     android:id="@+id/switch_btn"
-                    android:layout_width="@dimen/size_60dp"
-                    android:layout_height="@dimen/size_35dp"
-                    android:layout_marginTop="@dimen/size_20dp"
-                    android:layout_marginEnd="@dimen/size_30dp"
-                    android:layout_marginBottom="@dimen/size_20dp"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_weight="0.2"
                     android:background="@drawable/toggle_track"
                     android:foregroundGravity="center"
@@ -66,14 +65,19 @@
                     android:scaleY="1"
                     android:textOff=""
                     android:textOn=""
+                    app:layout_constraintBottom_toTopOf="@id/timeslots_fragment"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/calendar_fragment" />
+                    app:layout_constraintHorizontal_bias="0.88"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/calendar_fragment"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <FrameLayout
                     android:id="@+id/timeslots_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_25dp"
+                    android:layout_marginTop="@dimen/_23sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/switch_btn" />
