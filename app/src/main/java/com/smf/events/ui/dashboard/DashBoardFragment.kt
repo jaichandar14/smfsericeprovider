@@ -161,7 +161,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         val activity = activity as AppCompatActivity
         activity.setSupportActionBar(toolbar)
         // Setting DashBoard Title
-        mDataBinding?.welcomeText?.text = AppConstants.WELCOME + " " + firstName
+        mDataBinding?.welcomeText?.text = getString(R.string.welcome)+ " " + firstName
         navigationView.bringToFront()
         val toggle = ActionBarDrawerToggle(
             requireActivity(),
