@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.BR
 import com.smf.events.R
@@ -39,7 +38,7 @@ class DeselectingDialogFragment(
     private var serviceVendorOnBoardingId: Int,
     private var fromDate: String,
     private var toDate: String,
-    private var statusList: List<BookedEventServiceDto>?
+    private var statusList: List<BookedEventServiceDto>?,
 ) : BaseDialogFragment<FragmentDeseletingDialogBinding, DeselectingDialogViewModel>(),
     Tokens.IdTokenCallBackInterface {
 
@@ -68,7 +67,7 @@ class DeselectingDialogFragment(
             serviceVendorOnBoardingId: Int,
             fromDate: String,
             toDate: String,
-            statusList: List<BookedEventServiceDto>?
+            statusList: List<BookedEventServiceDto>?,
         ): DeselectingDialogFragment {
             return DeselectingDialogFragment(
                 classTag,
@@ -106,7 +105,7 @@ class DeselectingDialogFragment(
             window.attributes = params
             //dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.setBackgroundDrawableResource(R.drawable.shape_dailog_curved)
-            dialog?.window?.setLayout(1000, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+            // dialog?.window?.setLayout(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
         } else {
             val window: Window? = dialog?.window
             val params: WindowManager.LayoutParams = window!!.attributes
@@ -114,7 +113,7 @@ class DeselectingDialogFragment(
             window.attributes = params
             //dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.setBackgroundDrawableResource(R.drawable.shape_dailog_curved)
-            dialog?.window?.setLayout(800, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+            //  dialog?.window?.setLayout(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
             mDataBinding?.cancelBtn?.visibility = View.GONE
         }
     }
@@ -164,7 +163,7 @@ class DeselectingDialogFragment(
         isAvailable: Boolean,
         modifiedSlot: String,
         serviceVendorOnBoardingId: Int,
-        toDate: String
+        toDate: String,
     ) {
         getViewModel().getModifyDaySlot(
             idToken, spRegId, fromDate, isAvailable, modifiedSlot,
@@ -197,7 +196,7 @@ class DeselectingDialogFragment(
         isAvailable: Boolean,
         modifiedSlot: String,
         serviceVendorOnBoardingId: Int,
-        toDate: String
+        toDate: String,
     ) {
         getViewModel().getModifyWeekSlot(
             idToken, spRegId, fromDate, isAvailable, modifiedSlot,
@@ -230,7 +229,7 @@ class DeselectingDialogFragment(
         isAvailable: Boolean,
         modifiedSlot: String,
         serviceVendorOnBoardingId: Int,
-        toDate: String
+        toDate: String,
     ) {
         getViewModel().getModifyMonthSlot(
             idToken, spRegId, fromDate, isAvailable, modifiedSlot,

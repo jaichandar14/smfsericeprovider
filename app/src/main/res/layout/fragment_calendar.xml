@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="calendarManagementViewModel"
             type="com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel" />
@@ -13,46 +14,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".ui.schedulemanagement.calendarfragment.CalendarFragment">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/title_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:background="@color/theme_header_blue"
-    app:layout_constraintStart_toStartOf="parent">
-    <TextView
-        android:paddingStart="@dimen/size_18dp"
-        android:paddingTop="@dimen/size_20dp"
-        android:id="@+id/calendar_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/size_15dp"
-        android:paddingBottom="@dimen/size_12dp"
-        android:fontFamily="@font/mulish_bold"
-        android:text="@string/calendar"
-        android:textColor="@color/white"
-        android:textSize="@dimen/size_24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-    <ImageView
-        android:layout_marginTop="@dimen/size_20dp"
-        android:id="@+id/close_calendar"
-        android:layout_marginEnd="@dimen/size_25dp"
-        android:layout_width="@dimen/size_35dp"
-        android:layout_height="@dimen/size_35dp"
-        app:srcCompat="@drawable/close_calendar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/theme_header_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/calendar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_13sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:fontFamily="@font/mulish_bold"
+                android:text="@string/calendar"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_17sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/close_calendar"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/calendar_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/calendar_title"
+                app:layout_constraintTop_toTopOf="@+id/calendar_title"
+                app:srcCompat="@drawable/close_calendar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:padding="@dimen/size_12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:padding="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,9 +69,9 @@
                 android:id="@+id/spinner_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/size_10dp"
-                android:layout_marginTop="@dimen/size_10dp"
-                android:layout_marginEnd="@dimen/size_10dp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
                 android:gravity="center"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/size_20dp"
+                    android:layout_marginTop="@dimen/_18sdp"
                     android:background="@drawable/shapes">
 
                     <Spinner
@@ -111,9 +117,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/size_10dp"
-                android:layout_marginTop="@dimen/size_25dp"
-                android:layout_marginEnd="@dimen/size_10dp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -123,51 +129,52 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_10dp"
-                    android:layout_marginTop="@dimen/size_5dp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
                     android:layout_marginEnd="@dimen/size_10dp"
                     android:background="@color/white"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/size_15dp"
+                    android:paddingTop="@dimen/_13sdp"
                     android:weightSum="4">
 
                     <ImageButton
                         android:id="@+id/previous_month"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_13sdp"
                         android:background="@null"
                         app:layout_constraintBottom_toBottomOf="@+id/month_year_tx"
-                   android:layout_marginStart="@dimen/size_15dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/month_year_tx"
                         app:srcCompat="@drawable/arrow_back_black_new" />
 
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/monthYearTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:layout_marginBottom="@dimen/_8sdp"
                         android:text="@string/aug"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_22sp"
+                        android:textSize="@dimen/_17sdp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.04"
                         app:layout_constraintStart_toEndOf="@+id/previous_month"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/yearTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:layout_marginBottom="@dimen/_8sdp"
                         android:text="@string/_2022"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_22sp"
+                        android:textSize="@dimen/_17sdp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.04"
@@ -178,12 +185,12 @@
                         android:id="@+id/month_year_tx"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/_2022"
                         android:textAlignment="center"
-                        android:fontFamily="@font/mulish_semi_bold"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_22sp"
+                        android:textSize="@dimen/_17sdp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/next_month"
                         app:layout_constraintStart_toEndOf="@+id/previous_month"
@@ -193,10 +200,10 @@
                         android:id="@+id/next_month"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_13sdp"
                         android:background="@null"
-                        android:layout_marginTop="@dimen/size_2dp"
-                        android:layout_marginStart="@dimen/size_12dp"
-                        android:layout_marginEnd="@dimen/size_15dp"
                         app:layout_constraintBottom_toBottomOf="@+id/month_year_tx"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -209,12 +216,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_8dp"
-                    android:layout_marginTop="@dimen/size_15dp"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:layout_marginTop="@dimen/_11sdp"
+                    android:layout_marginEnd="@dimen/_9sdp"
                     android:background="@drawable/calendar_borrder"
-                    android:layout_marginEnd="@dimen/size_10dp"
-                    android:paddingBottom="@dimen/size_10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/_8sdp">
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
@@ -224,7 +231,7 @@
                         android:text="@string/s"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
@@ -234,7 +241,7 @@
                         android:text="@string/m"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
@@ -244,7 +251,7 @@
                         android:text="@string/t"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
@@ -254,7 +261,7 @@
                         android:text="@string/w"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
@@ -264,7 +271,7 @@
                         android:text="@string/t"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
@@ -274,7 +281,7 @@
                         android:text="@string/f"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
@@ -284,17 +291,17 @@
                         android:text="@string/sa"
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/size_16sp" />
+                        android:textSize="@dimen/_12sdp" />
 
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/calendarRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_210"
+                    android:layout_height="@dimen/_165sdp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/size_15dp"
-                    android:layout_marginEnd="@dimen/size_15dp" />
+                    android:layout_marginStart="@dimen/_13sdp"
+                    android:layout_marginEnd="@dimen/_13sdp" />
 
             </LinearLayout>
         </LinearLayout>

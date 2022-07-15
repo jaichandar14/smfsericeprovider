@@ -14,18 +14,19 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/size_15dp"
+        android:layout_margin="@dimen/_10sdp"
+        android:padding="@dimen/_13sdp"
         tools:context=".ui.timeslot.deselectingdialog.DeselectingDialogFragment">
 
         <TextView
             android:id="@+id/tx_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_5dp"
+            android:layout_margin="@dimen/_3sdp"
             android:fontFamily="@font/poppins_regular"
-            android:padding="@dimen/size_5dp"
+            android:padding="@dimen/_3sdp"
             android:textColor="@color/black"
-            android:textSize="@dimen/size_18sp"
+            android:textSize="@dimen/_13sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +44,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_40dp"
-            android:layout_marginTop="@dimen/size_5dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,23 +53,25 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/cancel_btn"
-                android:layout_width="@dimen/size_120dp"
-                android:layout_height="@dimen/size_37dp"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="@dimen/_27sdp"
                 android:layout_gravity="center"
                 android:background="@drawable/custom_button_corner_cancel"
                 android:text="@string/cancel"
                 android:textAllCaps="false"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ok_btn"
-                android:layout_width="@dimen/size_120dp"
-                android:layout_height="@dimen/size_37dp"
-                android:layout_marginStart="@dimen/size_8dp"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="@dimen/_27sdp"
+                android:layout_marginStart="@dimen/_6sdp"
                 android:background="@drawable/custom_button_corner_ok"
                 android:text="@string/ok"
                 android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/_11sdp" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

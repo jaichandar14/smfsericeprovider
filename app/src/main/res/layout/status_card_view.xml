@@ -2,44 +2,44 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/action_card_view_layout"
-    android:layout_width="@dimen/size_115dp"
+    android:layout_width="@dimen/_90sdp"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/size_2dp"
-    android:layout_marginTop="@dimen/size_10dp"
-    android:layout_marginEnd="@dimen/size_5dp"
-    android:layout_marginBottom="@dimen/size_5dp"
+    android:layout_marginStart="@dimen/_1sdp"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginEnd="@dimen/_3sdp"
+    android:layout_marginBottom="@dimen/_3sdp"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/size_8dp"
-    app:cardElevation="@dimen/size_5dp">
+    app:cardCornerRadius="@dimen/_6sdp"
+    app:cardElevation="@dimen/_3sdp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/size_10dp"
-        android:layout_marginTop="@dimen/size_8dp"
-        android:layout_marginEnd="@dimen/size_5dp"
-        android:layout_marginBottom="@dimen/size_8dp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:layout_marginBottom="@dimen/_6sdp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/action_numbers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/size_2dp"
+            android:layout_marginBottom="@dimen/_1sdp"
             android:fontFamily="@font/mulish_bold"
             android:text="@string/_4"
             android:textColor="@color/darkblue_smf_font"
-            android:textSize="@dimen/size_22sp" />
+            android:textSize="@dimen/_18sdp" />
 
         <TextView
             android:id="@+id/actions_list"
-            android:layout_width="@dimen/size_82dp"
+            android:layout_width="@dimen/_67sdp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_regular"
             android:maxLines="2"
             android:text="@string/new_request"
             android:textColor="@color/darkblue_smf_font"
-            android:textSize="@dimen/size_16sp" />
+            android:textSize="@dimen/_12sdp" />
 
     </LinearLayout>
 
@@ -49,12 +49,14 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_2dp"
-            android:layout_marginEnd="@dimen/size_2dp"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
             android:src="@drawable/arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

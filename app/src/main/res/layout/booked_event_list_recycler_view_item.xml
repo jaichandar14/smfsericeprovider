@@ -7,9 +7,9 @@
 
     <ImageView
         android:id="@+id/image_view_12_3am"
-        android:layout_width="@dimen/size_18dp"
-        android:layout_height="@dimen/size_18dp"
-        android:layout_marginStart="@dimen/size_2dp"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_1sdp"
         android:contentDescription="@string/icon"
         android:src="@drawable/booked_event"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,13 +18,13 @@
 
     <TextView
         android:id="@+id/event_date_display"
-        android:layout_width="@dimen/size_80dp"
+        android:layout_width="@dimen/_70sdp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/size_8dp"
-        android:layout_marginTop="@dimen/size_4dp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:fontFamily="@font/mulish_medium"
         android:text="@string/aug_26"
-        android:textSize="@dimen/size_14sp"
+        android:textSize="@dimen/_11sdp"
         app:layout_constraintBottom_toBottomOf="@+id/image_view_12_3am"
         app:layout_constraintStart_toEndOf="@+id/image_view_12_3am"
         app:layout_constraintTop_toTopOf="@+id/image_view_12_3am" />
@@ -33,10 +33,10 @@
         android:id="@+id/event_name_display"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/size_5dp"
+        android:layout_marginStart="@dimen/_25sdp"
         android:fontFamily="@font/mulish_medium"
         android:text="@string/saras_birthday"
-        android:textSize="@dimen/size_14sp"
+        android:textSize="@dimen/_11sdp"
         app:layout_constraintBottom_toBottomOf="@+id/event_date_display"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/event_date_display"

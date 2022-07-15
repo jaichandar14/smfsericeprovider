@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewOrderDetailsViewModel"
             type="com.smf.events.ui.vieworderdetails.ViewOrderDetailsViewModel" />
@@ -19,28 +20,28 @@
             android:id="@+id/quote_brief_dialog_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/size_5dp"
             tools:context=".ui.quotebriefdialog.QuoteBriefDialog">
 
             <RelativeLayout
                 android:id="@+id/linear_catering"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:background="@color/theme_header_blue"
+                android:gravity="center"
+                android:paddingStart="@dimen/_13sdp"
+                android:paddingTop="@dimen/_13sdp"
+                android:paddingBottom="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:paddingTop="@dimen/size_10dp"
-                android:paddingStart="@dimen/size_15dp"
-                android:paddingBottom="@dimen/size_10dp"
-                android:gravity="center">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_marginTop="@dimen/size_5dp"
                     android:id="@+id/btn_back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_marginRight="@dimen/size_8dp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
                     app:srcCompat="@drawable/arrow_back" />
 
                 <TextView
@@ -48,23 +49,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginStart="@dimen/size_32dp"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_toEndOf="@+id/btn_back"
                     android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/order_details"
-                    android:textColor="@color/theme_header_blue"
-                    android:textSize="@dimen/size_24sp" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_17sdp" />
             </RelativeLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/size_20dp"
-                android:layout_marginTop="@dimen/size_10dp"
-                android:layout_marginEnd="@dimen/size_20dp"
-                android:layout_marginBottom="@dimen/size_20dp"
-                app:cardCornerRadius="@dimen/size_12dp"
-                app:cardElevation="@dimen/size_10dp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginTop="@dimen/_11sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
+                android:layout_marginBottom="@dimen/_18sdp"
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardElevation="@dimen/_8sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -74,22 +76,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/size_10dp"
+                    android:layout_marginBottom="@dimen/_8sdp"
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/size_20dp">
+                        android:layout_margin="@dimen/_18sdp">
 
                         <TextView
                             android:id="@+id/tx_job_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/size_5dp"
                             android:fontFamily="@font/mulish_bold"
+                            android:text="jai"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/size_18sp"
+                            android:textSize="@dimen/_16sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
@@ -99,10 +101,10 @@
                             android:id="@+id/tx_job_idnum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/size_5dp"
+                            android:layout_marginTop="@dimen/_3sdp"
                             android:fontFamily="@font/mulish_regular"
                             android:textColor="@color/lightblue"
-                            android:textSize="@dimen/size_18sp"
+                            android:textSize="@dimen/_12sdp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/tx_job_title" />
 
@@ -118,21 +120,21 @@
                                 android:id="@+id/tx_eventdate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/size_5dp"
+                                android:layout_marginTop="@dimen/_3sdp"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:text="@string/event_dates"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                             <TextView
                                 android:id="@+id/et_event_date"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/size_5dp"
+                                android:layout_marginTop="@dimen/_3sdp"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                         </LinearLayout>
 
@@ -148,11 +150,11 @@
                                 android:id="@+id/venue_zip"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/size_5dp"
+                                android:layout_marginTop="@dimen/_3sdp"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:text="@string/venue_zip_code"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                             <TextView
                                 android:id="@+id/et_zip_code"
@@ -162,7 +164,7 @@
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
 
                         </LinearLayout>
@@ -170,8 +172,8 @@
                         <View
                             android:id="@+id/view_seperater"
                             android:layout_width="@dimen/dp_0"
-                            android:layout_height="@dimen/size_2dp"
-                            android:layout_marginTop="@dimen/size_10dp"
+                            android:layout_height="@dimen/_2sdp"
+                            android:layout_marginTop="@dimen/_8sdp"
                             android:background="@color/light_gray_background"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -184,29 +186,29 @@
                         android:id="@+id/service_layer"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingTop="@dimen/size_5dp"
-                        android:layout_marginStart="@dimen/size_10dp"
-                        android:layout_marginEnd="@dimen/size_10dp"
-                        android:paddingBottom="@dimen/size_10dp"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginEnd="@dimen/_8sdp"
                         android:background="@color/quote_details_blue"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/_3sdp"
+                        android:paddingBottom="@dimen/_8sdp">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/mulish_medium"
-                            android:paddingStart="@dimen/size_10dp"
-                            android:paddingTop="@dimen/size_5dp"
+                            android:paddingStart="@dimen/_8sdp"
+                            android:paddingTop="@dimen/_3sdp"
                             android:text="@string/service_details"
-                            android:textSize="@dimen/size_18sp" />
+                            android:textSize="@dimen/_13sdp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginLeft="@dimen/size_10dp"
-                            android:layout_marginTop="@dimen/size_5dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
+                            android:layout_marginStart="@dimen/_18sdp"
+                            android:layout_marginLeft="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_18sdp"
                             android:weightSum="3">
 
                             <TextView
@@ -216,7 +218,7 @@
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:text="@string/service_date"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                             <TextView
                                 android:id="@+id/et_service_date"
@@ -224,19 +226,19 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
-                                android:paddingStart="@dimen/size_5dp"
+                                android:paddingStart="@dimen/_3sdp"
 
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginLeft="@dimen/size_10dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
+                            android:layout_marginStart="@dimen/_18sdp"
+                            android:layout_marginLeft="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_marginEnd="@dimen/_18sdp"
                             android:weightSum="3">
 
                             <TextView
@@ -246,7 +248,7 @@
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:text="@string/bid_cut_off_date"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                             <TextView
                                 android:id="@+id/et_bid_cut_off_date"
@@ -254,18 +256,17 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
-                                android:paddingStart="@dimen/size_5dp"
-
+                                android:paddingStart="@dimen/_3sdp"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
+                            android:layout_marginStart="@dimen/_18sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_marginEnd="@dimen/_18sdp"
                             android:weightSum="3">
 
                             <TextView
@@ -275,7 +276,7 @@
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:text="@string/estimation_budget"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                             <TextView
                                 android:id="@+id/et_estimation_budget"
@@ -283,18 +284,18 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
-                                android:paddingStart="@dimen/size_5dp"
+                                android:paddingStart="@dimen/_3sdp"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
+                            android:layout_marginStart="@dimen/_18sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_marginEnd="@dimen/_18sdp"
                             android:weightSum="3">
 
                             <TextView
@@ -304,7 +305,7 @@
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:text="@string/service_radius"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                             <TextView
                                 android:id="@+id/et_service_radius"
@@ -312,17 +313,17 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
-                                android:paddingStart="@dimen/size_5dp"
+                                android:paddingStart="@dimen/_3sdp"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/size_20dp"
-                            android:layout_marginTop="@dimen/size_8dp"
-                            android:layout_marginEnd="@dimen/size_20dp"
+                            android:layout_marginStart="@dimen/_18sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_marginEnd="@dimen/_18sdp"
                             android:weightSum="3">
 
                             <TextView
@@ -332,7 +333,7 @@
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
                                 android:text="@string/prefered_time_slot"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                             <TextView
                                 android:id="@+id/et_prefered_time_slot"
@@ -340,9 +341,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.5"
                                 android:fontFamily="@font/mulish_regular"
-                                android:paddingStart="@dimen/size_5dp"
+                                android:paddingStart="@dimen/_3sdp"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/size_16sp" />
+                                android:textSize="@dimen/_12sdp" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -350,9 +351,9 @@
                     <View
                         android:id="@+id/view_seperater_1"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/size_1dp"
-                        android:layout_margin="@dimen/size_15dp"
-                        android:layout_marginTop="@dimen/size_10dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_margin="@dimen/_13sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:background="@color/lite_gray"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -368,9 +369,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/mulish_semi_bold"
-                            android:paddingStart="@dimen/size_10dp"
-                            android:paddingTop="@dimen/size_5dp"
-                            android:textSize="@dimen/size_18sp" />
+                            android:paddingStart="@dimen/_8sdp"
+                            android:paddingTop="@dimen/_3sdp"
+                            android:textSize="@dimen/_16sdp" />
 
                         <ListView
                             android:id="@+id/ques_list"
@@ -384,10 +385,9 @@
 
             </androidx.cardview.widget.CardView>
 
-
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_20dp"
+                android:layout_height="@dimen/_18sdp"
                 android:background="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

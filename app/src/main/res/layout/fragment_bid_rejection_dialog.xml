@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="bidRejectionDialogViewModel"
             type="com.smf.events.ui.bidrejectiondialog.BidRejectionDialogViewModel" />
@@ -13,16 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/dialog_background"
-        app:cardCornerRadius="@dimen/size_10dp"
+        app:cardCornerRadius="@dimen/_8sdp"
         tools:context=".ui.bidrejectiondialog.BidRejectionDialogFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/size_15dp"
-            android:layout_marginTop="@dimen/size_20dp"
-            android:layout_marginEnd="@dimen/size_20dp"
-            android:layout_marginBottom="@dimen/size_20dp">
+            android:layout_marginStart="@dimen/_13sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_marginBottom="@dimen/_16sdp">
 
             <LinearLayout
                 android:id="@+id/title_layout"
@@ -38,8 +39,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/you_rejected_a_catering_1000045"
-                    android:textSize="@dimen/size_20sp"
                     android:textColor="@color/black_event_title"
+                    android:textSize="@dimen/_14sdp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,30 +53,32 @@
                 android:layout_marginTop="@dimen/size_15dp"
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/reason_for_rejection"
-                android:textSize="@dimen/size_18sp"
+                android:textSize="@dimen/_13sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title_layout" />
 
             <LinearLayout
                 android:id="@+id/linear_spn_layout"
-                android:layout_width="@dimen/size_250dp"
-                android:layout_height="@dimen/size_45dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/box_login_text"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reason_for_rejection_title_text">
+                app:layout_constraintTop_toBottomOf="@+id/reason_for_rejection_title_text"
+                app:layout_constraintVertical_bias="0.0">
 
                 <Spinner
                     android:id="@+id/spn_reason"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/spinner"
-                    android:padding="@dimen/size_5dp"
+                    android:padding="@dimen/_3sdp"
                     android:spinnerMode="dropdown"
-                    android:textSize="@dimen/size_20sp" />
+                    android:textSize="@dimen/_13sdp" />
 
             </LinearLayout>
 
@@ -83,10 +86,10 @@
                 android:id="@+id/tx_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_20dp"
+                android:layout_marginTop="@dimen/_16sdp"
                 android:fontFamily="@font/mulish_medium"
                 android:text="@string/comments"
-                android:textSize="@dimen/size_18sp"
+                android:textSize="@dimen/_14sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linear_spn_layout" />
 
@@ -94,7 +97,7 @@
                 android:id="@+id/et_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/size_10dp"
+                android:layout_marginEnd="@dimen/_6sdp"
                 android:background="@drawable/box_login_text"
                 android:gravity="start"
                 android:lines="6"
@@ -107,11 +110,11 @@
                 android:id="@+id/alert_msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_5dp"
+                android:layout_marginTop="@dimen/_3sdp"
                 android:fontFamily="@font/mulish_regular"
                 android:text="@string/comments_is_mandatory_for_thr_option"
                 android:textColor="@color/red"
-                android:textSize="@dimen/size_15sp"
+                android:textSize="@dimen/_11sdp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/et_comments" />
 
@@ -119,18 +122,19 @@
                 android:id="@+id/tx_alert"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_4dp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/if_you_want"
-                android:textSize="@dimen/size_18sp"
+                android:textSize="@dimen/_13sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/alert_msg" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_65dp"
-                android:layout_marginTop="@dimen/size_12dp"
+                android:layout_height="@dimen/_55sdp"
+                android:layout_marginTop="@dimen/_8sdp"
                 android:weightSum="3"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tx_alert">
@@ -138,26 +142,30 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_cancel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_18dp"
-                    android:layout_marginEnd="@dimen/size_5dp"
+                    android:layout_height="@dimen/_27sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
                     android:layout_weight="1.5"
-                    android:textAllCaps="false"
                     android:background="@drawable/custom_button_corner_cancel"
                     android:text="@string/cancel"
-                    android:textColor="@color/black" />
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_11sdp" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_ok"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_5dp"
-                    android:layout_marginTop="18dp"
+                    android:layout_height="@dimen/_27sdp"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
                     android:layout_weight="1.5"
-                    android:textAllCaps="false"
                     android:background="@drawable/custom_button_corner_ok"
                     android:text="@string/ok"
-                    android:textColor="@color/white"/>
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp" />
 
             </LinearLayout>
 
