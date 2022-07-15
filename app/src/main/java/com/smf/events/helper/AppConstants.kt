@@ -51,6 +51,8 @@ object AppConstants {
     const val MONTH = "Month"
     const val EVENTS_ON_SELECTED_DATE = "EventsOnSelectedDate"
     const val INITIAL_DATE_NO_EVENTS = "InitialDateNoEvents"
+    const val BOOKED_EVENT_SERVICES = "bookedEventServices"
+    const val BOOKED_EVENT_SERVICES_INITIAL =  "bookedEventServicesInitial"
     const val BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE = "bookedEventServicesFromSelectedDate"
     const val NULL = "Null"
     const val AVAILABLE = "Available"

@@ -91,7 +91,9 @@ class DayExpandableListFragment : Fragment(),
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(viewLifecycleOwner, { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
-            mDataBinding.expendableList.visibility = View.VISIBLE
+            //  2986 Showing progress based on calender and service selection
+            mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+            mDataBinding.expandableLayout.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.GONE
             if (currentDate.listOfDays.contains(currentDate.selectedDate)) {
                 currentDate.listOfDays.forEach {
@@ -99,7 +101,7 @@ class DayExpandableListFragment : Fragment(),
                         fromDate = currentDate.selectedDate
                         toDate = currentDate.selectedDate
                         listOfDates = currentDate.listOfDays
-                        apiTokenValidation("EventsOnSelectedDate")
+                        apiTokenValidation(AppConstants.EVENTS_ON_SELECTED_DATE)
                     }
                 }
             } else {
@@ -111,10 +113,12 @@ class DayExpandableListFragment : Fragment(),
     // 2776 - Method For set Dates ArrayList
     private fun setListOfDatesArrayList(currentDate: ScheduleManagementViewModel.SelectedDate) {
         if (currentDate.listOfDays.isNullOrEmpty()) {
-            mDataBinding.expendableList.visibility = View.GONE
+            mDataBinding.modifyProgressBar.visibility = View.GONE
+            mDataBinding.expandableLayout.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
-            mDataBinding.expendableList.visibility = View.VISIBLE
+            mDataBinding.modifyProgressBar.visibility = View.GONE
+            mDataBinding.expandableLayout.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
             listOfDates = currentDate.listOfDays
             expandableListInitialSetUp()
@@ -191,6 +195,10 @@ class DayExpandableListFragment : Fragment(),
             ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+                        //  2986 Hiding progress based on calender and service selection
+                        mDataBinding.modifyProgressBar.visibility = View.GONE
+                        mDataBinding.expandableLayout.visibility = View.VISIBLE
+                        mDataBinding.noEventsText.visibility = View.GONE
                         Log.d("TAG", "check token result success BookedEvent: ${apiResponse.response}")
                         updateExpandableListDataSelectedDate(apiResponse, caller)
                     }
@@ -209,7 +217,7 @@ class DayExpandableListFragment : Fragment(),
         apiResponse: ApisResponse.Success<BookedServiceList>,
         caller: String
     ) {
-        if (caller == "EventsOnSelectedDate") {
+        if (caller == AppConstants.EVENTS_ON_SELECTED_DATE) {
             childData.clear()
             titleDate.clear()
             for (i in 0 until (listOfDates?.size ?: 0)) {
@@ -251,7 +259,6 @@ class DayExpandableListFragment : Fragment(),
         apiResponse: ApisResponse.Success<BookedServiceList>,
         position: Int
     ) {
-        Log.d("TAG", "setDataToExpandableList position: $position")
         val bookedEventDetails = ArrayList<ListData>()
         if (apiResponse.response.data.isNullOrEmpty()) {
             bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
@@ -270,7 +277,6 @@ class DayExpandableListFragment : Fragment(),
     }
 
     override fun onClick(expandedListPosition: Int) {
-        Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
 //        TODO - Click Events
     }
 
@@ -336,7 +342,7 @@ class DayExpandableListFragment : Fragment(),
                 .lowercase(Locale.getDefault()) + month.substring(2, 3)
                 .lowercase(Locale.getDefault())
         }
-        val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+        val currentDayFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
         val currentDay = LocalDate.parse(input, currentDayFormatter).dayOfWeek.getDisplayName(
             TextStyle.FULL,
             Locale.ENGLISH

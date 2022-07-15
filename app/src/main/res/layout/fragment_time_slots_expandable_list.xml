@@ -1,38 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="timeSlotsExpandableListViewModel"
             type="com.smf.events.ui.timeslotsexpandablelist.TimeSlotsExpandableListViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/_20sdp">
 
-        <com.smf.events.ui.timeslotmodifyexpanablelist.SMFExpandableListView
-            android:id="@+id/expendableList"
+        <RelativeLayout
+            android:id="@+id/expandable_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:childDivider="@color/white"
-            android:divider="@color/white"
-            android:dividerHeight="@dimen/dp_0"
-            android:groupIndicator="@null"
-            android:scrollbars="none" />
+            android:layout_height="match_parent">
+
+            <com.smf.events.ui.timeslotmodifyexpanablelist.SMFExpandableListView
+                android:id="@+id/expendableList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:childDivider="@color/white"
+                android:divider="@color/white"
+                android:dividerHeight="@dimen/dp_0"
+                android:groupIndicator="@null"
+                android:scrollbars="none" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/no_events_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textSize="@dimen/size_15sp"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:text="@string/no_events_available"
+            android:textSize="@dimen/_13sdp"
             android:visibility="gone"
-            android:layout_marginTop="@dimen/size_30dp"
-            android:text="@string/no_events_available" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/modify_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:indeterminateDrawable="@drawable/custom_progrss_bar"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

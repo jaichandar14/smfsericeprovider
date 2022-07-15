@@ -47,7 +47,7 @@ class MonthExpandableListFragment : Fragment(),
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
-    private val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+    private val currentDayFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
     private var fromDate: String? = null
     private var toDate: String? = null
     private var currentDate: String? = null
@@ -89,6 +89,9 @@ class MonthExpandableListFragment : Fragment(),
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentMonthDate.observe(viewLifecycleOwner,
             { currentMonthDate ->
+                //  2986 Showing progress based on calender and service selection
+                mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+                mDataBinding.expandableLayout.visibility = View.GONE
                 fromDate = currentMonthDate.fromDate
                 toDate = currentMonthDate.toDate
                 currentDate = currentMonthDate.currentDate
@@ -105,7 +108,7 @@ class MonthExpandableListFragment : Fragment(),
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
             // 2670 - Api Call Token Validation
-            apiTokenValidation("bookedEventServices")
+            apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES)
         } else {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
@@ -128,6 +131,9 @@ class MonthExpandableListFragment : Fragment(),
             ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+                        //  2986 Hiding progress based on calender and service selection
+                        mDataBinding.modifyProgressBar.visibility = View.GONE
+                        mDataBinding.expandableLayout.visibility = View.VISIBLE
                         Log.d("TAG", "check token result success month: ${apiResponse.response.data}")
                         updateExpandableListData(apiResponse)
                     }
@@ -240,7 +246,7 @@ class MonthExpandableListFragment : Fragment(),
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             when (caller) {
-                "bookedEventServices" -> {
+                AppConstants.BOOKED_EVENT_SERVICES -> {
                     val currentMonthValue = LocalDateTime.now().monthValue.toString()
                     currentDate = if (monthValue == currentMonthValue) {
                         currentDate

@@ -91,7 +91,6 @@ class WeekModifyExpandableListFragment : Fragment(),
         return mDataBinding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // 2670 - Initialize expendableList
@@ -103,6 +102,9 @@ class WeekModifyExpandableListFragment : Fragment(),
 
         sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner,
             { currentWeekDate ->
+                //  2986 Showing progress based on calender and service selection
+                mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+                mDataBinding.expandableLayout.visibility = View.GONE
                 serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
                 weekMap = getWeekListMap(currentWeekDate)
                 listOfDatesArray.clear()
@@ -159,6 +161,9 @@ class WeekModifyExpandableListFragment : Fragment(),
             ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+                        //  2986 Hiding progress based on calender and service selection
+                        mDataBinding.modifyProgressBar.visibility = View.GONE
+                        mDataBinding.expandableLayout.visibility = View.VISIBLE
                         Log.d(TAG, "success ModifyBookedEvent weekaa: ${apiResponse.response.data}")
                         if (caller == AppConstants.INITIAL_WEEK) {
                             eventsOnSelectedDateApiValueUpdate(apiResponse, caller)

@@ -46,7 +46,7 @@ class WeekExpandableListFragment : Fragment(),
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
-    var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+    var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT)
     private var fromDate: String? = null
     private var toDate: String? = null
     private var weekList: ArrayList<String>? = null
@@ -109,7 +109,8 @@ class WeekExpandableListFragment : Fragment(),
                 listOfDates = currentWeekDate.bookedWeekList
 
                 if (checkCurrentWeekHaveEvent(currentWeekDate)) {
-                    mDataBinding.expendableList.visibility = View.VISIBLE
+                    mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+                    mDataBinding.expandableLayout.visibility= View.GONE
                     mDataBinding.noEventsText.visibility = View.GONE
                     listOfDatesArray.forEach {
                         if (currentWeekDate.weekList[0] == it[0]) {
@@ -145,10 +146,12 @@ class WeekExpandableListFragment : Fragment(),
     // 2776 - Method For set week wise Dates ArrayList
     private fun setListOfDatesArray() {
         if (weekMap.isNullOrEmpty()) {
-            mDataBinding.expendableList.visibility = View.GONE
+            mDataBinding.expandableLayout.visibility = View.GONE
+//            mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
-            mDataBinding.expendableList.visibility = View.VISIBLE
+            mDataBinding.expandableLayout.visibility = View.VISIBLE
+//            mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
             expandableListInitialSetUp()
         }
@@ -163,7 +166,7 @@ class WeekExpandableListFragment : Fragment(),
     // 2795 -  Method For Set titleDate and childData values
     private fun expandableListInitialSetUpWithEvents() {
         setExpandableListEmptyData()
-        apiTokenValidation("bookedEventServicesInitial")
+        apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES_INITIAL)
     }
 
     // 2795 - Method For Set Expandable List Data
@@ -200,6 +203,10 @@ class WeekExpandableListFragment : Fragment(),
             ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+                        //  2986 Hiding progress based on calender and service selection
+                        mDataBinding.modifyProgressBar.visibility = View.GONE
+                        mDataBinding.expandableLayout.visibility = View.VISIBLE
+                        mDataBinding.noEventsText.visibility = View.GONE
                         Log.d("TAG", "check token response: ${apiResponse.response}")
                         updateExpandableListData(apiResponse, caller)
                     }
@@ -218,7 +225,7 @@ class WeekExpandableListFragment : Fragment(),
         apiResponse: ApisResponse.Success<BookedServiceList>,
         caller: String,
     ) {
-        if (caller == "bookedEventServicesInitial") {
+        if (caller == AppConstants.BOOKED_EVENT_SERVICES_INITIAL) {
             // ExpandableView And Adapter Initialization
             initializeExpandableListSetUp()
             updateApiDataToExpandableView(apiResponse)
