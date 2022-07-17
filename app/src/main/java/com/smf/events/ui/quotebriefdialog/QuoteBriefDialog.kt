@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -26,6 +27,7 @@ import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 
@@ -181,23 +183,28 @@ class QuoteBriefDialog(var status: Int) :
         if (!data.comment.isNullOrEmpty()) {
             mDataBinding?.etComments?.text = data.comment
         }
-//       if (checkPermission()) {
-//           Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show()
-//       } else {
-//           requestPermission()
-//       }
 
+        mDataBinding?.fileImgDelete?.tag = data.fileContent
 
         mDataBinding?.fileImgDelete?.setOnClickListener {
-            //generatePDF()
-            //writeFileExternalStorage()
-            //generateNoteOnSD(context,fileName,fileContent)
-            //  writeResponseBodyToDisk(fileName,fileContent,fileSize)
+            saveFileNew(it.tag.toString(), fileName)
         }
     }
 
-    private fun requestPermission() {
-        // requesting permissions if not provided.
+    private fun saveFileNew(newContent: String?, fileName: String?) {
+        val path = requireContext().getExternalFilesDir(null)
+        val folder = File(path, "")
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+        val filePath = File(folder, "$fileName")
+        val pdfAsBytes: ByteArray = Base64.decode(newContent, 0)
+//        val filePath = File(requireContext().getExternalFilesDir(null).toString() + "/$fileName")
+        val os = FileOutputStream(filePath, false)
+        os.write(pdfAsBytes)
+        os.flush()
+        os.close()
+        showToast("File Saved")
     }
 
     override fun onResume() {
