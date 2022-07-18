@@ -302,19 +302,19 @@ class DeselectingDialogFragment(
         when (classTag) {
             AppConstants.DAY -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + fromDate + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }
             AppConstants.WEEK -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + currentMonth + "." + " " + getString(
+                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + fromDate +" to "+ toDate + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }
             AppConstants.MONTH -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_month) + " " + currentMonth + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }
@@ -326,19 +326,19 @@ class DeselectingDialogFragment(
         when (classTag) {
             AppConstants.DAY -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + fromDate + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }
             AppConstants.WEEK -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + currentMonth + "." + " " + getString(
+                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + fromDate +" to "+ toDate + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }
             AppConstants.MONTH -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_first) + " " + currentMonth + "." + " " + getString(
+                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.you_are_deselecting_month) + " " + currentMonth + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }

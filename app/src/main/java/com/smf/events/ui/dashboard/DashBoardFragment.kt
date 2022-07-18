@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
 import com.google.android.material.navigation.NavigationView
 import com.smf.events.BR
@@ -161,7 +162,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         val activity = activity as AppCompatActivity
         activity.setSupportActionBar(toolbar)
         // Setting DashBoard Title
-        mDataBinding?.welcomeText?.text = getString(R.string.welcome)+ " " + firstName
+        mDataBinding?.welcomeText?.text = getString(R.string.welcome) + " " + firstName
         navigationView.bringToFront()
         val toggle = ActionBarDrawerToggle(
             requireActivity(),
@@ -508,6 +509,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     private fun logOut() {
         widgetBefore()
         Amplify.Auth.signOut(
+            AuthSignOutOptions.builder().globalSignOut(true).build(),
             {
                 sharedPreference.putString(SharedPreference.ID_Token, "")
                 GlobalScope.launch(Main) {
