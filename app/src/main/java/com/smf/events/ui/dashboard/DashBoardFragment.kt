@@ -368,7 +368,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
-                        mDataBinding?.serviceCountLayout?.visibility = View.VISIBLE
+                        sharedPreference.putString(SharedPreference.ID_Token, "")
+                        GlobalScope.launch(Main) {
+                            // Navigate to SignInFragment
+                            findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToSignInFragment())
+                            widgetAfter()
+                        }
                     }
                     else -> {
                     }

@@ -28,13 +28,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 
 class QuoteBriefDialog(var status: Int) :
     BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
     Tokens.IdTokenCallBackInterface {
-
+    var num: Int = 0
     var bidRequestId: Int? = 0
     lateinit var idToken: String
     var expand = false
@@ -111,18 +112,16 @@ class QuoteBriefDialog(var status: Int) :
     private fun viewQuotes() {
         mDataBinding?.viewQuote?.setOnClickListener {
             mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
-            mDataBinding?.viewQuotes?.visibility = View.VISIBLE
+            mDataBinding?.progressBar?.visibility = View.VISIBLE
             isViewQuoteClicked = true
             mDataBinding?.txCatering?.text = "Quote details for $serviceName"
             apiTokenValidationQuoteBrief("viewQuotes")
             mDataBinding?.btnBack?.setOnClickListener {
                 mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
                 mDataBinding?.viewQuotes?.visibility = View.GONE
-
                 onResume()
             }
         }
-
     }
 
     // 2962 Api call View Quotes
@@ -135,6 +134,8 @@ class QuoteBriefDialog(var status: Int) :
                         Log.d(TAG, "getViewQuotes: ${apiResponse.response.data}")
                         val data = apiResponse.response.data
                         setViewQuote(data)
+                        mDataBinding?.viewQuotes?.visibility = View.VISIBLE
+                        mDataBinding?.progressBar?.visibility = View.GONE
                     }
                     is ApisResponse.Error -> {
                         Log.d(TAG, "check token result: ${apiResponse.exception}")
@@ -192,19 +193,59 @@ class QuoteBriefDialog(var status: Int) :
     }
 
     private fun saveFileNew(newContent: String?, fileName: String?) {
-        val path = requireContext().getExternalFilesDir(null)
-        val folder = File(path, "")
+        val folder = File("/storage/emulated/0/Download", "")
+        var subString: String? = null
+
         if (!folder.exists()) {
             folder.mkdirs()
+        } else {
+            var iend: Int = fileName!!.lastIndexOf(".")
+            if (iend != -1) {
+                subString = fileName.substring(0, iend) //this will give abc
+            }
+            var fileTypepath = fileName.substring(fileName.lastIndexOf("."))
+            createFile(subString, fileTypepath, newContent)
+
         }
-        val filePath = File(folder, "$fileName")
-        val pdfAsBytes: ByteArray = Base64.decode(newContent, 0)
-//        val filePath = File(requireContext().getExternalFilesDir(null).toString() + "/$fileName")
-        val os = FileOutputStream(filePath, false)
-        os.write(pdfAsBytes)
-        os.flush()
-        os.close()
-        showToast("File Saved")
+
+    }
+
+    // Creating a non repeatable file
+    private fun createFile(prefix: String?, fileTypepath: String, newContent: String?) {
+        var filename: String? = null
+        if (num == 0) {
+            filename = "$prefix$fileTypepath"
+        } else {
+            filename = "$prefix($num)$fileTypepath" //create the correct filename
+        }
+        val myFile = File("/storage/emulated/0/Download", filename)
+        Log.d(TAG, "saveFileNew: ${myFile.absoluteFile.name}")
+        try {
+            if (!myFile.exists()) {
+                if (num == 0) {
+                    filename = "$prefix$fileTypepath"
+                } else {
+                    filename = "$prefix($num)$fileTypepath" //create the correct filename
+                }
+                Log.d(TAG, "saveFileNew2: ${num}${filename}")
+                val myFile1 = File("/storage/emulated/0/Download", filename)
+                myFile1.createNewFile()
+                val pdfAsBytes: ByteArray = Base64.decode(newContent, 0)
+                val os = FileOutputStream(myFile1, false)
+                os.write(pdfAsBytes)
+                os.flush()
+                os.close()
+                showToast("File Downloaded  ${myFile1.absoluteFile.name}")
+            } else {
+                num++ //increase the file index
+                createFile(prefix,
+                    fileTypepath,
+                    newContent) //simply call this method again with the same prefix
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
     }
 
     override fun onResume() {
@@ -212,6 +253,7 @@ class QuoteBriefDialog(var status: Int) :
         // 2962
         if (isViewQuoteClicked == true) {
             mDataBinding?.viewQuotes?.visibility = View.GONE
+            mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
         } else {
             mDataBinding?.viewQuotes?.visibility = View.GONE
         }
@@ -429,201 +471,5 @@ class QuoteBriefDialog(var status: Int) :
             s, idToken
         )
     }
-//    private fun checkPermission(): Boolean {
-//        // checking of permissions.
-//        val permission1 =
-//            ContextCompat.checkSelfPermission(ApplicationProvider.getApplicationContext<Context>(),
-//                WRITE_EXTERNAL_STORAGE)
-//        val permission2 =
-//            ContextCompat.checkSelfPermission(ApplicationProvider.getApplicationContext<Context>(),
-//                READ_EXTERNAL_STORAGE)
-//        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED
-//    }
 
-
-//    @RequiresApi(Build.VERSION_CODES.R)
-//    fun generateNoteOnSD(context: Context?, sFileName: String?, sBody: String?) {
-//        try {
-//            val root:File = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString())
-//            if (!root.exists()) {
-//                root.mkdirs()
-//            }
-//// String encode = Base64.encodeToString(edit_query.getText().toString().getBytes(), Base64.DEFAULT);
-////               text.setText(encode);
-////               byte[] data = Base64.decode(encode, Base64.DEFAULT);
-////               String text = new String(data, StandardCharsets.UTF_8);
-//            val pdfAsBytes: ByteArray = Base64.decode(sBody, Base64.DEFAULT)
-//            Log.d(TAG, "generateNoteOnSD:$sBody ${root.absolutePath} ")
-//            val input: InputStream?=sBody?.byteInputStream(StandardCharsets.UTF_8)
-//            var bytes = getBytes(input!!)
-//            val data: ByteArray = Base64.decode(bytes, Base64.DEFAULT)
-//            val fileContext = String(data)
-//            val gpxfile = File(root, sFileName)
-//            val writer = FileWriter(gpxfile)
-//            writer.append(fileContext)
-//            writer.flush()
-//            writer.close()
-//            Log.d(TAG, "generateNoteOnSD:$fileContext ${bytes} ")
-//            Toast.makeText(context, "Saved ${root.absolutePath}", Toast.LENGTH_SHORT).show()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//      }
-//    @Throws(IOException::class)
-//    fun getBytes(inputStream: InputStream): ByteArray? {
-//        val byteBuffer = ByteArrayOutputStream()
-//        val bufferSize = 1024
-//        val buffer = ByteArray(bufferSize)
-//        var len = 0
-//        while (inputStream.read(buffer).also { len = it } != -1) {
-//            byteBuffer.write(buffer, 0, len)
-//        }
-//        return byteBuffer.toByteArray()
-//    }
-//
-//
-//
-//private  fun generatePDF() {
-//    // declaring width and height
-//    // for our PDF file.
-//    // declaring width and height
-//    // for our PDF file.
-//    val pageHeight = 1120
-//    val pagewidth = 792
-//    // creating an object variable
-//    // for our PDF document.
-//    val pdfDocument = PdfDocument()
-//
-//    // two variables for paint "paint" is used
-//    // for drawing shapes and we will use "title"
-//    // for adding text in our PDF file.
-//    val paint = Paint()
-//    val title = Paint()
-//    val bmp: Bitmap
-//    val scaledbmp: Bitmap
-//    // we are adding page info to our PDF file
-//    // in which we will be passing our pageWidth,
-//    // pageHeight and number of pages and after that
-//    // we are calling it to create our PDF.
-//    val mypageInfo = PageInfo.Builder(pagewidth, pageHeight, 1).create()
-//    bmp = BitmapFactory.decodeResource(getResources(), R.drawable.festo_login_logo);
-//    scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false);
-//    // below line is used for setting
-//    // start page for our PDF file.
-//    val myPage = pdfDocument.startPage(mypageInfo)
-//
-//    // creating a variable for canvas
-//    // from our page of PDF.
-//    val canvas: Canvas = myPage.canvas
-//
-//    // below line is used to draw our image on our PDF file.
-//    // the first parameter of our drawbitmap method is
-//    // our bitmap
-//    // second parameter is position from left
-//    // third parameter is position from top and last
-//    // one is our variable for paint.
-//  //  canvas.drawBitmap(scaledbmp, 56, 40, paint)
-//
-//    // below line is used for adding typeface for
-//    // our text which we will be adding in our PDF file.
-//    title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
-//
-//    // below line is used for setting text size
-//    // which we will be displaying in our PDF file.
-//
-//
-//    // below line is sued for setting color
-//    // of our text inside our PDF file.
-//    title.setColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
-//
-//    // below line is used to draw text in our PDF file.
-//    // the first parameter is our text, second parameter
-//    // is position from start, third parameter is position from top
-//    // and then we are passing our variable of paint which is title.
-//    canvas.drawText("A portal for IT professionals.", 209F, 100F, title)
-//    canvas.drawText("Geeks for Geeks", 209F, 80F, title)
-//
-//    // similarly we are creating another text and in this
-//    // we are aligning this text to center of our PDF file.
-//    title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL))
-//    title.setColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
-//    title.setTextSize(15F)
-//
-//    // below line is used for setting
-//    // our text to center of PDF.
-//    title.setTextAlign(Paint.Align.CENTER)
-//    canvas.drawText(fileContent.toString(), 396F, 560F, title)
-//
-//    // after adding all attributes to our
-//    // PDF file we will be finishing our page.
-//    pdfDocument.finishPage(myPage)
-//
-//    // below line is used to set the name of
-//    // our PDF file and its path.
-//    val file = File(requireContext().getExternalFilesDir(null), fileName)
-//    try {
-//        // after creating a file name we will
-//        // write our PDF file to that location.
-//        pdfDocument.writeTo(FileOutputStream(file))
-//
-//        // below line is to print toast message
-//        // on completion of PDF generation.
-//        Toast.makeText(requireContext(), "PDF file generated successfully. ", Toast.LENGTH_SHORT)
-//            .show()
-//    } catch (e: IOException) {
-//        // below line is used
-//        // to handle error
-//        e.printStackTrace()
-//    }
-//    // after storing our pdf to that
-//    // location we are closing our PDF file.
-//    pdfDocument.close()
-//}
-//
-//    // Method for creating a pdf file from text, saving it then opening it for display
-//    fun createandDisplayPdf(text: String?) {
-//        val doc = Document()
-//        try {
-//            val path = requireContext().getExternalFilesDir(null).absolutePath + "/Dir"
-//            val dir = File(path)
-//            if (!dir.exists()) dir.mkdirs()
-//            val file = File(dir, "newFile.pdf")
-//            val fOut = FileOutputStream(file)
-//            PdfWriter.getInstance(doc, fOut)
-//
-//            //open the document
-//            doc.open()
-//            val p1 = Paragraph(text)
-//            val paraFont = Font(Font.COURIER)
-//            p1.setAlignment(Paragraph.ALIGN_CENTER)
-//            p1.setFont(paraFont)
-//
-//            //add paragraph to document
-//            doc.add(p1)
-//        } catch (de: DocumentException) {
-//            Log.e("PDFCreator", "DocumentException:$de")
-//        } catch (e: IOException) {
-//            Log.e("PDFCreator", "ioException:$e")
-//        } finally {
-//            doc.close()
-//        }
-//        viewPdf("newFile.pdf", "Dir")
-//    }
-//
-//    // Method for opening a pdf file
-//    private fun viewPdf(file: String, directory: String) {
-//        val pdfFile = File(requireContext().getExternalFilesDir(null)
-//            .toString() + "/" + directory + "/" + file)
-//        val path: Uri = Uri.fromFile(pdfFile)
-//
-//        // Setting the intent for pdf reader
-//        val pdfIntent = Intent(Intent.ACTION_VIEW)
-//        pdfIntent.setDataAndType(path, "application/pdf")
-//        pdfIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-//        try {
-//            startActivity(pdfIntent)
-//        } catch (e: ActivityNotFoundException) {
-//            Toast.makeText(requireContext(), "Can't read pdf file", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 }
