@@ -114,4 +114,8 @@ object AppConstants {
     const val TEXT = "text/*"
     const val PDF = "application/pdf"
     const val XLS = "application/vnd.ms-excel"
+    const val DENY="Deny"
+    const val DEV="dev"
+    const val QA="qa"
+    const val UAT="uat"
 }

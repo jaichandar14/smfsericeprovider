@@ -157,7 +157,7 @@ class DeselectingDialogFragment(
                     apiTokenValidation(AppConstants.NULL_TO_SELECT)
                 } else if (purpose == AppConstants.SELECTED) {
                     dismiss()
-                }else if(purpose =="Deny"){
+                }else if(purpose ==AppConstants.DENY){
                     RxBus.publish(RxEvent.DenyStorage(true))
                     dismiss()
                 }
