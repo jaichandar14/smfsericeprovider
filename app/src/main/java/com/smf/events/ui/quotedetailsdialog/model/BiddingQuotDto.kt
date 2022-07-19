@@ -8,9 +8,9 @@ data class BiddingQuotDto(
     val cost: String?=null,
     val costingType: String?=null,
     val currencyType:String?=null,
-    val fileContent: String?=null,
-    val fileName: String?=null,
-    val fileSize:String?=null,
+    var fileContent: String?=null,
+    var fileName: String?=null,
+    var fileSize:String?=null,
     val fileType:String?=null,
     val latestBidValue: Int
 )

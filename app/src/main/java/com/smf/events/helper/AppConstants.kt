@@ -106,4 +106,16 @@ object AppConstants {
     // 2963
     const val NULL_TO_SELECT = "nullToSelect"
 
+    // 2990
+    const val DOC = "application/msword"
+    const val DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    const val IMAGE = "image/*"
+    const val AUDIO = "audio/*"
+    const val TEXT = "text/*"
+    const val PDF = "application/pdf"
+    const val XLS = "application/vnd.ms-excel"
+    const val DENY="Deny"
+    const val DEV="dev"
+    const val QA="qa"
+    const val UAT="uat"
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -132,10 +133,36 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // AWS Error response
     override fun awsErrorResponse() {
+        getOtpValidation()
         hideProgress()
         showToast(getViewModel().toastMessage)
-    }
 
+            }
+    // Login api call to Fetch RollId and SpRegId
+     fun getOtpValidation() {
+        // Getting Service Provider Reg Id and Role Id
+        getViewModel().getOtpValidation(false,userName)
+            .observe(this@EmailOTPFragment, Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        // Initialize RegId And RoleId to Shared Preference
+                        //setSpRegIdAndRollID(apiResponse)
+                        Log.d(TAG, "getLoginApiCall11: ${apiResponse.response}")
+                        // Navigate to DashBoardFragment
+                    //   findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+                    }
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "error response: ${apiResponse.message}")
+                        // Navigate to DashBoardFragment
+                       if ( !apiResponse.message.isNullOrEmpty())
+                           showToast(apiResponse.message)
+                           findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+                       }
+                    else -> {
+                    }
+                }
+            })
+    }
     // 2351 Android-OTP expires Validation
     override fun navigatingPage() {
         // Navigating from emailOtpScreen to Sign in Screen
