@@ -171,8 +171,7 @@ class ActionDetailsFragment :
     }
 
     override fun showDialog(status: ActionDetails) {
-
-        QuoteBriefDialog.newInstance(status.bidRequestId)
+      QuoteBriefDialog.newInstance(status.bidRequestId)
             .show(
                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                 QuoteBriefDialog.TAG

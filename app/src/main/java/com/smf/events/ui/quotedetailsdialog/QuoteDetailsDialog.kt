@@ -136,13 +136,13 @@ class QuoteDetailsDialog(
         getViewModel().getCurrencyType(mDataBinding, currencyTypeList)
         // Quote ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-        // file uploader
-        fileUploader()
         // fetching details based on Biding status
         fetchBasedOnStatus(view)
         mDataBinding?.btnCancel?.setOnClickListener {
             btnCancel()
         }
+        // file uploader
+        fileUploader()
     }
 
     private fun btnCancel() {
@@ -227,6 +227,7 @@ class QuoteDetailsDialog(
 
     // Put call Api For Cost and File Upload
     private fun putQuoteApiCall(idToken: String) {
+        Log.d(TAG, "putQuoteApiCall: ${biddingQuote.fileContent} ${biddingQuote.fileName}")
         getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -283,7 +284,17 @@ class QuoteDetailsDialog(
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
+    private fun getCustomFileChooserIntent(vararg types: String?): Intent? {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        // Filter to only show results that can be "opened"
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+        intent.type = "*/*"
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, types)
+        return intent
+    }
     // 2940 Method to Select the file from the documents
+
     @SuppressLint("RestrictedApi", "Range")
     private fun fileUploader() {
         var logoUploadActivity =
@@ -293,26 +304,18 @@ class QuoteDetailsDialog(
                     val data: Intent? = result.data
                     var fileUri: Uri = data?.data!!
                     var filePath = fileUri.path
+                    Log.d(TAG, "fileUploader: ${fileUri}")
                     file = File(filePath)
                     if (!filePath.isNullOrEmpty()) {
                         fileName = filePath.substring(filePath.lastIndexOf("/") + 1)
-                        convertToString(fileUri)
                         gettingDocName(fileUri)
+                        convertToString(fileUri)
                     }
                 }
             }
         view?.findViewById<Button>(R.id.btn_file_upload)?.setOnClickListener {
             try {
-                var gallaryIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                gallaryIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                gallaryIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-                // 2842 Restricting file selection
-                val mimetypes =
-                    arrayOf("application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        "application/*|text/*", "audio/*",
-                        "application/*|vnd.ms-excel/*")
-                gallaryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
-                gallaryIntent.type = "*/*"
+                val gallaryIntent = getCustomFileChooserIntent(AppConstants.DOC,AppConstants.PDF,AppConstants.IMAGE,AppConstants.XLS,AppConstants.TEXT)
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
                 Toast.makeText(
@@ -328,6 +331,7 @@ class QuoteDetailsDialog(
             fileName = null
             fileSize = null
             fileContent = null
+            displayName=null
         }
     }
 
@@ -348,16 +352,26 @@ class QuoteDetailsDialog(
                         cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                     Log.d(TAG,
                         "gettingDocName: ${displayName?.substring(displayName!!.lastIndexOf("."))}")
+                    var subString= String()
+                    var iend: Int = displayName!!.lastIndexOf(".")
+                    if (iend != -1) {
+                        subString = displayName!!.substring(0, iend) //this will give abc
+                    }
                     fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
-                    mDataBinding?.filenameTx?.text = displayName?.take(10) + "..." + fileEndName
+                    mDataBinding?.filenameTx?.text = subString?.take(10) + "..." + fileEndName
                 }
             } finally {
                 cursor!!.close()
             }
         } else if (fileUri.toString().startsWith("file://")) {
             displayName = file.name
+            var subString= String()
+            var iend: Int = displayName!!.lastIndexOf(".")
+            if (iend != -1) {
+                subString = displayName!!.substring(0, iend) //this will give abc
+            }
             fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
-            mDataBinding?.filenameTx?.text = displayName!!.take(10) + "..." + fileEndName
+            mDataBinding?.filenameTx?.text = subString!!.take(10) + "..." + fileEndName
         }
     }
 
@@ -372,12 +386,26 @@ class QuoteDetailsDialog(
                 mDataBinding?.fileImgDelete?.visibility = View.VISIBLE
                 fileContent = Base64.encodeToString(bytes, Base64.DEFAULT)
                 fileSize = bytes.size.toString()
+                var fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
+                if (fileEndName==".apk"||fileEndName==".mp3"){
+                    mDataBinding?.fileImg?.visibility = View.GONE
+                    fileName = null
+                    fileContent = null
+                    fileSize = null
+                    displayName=null
+                    mDataBinding?.filenameTx?.visibility = View.GONE
+                    mDataBinding?.fileImgDelete?.visibility = View.GONE
+                    Toast.makeText(activity,
+                        "File is not uploaded. File Size Should Not Exceed 5MB.",
+                        Toast.LENGTH_SHORT).show()
+                }
             } else {
+                mDataBinding?.quoteTitle
                 mDataBinding?.fileImg?.visibility = View.GONE
-                mDataBinding?.filenameTx?.text = fileName
                 fileName = null
                 fileContent = null
                 fileSize = null
+                displayName=null
                 mDataBinding?.filenameTx?.visibility = View.GONE
                 mDataBinding?.fileImgDelete?.visibility = View.GONE
                 Toast.makeText(activity,

@@ -1,11 +1,14 @@
 package com.smf.events.ui.timeslot.deselectingdialog
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.BR
 import com.smf.events.R
@@ -133,6 +136,9 @@ class DeselectingDialogFragment(
             nullToSelectDialog()
         } else if (purpose == AppConstants.SELECTED) {
             modifyDialog()
+        }else if (purpose == "Deny"){
+            mDataBinding?.txTitle?.text ="You cannot able to Download the file from Festo. Until you allow to access the storage"
+            mDataBinding?.cancelBtn?.visibility = View.GONE
         }
 
         // Ok Button Click listener
@@ -150,6 +156,9 @@ class DeselectingDialogFragment(
                 } else if (purpose == AppConstants.NULL_TO_SELECT) {
                     apiTokenValidation(AppConstants.NULL_TO_SELECT)
                 } else if (purpose == AppConstants.SELECTED) {
+                    dismiss()
+                }else if(purpose =="Deny"){
+                    RxBus.publish(RxEvent.DenyStorage(true))
                     dismiss()
                 }
             }

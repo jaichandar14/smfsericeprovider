@@ -9,6 +9,7 @@ import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.emailotp.model.GetLoginInfo
+import com.smf.events.ui.emailotp.model.OTPValidation
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import com.smf.events.ui.quotebriefdialog.model.ViewQuotes
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
@@ -185,5 +186,12 @@ interface ApiStories {
         @Header("Authorization") idToken: String,
         @Path("bid-request-id") bidRequestId : Int,
     ): ViewQuotes
+
+    // 2900 - Invalid OTP Entry validation
+    @GET(BuildConfig.apiType +"no-auth/api/authentication/login-failure")
+    suspend fun setOTPValidation(
+        @Query("isSuccessful") isSuccessful: Boolean,
+        @Query("userName") userName: String,
+    ): OTPValidation
 
 }

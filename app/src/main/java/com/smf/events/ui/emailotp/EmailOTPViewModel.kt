@@ -107,6 +107,10 @@ class EmailOTPViewModel @Inject constructor(
     fun getLoginInfo(idToken: String) = liveData(Dispatchers.IO) {
         emit(eMailOTPRepository.getLoginInfo(idToken))
     }
+    // Method For Getting Service Provider Reg Id and Role Id
+    fun getOtpValidation(isValid:Boolean,username:String) = liveData(Dispatchers.IO) {
+        emit(eMailOTPRepository.getOtpValidation(isValid, username))
+    }
 
     // Email Verification
     private fun eMailVerification() {

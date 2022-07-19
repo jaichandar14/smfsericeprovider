@@ -15,4 +15,6 @@ class RxEvent {
     data class QuoteBrief1(var bidReqId: Int)
     data class ModifyDialog(val status: String)
     data class ChangingNav(val str:Int)
+
+    data class DenyStorage(val s:Boolean)
 }

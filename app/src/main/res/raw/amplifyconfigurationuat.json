@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "plugins": {
+      "awsCognitoAuthPlugin": {
+        "IdentityManager": {
+          "Default": {}
+        },
+        "CredentialsProvider": {
+          "CognitoIdentity": {
+            "Default": {
+              "PoolId": "us-east-1:7507b0a4-bf1b-4d66-b46b-586ebbb52347",
+              "Region": "us-east-1"
+            }
+          }
+        },
+        "CognitoUserPool": {
+          "Default": {
+            "PoolId": "us-east-1_Oz8ANCBxB",
+            "AppClientId": "18094pitanijpr0qjc4dgu6t5p",
+            "Region": "us-east-1"
+          }
+        },
+        "Auth": {
+          "Default": {
+            "authenticationFlowType": "CUSTOM_AUTH",
+            "OAuth": {
+              "WebDomain": "festo-prod.auth.us-east-1.amazoncognito.com",
+              "AppClientId": "18094pitanijpr0qjc4dgu6t5p",
+              "SignInRedirectURI": "[CUSTOM REDIRECT SCHEME AFTER SIGN IN, e.g. myapp://]",
+              "SignOutRedirectURI": "[CUSTOM REDIRECT SCHEME AFTER SIGN OUT, e.g. myapp://]",
+              "Scopes": [
+                "phone",
+                "email",
+                "profile",
+                "openid",
+                "aws.cognito.signin.user.admin"
+              ],
+              "responseType": "code"
+            }
+          }
+        }
+      }
+    }
+  }
+}

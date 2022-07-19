@@ -225,7 +225,7 @@
     <string name="service_in_progress__">Service in Progress</string>
     <string name="service_completed__">Service completed</string>
     <string name="event_details__">EVENT DETAILS</string>
-    <string name="minimum_1mb_npdf_txt_docx">Minimum 1MB \nPDF,txt,docx</string>
+    <string name="minimum_1mb_npdf_txt_docx">Minimum 5MB \nPDF,Doc,Excel,Image</string>
     <string name="active_status"> Active Services</string>
     <string name="inactive_status"> Inactive Services</string>"Welcome"
     <string name="welcome">Welcome</string>
