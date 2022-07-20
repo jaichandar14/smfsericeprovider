@@ -122,4 +122,5 @@ object AppConstants {
     // 2985
     const val EXPWeek="EXPWeek"
     const val EXPMonth="EXPMonth"
+    const val TIMESLOT="timeSlot"
 }

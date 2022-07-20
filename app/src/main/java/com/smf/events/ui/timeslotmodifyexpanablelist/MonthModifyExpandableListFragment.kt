@@ -101,7 +101,7 @@ class MonthModifyExpandableListFragment : Fragment(),
                 toDate = currentMonthDate.toDate
                 currentDate = currentMonthDate.currentDate
                 monthValue = currentMonthDate.monthValue.toString()
-                CalendarUtils.allDaysListForMonth = currentMonthDate.monthFromAndToDate
+                CalendarUtils.allDaysListForMonth=currentMonthDate.monthFromAndToDate
                 serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
                 monthValidation()
             })
@@ -142,7 +142,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
         toDate: String,
-        caller: String,
+        caller: String
     ) {
         if (view != null) {
             sharedViewModel.getModifyBookedEventServices(
@@ -177,7 +177,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     // 2795 - Method For Set Data To ExpandableList
     private fun setDataToExpandableList(
         apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
-        position: Int,
+        position: Int
     ) {
         Log.d(TAG, "setDataToExpandableList position: $position")
         val bookedEventDetails = ArrayList<ListData>()
@@ -216,7 +216,7 @@ class MonthModifyExpandableListFragment : Fragment(),
 
     private fun eventsOnSelectedDateApiValueUpdate(
         apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
-        caller: String,
+        caller: String
     ) {
         childData.clear()
         titleDate.clear()
@@ -254,8 +254,7 @@ class MonthModifyExpandableListFragment : Fragment(),
             expandableListView!!.setAdapter(adapter)
             adapter?.setOnClickListener(this)
 
-            val businessExpDate =
-                CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
+            val businessExpDate =CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
             val businessValidationDateLocalDate =
                 LocalDate.parse(businessExpDate, CalendarUtils.dateFormatter)
             if (CalendarUtils.allDaysListForMonth.contains(businessExpDate)) {
@@ -275,25 +274,23 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        val businessExpDate = CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
-        val lastDate =
-            LocalDate.parse(CalendarUtils.allDaysListForMonth.last(), CalendarUtils.dateFormatter)
+        val businessExpDate =CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
+        val lastDate = LocalDate.parse(CalendarUtils.allDaysListForMonth.last(), CalendarUtils.dateFormatter)
         val businessValidationDateLocalDate =
-            LocalDate.parse(CalendarUtils.allDaysListForMonth[listPosition],
-                CalendarUtils.dateFormatter)
+            LocalDate.parse(CalendarUtils.allDaysListForMonth[listPosition], CalendarUtils.dateFormatter)
         if (CalendarUtils.allDaysListForMonth.contains(businessExpDate) && businessValidationDateLocalDate < lastDate) {
-            //        val toDate1 =
-            //            LocalDate.parse(toDate, CalendarUtils.dateFormatter)
-            //  if (toDate1.monthValue < CalendarUtils.businessValidity?.monthValue!!){
-            //  if (CalendarUtils.allDaysListForMonth.contains(businessExpDate)) {
+     //        val toDate1 =
+     //            LocalDate.parse(toDate, CalendarUtils.dateFormatter)
+      //  if (toDate1.monthValue < CalendarUtils.businessValidity?.monthValue!!){
+      //  if (CalendarUtils.allDaysListForMonth.contains(businessExpDate)) {
             DeselectingDialogFragment.newInstance(
                 AppConstants.MONTH,
-                "EXPMonth",
-                "timeSlot",
-                "currentMonth",
+                AppConstants.EXPMonth,
+                AppConstants.TIMESLOT,
+                AppConstants.BID_SUBMITTED,
                 0,
                 businessExpDate.toString(),
-                "toDate", null
+                AppConstants.BID_REJECTED, null
             )
                 .show(
                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -383,11 +380,10 @@ class MonthModifyExpandableListFragment : Fragment(),
         parent: ViewGroup,
         listPosition: Int,
         isExpanded: Boolean,
-        businessValidationStatus: Boolean,
+        businessValidationStatus: Boolean
     ) {
-        if (businessValidationStatus) {
-            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
-                .show()
+        if (businessValidationStatus){
+            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT).show()
         }
 
     }

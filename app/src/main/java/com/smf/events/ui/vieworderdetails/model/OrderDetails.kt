@@ -20,7 +20,7 @@ data class DataValue(
 ) : Parcelable
 
 @Parcelize
-data class VenueInformationDto(val zipCode: Int) : Parcelable
+data class VenueInformationDto(val zipCode: String) : Parcelable
 
 @Parcelize
 data class EventServiceQuestionnaireDescriptionDto(

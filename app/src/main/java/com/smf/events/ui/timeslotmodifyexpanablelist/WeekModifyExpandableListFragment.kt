@@ -362,12 +362,12 @@ class WeekModifyExpandableListFragment : Fragment(),
         if (listOfDatesArray[listPosition].contains(businessExpDate)) {
             DeselectingDialogFragment.newInstance(
                 AppConstants.MONTH,
-                "EXPWeek",
-                "timeSlot",
-                "currentMonth",
+                AppConstants.EXPWeek,
+                AppConstants.TIMESLOT,
+                AppConstants.BID_SUBMITTED,
                 0,
                 businessExpDate.toString(),
-                "toDate", null
+                AppConstants.BID_REJECTED, null
             )
                 .show(
                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
