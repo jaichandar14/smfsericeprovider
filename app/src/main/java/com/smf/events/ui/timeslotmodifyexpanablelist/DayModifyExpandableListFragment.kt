@@ -7,15 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
@@ -107,6 +106,8 @@ class DayModifyExpandableListFragment : Fragment(),
             toDate = currentDate.selectedDate
             listOfDates = currentDate.listOfDays
             allDaysList = currentDate.allDaysList
+            /////////////////////////////////////////
+            CalendarUtils.allDaysList = currentDate.allDaysList
             Log.d(TAG, "onViewCreated day: ${currentDate.allDaysList} $serviceVendorOnboardingId")
             initializeExpandableViewData()
         })
@@ -129,6 +130,8 @@ class DayModifyExpandableListFragment : Fragment(),
     private fun initializeExpandableViewData() {
         if (allDaysList.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
+            ////////////////////////////////////////////////////////////
+            mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
@@ -254,35 +257,44 @@ class DayModifyExpandableListFragment : Fragment(),
         }
 
         if (caller == AppConstants.INITIAL_DAY) {
-            allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
-            lastGroupPosition = allDaysList.indexOf(fromDate)
-            adapter?.notifyDataSetChanged()
+            val currentDayFormatter = CalendarUtils.dateFormatter
+            val currentDay = LocalDate.parse(fromDate, currentDayFormatter)
+            val businessValidationDate = LocalDate.parse("09/25/2022", currentDayFormatter)
+            if (currentDay < businessValidationDate){
+                allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
+                lastGroupPosition = allDaysList.indexOf(fromDate)
+                adapter?.notifyDataSetChanged()
+            }
         }
     }
 
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        this.parent = parent as ExpandableListView
-        this.groupPosition = listPosition
-        fromDate = allDaysList[listPosition]
-        toDate = allDaysList[listPosition]
-        if (isExpanded) {
-            parent.collapseGroup(listPosition)
-        } else {
-            // Send Selected Date To ViewModel For Calender UI Display
-            fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(
-                ListData(
-                    getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", ""))
+    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean, businessValidationStatus: Boolean) {
+        if (!businessValidationStatus){
+            this.parent = parent as ExpandableListView
+            this.groupPosition = listPosition
+            fromDate = allDaysList[listPosition]
+            toDate = allDaysList[listPosition]
+            if (isExpanded) {
+                parent.collapseGroup(listPosition)
+            } else {
+                // Send Selected Date To ViewModel For Calender UI Display
+                fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
+                val bookedEventDetails = ArrayList<ListData>()
+                bookedEventDetails.add(
+                    ListData(
+                        getString(R.string.empty),
+                        listOf(BookedEventServiceDto("", "", "", ""))
+                    )
                 )
-            )
-            childData[titleDate[groupPosition]] = bookedEventDetails
-            parent.collapseGroup(lastGroupPosition)
-            parent.expandGroup(listPosition)
-            apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE)
+                childData[titleDate[groupPosition]] = bookedEventDetails
+                parent.collapseGroup(lastGroupPosition)
+                parent.expandGroup(listPosition)
+                apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE)
+            }
+            lastGroupPosition = listPosition
+        }else{
+            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT).show()
         }
-        lastGroupPosition = listPosition
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {

@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
+import com.smf.events.helper.CalendarUtils
 import com.smf.events.ui.timeslotsexpandablelist.adapter.BookedSlotsRecyclerViewAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventsList
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
+import java.time.LocalDate
 import java.time.Month
 import java.util.*
 
@@ -63,8 +66,12 @@ class CustomModifyExpandableListAdapter internal constructor(
         address12To3am?.text = null
 
         image12To3am?.setOnClickListener {
-            Log.d(TAG , "getChildView: clicked $expandedListPosition")
-            timeSlotIconOnClickListener?.onChildClick(listPosition, expandedListPosition,expandedListData.timeSlot)
+            Log.d(TAG, "getChildView: clicked $expandedListPosition")
+            timeSlotIconOnClickListener?.onChildClick(
+                listPosition,
+                expandedListPosition,
+                expandedListData.timeSlot
+            )
         }
 
         // Verification For Booked Events Data
@@ -87,7 +94,8 @@ class CustomModifyExpandableListAdapter internal constructor(
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = context.getString(R.string.not_available)
             image12To3am?.setImageResource(R.drawable.unselect)
-        } else {val list = ArrayList<BookedEventsList>()
+        } else {
+            val list = ArrayList<BookedEventsList>()
             for (i in expandedListData.status.indices) {
                 list.add(
                     BookedEventsList(
@@ -141,6 +149,8 @@ class CustomModifyExpandableListAdapter internal constructor(
             layoutInflater.inflate(R.layout.time_slot_title_collapse, null)
         }
         val titleDateTextView = convertView?.findViewById<TextView>(R.id.title_date_textView)
+        val titleLayoutInside =
+            convertView?.findViewById<ConstraintLayout>(R.id.expandable_title_layout_inside)
         val expandableListLayout =
             convertView?.findViewById<LinearLayout>(R.id.expandable_title_layout)
         if (isExpanded) {
@@ -150,11 +160,124 @@ class CustomModifyExpandableListAdapter internal constructor(
         }
         titleDateTextView?.text = listTitle
 
-        expandableListLayout?.setOnClickListener {
-            timeSlotIconOnClickListener?.onGroupClick(parent, listPosition, isExpanded)
+        if (classTag == context.getString(R.string.day)) {
+            dayClassTag(listPosition, titleLayoutInside, expandableListLayout, parent, isExpanded)
+        } else if (classTag == context.getString(R.string.week)) {
+            Log.d(TAG, "getGroupView: ${CalendarUtils.listOfDatesArray}, $titleDate")
+            weekClassTag(listPosition, titleLayoutInside, expandableListLayout, parent, isExpanded)
+        } else if (classTag == context.getString(R.string.month)) {
+            monthClassTag(listPosition, titleLayoutInside, expandableListLayout, parent, isExpanded)
+            Log.d(TAG, "getGroupView: ${CalendarUtils.allDaysList}, $listTitle")
         }
 
         return convertView!!
+    }
+
+    private fun dayClassTag(
+        listPosition: Int,
+        titleLayoutInside: ConstraintLayout?,
+        expandableListLayout: LinearLayout?,
+        parent: ViewGroup,
+        isExpanded: Boolean
+    ) {
+        val currentDayFormatter = CalendarUtils.dateFormatter
+        val currentDay =
+            LocalDate.parse(CalendarUtils.allDaysList[listPosition], currentDayFormatter)
+        val businessValidationDate = LocalDate.parse("09/25/2022", currentDayFormatter)
+        Log.d(TAG, "getGroupView : $businessValidationDate ${CalendarUtils.allDaysList}")
+
+        if (currentDay > businessValidationDate) {
+            titleLayoutInside?.setBackgroundResource(R.drawable.corner_radius_background_modify_slots_gray)
+            expandableListLayout?.setOnClickListener {
+                timeSlotIconOnClickListener?.onGroupClick(
+                    parent,
+                    listPosition,
+                    isExpanded,
+                    true
+                )
+            }
+        } else {
+            expandableListLayout?.setOnClickListener {
+                timeSlotIconOnClickListener?.onGroupClick(
+                    parent,
+                    listPosition,
+                    isExpanded,
+                    false
+                )
+            }
+        }
+    }
+
+    private fun weekClassTag(
+        listPosition: Int,
+        titleLayoutInside: ConstraintLayout?,
+        expandableListLayout: LinearLayout?,
+        parent: ViewGroup,
+        isExpanded: Boolean
+    ) {
+        CalendarUtils.listOfDatesArray[listPosition].forEach {
+            val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
+            val businessValidationDate =
+                LocalDate.parse("08/25/2022", CalendarUtils.dateFormatter)
+            if (currentDay > businessValidationDate) {
+                titleLayoutInside?.setBackgroundResource(R.drawable.corner_radius_background_modify_slots_gray)
+                expandableListLayout?.setOnClickListener {
+                    timeSlotIconOnClickListener?.onGroupClick(
+                        parent,
+                        listPosition,
+                        isExpanded,
+                        true
+                    )
+                }
+            } else {
+                expandableListLayout?.setOnClickListener {
+                    Log.d(TAG, "getGroupView :not called")
+                    timeSlotIconOnClickListener?.onGroupClick(
+                        parent,
+                        listPosition,
+                        isExpanded,
+                        false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun monthClassTag(
+        listPosition: Int,
+        titleLayoutInside: ConstraintLayout?,
+        expandableListLayout: LinearLayout?,
+        parent: ViewGroup,
+        isExpanded: Boolean
+    ) {
+        // save current month list of dates and use contains method
+        val businessValidationDateLocalDate =
+            LocalDate.parse("09/25/2022", CalendarUtils.dateFormatter)
+
+        CalendarUtils.allDaysList.forEach {
+            val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
+            if (currentDay > businessValidationDateLocalDate) {
+                titleLayoutInside?.setBackgroundResource(R.drawable.corner_radius_background_modify_slots_gray)
+                expandableListLayout?.setOnClickListener {
+                    timeSlotIconOnClickListener?.onGroupClick(
+                        parent,
+                        listPosition,
+                        isExpanded,
+                        true
+                    )
+                }
+            } else {
+                expandableListLayout?.setOnClickListener {
+                    timeSlotIconOnClickListener?.onGroupClick(
+                        parent,
+                        listPosition,
+                        isExpanded,
+                        false
+                    )
+                }
+            }
+        }
+
     }
 
     override fun hasStableIds(): Boolean {
@@ -175,7 +298,12 @@ class CustomModifyExpandableListAdapter internal constructor(
     // Interface For TimeSlot Icon Click
     interface TimeSlotIconClickListener {
         fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String)
-        fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean)
+        fun onGroupClick(
+            parent: ViewGroup,
+            listPosition: Int,
+            isExpanded: Boolean,
+            businessValidationStatus: Boolean
+        )
     }
 
     // 2670 - Method For Date And Month Arrangement To Display UI

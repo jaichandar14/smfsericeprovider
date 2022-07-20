@@ -7,15 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
@@ -115,6 +113,8 @@ class WeekModifyExpandableListFragment : Fragment(),
                 listOfDates = currentWeekDate.bookedWeekList
                 fromDate = weekList.first()
                 toDate = weekList.last()
+                CalendarUtils.listOfDatesArray = listOfDatesArray
+                Log.d(TAG, "onViewCreated week: $listOfDatesArray")
                 initializeExpandableViewData()
             })
 
@@ -137,6 +137,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     private fun initializeExpandableViewData() {
         if (weekMap.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
+            mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
@@ -296,132 +297,143 @@ class WeekModifyExpandableListFragment : Fragment(),
             expandableListView!!.setAdapter(adapter)
             adapter?.setOnClickListener(this)
         }
+
         // Condition For Expand selected Week TimeSlot
         if (caller == AppConstants.INITIAL_WEEK) {
             for (i in 0 until listOfDatesArray.size) {
-                if (listOfDatesArray[i][0] == weekList[0]) {
-                    Log.d(
-                        TAG,
-                        "initializeExpandableListSetUp: ${listOfDatesArray.indexOf(listOfDatesArray[i])}"
-                    )
-                    expandableListView?.expandGroup(listOfDatesArray.indexOf(listOfDatesArray[i]))
-                    lastGroupPosition = listOfDatesArray.indexOf(listOfDatesArray[i])
-                    adapter?.notifyDataSetChanged()
+                listOfDatesArray[i].forEach {
+                    val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
+                    val businessValidationDate = LocalDate.parse("08/25/2022", CalendarUtils.dateFormatter)
+                    if (currentDay < businessValidationDate) {
+                        if (listOfDatesArray[i][0] == weekList[0]) {
+                            expandableListView?.expandGroup(listOfDatesArray.indexOf(listOfDatesArray[i]))
+                            lastGroupPosition = listOfDatesArray.indexOf(listOfDatesArray[i])
+                            adapter?.notifyDataSetChanged()
+                        }
+                    }
                 }
             }
         }
     }
 
     // 2776 -  Method For Perform Group Click Events
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        Log.d(TAG, "onGroupClick week: called ${listOfDatesArray[listPosition]}")
-        this.parent = parent as ExpandableListView
-        this.groupPosition = listPosition
-        this.weekList = listOfDatesArray[listPosition]
-        fromDate = listOfDatesArray[listPosition][0]
-        toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
-        Log.d(TAG, "onGroupClick week: $fromDate $toDate")
-        if (isExpanded) {
-            parent.collapseGroup(groupPosition)
-        } else {
-            // Send Selected Week To ViewModel For Calender UI Display
-            sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(
-                ListData(
-                    getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", ""))
+    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean,businessValidationStatus: Boolean) {
+        if (!businessValidationStatus || listOfDatesArray[listPosition].contains("08/25/2022")){
+            Log.d(TAG, "onGroupClick week: called ${listOfDatesArray[listPosition]}")
+            this.parent = parent as ExpandableListView
+            this.groupPosition = listPosition
+            this.weekList = listOfDatesArray[listPosition]
+            fromDate = listOfDatesArray[listPosition][0]
+            toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
+            Log.d(TAG, "onGroupClick week: $fromDate $toDate")
+            if (isExpanded) {
+                parent.collapseGroup(groupPosition)
+            } else {
+                // Send Selected Week To ViewModel For Calender UI Display
+                sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
+                val bookedEventDetails = ArrayList<ListData>()
+                bookedEventDetails.add(
+                    ListData(
+                        getString(R.string.empty),
+                        listOf(BookedEventServiceDto("", "", "", ""))
+                    )
                 )
-            )
-            childData[titleDate[groupPosition]] = bookedEventDetails
-            parent.collapseGroup(lastGroupPosition)
-            parent.expandGroup(groupPosition)
-            apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK)
+                childData[titleDate[groupPosition]] = bookedEventDetails
+                parent.collapseGroup(lastGroupPosition)
+                parent.expandGroup(groupPosition)
+                apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK)
+            }
+            lastGroupPosition = listPosition
+        }else {
+            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT).show()
         }
-        lastGroupPosition = listPosition
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        val branchName =
-            childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
-        val currentDayFormatter =
-            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
-        val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
-            TextStyle.FULL,
-            Locale.ENGLISH
-        )
-        val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
-        Log.d(TAG, "onChildClick week: called $branchName")
-        when (branchName) {
-            getString(R.string.available_small) -> {
-                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                    fromDate?.let { fromDate ->
-                        toDate?.let { toDate ->
-                            DeselectingDialogFragment.newInstance(
-                                AppConstants.WEEK,
-                                AppConstants.DESELECTED,
-                                timeSlot,
-                                currentMonth,
-                                serviceVendorOnboardingId,
-                                fromDate,
-                                toDate, statusList
-                            )
-                                .show(
-                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                    DeselectingDialogFragment.TAG
-                                )
-                        }
-                    }
-                }
-            }
-            getString(R.string.null_text) -> {
-                fromDate?.let { fromDate ->
-                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                        toDate?.let { toDate ->
-                            DeselectingDialogFragment.newInstance(
-                                AppConstants.WEEK,
-                                AppConstants.NULL_TO_SELECT,
-                                timeSlot,
-                                currentMonth,
-                                serviceVendorOnboardingId,
-                                fromDate,
-                                toDate, statusList
-                            )
-                                .show(
-                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                    DeselectingDialogFragment.TAG
-                                )
-                        }
-                    }
-                }
-            }
-            else -> {
-                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                    fromDate?.let { fromDate ->
-                        toDate?.let { toDate ->
-                            DeselectingDialogFragment.newInstance(
-                                AppConstants.WEEK,
-                                AppConstants.SELECTED,
-                                timeSlot,
-                                currentMonth,
-                                serviceVendorOnboardingId,
-                                fromDate,
-                                toDate,
-                                statusList
-                            )
-                                .show(
-                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                    DeselectingDialogFragment.TAG
-                                )
-                        }
-                    }
-                }
-            }
-        }
+        if (listOfDatesArray[listPosition].contains("08/25/2022")){
 
-        // Setting Position From Selected Calender Date
-        this.groupPosition = listPosition
-        lastGroupPosition = listPosition
+        }else{
+            val branchName =
+                childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
+            val currentDayFormatter =
+                DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+            val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
+                TextStyle.FULL,
+                Locale.ENGLISH
+            )
+            val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
+            Log.d(TAG, "onChildClick week: called $branchName")
+            when (branchName) {
+                getString(R.string.available_small) -> {
+                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                        fromDate?.let { fromDate ->
+                            toDate?.let { toDate ->
+                                DeselectingDialogFragment.newInstance(
+                                    AppConstants.WEEK,
+                                    AppConstants.DESELECTED,
+                                    timeSlot,
+                                    currentMonth,
+                                    serviceVendorOnboardingId,
+                                    fromDate,
+                                    toDate, statusList
+                                )
+                                    .show(
+                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                        DeselectingDialogFragment.TAG
+                                    )
+                            }
+                        }
+                    }
+                }
+                getString(R.string.null_text) -> {
+                    fromDate?.let { fromDate ->
+                        serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                            toDate?.let { toDate ->
+                                DeselectingDialogFragment.newInstance(
+                                    AppConstants.WEEK,
+                                    AppConstants.NULL_TO_SELECT,
+                                    timeSlot,
+                                    currentMonth,
+                                    serviceVendorOnboardingId,
+                                    fromDate,
+                                    toDate, statusList
+                                )
+                                    .show(
+                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                        DeselectingDialogFragment.TAG
+                                    )
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                        fromDate?.let { fromDate ->
+                            toDate?.let { toDate ->
+                                DeselectingDialogFragment.newInstance(
+                                    AppConstants.WEEK,
+                                    AppConstants.SELECTED,
+                                    timeSlot,
+                                    currentMonth,
+                                    serviceVendorOnboardingId,
+                                    fromDate,
+                                    toDate,
+                                    statusList
+                                )
+                                    .show(
+                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                        DeselectingDialogFragment.TAG
+                                    )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Setting Position From Selected Calender Date
+            this.groupPosition = listPosition
+            lastGroupPosition = listPosition
+        }
     }
 
     // 2670 - Method For AWS Token Validation

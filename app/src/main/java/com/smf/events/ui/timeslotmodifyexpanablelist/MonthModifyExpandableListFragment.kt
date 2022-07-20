@@ -12,10 +12,7 @@ import androidx.fragment.app.activityViewModels
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
@@ -253,92 +250,117 @@ class MonthModifyExpandableListFragment : Fragment(),
             expandableListView!!.setAdapter(adapter)
             adapter?.setOnClickListener(this)
 
-            // Default Expansion Into The ExpandableList
-            expandableListView!!.expandGroup(groupPosition)
-            adapter!!.notifyDataSetChanged()
+            val businessValidationDate = "09/25/2022"
+            val businessValidationDateLocalDate =
+                LocalDate.parse("09/25/2022", CalendarUtils.dateFormatter)
+
+            if (CalendarUtils.allDaysList.contains(businessValidationDate)) {
+                // Default Expansion Into The ExpandableList
+                expandableListView!!.expandGroup(groupPosition)
+                adapter!!.notifyDataSetChanged()
+            } else {
+                CalendarUtils.allDaysList.forEach {
+                    val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
+                    if (currentDay < businessValidationDateLocalDate) {
+                        expandableListView!!.expandGroup(groupPosition)
+                        adapter!!.notifyDataSetChanged()
+                    }
+                }
+            }
         }
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        val branchName =
-            childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
-        val currentDayFormatter =
-            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
-        val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
-            TextStyle.FULL,
-            Locale.ENGLISH
-        )
-        val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
-        when (branchName) {
-            getString(R.string.available_small) -> {
-                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                    fromDate?.let { fromDate ->
-                        toDate?.let { toDate ->
-                            DeselectingDialogFragment.newInstance(
-                                AppConstants.MONTH,
-                                AppConstants.DESELECTED,
-                                timeSlot,
-                                currentMonth,
-                                serviceVendorOnboardingId,
-                                fromDate,
-                                toDate, statusList
-                            )
-                                .show(
-                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                    DeselectingDialogFragment.TAG
-                                )
-                        }
-                    }
-                }
-            }
-            getString(R.string.null_text) -> {
-                fromDate?.let { fromDate ->
+        val businessValidationDate = "09/25/2022"
+        if (CalendarUtils.allDaysList.contains(businessValidationDate)) {
+
+        } else {
+            val branchName =
+                childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
+            val currentDayFormatter =
+                DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+            val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
+                TextStyle.FULL,
+                Locale.ENGLISH
+            )
+            val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
+            when (branchName) {
+                getString(R.string.available_small) -> {
                     serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                        toDate?.let { toDate ->
-                            DeselectingDialogFragment.newInstance(
-                                AppConstants.MONTH,
-                                AppConstants.NULL_TO_SELECT,
-                                timeSlot,
-                                currentMonth,
-                                serviceVendorOnboardingId,
-                                fromDate,
-                                toDate, statusList
-                            )
-                                .show(
-                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                    DeselectingDialogFragment.TAG
+                        fromDate?.let { fromDate ->
+                            toDate?.let { toDate ->
+                                DeselectingDialogFragment.newInstance(
+                                    AppConstants.MONTH,
+                                    AppConstants.DESELECTED,
+                                    timeSlot,
+                                    currentMonth,
+                                    serviceVendorOnboardingId,
+                                    fromDate,
+                                    toDate, statusList
                                 )
+                                    .show(
+                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                        DeselectingDialogFragment.TAG
+                                    )
+                            }
                         }
                     }
                 }
-            }
-            else -> {
-                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                getString(R.string.null_text) -> {
                     fromDate?.let { fromDate ->
-                        toDate?.let { toDate ->
-                            DeselectingDialogFragment.newInstance(
-                                AppConstants.MONTH,
-                                AppConstants.SELECTED,
-                                timeSlot,
-                                currentMonth,
-                                serviceVendorOnboardingId,
-                                fromDate,
-                                toDate,
-                                statusList
-                            )
-                                .show(
-                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                    DeselectingDialogFragment.TAG
+                        serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                            toDate?.let { toDate ->
+                                DeselectingDialogFragment.newInstance(
+                                    AppConstants.MONTH,
+                                    AppConstants.NULL_TO_SELECT,
+                                    timeSlot,
+                                    currentMonth,
+                                    serviceVendorOnboardingId,
+                                    fromDate,
+                                    toDate, statusList
                                 )
+                                    .show(
+                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                        DeselectingDialogFragment.TAG
+                                    )
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                        fromDate?.let { fromDate ->
+                            toDate?.let { toDate ->
+                                DeselectingDialogFragment.newInstance(
+                                    AppConstants.MONTH,
+                                    AppConstants.SELECTED,
+                                    timeSlot,
+                                    currentMonth,
+                                    serviceVendorOnboardingId,
+                                    fromDate,
+                                    toDate,
+                                    statusList
+                                )
+                                    .show(
+                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                        DeselectingDialogFragment.TAG
+                                    )
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        Log.d(TAG, "onGroupClick month: called")
+    override fun onGroupClick(
+        parent: ViewGroup,
+        listPosition: Int,
+        isExpanded: Boolean,
+        businessValidationStatus: Boolean
+    ) {
+        Log.d(TAG, "onGroupClick month: called $businessValidationStatus")
     }
 
     // 2697 - Method For Add ExpandableList Title Group
