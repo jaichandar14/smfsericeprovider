@@ -10,7 +10,6 @@ import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.snackbar.Snackbar
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
@@ -81,7 +80,7 @@ class DayModifyExpandableListFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mDataBinding = FragmentTimeSlotsExpandableListBinding.inflate(inflater, container, false)
         return mDataBinding.root
@@ -146,7 +145,7 @@ class DayModifyExpandableListFragment : Fragment(),
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
         toDate: String,
-        caller: String
+        caller: String,
     ) {
         if (view != null) {
             sharedViewModel.getModifyBookedEventServices(
@@ -190,7 +189,7 @@ class DayModifyExpandableListFragment : Fragment(),
 
     private fun eventsOnSelectedDateApiValueUpdate(
         apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
-        caller: String
+        caller: String,
     ) {
         childData.clear()
         titleDate.clear()
@@ -220,7 +219,7 @@ class DayModifyExpandableListFragment : Fragment(),
     // 2795 - Method For Set Data To ExpandableList
     private fun setDataToExpandableList(
         apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
-        position: Int
+        position: Int,
     ) {
         Log.d(TAG, "setDataToExpandableList position: $position")
         val bookedEventDetails = ArrayList<ListData>()
@@ -259,8 +258,8 @@ class DayModifyExpandableListFragment : Fragment(),
         if (caller == AppConstants.INITIAL_DAY) {
             val currentDayFormatter = CalendarUtils.dateFormatter
             val currentDay = LocalDate.parse(fromDate, currentDayFormatter)
-            val businessValidationDate = LocalDate.parse("09/25/2022", currentDayFormatter)
-            if (currentDay < businessValidationDate){
+            val businessValidationDate = CalendarUtils.businessValidity
+            if (currentDay <= businessValidationDate) {
                 allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
                 lastGroupPosition = allDaysList.indexOf(fromDate)
                 adapter?.notifyDataSetChanged()
@@ -268,8 +267,13 @@ class DayModifyExpandableListFragment : Fragment(),
         }
     }
 
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean, businessValidationStatus: Boolean) {
-        if (!businessValidationStatus){
+    override fun onGroupClick(
+        parent: ViewGroup,
+        listPosition: Int,
+        isExpanded: Boolean,
+        businessValidationStatus: Boolean,
+    ) {
+        if (!businessValidationStatus) {
             this.parent = parent as ExpandableListView
             this.groupPosition = listPosition
             fromDate = allDaysList[listPosition]
@@ -292,8 +296,9 @@ class DayModifyExpandableListFragment : Fragment(),
                 apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE)
             }
             lastGroupPosition = listPosition
-        }else{
-            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

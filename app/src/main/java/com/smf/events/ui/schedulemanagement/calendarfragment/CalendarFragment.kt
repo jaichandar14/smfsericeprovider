@@ -24,6 +24,7 @@ import com.smf.events.ui.dashboard.model.ServicesData
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.schedulemanagement.adapter.CalendarAdapter
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -75,7 +76,8 @@ class CalendarFragment : Fragment(),
     private val cyear = c.get(Calendar.YEAR)
     private var weekSelectedListAll: HashMap<LocalDate, Int>? = HashMap()
     private var dateList: ArrayList<String> = ArrayList()
-
+    private var businessValidity: LocalDate? = null
+    lateinit var dialogDisposable: Disposable
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -85,6 +87,7 @@ class CalendarFragment : Fragment(),
         super.onCreate(savedInstanceState)
         // 2458 Method for Setting Id token and Reg Id
         setIdTokenAndSpRegId()
+
     }
 
     override fun onCreateView(
@@ -98,6 +101,8 @@ class CalendarFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mDataBinding.progressBar.visibility = View.VISIBLE
+        mDataBinding.calendarLayout.visibility = View.INVISIBLE
         // 2686 token CallBackInterface
         tokens.setCallBackInterface(this)
         // 2458 Scheduled Management  ViewModel CallBackInterface
@@ -113,6 +118,35 @@ class CalendarFragment : Fragment(),
         mDataBinding.closeCalendar.setOnClickListener {
             RxBus.publish(RxEvent.ChangingNav(1))
         }
+        dialogDisposable = RxBus.listen(RxEvent.IsValid::class.java).subscribe {
+            mDataBinding.progressBar.visibility = View.GONE
+            mDataBinding.calendarLayout.visibility = View.VISIBLE
+        }
+// 2985
+        getBusinessValiditiy()
+    }
+
+    private fun getBusinessValiditiy() {
+        sharedViewModel.getBusinessValiditiy(idToken, spRegId)
+            .observe(viewLifecycleOwner, { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        val currentDayFormatter =
+                            DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                        val businessValidationDate =
+                            LocalDate.parse(apiResponse.response.data.toDate, currentDayFormatter)
+                        Log.d("TAG", "getBusinessValiditiy: $businessValidationDate")
+                        businessValidity = businessValidationDate
+                        CalendarUtils.businessValidity = businessValidationDate
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
     }
 
     private fun selectedEXPDateObserver() {
@@ -142,9 +176,10 @@ class CalendarFragment : Fragment(),
         calendarRecyclerView = mDataBinding.calendarRecyclerView
         monthYearText = mDataBinding.monthYearTV
         yearText = mDataBinding.yearTV
-        fullMonthYearText=mDataBinding.monthYearTx
+        fullMonthYearText = mDataBinding.monthYearTx
         // 2686 Set Current Date
         CalendarUtils.selectedDate = LocalDate.now()
+        CalendarUtils.businessValidity = businessValidity
         // 2458 Method for  previousMonth
         previousMonthAction()
         // 2458 Method for  nextMonth
@@ -170,7 +205,10 @@ class CalendarFragment : Fragment(),
             monthDate.fromDate,
             monthDate.toDate,
             CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
-            CalendarUtils.selectedDate!!.monthValue, serviceCategoryId, serviceVendorOnboardingId
+            CalendarUtils.selectedDate!!.monthValue,
+            serviceCategoryId,
+            serviceVendorOnboardingId,
+            monthFromAndToDate()
         )
     }
 
@@ -256,12 +294,13 @@ class CalendarFragment : Fragment(),
         calendarAdapter =
             CalendarAdapter(
                 daysInMonth, this, mDataBinding, calendarType, dayinWeek,
-                daysPositon, serviceDate
+                daysPositon, serviceDate, businessValidity
             )
         val layoutManager: RecyclerView.LayoutManager =
             GridLayoutManager(context, 7)
         calendarRecyclerView?.layoutManager = layoutManager
         calendarRecyclerView?.adapter = calendarAdapter
+
     }
 
     // 2458 Method for  previousMonth
@@ -351,6 +390,11 @@ class CalendarFragment : Fragment(),
         weekSelectedListAll = weekMapList
     }
 
+    override fun onClickBusinessExpDate(valid: Boolean) {
+        Toast.makeText(requireContext(), "Clicked the Business Expired Date", Toast.LENGTH_SHORT)
+            .show()
+    }
+
     // 2458 Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
@@ -389,6 +433,7 @@ class CalendarFragment : Fragment(),
         apiTokenValidationCalendar("EventDateApiBranches")
         //  settingWeekDate()
         settingMonthDate()
+
     }
 
     // 2458 Getting All Service

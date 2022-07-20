@@ -22,7 +22,7 @@ class CustomModifyExpandableListAdapter internal constructor(
     private val context: Context,
     private val classTag: String,
     private val titleDate: ArrayList<String>,
-    private val childData: HashMap<String, List<ListData>>
+    private val childData: HashMap<String, List<ListData>>,
 ) : BaseExpandableListAdapter() {
 
     private val TAG = "CustomModifyExpandableL"
@@ -43,7 +43,7 @@ class CustomModifyExpandableListAdapter internal constructor(
         expandedListPosition: Int,
         isLastChild: Boolean,
         convertView: View?,
-        parent: ViewGroup
+        parent: ViewGroup,
     ): View {
         var convertView = convertView
         val expandedListData = getChild(listPosition, expandedListPosition) as ListData
@@ -137,7 +137,7 @@ class CustomModifyExpandableListAdapter internal constructor(
         listPosition: Int,
         isExpanded: Boolean,
         convertView: View?,
-        parent: ViewGroup
+        parent: ViewGroup,
     ): View {
         var convertView = convertView
         val listTitle = getGroup(listPosition) as String
@@ -178,12 +178,12 @@ class CustomModifyExpandableListAdapter internal constructor(
         titleLayoutInside: ConstraintLayout?,
         expandableListLayout: LinearLayout?,
         parent: ViewGroup,
-        isExpanded: Boolean
+        isExpanded: Boolean,
     ) {
         val currentDayFormatter = CalendarUtils.dateFormatter
         val currentDay =
             LocalDate.parse(CalendarUtils.allDaysList[listPosition], currentDayFormatter)
-        val businessValidationDate = LocalDate.parse("09/25/2022", currentDayFormatter)
+        val businessValidationDate = CalendarUtils.businessValidity
         Log.d(TAG, "getGroupView : $businessValidationDate ${CalendarUtils.allDaysList}")
 
         if (currentDay > businessValidationDate) {
@@ -213,12 +213,14 @@ class CustomModifyExpandableListAdapter internal constructor(
         titleLayoutInside: ConstraintLayout?,
         expandableListLayout: LinearLayout?,
         parent: ViewGroup,
-        isExpanded: Boolean
+        isExpanded: Boolean,
     ) {
         CalendarUtils.listOfDatesArray[listPosition].forEach {
             val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
+            val businessExpDate =
+                CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
             val businessValidationDate =
-                LocalDate.parse("08/25/2022", CalendarUtils.dateFormatter)
+                LocalDate.parse(businessExpDate, CalendarUtils.dateFormatter)
             if (currentDay > businessValidationDate) {
                 titleLayoutInside?.setBackgroundResource(R.drawable.corner_radius_background_modify_slots_gray)
                 expandableListLayout?.setOnClickListener {
@@ -248,13 +250,11 @@ class CustomModifyExpandableListAdapter internal constructor(
         titleLayoutInside: ConstraintLayout?,
         expandableListLayout: LinearLayout?,
         parent: ViewGroup,
-        isExpanded: Boolean
+        isExpanded: Boolean,
     ) {
         // save current month list of dates and use contains method
-        val businessValidationDateLocalDate =
-            LocalDate.parse("09/25/2022", CalendarUtils.dateFormatter)
-
-        CalendarUtils.allDaysList.forEach {
+        val businessValidationDateLocalDate = CalendarUtils.businessValidity
+        CalendarUtils.allDaysListForMonth.forEach {
             val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
             if (currentDay > businessValidationDateLocalDate) {
                 titleLayoutInside?.setBackgroundResource(R.drawable.corner_radius_background_modify_slots_gray)
@@ -302,7 +302,7 @@ class CustomModifyExpandableListAdapter internal constructor(
             parent: ViewGroup,
             listPosition: Int,
             isExpanded: Boolean,
-            businessValidationStatus: Boolean
+            businessValidationStatus: Boolean,
         )
     }
 

@@ -118,4 +118,8 @@ object AppConstants {
     const val DEV="dev"
     const val QA="qa"
     const val UAT="uat"
+
+    // 2985
+    const val EXPWeek="EXPWeek"
+    const val EXPMonth="EXPMonth"
 }

@@ -212,7 +212,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     // 2795 - Method For Set Data To ExpandableList
     private fun setDataToExpandableList(
         apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
-        position: Int
+        position: Int,
     ) {
         Log.d(TAG, "setDataToExpandableList position: $position")
         val bookedEventDetails = ArrayList<ListData>()
@@ -251,7 +251,7 @@ class WeekModifyExpandableListFragment : Fragment(),
 
     private fun eventsOnSelectedDateApiValueUpdate(
         apiResponse: ApisResponse.Success<ModifyBookedServiceEvents>,
-        caller: String
+        caller: String,
     ) {
         childData.clear()
         titleDate.clear()
@@ -303,10 +303,11 @@ class WeekModifyExpandableListFragment : Fragment(),
             for (i in 0 until listOfDatesArray.size) {
                 listOfDatesArray[i].forEach {
                     val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
-                    val businessValidationDate = LocalDate.parse("08/25/2022", CalendarUtils.dateFormatter)
+                    val businessValidationDate = CalendarUtils.businessValidity
                     if (currentDay < businessValidationDate) {
                         if (listOfDatesArray[i][0] == weekList[0]) {
-                            expandableListView?.expandGroup(listOfDatesArray.indexOf(listOfDatesArray[i]))
+                            expandableListView?.expandGroup(listOfDatesArray.indexOf(
+                                listOfDatesArray[i]))
                             lastGroupPosition = listOfDatesArray.indexOf(listOfDatesArray[i])
                             adapter?.notifyDataSetChanged()
                         }
@@ -317,8 +318,14 @@ class WeekModifyExpandableListFragment : Fragment(),
     }
 
     // 2776 -  Method For Perform Group Click Events
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean,businessValidationStatus: Boolean) {
-        if (!businessValidationStatus || listOfDatesArray[listPosition].contains("08/25/2022")){
+    override fun onGroupClick(
+        parent: ViewGroup,
+        listPosition: Int,
+        isExpanded: Boolean,
+        businessValidationStatus: Boolean,
+    ) {
+        val businessExpDate = CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
+        if (!businessValidationStatus || listOfDatesArray[listPosition].contains(businessExpDate)) {
             Log.d(TAG, "onGroupClick week: called ${listOfDatesArray[listPosition]}")
             this.parent = parent as ExpandableListView
             this.groupPosition = listPosition
@@ -344,15 +351,29 @@ class WeekModifyExpandableListFragment : Fragment(),
                 apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK)
             }
             lastGroupPosition = listPosition
-        }else {
-            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        if (listOfDatesArray[listPosition].contains("08/25/2022")){
-
-        }else{
+        val businessExpDate = CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
+        if (listOfDatesArray[listPosition].contains(businessExpDate)) {
+            DeselectingDialogFragment.newInstance(
+                AppConstants.MONTH,
+                "EXPWeek",
+                "timeSlot",
+                "currentMonth",
+                0,
+                businessExpDate.toString(),
+                "toDate", null
+            )
+                .show(
+                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    DeselectingDialogFragment.TAG
+                )
+        } else {
             val branchName =
                 childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
             val currentDayFormatter =

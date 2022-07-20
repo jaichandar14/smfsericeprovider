@@ -1,6 +1,6 @@
 package com.smf.events.rxbus
 
-import com.smf.events.databinding.FragmentCalendarBinding
+import android.app.Dialog
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.ServiceAndCategoryId
 
@@ -17,4 +17,6 @@ class RxEvent {
     data class ChangingNav(val str:Int)
 
     data class DenyStorage(val s:Boolean)
+    data class ChangingNavDialog(val str: Dialog?)
+    data class IsValid(val str: Boolean)
 }

@@ -13,6 +13,7 @@ import com.smf.events.ui.emailotp.model.OTPValidation
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import com.smf.events.ui.quotebriefdialog.model.ViewQuotes
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
+import com.smf.events.ui.schedulemanagement.model.BusinessValidity
 import com.smf.events.ui.schedulemanagement.model.EventDates
 import com.smf.events.ui.signup.model.GetUserDetails
 import com.smf.events.ui.signup.model.UserDetails
@@ -194,4 +195,10 @@ interface ApiStories {
         @Query("userName") userName: String,
     ): OTPValidation
 
+    // 2985
+    @GET(BuildConfig.apiType +"service/api/app-services/business-validity/{sp-reg-id}")
+    suspend fun getBusinessValiditiy(
+        @Header("Authorization") idToken: String,
+        @Path("sp-reg-id") spRegId: Int,
+    ): BusinessValidity
 }
