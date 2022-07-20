@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/expandable_title_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,53 +9,54 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/expandable_title_layout_inside"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/corner_radius_background_modify_slots"
-        android:backgroundTint="@color/day_blue"
-        android:paddingTop="@dimen/_6sdp"
-        android:paddingBottom="@dimen/_6sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/selected_imageView"
-            android:layout_width="@dimen/_22sdp"
-            android:layout_height="@dimen/_22sdp"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:contentDescription="@string/icon"
-            android:src="@drawable/new_selection"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!--        <ImageView-->
+        <!--            android:id="@+id/selected_imageView"-->
+        <!--            android:layout_width="@dimen/_22sdp"-->
+        <!--            android:layout_height="@dimen/_22sdp"-->
+        <!--            android:layout_marginStart="@dimen/_10sdp"-->
+        <!--            android:contentDescription="@string/icon"-->
+        <!--            android:src="@drawable/new_selection"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="0.0"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/title_date_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:fontFamily="@font/poppins_medium"
             android:text="@string/aug_14"
-            android:textSize="@dimen/_11sdp"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/selected_imageView"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.08"
-            app:layout_constraintStart_toEndOf="@+id/selected_imageView"
-            app:layout_constraintTop_toTopOf="@+id/selected_imageView" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/plus_icon"
             android:layout_width="@dimen/_14sdp"
             android:layout_height="@dimen/_14sdp"
-            android:layout_marginEnd="@dimen/_15sdp"
+            android:layout_marginEnd="20dp"
             android:contentDescription="@string/icon"
-            app:layout_constraintBottom_toBottomOf="@+id/selected_imageView"
+            app:layout_constraintBottom_toBottomOf="@+id/title_date_textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/title_date_textView"
-            app:layout_constraintTop_toTopOf="@+id/selected_imageView" />
+            app:layout_constraintTop_toTopOf="@+id/title_date_textView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

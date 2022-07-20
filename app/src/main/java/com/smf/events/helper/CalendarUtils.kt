@@ -17,6 +17,8 @@ class CalendarUtils @Inject constructor() {
         var selectedDate: LocalDate? = null
         var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
         var updatedTabPosition = 0
+        var allDaysList: ArrayList<String> = ArrayList()
+        var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
     }
 
     fun monthYearFromDate(date: LocalDate): String? {
