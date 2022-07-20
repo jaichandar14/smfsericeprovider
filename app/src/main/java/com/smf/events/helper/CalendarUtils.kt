@@ -19,6 +19,8 @@ class CalendarUtils @Inject constructor() {
         var updatedTabPosition = 0
         var allDaysList: ArrayList<String> = ArrayList()
         var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
+        var businessValidity:LocalDate?= null
+        var allDaysListForMonth: ArrayList<String> = ArrayList()
     }
 
     fun monthYearFromDate(date: LocalDate): String? {

@@ -1,14 +1,11 @@
 package com.smf.events.ui.timeslot.deselectingdialog
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.BR
 import com.smf.events.R
@@ -136,8 +133,18 @@ class DeselectingDialogFragment(
             nullToSelectDialog()
         } else if (purpose == AppConstants.SELECTED) {
             modifyDialog()
-        }else if (purpose == "Deny"){
-            mDataBinding?.txTitle?.text ="You cannot able to Download the file from Festo. Until you allow to access the storage"
+        } else if (purpose == "Deny") {
+            mDataBinding?.txTitle?.text = getString(R.string.deny_message)
+            mDataBinding?.cancelBtn?.visibility = View.GONE
+        } else if (purpose == "EXPWeek") {
+            mDataBinding?.txTitle?.text =
+                getString(R.string.week_validtity_message) + "$fromDate" + getString(
+                    R.string.try_week)
+            mDataBinding?.cancelBtn?.visibility = View.GONE
+        } else if (purpose == "EXPMonth") {
+            mDataBinding?.txTitle?.text =
+                getString(R.string.month_validity_msd) + "$fromDate" + getString(
+                    R.string.try_week)
             mDataBinding?.cancelBtn?.visibility = View.GONE
         }
 
@@ -157,10 +164,15 @@ class DeselectingDialogFragment(
                     apiTokenValidation(AppConstants.NULL_TO_SELECT)
                 } else if (purpose == AppConstants.SELECTED) {
                     dismiss()
-                }else if(purpose ==AppConstants.DENY){
+                } else if (purpose == AppConstants.DENY) {
                     RxBus.publish(RxEvent.DenyStorage(true))
                     dismiss()
+                } else if (purpose == AppConstants.EXPWeek) {
+                    dismiss()
+                } else if (purpose == AppConstants.EXPMonth) {
+                    dismiss()
                 }
+
             }
         }
     }
@@ -317,7 +329,7 @@ class DeselectingDialogFragment(
             }
             AppConstants.WEEK -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + fromDate +" to "+ toDate + "." + " " + getString(
+                    getString(R.string.you_are_deselecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + fromDate + " to " + toDate + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }
@@ -341,7 +353,7 @@ class DeselectingDialogFragment(
             }
             AppConstants.WEEK -> {
                 mDataBinding?.txTitle?.text =
-                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + fromDate +" to "+ toDate + "." + " " + getString(
+                    getString(R.string.you_are_selecting) + " " + timeSlot + " " + getString(R.string.entire_week) + " " + fromDate + " to " + toDate + "." + " " + getString(
                         R.string.you_are_deselecting_second
                     )
             }

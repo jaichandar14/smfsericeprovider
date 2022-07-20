@@ -9,10 +9,8 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
@@ -28,10 +26,8 @@ import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
-import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import com.smf.events.ui.quotebriefdialog.model.Datas
-import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
@@ -141,7 +137,7 @@ class QuoteBriefDialog(var status: Int) :
                 mDataBinding?.txCatering?.visibility=View.VISIBLE
                 mDataBinding?.viewQuotes?.visibility = View.GONE
                 isViewQuoteClicked = false
-                onResume()
+               // onResume()
             }
         }
     }
@@ -217,10 +213,10 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.fileImgDelete?.tag = data.fileContent
 
         mDataBinding?.fileImgDelete?.setOnClickListener {
-            saveFileNew(it.tag.toString(), fileName)
-//            checkPermission(
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                STORAGE_PERMISSION_CODE)
+         //   saveFileNew(it.tag.toString(), fileName)
+            checkPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                STORAGE_PERMISSION_CODE)
         }
 
     }
@@ -283,22 +279,24 @@ class QuoteBriefDialog(var status: Int) :
 
     override fun onResume() {
         super.onResume()
+        RxBus.publish(RxEvent.ChangingNavDialog(dialog))
         // 2962
-        if (isViewQuoteClicked == true) {
-            mDataBinding?.viewQuotes?.visibility = View.VISIBLE
-            mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
-            mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
-            mDataBinding?.txCateringViewq?.visibility=View.VISIBLE
-            mDataBinding?.txCatering?.visibility=View.GONE
-        } else {
-            mDataBinding?.viewQuotes?.visibility = View.GONE
-         //   mDataBinding?.txCatering?.text = "Quote details for $serviceName"
-            mDataBinding?.txCateringViewq?.visibility=View.GONE
-            mDataBinding?.txCatering?.visibility=View.VISIBLE
-            mDataBinding?.btnBack?.setOnClickListener {
-                backButtonClickListener()
-            }
-        }
+//        if (isViewQuoteClicked == true) {
+//            mDataBinding?.viewQuotes?.visibility = View.VISIBLE
+//            mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
+//            mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
+//            mDataBinding?.txCateringViewq?.visibility=View.VISIBLE
+//            mDataBinding?.txCatering?.visibility=View.GONE
+//        } else {
+//            mDataBinding?.viewQuotes?.visibility = View.GONE
+//         //   mDataBinding?.txCatering?.text = "Quote details for $serviceName"
+//            mDataBinding?.txCateringViewq?.visibility=View.GONE
+//            mDataBinding?.txCatering?.visibility=View.VISIBLE
+//            mDataBinding?.btnBack?.setOnClickListener {
+//                backButtonClickListener()
+//            }
+//           // backButtonClickListener()
+//        }
      //   mDataBinding?.txCatering?.text = "${serviceName}-${branchName}"
 
     }
@@ -510,7 +508,7 @@ class QuoteBriefDialog(var status: Int) :
             // Requesting the permission
             requestPermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         } else {
-            Toast.makeText(requireContext(), "Permission already granted", Toast.LENGTH_SHORT).show()
+         //   Toast.makeText(requireContext(), "Permission already granted", Toast.LENGTH_SHORT).show()
             saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName)
 
         }
@@ -520,19 +518,20 @@ class QuoteBriefDialog(var status: Int) :
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {  when (it) {
             true -> {saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName) }
             false -> {
-                DeselectingDialogFragment.newInstance(
-                    AppConstants.DAY,
-                    "Deny",
-                    "timeSlot",
-                    "currentMonth",
-                    1,
-                    "fromDate",
-                    "toDate", null
-                )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        DeselectingDialogFragment.TAG
-                    )
+              showToast("Without giving permission you can't download the file")
+//                DeselectingDialogFragment.newInstance(
+//                    AppConstants.DAY,
+//                    "Deny",
+//                    "timeSlot",
+//                    "currentMonth",
+//                    1,
+//                    "fromDate",
+//                    "toDate", null
+//                )
+//                    .show(
+//                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+//                        DeselectingDialogFragment.TAG
+//                    )
             }
 
         }}

@@ -12,9 +12,12 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
 import com.smf.events.databinding.FragmentCalendarBinding
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.CalendarUtils
 import com.smf.events.helper.WeekArrayDetails
 import com.smf.events.helper.WeekDetails
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,6 +36,7 @@ class CalendarAdapter(
     dayinWeek: ArrayList<String>?,
     daysPositon: ArrayList<Int>?,
     serviceDate: ArrayList<String>?,
+    businessValidity: LocalDate?,
 ) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
     private var days: ArrayList<LocalDate>? = null
     private var onItemListener: OnItemListener? = null
@@ -43,6 +47,7 @@ class CalendarAdapter(
     var serviceDateList: ArrayList<String>? = null
     var i = 1
     var weekMapListAll: HashMap<LocalDate, Int> = HashMap()
+    var businessValidity: LocalDate? = null
 
     init {
         this.onItemListener = onItemListener
@@ -52,6 +57,7 @@ class CalendarAdapter(
         this.dayinWeek = dayinWeek
         this.positonOfDays = daysPositon
         this.serviceDateList = serviceDate
+        this.businessValidity = businessValidity
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -62,22 +68,26 @@ class CalendarAdapter(
         if (days!!.size > 15) //month view
             layoutParams.height = (parent.height * 0.16).toInt() else  // week view
             layoutParams.height = (parent.height * 0.1).toInt()
-        return CalendarViewHolder(view, onItemListener!!, days)
+        return CalendarViewHolder(view, onItemListener!!, days, businessValidity)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.calendarDWMLogics()
+
+        if (CalendarUtils.businessValidity != null) {
+            Log.d("TAG", "onBindViewHolder: ${CalendarUtils.businessValidity}")
+            holder.calendarDWMLogics(CalendarUtils.businessValidity)
+        }
         if (daytype == "Week") {
-            Log.d("TAG", "onBindViewHolder: $positonOfDays")
+            Log.d("TAG", "onBindViewHolder: $position")
             holder.weekSelection(positonOfDays, position)
         }
         // 2796 Method for fetching all Date nd its position
-        fetchingAllDateAndPosition( position)
+        fetchingAllDateAndPosition(position)
     }
 
-    private fun fetchingAllDateAndPosition( position: Int) {
+    private fun fetchingAllDateAndPosition(position: Int) {
         val date = days?.get(position)
         date?.let { weekMapListAll.put(it, position) }
         if (position == 41) {
@@ -105,9 +115,14 @@ class CalendarAdapter(
             selectedDate: LocalDate?,
             absoluteAdapterPosition: Int,
         )
-       // 2796  For All Date and Position
+
+        // 2796  For All Date and Position
         fun weekMapList(
             weekMapList: HashMap<LocalDate, Int>?,
+        )
+
+        fun onClickBusinessExpDate(
+            valid: Boolean,
         )
 
     }
@@ -117,6 +132,7 @@ class CalendarAdapter(
         itemView: View,
         private val onItemListener: OnItemListener,
         days: ArrayList<LocalDate>?,
+        businessValidity: LocalDate?,
     ) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private var days: ArrayList<LocalDate>?
@@ -145,7 +161,7 @@ class CalendarAdapter(
         }
 
         // 2622 Calendar logics
-        fun calendarDWMLogics() {
+        fun calendarDWMLogics(businessValidity: LocalDate?) {
             var selectedDatePos = 0
             val date = days?.get(absoluteAdapterPosition)
             Log.d("TAG", "calendarDWMLogicsDatte:$date ")
@@ -154,6 +170,7 @@ class CalendarAdapter(
                 selectedDatePos = absoluteAdapterPosition
             }
             dayOfMonth.text = date?.dayOfMonth.toString()
+            RxBus.publish(RxEvent.IsValid(true))
             // 2528 setting the color for present and previous month date
             if (daytype == "Day" || daytype == "Week" || daytype == "Month") {
                 if (date?.month?.equals(CalendarUtils.selectedDate?.month)!!) {
@@ -167,9 +184,22 @@ class CalendarAdapter(
                             .format(DateTimeFormatter.ofPattern("MMM"))
                         // 2743 Method for high-lighting the upcoming month
                         eventHighLighter(currentDay, currentMonth, date)
+
+                    }
+                    if (businessValidity != null) {
+                        val formatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT_MONTH)
+                        date.format(formatter)
+                        businessEndDateHighlighter(businessValidity.dayOfMonth,
+                            businessValidity.format(formatter),
+                            businessValidity)
+                        if (date.equals(CalendarUtils.selectedDate)) {
+                            onClickBusniessValidityDate()
+                        }
                     }
                     // 2743 Method For hiding the previous DAY,MONTH,YEAR
-                    previousDMYHider(date)
+                    var eventDate: LocalDate = LocalDate.of(2022, 8, 25)
+                    previousDMYHider(date, businessValidity)
+                    busniessValidation(businessValidity, date)
                 } else {
                     dayOfMonth.setTextColor(Color.LTGRAY)
                 }
@@ -187,15 +217,39 @@ class CalendarAdapter(
                     postionOfDate.toSet().toList() as ArrayList<Int>
                 }
             }
+
+
+        }
+
+        private fun onClickBusniessValidityDate() {
+            if (CalendarUtils.selectedDate!! >= businessValidity) {
+                onItemListener.onClickBusinessExpDate(true)
+            }
+        }
+
+        private fun busniessValidation(date: LocalDate?, date1: LocalDate) {
+            if (date != null) {
+                Log.d("TAG", "busniessvalidation: $date $date1")
+                if (date.year <= date1.year) {
+                    if (date.monthValue <= date1.monthValue && date.dayOfMonth < date1.dayOfMonth) {
+                        dayOfMonth.setTextColor(Color.GRAY)
+                        if (date.monthValue <= date1.monthValue) {
+                            dayOfMonth.setTextColor(Color.GRAY)
+                        }
+                    }
+                }
+            }
         }
 
         // 2743 Method For hiding the previous DAY,MONTH,YEAR
-        private fun previousDMYHider(date: LocalDate) {
+        private fun previousDMYHider(date: LocalDate, eventDate: LocalDate?) {
             val c: Calendar = Calendar.getInstance()
             val cmonth = c.get(Calendar.MONTH) + 1
             if (mViewDataBinding?.yearTV?.text.toString().toInt() >= cyear) {
                 // 2622 Current Date Highlighter
-                selDateHighlight(date)
+                if (eventDate != null) {
+                    selDateHighlight(date, eventDate)
+                }
             }
             if (date.monthValue < cmonth && date.year == cyear) {
                 dayOfMonth.setTextColor(Color.GRAY)
@@ -227,6 +281,22 @@ class CalendarAdapter(
                 } else {
                     dayOfMonth.setBackgroundResource(R.drawable.hallow_circle)
                 }
+            }
+        }
+
+        // 2743 Method HighLighting the events
+        private fun businessEndDateHighlighter(
+            currentDay: Int,
+            currentMonth: String,
+            date: LocalDate,
+        ) {
+            // 2735 If condition for filter the event for  upcoming Dates
+            if (dayOfMonth.text.toString()
+                    .toInt() == currentDay && mViewDataBinding?.monthYearTV?.text == currentMonth && mViewDataBinding?.yearTV?.text.toString()
+                    .toInt() == date.year
+            ) {
+                dayOfMonth.setTextColor(Color.WHITE)
+                dayOfMonth.setBackgroundResource(R.drawable.circle_red)
             }
         }
 
@@ -290,7 +360,7 @@ class CalendarAdapter(
         }
 
         // 2622 Current Date Highlighter
-        private fun selDateHighlight(date: LocalDate) {
+        private fun selDateHighlight(date: LocalDate, eventDate: LocalDate) {
             if (daytype == "Day" || daytype == "Week") {
                 // 2528 Setting and highlighting the current Date
                 if (date != CalendarUtils.selectedDate) {
@@ -301,6 +371,13 @@ class CalendarAdapter(
                         .toInt() == cyear
                 ) {
                 } else {
+                    //                else  if(eventDate.year <= date.year) {
+//                    if (eventDate.monthValue <= date.monthValue) {
+//                        if (eventDate.dayOfMonth < date.dayOfMonth) {
+//                            dayOfMonth.setTextColor(Color.GRAY)
+//                        }
+//                    }
+//                }
                     dayOfMonth.setTextColor(Color.WHITE)
                     dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
                 }

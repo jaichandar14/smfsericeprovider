@@ -14,6 +14,7 @@ import com.smf.events.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class ScheduleManagementViewModel @Inject constructor(
@@ -98,7 +99,10 @@ class ScheduleManagementViewModel @Inject constructor(
         var fromDate: String,
         var toDate: String,
         var currentDate: String,
-        var monthValue: Int, var seviceId: Int, var branchId: Int,
+        var monthValue: Int,
+        var seviceId: Int,
+        var branchId: Int,
+        var monthFromAndToDate: ArrayList<String>,
     )
 
     val getCurrentMonthDate: LiveData<MonthDates> = monthDates
@@ -107,11 +111,11 @@ class ScheduleManagementViewModel @Inject constructor(
         toDate: String,
         currentDate: String,
         monthValue: Int,
-        serviceId: Int, branchId: Int,
+        serviceId: Int, branchId: Int, monthFromAndToDate: ArrayList<String>
     ) {
         Log.d("TAG", "setCurrentMonthDate: $fromDate  $toDate")
         monthDates.value =
-            MonthDates(fromDate, toDate, currentDate, monthValue, serviceId, branchId)
+            MonthDates(fromDate, toDate, currentDate, monthValue, serviceId, branchId,monthFromAndToDate)
     }
 
     // 2622 Mutable live data to get the Calendar Format
@@ -183,6 +187,11 @@ class ScheduleManagementViewModel @Inject constructor(
     // 2458 Method For Getting All Service
     fun getAllServices(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
         emit(scheduleManagementRepository.getAllServices(idToken, spRegId))
+    }
+
+    // 2985 Method For Getting BusinessValidity
+    fun getBusinessValiditiy(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
+        emit(scheduleManagementRepository.getBusinessValiditiy(idToken, spRegId))
     }
 
     // 2458 Method For Getting Branches

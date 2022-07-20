@@ -229,4 +229,9 @@
     <string name="active_status"> Active Services</string>
     <string name="inactive_status"> Inactive Services</string>"Welcome"
     <string name="welcome">Welcome</string>
+    <string name="deny_message">You cannot able to Download the file from Festo. Until you allow to access the storage</string>
+    <string name="week_validtity_message">\"You cannot able to Modify this week . Because business validity is expired after \"</string>
+    <string name="try_week">.Try to modify in day slot</string>
+    <string name="month_validity_msd">\"You cannot able to Modify this month . Because business validity is expired after \"</string>
+
 </resources>

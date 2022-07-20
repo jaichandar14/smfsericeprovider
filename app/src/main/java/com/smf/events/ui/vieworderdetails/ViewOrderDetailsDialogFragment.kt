@@ -107,6 +107,7 @@ class ViewOrderDetailsDialogFragment(
             .observe(viewLifecycleOwner, { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+
                         val venueInfo = apiResponse.response.data.venueInformationDto
                         val serviceDetails =
                             apiResponse.response.data.eventServiceQuestionnaireDescriptionDto?.eventServiceDescriptionDto?.eventServiceDateDto

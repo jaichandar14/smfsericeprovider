@@ -3,6 +3,7 @@ package com.smf.events.ui.actiondetails
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.Display
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.FragmentResultListener
@@ -29,6 +30,7 @@ import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -56,6 +58,8 @@ class ActionDetailsFragment :
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    lateinit var dialogDisposable:Disposable
 
     override fun getViewModel(): ActionDetailsViewModel =
         ViewModelProvider(this, factory).get(ActionDetailsViewModel::class.java)
@@ -92,6 +96,10 @@ class ActionDetailsFragment :
         clickListeners()
         //Actions Recycler view
         myActionsStatusRecycler(false)
+        dialogDisposable = RxBus.listen(RxEvent.ChangingNavDialog::class.java).subscribe {
+        //  it.str?.dismiss()
+        }
+
     }
 
     override fun onResume() {
@@ -128,6 +136,8 @@ class ActionDetailsFragment :
                 result["status"] as Boolean
 
             })
+
+
     }
 
     // Method For ActionDetails RecyclerView
