@@ -27,6 +27,7 @@ import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.DateTimeFormatter
@@ -100,13 +101,12 @@ class DayModifyExpandableListFragment : Fragment(),
             //  2986 Showing progress based on calender and service selection
             mDataBinding.modifyProgressBar.visibility = View.VISIBLE
             mDataBinding.expandableLayout.visibility = View.GONE
+            CalendarUtils.allDaysList = currentDate.allDaysList
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
             fromDate = currentDate.selectedDate
             toDate = currentDate.selectedDate
             listOfDates = currentDate.listOfDays
             allDaysList = currentDate.allDaysList
-            /////////////////////////////////////////
-            CalendarUtils.allDaysList = currentDate.allDaysList
             Log.d(TAG, "onViewCreated day: ${currentDate.allDaysList} $serviceVendorOnboardingId")
             initializeExpandableViewData()
         })
@@ -129,7 +129,6 @@ class DayModifyExpandableListFragment : Fragment(),
     private fun initializeExpandableViewData() {
         if (allDaysList.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
-            ////////////////////////////////////////////////////////////
             mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
@@ -259,10 +258,16 @@ class DayModifyExpandableListFragment : Fragment(),
             val currentDayFormatter = CalendarUtils.dateFormatter
             val currentDay = LocalDate.parse(fromDate, currentDayFormatter)
             val businessValidationDate = CalendarUtils.businessValidity
+            Log.d(TAG, "initializeExpandableListSetUp: ")
             if (currentDay <= businessValidationDate) {
-                allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
-                lastGroupPosition = allDaysList.indexOf(fromDate)
-                adapter?.notifyDataSetChanged()
+                Log.d(TAG, "initializeExpandableListSetUp eee: ${allDaysList.indexOf(fromDate)}")
+                try {
+                    allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
+                    lastGroupPosition = allDaysList.indexOf(fromDate)
+                    adapter?.notifyDataSetChanged()
+                }catch (e: Exception){
+                    Log.d(TAG, "initializeExpandableListSetUp Exception: $e")
+                }
             }
         }
     }

@@ -101,7 +101,7 @@ class MonthModifyExpandableListFragment : Fragment(),
                 toDate = currentMonthDate.toDate
                 currentDate = currentMonthDate.currentDate
                 monthValue = currentMonthDate.monthValue.toString()
-                CalendarUtils.allDaysListForMonth=currentMonthDate.monthFromAndToDate
+                CalendarUtils.allDaysListForMonth= currentMonthDate.monthFromAndToDate
                 serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
                 monthValidation()
             })
@@ -274,22 +274,15 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        val businessExpDate =CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
-        val lastDate = LocalDate.parse(CalendarUtils.allDaysListForMonth.last(), CalendarUtils.dateFormatter)
-        val businessValidationDateLocalDate =
-            LocalDate.parse(CalendarUtils.allDaysListForMonth[listPosition], CalendarUtils.dateFormatter)
-        if (CalendarUtils.allDaysListForMonth.contains(businessExpDate) && businessValidationDateLocalDate < lastDate) {
-     //        val toDate1 =
-     //            LocalDate.parse(toDate, CalendarUtils.dateFormatter)
-      //  if (toDate1.monthValue < CalendarUtils.businessValidity?.monthValue!!){
-      //  if (CalendarUtils.allDaysListForMonth.contains(businessExpDate)) {
+        val businessExpDate =CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
+        if (CalendarUtils.allDaysListForMonth.contains(businessExpDate)) {
             DeselectingDialogFragment.newInstance(
                 AppConstants.MONTH,
                 AppConstants.EXPMonth,
                 AppConstants.TIMESLOT,
                 AppConstants.BID_SUBMITTED,
                 0,
-                businessExpDate.toString(),
+                CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter).toString(),
                 AppConstants.BID_REJECTED, null
             )
                 .show(

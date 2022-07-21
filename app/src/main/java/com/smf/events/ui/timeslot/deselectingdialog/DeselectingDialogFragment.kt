@@ -133,18 +133,18 @@ class DeselectingDialogFragment(
             nullToSelectDialog()
         } else if (purpose == AppConstants.SELECTED) {
             modifyDialog()
-        } else if (purpose == "Deny") {
+        } else if (purpose == AppConstants.DENY) {
             mDataBinding?.txTitle?.text = getString(R.string.deny_message)
             mDataBinding?.cancelBtn?.visibility = View.GONE
-        } else if (purpose == "EXPWeek") {
+        } else if (purpose == AppConstants.EXPWeek) {
             mDataBinding?.txTitle?.text =
-                getString(R.string.week_validtity_message) + "$fromDate" + getString(
+                getString(R.string.week_validtity_message) + " $fromDate" + getString(
                     R.string.try_week)
             mDataBinding?.cancelBtn?.visibility = View.GONE
-        } else if (purpose == "EXPMonth") {
+        } else if (purpose == AppConstants.EXPMonth) {
             mDataBinding?.txTitle?.text =
-                getString(R.string.month_validity_msd) + "$fromDate" + getString(
-                    R.string.try_week)
+                getString(R.string.month_validity_msd) + " $fromDate" + getString(
+                    R.string.try_month)
             mDataBinding?.cancelBtn?.visibility = View.GONE
         }
 

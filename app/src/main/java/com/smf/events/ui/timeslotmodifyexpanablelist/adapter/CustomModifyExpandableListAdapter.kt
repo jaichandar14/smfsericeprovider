@@ -181,30 +181,33 @@ class CustomModifyExpandableListAdapter internal constructor(
         isExpanded: Boolean,
     ) {
         val currentDayFormatter = CalendarUtils.dateFormatter
-        val currentDay =
-            LocalDate.parse(CalendarUtils.allDaysList[listPosition], currentDayFormatter)
-        val businessValidationDate = CalendarUtils.businessValidity
-        Log.d(TAG, "getGroupView : $businessValidationDate ${CalendarUtils.allDaysList}")
-
-        if (currentDay > businessValidationDate) {
-            titleLayoutInside?.setBackgroundResource(R.drawable.corner_radius_background_modify_slots_gray)
-            expandableListLayout?.setOnClickListener {
-                timeSlotIconOnClickListener?.onGroupClick(
-                    parent,
-                    listPosition,
-                    isExpanded,
-                    true
-                )
+        try {
+            val currentDay =
+                LocalDate.parse(CalendarUtils.allDaysList[listPosition], currentDayFormatter)
+            val businessValidationDate = CalendarUtils.businessValidity
+            Log.d(TAG, "getGroupView : $businessValidationDate ${CalendarUtils.allDaysList}")
+            if (currentDay > businessValidationDate) {
+                titleLayoutInside?.setBackgroundResource(R.drawable.corner_radius_background_modify_slots_gray)
+                expandableListLayout?.setOnClickListener {
+                    timeSlotIconOnClickListener?.onGroupClick(
+                        parent,
+                        listPosition,
+                        isExpanded,
+                        true
+                    )
+                }
+            } else {
+                expandableListLayout?.setOnClickListener {
+                    timeSlotIconOnClickListener?.onGroupClick(
+                        parent,
+                        listPosition,
+                        isExpanded,
+                        false
+                    )
+                }
             }
-        } else {
-            expandableListLayout?.setOnClickListener {
-                timeSlotIconOnClickListener?.onGroupClick(
-                    parent,
-                    listPosition,
-                    isExpanded,
-                    false
-                )
-            }
+        } catch (e: Exception) {
+            Log.d(TAG, "initializeExpandableListSetUp Exception adapter: $e")
         }
     }
 

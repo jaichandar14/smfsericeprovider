@@ -304,7 +304,7 @@ class WeekModifyExpandableListFragment : Fragment(),
                 listOfDatesArray[i].forEach {
                     val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
                     val businessValidationDate = CalendarUtils.businessValidity
-                    if (currentDay < businessValidationDate) {
+                    if (currentDay <= businessValidationDate) {
                         if (listOfDatesArray[i][0] == weekList[0]) {
                             expandableListView?.expandGroup(listOfDatesArray.indexOf(
                                 listOfDatesArray[i]))
@@ -324,7 +324,7 @@ class WeekModifyExpandableListFragment : Fragment(),
         isExpanded: Boolean,
         businessValidationStatus: Boolean,
     ) {
-        val businessExpDate = CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
+        val businessExpDate = CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
         if (!businessValidationStatus || listOfDatesArray[listPosition].contains(businessExpDate)) {
             Log.d(TAG, "onGroupClick week: called ${listOfDatesArray[listPosition]}")
             this.parent = parent as ExpandableListView
