@@ -302,7 +302,7 @@ class DayModifyExpandableListFragment : Fragment(),
             }
             lastGroupPosition = listPosition
         } else {
-            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(), "Your Business registration valid to date is No longer available for the selected date", Toast.LENGTH_LONG)
                 .show()
         }
     }

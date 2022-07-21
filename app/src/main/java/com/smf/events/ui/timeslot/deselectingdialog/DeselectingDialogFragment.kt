@@ -138,12 +138,12 @@ class DeselectingDialogFragment(
             mDataBinding?.cancelBtn?.visibility = View.GONE
         } else if (purpose == AppConstants.EXPWeek) {
             mDataBinding?.txTitle?.text =
-                getString(R.string.week_validtity_message) + " $fromDate" + getString(
+                getString(R.string.week_validtity_message) + getString(
                     R.string.try_week)
             mDataBinding?.cancelBtn?.visibility = View.GONE
         } else if (purpose == AppConstants.EXPMonth) {
             mDataBinding?.txTitle?.text =
-                getString(R.string.month_validity_msd) + " $fromDate" + getString(
+                getString(R.string.month_validity_msd) + getString(
                     R.string.try_month)
             mDataBinding?.cancelBtn?.visibility = View.GONE
         }
