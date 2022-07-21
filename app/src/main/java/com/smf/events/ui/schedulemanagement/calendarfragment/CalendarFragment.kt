@@ -391,11 +391,13 @@ class CalendarFragment : Fragment(),
     }
 
     override fun onClickBusinessExpDate(valid: Boolean) {
+
         if (valid) {
             Toast.makeText(requireContext(),
                 "Your Business registration valid to date is No longer available for the selected date",
                 Toast.LENGTH_SHORT)
                 .show()
+
         }else{
             Toast.makeText(requireContext(),
                 "Your Last Business registration Date",

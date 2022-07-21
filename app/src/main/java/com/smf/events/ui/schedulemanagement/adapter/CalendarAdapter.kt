@@ -310,17 +310,20 @@ class CalendarAdapter(
         fun weekSelection(previousDates: ArrayList<Int>?, position: Int) {
             val date = days?.get(position)
             // if (date?.monthValue!! >= cmonth && date.year >= cyear)  {
-            Log.d("TAG", "weekSelection: $absoluteAdapterPosition")
-            if (absoluteAdapterPosition == previousDates?.first()) {
-                parentView.setBackgroundResource(R.drawable.week_selector)
-            } else if (absoluteAdapterPosition == previousDates?.last()) {
-                parentView.setBackgroundResource(R.drawable.week_selection_right)
-            }
-            previousDates?.subList(1, 6)?.forEach {
-                if (absoluteAdapterPosition == it) {
-                    parentView.setBackgroundResource(R.drawable.week_selected_each)
+            if (date != null) {
+                if (date <= businessValidity)  {
+                    Log.d("TAG", "weekSelection: $absoluteAdapterPosition")
+                    if (absoluteAdapterPosition == previousDates?.first()) {
+                        parentView.setBackgroundResource(R.drawable.week_selector)
+                    } else if (absoluteAdapterPosition == previousDates?.last()) {
+                        parentView.setBackgroundResource(R.drawable.week_selection_right)
+                    }
+                    previousDates?.subList(1, 6)?.forEach {
+                        if (absoluteAdapterPosition == it) {
+                            parentView.setBackgroundResource(R.drawable.week_selected_each)
+                        }
+                    }
                 }
-                //  }
             }
         }
 
@@ -384,9 +387,10 @@ class CalendarAdapter(
 //                        }
 //                    }
 //                }
+    if (date<=businessValidity){
                     dayOfMonth.setTextColor(Color.WHITE)
                     dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
-                }
+                }}
             }
         }
 
