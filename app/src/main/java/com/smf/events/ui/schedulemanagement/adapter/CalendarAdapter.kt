@@ -230,14 +230,17 @@ class CalendarAdapter(
         private fun busniessValidation(date: LocalDate?, date1: LocalDate) {
             if (date != null) {
                 Log.d("TAG", "busniessvalidation: $date $date1")
-                if (date.year <= date1.year) {
-                    if (date.monthValue < date1.monthValue) {
-                        dayOfMonth.setTextColor(Color.GRAY)
-                        if (date.monthValue <= date1.monthValue && date.dayOfMonth < date1.dayOfMonth) {
-                            dayOfMonth.setTextColor(Color.GRAY)
+//                if (date.year < date1.year) {
+//                    dayOfMonth.setTextColor(Color.GRAY)
+//                    if (date.monthValue <= date1.monthValue&&date.year <= date1.year&& date.dayOfMonth < date1.dayOfMonth) {
+//                        dayOfMonth.setTextColor(Color.GRAY)
+//                        if (date.monthValue <= date1.monthValue && date.dayOfMonth < date1.dayOfMonth && date.year <= date1.year) {
 //                            dayOfMonth.setTextColor(Color.GRAY)
-                        }
-                    }
+//                        }
+//                    }
+//                }
+                if (date < date1){
+                    dayOfMonth.setTextColor(Color.GRAY)
                 }
             }
         }
