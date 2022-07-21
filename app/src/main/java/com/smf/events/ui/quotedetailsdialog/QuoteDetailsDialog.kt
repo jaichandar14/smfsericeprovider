@@ -128,7 +128,7 @@ class QuoteDetailsDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mDataBinding?.ForksSpoon?.text = branchName
-        mDataBinding?.quoteTitleServiceName?.text = serviceName
+        mDataBinding?.quoteTitle?.text = getString(R.string.quote_details_for)+" "+serviceName
         // Update CurrencyType ArrayList
         currencyTypeList =
             resources.getStringArray(R.array.currency_type).toList() as ArrayList<String>
