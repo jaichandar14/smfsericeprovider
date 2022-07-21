@@ -3,7 +3,6 @@ package com.smf.events.ui.actiondetails
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.Display
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.FragmentResultListener
@@ -59,7 +58,7 @@ class ActionDetailsFragment :
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    lateinit var dialogDisposable:Disposable
+    lateinit var dialogDisposable: Disposable
 
     override fun getViewModel(): ActionDetailsViewModel =
         ViewModelProvider(this, factory).get(ActionDetailsViewModel::class.java)
@@ -89,6 +88,7 @@ class ActionDetailsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(QuoteBriefDialog.TAG, "onViewCreated: ActionDetails")
         closeBtn = mDataBinding?.closeBtn
         //Initializing actions recyclerview
         myActionDetailsRecyclerView = mDataBinding?.actionDetailsRecyclerview!!
@@ -97,7 +97,7 @@ class ActionDetailsFragment :
         //Actions Recycler view
         myActionsStatusRecycler(false)
         dialogDisposable = RxBus.listen(RxEvent.ChangingNavDialog::class.java).subscribe {
-        //  it.str?.dismiss()
+            //  it.str?.dismiss()
         }
 
     }
@@ -181,7 +181,10 @@ class ActionDetailsFragment :
     }
 
     override fun showDialog(status: ActionDetails) {
-      QuoteBriefDialog.newInstance(status.bidRequestId)
+        //QuoteBriefDialog.newInstance(status.bidRequestId)
+        Log.d("TAG", "showDialog: ${status.bidRequestId}")
+        sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, status.bidRequestId)
+        QuoteBriefDialog.newInstance()
             .show(
                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                 QuoteBriefDialog.TAG
@@ -220,7 +223,10 @@ class ActionDetailsFragment :
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        QuoteBriefDialog.newInstance(bidRequestId)
+                        //  QuoteBriefDialog.newInstance(bidRequestId)
+                        Log.d("TAG", "showDialog1:$bidRequestId ")
+                        sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
+                        QuoteBriefDialog.newInstance()
                             .show(
                                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                                 QuoteBriefDialog.TAG
@@ -298,7 +304,7 @@ class ActionDetailsFragment :
         val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)
 
-        mDataBinding?.progressBar?.visibility=View.GONE
+        mDataBinding?.progressBar?.visibility = View.GONE
     }
 
     //Setting Bid action list if the value is null

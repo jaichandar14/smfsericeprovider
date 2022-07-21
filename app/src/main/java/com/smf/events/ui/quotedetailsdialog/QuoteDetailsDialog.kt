@@ -233,7 +233,10 @@ class QuoteDetailsDialog(
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         if (biddingQuote.bidStatus != AppConstants.PENDING_FOR_QUOTE) {
-                            QuoteBriefDialog.newInstance(bidRequestId)
+                            //  QuoteBriefDialog.newInstance(bidRequestId)
+                            Log.d(TAG, "showDialog 2: $bidRequestId")
+                            sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
+                            QuoteBriefDialog.newInstance()
                                 .show(
                                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                                     QuoteBriefDialog.TAG
@@ -315,7 +318,11 @@ class QuoteDetailsDialog(
             }
         view?.findViewById<Button>(R.id.btn_file_upload)?.setOnClickListener {
             try {
-                val gallaryIntent = getCustomFileChooserIntent(AppConstants.DOC,AppConstants.PDF,AppConstants.IMAGE,AppConstants.XLS,AppConstants.TEXT)
+                val gallaryIntent = getCustomFileChooserIntent(AppConstants.DOC,
+                    AppConstants.PDF,
+                    AppConstants.IMAGE,
+                    AppConstants.XLS,
+                    AppConstants.TEXT)
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
                 Toast.makeText(
@@ -331,7 +338,7 @@ class QuoteDetailsDialog(
             fileName = null
             fileSize = null
             fileContent = null
-            displayName=null
+            displayName = null
         }
     }
 
@@ -352,26 +359,26 @@ class QuoteDetailsDialog(
                         cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                     Log.d(TAG,
                         "gettingDocName: ${displayName?.substring(displayName!!.lastIndexOf("."))}")
-                    var subString= String()
+                    var subString = String()
                     var iend: Int = displayName!!.lastIndexOf(".")
                     if (iend != -1) {
                         subString = displayName!!.substring(0, iend) //this will give abc
                     }
                     fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
-                    mDataBinding?.filenameTx?.text = subString?.take(10) + "..." + fileEndName
+                    mDataBinding?.filenameTx?.text = subString.take(10) + "..." + fileEndName
                 }
             } finally {
                 cursor!!.close()
             }
         } else if (fileUri.toString().startsWith("file://")) {
             displayName = file.name
-            var subString= String()
+            var subString = String()
             var iend: Int = displayName!!.lastIndexOf(".")
             if (iend != -1) {
                 subString = displayName!!.substring(0, iend) //this will give abc
             }
             fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
-            mDataBinding?.filenameTx?.text = subString!!.take(10) + "..." + fileEndName
+            mDataBinding?.filenameTx?.text = subString.take(10) + "..." + fileEndName
         }
     }
 
@@ -387,12 +394,12 @@ class QuoteDetailsDialog(
                 fileContent = Base64.encodeToString(bytes, Base64.DEFAULT)
                 fileSize = bytes.size.toString()
                 var fileEndName = displayName?.substring(displayName!!.lastIndexOf("."))
-                if (fileEndName==".apk"||fileEndName==".mp3"){
+                if (fileEndName == ".apk" || fileEndName == ".mp3") {
                     mDataBinding?.fileImg?.visibility = View.GONE
                     fileName = null
                     fileContent = null
                     fileSize = null
-                    displayName=null
+                    displayName = null
                     mDataBinding?.filenameTx?.visibility = View.GONE
                     mDataBinding?.fileImgDelete?.visibility = View.GONE
                     Toast.makeText(activity,
@@ -405,7 +412,7 @@ class QuoteDetailsDialog(
                 fileName = null
                 fileContent = null
                 fileSize = null
-                displayName=null
+                displayName = null
                 mDataBinding?.filenameTx?.visibility = View.GONE
                 mDataBinding?.fileImgDelete?.visibility = View.GONE
                 Toast.makeText(activity,
