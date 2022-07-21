@@ -391,8 +391,17 @@ class CalendarFragment : Fragment(),
     }
 
     override fun onClickBusinessExpDate(valid: Boolean) {
-        Toast.makeText(requireContext(), "Clicked the Business Expired Date", Toast.LENGTH_SHORT)
-            .show()
+        if (valid) {
+            Toast.makeText(requireContext(),
+                "Clicked the Business Expired Date",
+                Toast.LENGTH_SHORT)
+                .show()
+        }else{
+            Toast.makeText(requireContext(),
+                "Business Validity Last Date",
+                Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     // 2458 Setting IdToken, SpRegId And RollId

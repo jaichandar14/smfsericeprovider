@@ -222,9 +222,11 @@ class CalendarAdapter(
         }
 
         private fun onClickBusniessValidityDate() {
-            if (CalendarUtils.selectedDate!! >= businessValidity) {
+            if (CalendarUtils.selectedDate!! > businessValidity) {
                 onItemListener.onClickBusinessExpDate(true)
             }
+            if (CalendarUtils.selectedDate!! == businessValidity)
+                onItemListener.onClickBusinessExpDate(false)
         }
 
         private fun busniessValidation(date: LocalDate?, date1: LocalDate) {
