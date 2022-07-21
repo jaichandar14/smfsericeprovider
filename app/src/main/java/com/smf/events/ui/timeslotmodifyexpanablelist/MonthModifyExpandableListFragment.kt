@@ -376,7 +376,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         businessValidationStatus: Boolean
     ) {
         if (businessValidationStatus){
-            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Your Business registration valid to date is No longer available for the selected date", Toast.LENGTH_LONG).show()
         }
 
     }

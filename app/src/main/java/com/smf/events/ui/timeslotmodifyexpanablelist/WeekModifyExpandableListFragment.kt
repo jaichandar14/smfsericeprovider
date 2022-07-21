@@ -324,41 +324,53 @@ class WeekModifyExpandableListFragment : Fragment(),
         isExpanded: Boolean,
         businessValidationStatus: Boolean,
     ) {
+        val businessExpDateLocal = CalendarUtils.businessValidity?.plusDays(1)
         val businessExpDate = CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
-        if (!businessValidationStatus || listOfDatesArray[listPosition].contains(businessExpDate)) {
-            Log.d(TAG, "onGroupClick week: called ${listOfDatesArray[listPosition]}")
-            this.parent = parent as ExpandableListView
-            this.groupPosition = listPosition
-            this.weekList = listOfDatesArray[listPosition]
-            fromDate = listOfDatesArray[listPosition][0]
-            toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
-            Log.d(TAG, "onGroupClick week: $fromDate $toDate")
-            if (isExpanded) {
-                parent.collapseGroup(groupPosition)
-            } else {
-                // Send Selected Week To ViewModel For Calender UI Display
-                sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
-                val bookedEventDetails = ArrayList<ListData>()
-                bookedEventDetails.add(
-                    ListData(
-                        getString(R.string.empty),
-                        listOf(BookedEventServiceDto("", "", "", ""))
-                    )
-                )
-                childData[titleDate[groupPosition]] = bookedEventDetails
-                parent.collapseGroup(lastGroupPosition)
-                parent.expandGroup(groupPosition)
-                apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK)
+        listOfDatesArray[listPosition].forEach {
+            val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
+            if (currentDay < businessExpDateLocal){
+                Log.d(TAG, "onGroupClick: if")
+                if (!businessValidationStatus || listOfDatesArray[listPosition].contains(businessExpDate)) {
+                    Log.d(TAG, "onGroupClick week: called ${listOfDatesArray[listPosition]}")
+                    this.parent = parent as ExpandableListView
+                    this.groupPosition = listPosition
+                    this.weekList = listOfDatesArray[listPosition]
+                    fromDate = listOfDatesArray[listPosition][0]
+                    toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
+                    Log.d(TAG, "onGroupClick week: $fromDate $toDate")
+                    if (isExpanded) {
+                        parent.collapseGroup(groupPosition)
+                    } else {
+                        // Send Selected Week To ViewModel For Calender UI Display
+                        sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
+                        val bookedEventDetails = ArrayList<ListData>()
+                        bookedEventDetails.add(
+                            ListData(
+                                getString(R.string.empty),
+                                listOf(BookedEventServiceDto("", "", "", ""))
+                            )
+                        )
+                        childData[titleDate[groupPosition]] = bookedEventDetails
+                        parent.collapseGroup(lastGroupPosition)
+                        parent.expandGroup(groupPosition)
+                        apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_WEEK)
+                    }
+                    lastGroupPosition = listPosition
+                }
+//                else {
+//                    Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+            }else{
+                Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
+                    .show()
+                return
             }
-            lastGroupPosition = listPosition
-        } else {
-            Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
-                .show()
         }
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        val businessExpDate = CalendarUtils.businessValidity?.format(CalendarUtils.dateFormatter)
+        val businessExpDate = CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
         if (listOfDatesArray[listPosition].contains(businessExpDate)) {
             DeselectingDialogFragment.newInstance(
                 AppConstants.MONTH,
