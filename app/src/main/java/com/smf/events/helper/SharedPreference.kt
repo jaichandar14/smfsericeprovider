@@ -13,6 +13,7 @@ class SharedPreference @Inject constructor(var application: Application) {
     companion object {
         const val ID_Token = "IdToken"
         const val BID_REQUEST_ID = "bidRequestId"
+        const val BID_REQUEST_ID_UPDATED = "bidRequestIdUpdated"
         const val ROLE_ID = "roleId"
         const val SP_REG_ID = "spRegId"
         const val FIRST_NAME = "userName"

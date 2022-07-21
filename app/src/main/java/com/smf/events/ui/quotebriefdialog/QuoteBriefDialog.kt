@@ -38,7 +38,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 
-class QuoteBriefDialog(var status: Int) :
+class QuoteBriefDialog :
     BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
     Tokens.IdTokenCallBackInterface {
     var num: Int = 0
@@ -53,17 +53,19 @@ class QuoteBriefDialog(var status: Int) :
     private var fileContent: String? = null
     private var fileSize: String? = null
     var isViewQuoteClicked = false
-    var STORAGE_PERMISSION_CODE=1
+    var STORAGE_PERMISSION_CODE = 1
+    var bidRequestIdUpdated: Int? = 0
+
     companion object {
         const val TAG = "CustomDialogFragment"
-        fun newInstance(status: Int): QuoteBriefDialog {
-            return QuoteBriefDialog(status)
+        fun newInstance(): QuoteBriefDialog {
+            return QuoteBriefDialog()
         }
     }
 
-    init {
-     bidRequestId = status
-    }
+//    init {
+//     bidRequestId = bidRequestIdUpdated
+//    }
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -101,6 +103,8 @@ class QuoteBriefDialog(var status: Int) :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated: QuoteBriefDialog")
         mDataBinding?.quoteBriefDialog?.visibility = View.INVISIBLE
         mDataBinding?.progressBar?.visibility = View.VISIBLE
 
@@ -128,16 +132,16 @@ class QuoteBriefDialog(var status: Int) :
             mDataBinding?.progressBar?.visibility = View.VISIBLE
             isViewQuoteClicked = true
             mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
-            mDataBinding?.txCateringViewq?.visibility=View.VISIBLE
-            mDataBinding?.txCatering?.visibility=View.GONE
+            mDataBinding?.txCateringViewq?.visibility = View.VISIBLE
+            mDataBinding?.txCatering?.visibility = View.GONE
             apiTokenValidationQuoteBrief("viewQuotes")
             mDataBinding?.btnBack?.setOnClickListener {
                 mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
-                mDataBinding?.txCateringViewq?.visibility=View.GONE
-                mDataBinding?.txCatering?.visibility=View.VISIBLE
+                mDataBinding?.txCateringViewq?.visibility = View.GONE
+                mDataBinding?.txCatering?.visibility = View.VISIBLE
                 mDataBinding?.viewQuotes?.visibility = View.GONE
                 isViewQuoteClicked = false
-               // onResume()
+                onResume()
             }
         }
     }
@@ -145,24 +149,27 @@ class QuoteBriefDialog(var status: Int) :
     // 2962 Api call View Quotes
     @RequiresApi(Build.VERSION_CODES.R)
     private fun getViewQuotes(idToken: String) {
-        getViewModel().getViewQuote(idToken, status)
-            .observe(viewLifecycleOwner, Observer { apiResponse ->
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-                        Log.d(TAG, "getViewQuotes: ${apiResponse.response.data}")
-                        val data = apiResponse.response.data
-                        setViewQuote(data)
-                        mDataBinding?.viewQuotes?.visibility = View.VISIBLE
+        Log.d(TAG, "showDialog: $bidRequestId")
+        bidRequestId?.let {
+            getViewModel().getViewQuote(idToken, it)
+                .observe(viewLifecycleOwner, Observer { apiResponse ->
+                    when (apiResponse) {
+                        is ApisResponse.Success -> {
+                            Log.d(TAG, "getViewQuotes: ${apiResponse.response.data}")
+                            val data = apiResponse.response.data
+                            setViewQuote(data)
+                            mDataBinding?.viewQuotes?.visibility = View.VISIBLE
 
+                        }
+                        is ApisResponse.Error -> {
+                            Log.d(TAG, "check token result: ${apiResponse.exception}")
+                            mDataBinding?.progressBar?.visibility = View.INVISIBLE
+                        }
+                        else -> {
+                        }
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
-                        mDataBinding?.progressBar?.visibility = View.INVISIBLE
-                    }
-                    else -> {
-                    }
-                }
-            })
+                })
+        }
     }
 
     // 2962 Method to set the view Quotes
@@ -174,12 +181,12 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.costingType?.text = data.costingType
         // Set filename
         val iend: Int? = fileName?.lastIndexOf(".")
-        var subString= String()
+        var subString = String()
         if (iend != -1) {
             subString = iend?.let { fileName!!.substring(0, it) }.toString() //this will give abc
         }
         var fileTypepath = fileName?.substring(fileName!!.lastIndexOf("."))
-        mDataBinding?.filenameTx?.text =  subString?.take(10) + "..." + fileTypepath
+        mDataBinding?.filenameTx?.text = subString.take(10) + "..." + fileTypepath
         // Visible the Documents
         if (!data.fileContent.isNullOrEmpty()) {
             mDataBinding?.txQuoteDetails?.visibility = View.VISIBLE
@@ -213,7 +220,7 @@ class QuoteBriefDialog(var status: Int) :
         mDataBinding?.fileImgDelete?.tag = data.fileContent
 
         mDataBinding?.fileImgDelete?.setOnClickListener {
-         //   saveFileNew(it.tag.toString(), fileName)
+            //   saveFileNew(it.tag.toString(), fileName)
             checkPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 STORAGE_PERMISSION_CODE)
@@ -281,25 +288,33 @@ class QuoteBriefDialog(var status: Int) :
         super.onResume()
         RxBus.publish(RxEvent.ChangingNavDialog(dialog))
         // 2962
-//        if (isViewQuoteClicked == true) {
-//            mDataBinding?.viewQuotes?.visibility = View.VISIBLE
-//            mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
-//            mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
-//            mDataBinding?.txCateringViewq?.visibility=View.VISIBLE
-//            mDataBinding?.txCatering?.visibility=View.GONE
-//        } else {
-//            mDataBinding?.viewQuotes?.visibility = View.GONE
-//         //   mDataBinding?.txCatering?.text = "Quote details for $serviceName"
-//            mDataBinding?.txCateringViewq?.visibility=View.GONE
-//            mDataBinding?.txCatering?.visibility=View.VISIBLE
-//            mDataBinding?.btnBack?.setOnClickListener {
-//                backButtonClickListener()
-//            }
-//           // backButtonClickListener()
-//        }
-     //   mDataBinding?.txCatering?.text = "${serviceName}-${branchName}"
+        if (isViewQuoteClicked == true) {
+            mDataBinding?.viewQuotes?.visibility = View.VISIBLE
+            mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
+            mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
+            mDataBinding?.txCateringViewq?.visibility = View.VISIBLE
+            mDataBinding?.txCatering?.visibility = View.GONE
+        } else {
+            mDataBinding?.viewQuotes?.visibility = View.GONE
+            //   mDataBinding?.txCatering?.text = "Quote details for $serviceName"
+            mDataBinding?.txCateringViewq?.visibility = View.GONE
+            mDataBinding?.txCatering?.visibility = View.VISIBLE
+            mDataBinding?.btnBack?.setOnClickListener {
+                backButtonClickListener()
+            }
+            // backButtonClickListener()
+        }
+        mDataBinding?.btnBack?.setOnClickListener {
+            backButtonClickListener()
+        }
+        mDataBinding?.txCatering?.text = "${serviceName}-${branchName}"
 
     }
+
+//    override fun onStop() {
+//        super.onStop()
+//        dialog?.dismiss()
+//    }
 
     // Back Button Pressed
     private fun backButtonClickListener() {
@@ -345,7 +360,7 @@ class QuoteBriefDialog(var status: Int) :
                 "${response.data.serviceAddressDto.city}"
         mDataBinding?.customerRating?.text = "NA"
 
-        mDataBinding?.progressBar?.visibility = View.INVISIBLE
+        //  mDataBinding?.progressBar?.visibility = View.INVISIBLE
 
     }
 
@@ -395,46 +410,50 @@ class QuoteBriefDialog(var status: Int) :
 
     // Setting IDToken
     private fun setIdTokenAndBidReqId() {
+        bidRequestIdUpdated = sharedPreference.getInt(SharedPreference.BID_REQUEST_ID_UPDATED)
         bidRequestId = sharedPreference.getInt(SharedPreference.BID_REQUEST_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
     // 2904 Get Api Call for getting the Quote Brief
     private fun quoteBriefApiCall(idToken: String) {
-        getViewModel().getQuoteBrief(idToken, status)
-            .observe(viewLifecycleOwner, Observer { apiResponse ->
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-                        bidStatus = apiResponse.response.data.bidStatus
-                        when (bidStatus) {
-                            AppConstants.BID_SUBMITTED -> {
-                                setBidSubmitQuoteBrief(apiResponse.response)
-                                mDataBinding?.spnBidAccepted?.text =
-                                    AppConstants.BIDDING_IN_PROGRESS
+        Log.d("TAG", "showDialog: ${bidRequestIdUpdated} ${bidRequestId}")
+        bidRequestId?.let {
+            getViewModel().getQuoteBrief(idToken, it)
+                .observe(viewLifecycleOwner, Observer { apiResponse ->
+                    when (apiResponse) {
+                        is ApisResponse.Success -> {
+                            bidStatus = apiResponse.response.data.bidStatus
+                            when (bidStatus) {
+                                AppConstants.BID_SUBMITTED -> {
+                                    setBidSubmitQuoteBrief(apiResponse.response)
+                                    mDataBinding?.spnBidAccepted?.text =
+                                        AppConstants.BIDDING_IN_PROGRESS
+                                }
+                                AppConstants.PENDING_FOR_QUOTE -> setPendingQuoteBrief(apiResponse.response)
+                                // 2904 Won Bid Flow for Start Sevice
+                                AppConstants.WON_BID -> {
+                                    widgetWonBid(apiResponse)
+                                }
+                                AppConstants.SERVICE_IN_PROGRESS -> {
+                                    widgetServiceProgress(apiResponse)
+                                }
+                                AppConstants.SERVICE_DONE -> {
+                                    widgetServiceCloser(apiResponse)
+                                }
                             }
-                            AppConstants.PENDING_FOR_QUOTE -> setPendingQuoteBrief(apiResponse.response)
-                            // 2904 Won Bid Flow for Start Sevice
-                            AppConstants.WON_BID -> {
-                                widgetWonBid(apiResponse)
-                            }
-                            AppConstants.SERVICE_IN_PROGRESS -> {
-                                widgetServiceProgress(apiResponse)
-                            }
-                            AppConstants.SERVICE_DONE -> {
-                                widgetServiceCloser(apiResponse)
-                            }
+                            mDataBinding?.quoteBriefDialog?.visibility = View.VISIBLE
+                            mDataBinding?.progressBar?.visibility = View.INVISIBLE
                         }
-                        mDataBinding?.quoteBriefDialog?.visibility = View.VISIBLE
-                        mDataBinding?.progressBar?.visibility = View.INVISIBLE
+                        is ApisResponse.Error -> {
+                            Log.d(TAG, "check token result: ${apiResponse.exception}")
+                            mDataBinding?.progressBar?.visibility = View.INVISIBLE
+                        }
+                        else -> {
+                        }
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
-                        mDataBinding?.progressBar?.visibility = View.INVISIBLE
-                    }
-                    else -> {
-                    }
-                }
-            })
+                })
+        }
     }
 
     // 2904 Method for won bid service start flow
@@ -504,21 +523,26 @@ class QuoteBriefDialog(var status: Int) :
 
     // Function to check and request permission.
     private fun checkPermission(permission: String, requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_DENIED) {
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                permission) == PackageManager.PERMISSION_DENIED
+        ) {
             // Requesting the permission
             requestPermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         } else {
-         //   Toast.makeText(requireContext(), "Permission already granted", Toast.LENGTH_SHORT).show()
+            //   Toast.makeText(requireContext(), "Permission already granted", Toast.LENGTH_SHORT).show()
             saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName)
 
         }
     }
 
     private val requestPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {  when (it) {
-            true -> {saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName) }
-            false -> {
-              showToast("Without giving permission you can't download the file")
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            when (it) {
+                true -> {
+                    saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName)
+                }
+                false -> {
+                    showToast("Without giving permission you can't download the file")
 //                DeselectingDialogFragment.newInstance(
 //                    AppConstants.DAY,
 //                    "Deny",
@@ -532,9 +556,10 @@ class QuoteBriefDialog(var status: Int) :
 //                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
 //                        DeselectingDialogFragment.TAG
 //                    )
-            }
+                }
 
-        }}
+            }
+        }
 
     // Api Token Validation For Quote Brief Api Call
     private fun apiTokenValidationQuoteBrief(s: String) {
@@ -544,5 +569,8 @@ class QuoteBriefDialog(var status: Int) :
         )
     }
 
-
+    override fun onStop() {
+        super.onStop()
+        dialog?.dismiss()
+    }
 }

@@ -231,10 +231,11 @@ class CalendarAdapter(
             if (date != null) {
                 Log.d("TAG", "busniessvalidation: $date $date1")
                 if (date.year <= date1.year) {
-                    if (date.monthValue <= date1.monthValue && date.dayOfMonth < date1.dayOfMonth) {
+                    if (date.monthValue < date1.monthValue) {
                         dayOfMonth.setTextColor(Color.GRAY)
-                        if (date.monthValue <= date1.monthValue) {
+                        if (date.monthValue <= date1.monthValue && date.dayOfMonth < date1.dayOfMonth) {
                             dayOfMonth.setTextColor(Color.GRAY)
+//                            dayOfMonth.setTextColor(Color.GRAY)
                         }
                     }
                 }
