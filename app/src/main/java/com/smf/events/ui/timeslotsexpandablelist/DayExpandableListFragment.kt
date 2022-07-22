@@ -131,7 +131,7 @@ class DayExpandableListFragment : Fragment(),
         titleDate.clear()
         for (i in 0 until (listOfDates?.size ?: 0)) {
             val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "", ""))))
             listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
             childData[titleDate[i]] = bookedEventDetails
         }
@@ -167,7 +167,7 @@ class DayExpandableListFragment : Fragment(),
             bookedEventDetails.add(
                 ListData(
                     getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", ""))
+                    listOf(BookedEventServiceDto("", "", "", "", ""))
                 )
             )
             childData[titleDate[groupPosition]] = bookedEventDetails
@@ -186,7 +186,7 @@ class DayExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        if (view != null){
+        if (view != null) {
             sharedViewModel.getBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -199,7 +199,10 @@ class DayExpandableListFragment : Fragment(),
                         mDataBinding.modifyProgressBar.visibility = View.GONE
                         mDataBinding.expandableLayout.visibility = View.VISIBLE
                         mDataBinding.noEventsText.visibility = View.GONE
-                        Log.d("TAG", "check token result success BookedEvent: ${apiResponse.response}")
+                        Log.d(
+                            "TAG",
+                            "check token result success BookedEvent: ${apiResponse.response}"
+                        )
                         updateExpandableListDataSelectedDate(apiResponse, caller)
                     }
                     is ApisResponse.Error -> {
@@ -226,19 +229,27 @@ class DayExpandableListFragment : Fragment(),
                     bookedEventDetails.add(
                         ListData(
                             "",
-                            listOf(BookedEventServiceDto("", "", "", ""))
+                            listOf(BookedEventServiceDto("", "", "", "", ""))
                         )
                     )
                     listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
                     childData[titleDate[i]] = bookedEventDetails
                 } else {
                     for (j in apiResponse.response.data.indices) {
-                        bookedEventDetails.add(
-                            ListData(
-                                apiResponse.response.data[j].serviceSlot,
-                                apiResponse.response.data[j].bookedEventServiceDtos
+                        val bookedList = ArrayList<BookedEventServiceDto>()
+                        apiResponse.response.data[j].bookedEventServiceDtos.forEach {
+                            if (it.bidStatus == AppConstants.WON_BID) {
+                                bookedList.add(it)
+                            }
+                        }
+                        if (!bookedList.isNullOrEmpty()) {
+                            bookedEventDetails.add(
+                                ListData(
+                                    apiResponse.response.data[j].serviceSlot,
+                                    bookedList
+                                )
                             )
-                        )
+                        }
                     }
                     listOfDates?.get(i)?.let { it -> dateFormat(it).let { titleDate.add(it) } }
                     childData[titleDate[i]] = bookedEventDetails
@@ -261,16 +272,24 @@ class DayExpandableListFragment : Fragment(),
     ) {
         val bookedEventDetails = ArrayList<ListData>()
         if (apiResponse.response.data.isNullOrEmpty()) {
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "", ""))))
             childData[titleDate[position]] = bookedEventDetails
         } else {
             for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
+                val bookedList = ArrayList<BookedEventServiceDto>()
+                apiResponse.response.data[i].bookedEventServiceDtos.forEach {
+                    if (it.bidStatus == AppConstants.WON_BID) {
+                        bookedList.add(it)
+                    }
+                }
+                if (!bookedList.isNullOrEmpty()) {
+                    bookedEventDetails.add(
+                        ListData(
+                            apiResponse.response.data[i].serviceSlot,
+                            bookedList
+                        )
                     )
-                )
+                }
             }
             childData[titleDate[position]] = bookedEventDetails
         }
@@ -342,7 +361,8 @@ class DayExpandableListFragment : Fragment(),
                 .lowercase(Locale.getDefault()) + month.substring(2, 3)
                 .lowercase(Locale.getDefault())
         }
-        val currentDayFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+        val currentDayFormatter =
+            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
         val currentDay = LocalDate.parse(input, currentDayFormatter).dayOfWeek.getDisplayName(
             TextStyle.FULL,
             Locale.ENGLISH

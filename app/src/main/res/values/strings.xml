@@ -187,6 +187,7 @@
     <string name="review_feedback">Review Feedback</string>
     // 2873
     <string name="slot_booked">Slot Booked</string>
+    <string name="Quote_Sent">Quote Sent</string>
     // 2886
     <string name="resend">Resend</string>
     <string name="perter_gmail_com">aaa@bbb.com</string>

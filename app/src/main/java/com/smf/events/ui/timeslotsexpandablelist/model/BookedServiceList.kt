@@ -6,7 +6,6 @@ data class BookedServiceList(
     val success: Boolean
 )
 
-
 data class Data(
     val bookedEventServiceDtos: List<BookedEventServiceDto>,
     val serviceSlot: String
@@ -16,6 +15,7 @@ data class BookedEventServiceDto(
     val branchName: String,
     val eventDate: String,
     val eventName: String,
+    val bidStatus: String,
     val preferredSlots: Any
 )
 

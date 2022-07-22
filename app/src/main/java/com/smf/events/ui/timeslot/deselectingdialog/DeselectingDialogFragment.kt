@@ -20,6 +20,7 @@ import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.timeslot.deselectingdialog.adaptor.DeselectedDialogAdaptor
 import com.smf.events.ui.timeslot.deselectingdialog.model.ListData
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.BookedEventServiceDtoModify
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,7 @@ class DeselectingDialogFragment(
     private var serviceVendorOnBoardingId: Int,
     private var fromDate: String,
     private var toDate: String,
-    private var statusList: List<BookedEventServiceDto>?,
+    private var statusList: List<BookedEventServiceDtoModify>?,
 ) : BaseDialogFragment<FragmentDeseletingDialogBinding, DeselectingDialogViewModel>(),
     Tokens.IdTokenCallBackInterface {
 
@@ -67,7 +68,7 @@ class DeselectingDialogFragment(
             serviceVendorOnBoardingId: Int,
             fromDate: String,
             toDate: String,
-            statusList: List<BookedEventServiceDto>?,
+            statusList: List<BookedEventServiceDtoModify>?,
         ): DeselectingDialogFragment {
             return DeselectingDialogFragment(
                 classTag,

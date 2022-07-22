@@ -176,7 +176,7 @@ class WeekExpandableListFragment : Fragment(),
         for (listOfDays in 0 until listOfDatesArray.size) {
             Log.d("TAG", "onViewCreated startingDate : ${listOfDatesArray[listOfDays][0]}")
             val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "",""))))
             titleDate.add(
                 "${getMonth(listOfDatesArray[listOfDays][0])}  ${dateFormat(listOfDatesArray[listOfDays][0])} - ${
                     dateFormat(listOfDatesArray[listOfDays][listOfDatesArray[listOfDays].lastIndex])
@@ -243,16 +243,24 @@ class WeekExpandableListFragment : Fragment(),
     private fun updateApiDataToExpandableView(apiResponse: ApisResponse.Success<BookedServiceList>) {
         val bookedEventDetails = ArrayList<ListData>()
         if (apiResponse.response.data.isNullOrEmpty()) {
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "",""))))
             childData[titleDate[groupPosition]] = bookedEventDetails
         } else {
             for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
+                val bookedList = ArrayList<BookedEventServiceDto>()
+                apiResponse.response.data[i].bookedEventServiceDtos.forEach {
+                    if (it.bidStatus == AppConstants.WON_BID) {
+                        bookedList.add(it)
+                    }
+                }
+                if (!bookedList.isNullOrEmpty()) {
+                    bookedEventDetails.add(
+                        ListData(
+                            apiResponse.response.data[i].serviceSlot,
+                            bookedList
+                        )
                     )
-                )
+                }
             }
             childData[titleDate[groupPosition]] = bookedEventDetails
         }
@@ -291,7 +299,7 @@ class WeekExpandableListFragment : Fragment(),
             bookedEventDetails.add(
                 ListData(
                     getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", ""))
+                    listOf(BookedEventServiceDto("", "", "", "",""))
                 )
             )
             childData[titleDate[groupPosition]] = bookedEventDetails

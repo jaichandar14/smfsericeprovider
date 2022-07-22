@@ -19,10 +19,10 @@ import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapter
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.BookedEventServiceDtoModify
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.Data
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
-import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
-import com.smf.events.ui.timeslotsexpandablelist.model.ListData
+import com.smf.events.ui.timeslotsexpandablelist.model.ListDataModify
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     private var TAG = "MonthModifyExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomModifyExpandableListAdapter? = null
-    private var childData = HashMap<String, List<ListData>>()
+    private var childData = HashMap<String, List<ListDataModify>>()
     private var titleDate = ArrayList<String>()
     private lateinit var mDataBinding: FragmentTimeSlotsExpandableListBinding
     var spRegId: Int = 0
@@ -180,7 +180,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         position: Int
     ) {
         Log.d(TAG, "setDataToExpandableList position: $position")
-        val bookedEventDetails = ArrayList<ListData>()
+        val bookedEventDetails = ArrayList<ListDataModify>()
         apiResponse.response.data.forEach { data ->
             if (data.bookedEventServiceDtos == null) {
                 bookedEventDetails.add(nullListData(data))
@@ -189,7 +189,7 @@ class MonthModifyExpandableListFragment : Fragment(),
             } else {
                 val bookedEventServiceDtos = updateUpcomingEvents(data)
                 bookedEventDetails.add(
-                    ListData(
+                    ListDataModify(
                         data.serviceSlot,
                         bookedEventServiceDtos
                     )
@@ -201,8 +201,8 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2873 - Restrict Completed Dates
-    private fun updateUpcomingEvents(data: Data): ArrayList<BookedEventServiceDto> {
-        val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
+    private fun updateUpcomingEvents(data: Data): ArrayList<BookedEventServiceDtoModify> {
+        val bookedEventServiceDtos = ArrayList<BookedEventServiceDtoModify>()
         data.bookedEventServiceDtos?.forEach { objectList ->
             val currentDayFormatter =
                 DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
@@ -220,7 +220,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     ) {
         childData.clear()
         titleDate.clear()
-        val bookedEventDetails = ArrayList<ListData>()
+        val bookedEventDetails = ArrayList<ListDataModify>()
         addTitle()
         apiResponse.response.data.forEach {
             if (it.bookedEventServiceDtos == null) {
@@ -230,7 +230,7 @@ class MonthModifyExpandableListFragment : Fragment(),
             } else {
                 val bookedEventServiceDtos = updateUpcomingEvents(it)
                 bookedEventDetails.add(
-                    ListData(
+                    ListDataModify(
                         it.serviceSlot,
                         bookedEventServiceDtos
                     )
@@ -299,6 +299,12 @@ class MonthModifyExpandableListFragment : Fragment(),
                 Locale.ENGLISH
             )
             val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
+            val onlyBookedList = ArrayList<BookedEventServiceDtoModify>()
+            statusList?.forEach {
+                if (it.bidStatus == AppConstants.WON_BID){
+                    onlyBookedList.add(it)
+                }
+            }
             when (branchName) {
                 getString(R.string.available_small) -> {
                     serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
@@ -311,7 +317,7 @@ class MonthModifyExpandableListFragment : Fragment(),
                                     currentMonth,
                                     serviceVendorOnboardingId,
                                     fromDate,
-                                    toDate, statusList
+                                    toDate, onlyBookedList
                                 )
                                     .show(
                                         (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -332,7 +338,7 @@ class MonthModifyExpandableListFragment : Fragment(),
                                     currentMonth,
                                     serviceVendorOnboardingId,
                                     fromDate,
-                                    toDate, statusList
+                                    toDate, onlyBookedList
                                 )
                                     .show(
                                         (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -354,7 +360,7 @@ class MonthModifyExpandableListFragment : Fragment(),
                                     serviceVendorOnboardingId,
                                     fromDate,
                                     toDate,
-                                    statusList
+                                    onlyBookedList
                                 )
                                     .show(
                                         (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -395,33 +401,33 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2815 - Method For Set Null Value
-    private fun nullListData(data: Data): ListData {
-        return ListData(
+    private fun nullListData(data: Data): ListDataModify {
+        return ListDataModify(
             data.serviceSlot,
-            listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
+            listOf(BookedEventServiceDtoModify(getString(R.string.null_text), "", "", "",""))
         )
     }
 
     // 2815 - Method For Set available Value
-    private fun isEmptyAvailableListData(data: Data): ListData {
-        return ListData(
+    private fun isEmptyAvailableListData(data: Data): ListDataModify {
+        return ListDataModify(
             data.serviceSlot,
             listOf(
-                BookedEventServiceDto(
+                BookedEventServiceDtoModify(
                     getString(R.string.available_small),
                     "",
                     "",
-                    ""
+                    "",""
                 )
             )
         )
     }
 
     // 2815 - Method For Set Empty Value
-    private fun emptyListData(): ListData {
-        return ListData(
+    private fun emptyListData(): ListDataModify {
+        return ListDataModify(
             "",
-            listOf(BookedEventServiceDto("", "", "", ""))
+            listOf(BookedEventServiceDtoModify("", "", "", "",""))
         )
     }
 
@@ -501,11 +507,11 @@ class MonthModifyExpandableListFragment : Fragment(),
 
     // 2952 - Visible Progress bar during Modify Availability
     private fun showProgress() {
-        val bookedEventDetails = ArrayList<ListData>()
+        val bookedEventDetails = ArrayList<ListDataModify>()
         bookedEventDetails.add(
-            ListData(
+            ListDataModify(
                 getString(R.string.empty),
-                listOf(BookedEventServiceDto("", "", "", ""))
+                listOf(BookedEventServiceDtoModify("", "", "", "",""))
             )
         )
         childData[titleDate[groupPosition]] = bookedEventDetails
