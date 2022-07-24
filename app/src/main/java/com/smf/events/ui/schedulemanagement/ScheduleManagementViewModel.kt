@@ -35,6 +35,12 @@ class ScheduleManagementViewModel @Inject constructor(
         var allDaysList: ArrayList<String>,
     )
 
+    private var scrollViewToPosition = MutableLiveData<Int>()
+    fun setScrollViewToPosition(scrollViewToPosition : Int) {
+        this.scrollViewToPosition.postValue(scrollViewToPosition)
+    }
+    val getScrollViewToPosition: LiveData<Int> = scrollViewToPosition
+
     private var currentDate = MutableLiveData<SelectedDate>()
     val getCurrentDate: LiveData<SelectedDate> = currentDate
     fun setCurrentDate(

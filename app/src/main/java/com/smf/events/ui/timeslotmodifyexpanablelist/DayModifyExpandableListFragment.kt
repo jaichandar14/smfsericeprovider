@@ -27,15 +27,12 @@ import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class DayModifyExpandableListFragment : Fragment(),
     CustomModifyExpandableListAdapter.TimeSlotIconClickListener,
@@ -171,6 +168,7 @@ class DayModifyExpandableListFragment : Fragment(),
                             )
                             setDataToExpandableList(apiResponse, groupPosition)
                             adapter!!.notifyDataSetChanged()
+
                         }
                     }
                     is ApisResponse.Error -> {
@@ -265,11 +263,18 @@ class DayModifyExpandableListFragment : Fragment(),
                     allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
                     lastGroupPosition = allDaysList.indexOf(fromDate)
                     adapter?.notifyDataSetChanged()
+                    scrollToLocation()
                 }catch (e: Exception){
                     Log.d(TAG, "initializeExpandableListSetUp Exception: $e")
                 }
             }
         }
+    }
+
+    private fun scrollToLocation() {
+        val position = allDaysList.indexOf(fromDate)
+        position * 50 // Get Height of Header/Group View
+        sharedViewModel.setScrollViewToPosition(position)
     }
 
     override fun onGroupClick(
