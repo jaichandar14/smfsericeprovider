@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.BR
 import com.smf.events.R
@@ -17,7 +18,9 @@ import com.smf.events.ui.schedulemanagement.calendarfragment.CalendarFragment
 import com.smf.events.ui.timeslot.TimeSlotsFragment
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.Disposable
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.timerTask
 
 // 2458
 class ScheduleManagementActivity :
@@ -56,6 +59,12 @@ class ScheduleManagementActivity :
             startActivity(intent)
             mViewDataBinding?.refreshLayout?.isRefreshing = true
         }
+
+        getViewModel().getScrollViewToPosition.observe(this, Observer {
+            var totalHeaderHeight = mViewDataBinding!!.calendarFragment.height + mViewDataBinding!!.switchBtnTx.height+ mViewDataBinding!!.switchBtn.height
+            totalHeaderHeight += it
+            mViewDataBinding!!.scrollView.scrollTo(0, totalHeaderHeight)
+        })
     }
 
     // 2458 - Method for Calendar Ui

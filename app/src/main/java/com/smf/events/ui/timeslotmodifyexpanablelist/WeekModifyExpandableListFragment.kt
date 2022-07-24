@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
@@ -35,6 +36,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.concurrent.schedule
 
 class WeekModifyExpandableListFragment : Fragment(),
     CustomModifyExpandableListAdapter.TimeSlotIconClickListener,
@@ -306,8 +308,11 @@ class WeekModifyExpandableListFragment : Fragment(),
                     val businessValidationDate = CalendarUtils.businessValidity
                     if (currentDay <= businessValidationDate) {
                         if (listOfDatesArray[i][0] == weekList[0]) {
-                            expandableListView?.expandGroup(listOfDatesArray.indexOf(
-                                listOfDatesArray[i]))
+                            expandableListView?.expandGroup(
+                                listOfDatesArray.indexOf(
+                                    listOfDatesArray[i]
+                                )
+                            )
                             lastGroupPosition = listOfDatesArray.indexOf(listOfDatesArray[i])
                             adapter?.notifyDataSetChanged()
                         }
@@ -315,6 +320,20 @@ class WeekModifyExpandableListFragment : Fragment(),
                 }
             }
         }
+        // Condition for scroll to specific time slot location
+        Timer().schedule(500) {
+            scrollToLocation()
+        }
+    }
+
+    private fun scrollToLocation() {
+        val position = listOfDatesArray.indexOf(weekList)
+        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+        Log.d(
+            TAG,
+            "expandableList selected header height : ${position * expandableListView?.get(position)?.height!!}"
+        )
+        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     // 2776 -  Method For Perform Group Click Events
@@ -325,18 +344,23 @@ class WeekModifyExpandableListFragment : Fragment(),
         businessValidationStatus: Boolean,
     ) {
         val businessExpDateLocal = CalendarUtils.businessValidity?.plusDays(1)
-        val businessExpDate = CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
+        val businessExpDate =
+            CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
         listOfDatesArray[listPosition].forEach {
             val currentDay = LocalDate.parse(it, CalendarUtils.dateFormatter)
-            if (currentDay < businessExpDateLocal){
+            if (currentDay < businessExpDateLocal) {
                 Log.d(TAG, "onGroupClick: if")
-                if (!businessValidationStatus || listOfDatesArray[listPosition].contains(businessExpDate)) {
+                if (!businessValidationStatus || listOfDatesArray[listPosition].contains(
+                        businessExpDate
+                    )
+                ) {
                     Log.d(TAG, "onGroupClick week: called ${listOfDatesArray[listPosition]}")
                     this.parent = parent as ExpandableListView
                     this.groupPosition = listPosition
                     this.weekList = listOfDatesArray[listPosition]
                     fromDate = listOfDatesArray[listPosition][0]
-                    toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
+                    toDate =
+                        listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
                     Log.d(TAG, "onGroupClick week: $fromDate $toDate")
                     if (isExpanded) {
                         parent.collapseGroup(groupPosition)
@@ -361,8 +385,12 @@ class WeekModifyExpandableListFragment : Fragment(),
 //                    Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
 //                        .show()
 //                }
-            }else{
-                Toast.makeText(requireContext(), "Business validation date expired", Toast.LENGTH_SHORT)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Business validation date expired",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 return
             }
@@ -370,7 +398,8 @@ class WeekModifyExpandableListFragment : Fragment(),
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        val businessExpDate = CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
+        val businessExpDate =
+            CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
         if (listOfDatesArray[listPosition].contains(businessExpDate)) {
             DeselectingDialogFragment.newInstance(
                 AppConstants.MONTH,
