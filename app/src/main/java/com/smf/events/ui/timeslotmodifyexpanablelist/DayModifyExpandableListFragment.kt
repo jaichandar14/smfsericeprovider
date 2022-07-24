@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
@@ -33,6 +34,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 class DayModifyExpandableListFragment : Fragment(),
     CustomModifyExpandableListAdapter.TimeSlotIconClickListener,
@@ -263,18 +265,25 @@ class DayModifyExpandableListFragment : Fragment(),
                     allDaysList.indexOf(fromDate).let { expandableListView?.expandGroup(it) }
                     lastGroupPosition = allDaysList.indexOf(fromDate)
                     adapter?.notifyDataSetChanged()
-                    scrollToLocation()
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     Log.d(TAG, "initializeExpandableListSetUp Exception: $e")
                 }
             }
+        }
+        // Condition for scroll to specific time slot location
+        Timer().schedule(500) {
+            scrollToLocation()
         }
     }
 
     private fun scrollToLocation() {
         val position = allDaysList.indexOf(fromDate)
-        position * 50 // Get Height of Header/Group View
-        sharedViewModel.setScrollViewToPosition(position)
+        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+        Log.d(
+            TAG,
+            "expandableList selected header height : ${expandableListView?.get(position)?.height!! * position}"
+        )
+        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     override fun onGroupClick(
@@ -307,7 +316,11 @@ class DayModifyExpandableListFragment : Fragment(),
             }
             lastGroupPosition = listPosition
         } else {
-            Toast.makeText(requireContext(), "Your Business registration valid to date is No longer available for the selected date", Toast.LENGTH_LONG)
+            Toast.makeText(
+                requireContext(),
+                "Your Business registration valid to date is No longer available for the selected date",
+                Toast.LENGTH_LONG
+            )
                 .show()
         }
     }

@@ -63,7 +63,7 @@ class ScheduleManagementActivity :
         getViewModel().getScrollViewToPosition.observe(this, Observer {
             var totalHeaderHeight = mViewDataBinding!!.calendarFragment.height + mViewDataBinding!!.switchBtnTx.height+ mViewDataBinding!!.switchBtn.height
             totalHeaderHeight += it
-            Timer().schedule( timerTask{mViewDataBinding!!.scrollView.scrollTo(0, totalHeaderHeight) }, 1000)
+            mViewDataBinding!!.scrollView.scrollTo(0, totalHeaderHeight)
         })
     }
 
