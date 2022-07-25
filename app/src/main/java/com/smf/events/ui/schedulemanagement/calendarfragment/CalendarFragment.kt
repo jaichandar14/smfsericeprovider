@@ -49,7 +49,6 @@ class CalendarFragment : Fragment(),
 
     @Inject
     lateinit var tokens: Tokens
-
     // SharedViewModel Initialization
     private val sharedViewModel: ScheduleManagementViewModel by activityViewModels()
 
@@ -101,6 +100,7 @@ class CalendarFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         mDataBinding.progressBar.visibility = View.VISIBLE
         mDataBinding.calendarLayout.visibility = View.INVISIBLE
         // 2686 token CallBackInterface
@@ -160,13 +160,13 @@ class CalendarFragment : Fragment(),
 
     private fun setSelectedWeekSetter(
         weeksOfMonth: java.util.HashMap<Int, WeekDatesOfMonth>,
-        fromAndToDate: CalendarUtils.WeekDates,
+        fromAndToDate: CalendarUtils.WeekDates,isScroll:Boolean
     ) {
         sharedViewModel.setCurrentWeekDate(
             weeksOfMonth,
             serviceCategoryId,
             serviceVendorOnboardingId,
-            fromAndToDate.weekList, serviceDate
+            fromAndToDate.weekList, serviceDate,isScroll
         )
 
     }
@@ -220,11 +220,11 @@ class CalendarFragment : Fragment(),
         if (CalendarUtils.selectedDate?.monthValue!! < cmonth && CalendarUtils.selectedDate?.year!! <= cyear) {
             weeksOfMonth.clear()
             serviceDate.clear()
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
         } else if (CalendarUtils.selectedDate?.monthValue!! >= cmonth && CalendarUtils.selectedDate?.year!! >= cyear) {
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
         } else {
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
         }
     }
 
@@ -357,7 +357,8 @@ class CalendarFragment : Fragment(),
                 calendarUtils.fetchWeekOfMonth(),
                 serviceCategoryId,
                 serviceVendorOnboardingId,
-                weekList, serviceDate
+                weekList, serviceDate,
+                true
             )
             setMonthView(dayinWeek, daysPositon)
             sharedViewModel.setCurrentDate(
@@ -365,7 +366,8 @@ class CalendarFragment : Fragment(),
                 serviceCategoryId,
                 serviceVendorOnboardingId,
                 serviceDate,
-                monthFromAndToDate()
+                monthFromAndToDate(),
+                true
             )
         }
 
@@ -392,11 +394,15 @@ class CalendarFragment : Fragment(),
 
     override fun onClickBusinessExpDate(valid: Boolean) {
 
+        var toast=Toast(requireContext())
         if (valid) {
-            Toast.makeText(requireContext(),
-                "Your Business registration valid to date is No longer available for the selected date",
-                Toast.LENGTH_SHORT)
-                .show()
+            if (toast!=null){
+                toast.cancel()
+            }
+            toast= Toast.makeText(requireContext(),
+            "Your Business registration valid to date is No longer available for the selected date",
+            Toast.LENGTH_SHORT)
+            toast.show()
 
         }else{
             Toast.makeText(requireContext(),
@@ -405,7 +411,6 @@ class CalendarFragment : Fragment(),
                 .show()
         }
     }
-
     // 2458 Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
@@ -517,7 +522,12 @@ class CalendarFragment : Fragment(),
     }
 
     // 2685 Method For Getting the Event Date and Counts from Api
-    private fun eventDateAndCounts(serviceCategoryId: Int?, branchId: Int, idToken: String) {
+    private fun eventDateAndCounts(
+        serviceCategoryId: Int?,
+        branchId: Int,
+        idToken: String,
+        b: Boolean
+    ) {
         Log.d("TAG", "eventDateAndCounts in s: $serviceCategoryId")
         val serviceId: Int?
         var branchesId: Int? = null
@@ -546,13 +556,14 @@ class CalendarFragment : Fragment(),
                 CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                 this.serviceCategoryId,
                 this.serviceVendorOnboardingId,
-                serviceDate, monthFromAndToDate()
+                serviceDate, monthFromAndToDate(),
+                false
             )
             val fromAndToDate = calendarUtils.fromAndToDate()
             val weeksOfMonth = calendarUtils.fetchWeekOfMonth()
             weeksOfMonth.clear()
             serviceDate.clear()
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
         } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
             sharedViewModel.getEventDates(
                 idToken,
@@ -583,7 +594,8 @@ class CalendarFragment : Fragment(),
                             CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                             this.serviceCategoryId,
                             this.serviceVendorOnboardingId,
-                            serviceDate, monthFromAndToDate()
+                            serviceDate, monthFromAndToDate(),
+                            false
                         )
                         // 2796
                         settingWeekDate()
@@ -615,18 +627,19 @@ class CalendarFragment : Fragment(),
         withContext(Dispatchers.Main) {
             when (caller) {
                 "EventDateApiPreviousActionAndNextMonth" -> {
-                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken)
+                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken,false)
                 }
                 "EventDateApiAllService" -> {
                     Log.d("TAG", "tokenCallBack:$serviceCategoryId ")
                     eventDateAndCounts(
                         serviceCategoryId,
                         0,
-                        idToken
+                        idToken,
+                        true
                     )
                 }
                 "EventDateApiBranches" -> {
-                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken)
+                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken,false)
                 }
                 "Branches" -> {
                     // 2458 Branch ApiCall

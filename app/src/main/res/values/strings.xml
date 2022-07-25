@@ -171,8 +171,8 @@
     <string name="you_are_deselecting_first">slots availability for the day of </string>
     <string name="you_are_deselecting_month">slots availability for the month of </string>
     <string name="you_are_deselecting_second">This will modify all you existing slots availability. Please click OK to proceed </string>
-    <string name="event_booked_on">Event Booked on the below mentioned dates. Hence you can not modify the </string>
-    <string name="quote_sent_on">Quote sent on this time slot. Hence you can not modify the </string>
+    <string name="event_booked_on">Event Booked on the below mentioned date. Hence you can not modify the </string>
+    <string name="quote_sent_on">Bid submitted on this time slot. Hence you can not modify the </string>
     // 2801
     <string name="not_available">Not Available</string>
     <string name="available_small">available</string>
@@ -188,7 +188,7 @@
     <string name="review_feedback">Review Feedback</string>
     // 2873
     <string name="slot_booked">Slot Booked</string>
-    <string name="Quote_Sent">Quote Sent</string>
+    <string name="Quote_Sent">Bid submitted</string>
     // 2886
     <string name="resend">Resend</string>
     <string name="perter_gmail_com">aaa@bbb.com</string>
@@ -236,5 +236,8 @@
     <string name="try_week">. Try to modify in day slot</string>
     <string name="try_month">. Try to modify in week or day slot</string>
     <string name="month_validity_msd">Your Business registration valid to date is No longer available for the selected Month</string>
+    <string name="click_resend_in">Click Resend in</string>
+    <string name="otp_sent_to_your_mail"><![CDATA[OTP has been sent to your registered Email ID & Mobile number]]></string>
+    <string name="resend_clicked_multiple_time">Clicked multiple time Resend otp. Try after some time</string>
 
 </resources>

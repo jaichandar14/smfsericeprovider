@@ -31,4 +31,22 @@
         <item name="android:fontFamily">@font/mulish_semi_bold</item>
     </style>
 
+    <style name="LoginSecurityCode">
+        <item name="android:layout_width">@dimen/_40sdp</item>
+        <item name="android:layout_height">@dimen/_40sdp</item>
+        <item name="android:layout_marginEnd">@dimen/_8sdp</item>
+        <item name="android:layout_marginBottom">@dimen/_4sdp</item>
+        <item name="android:layout_marginStart">@dimen/_8sdp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">@drawable/pinview_box</item>
+        <item name="android:textSize">@dimen/_18sdp</item>
+        <item name="android:textColorHint">#50000000</item>
+        <item name="android:importantForAutofill" tools:ignore="NewApi">no</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:maxLength">1</item>
+    </style>
+
 </resources>
