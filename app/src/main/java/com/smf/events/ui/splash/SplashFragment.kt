@@ -45,16 +45,17 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (idToken.isNotEmpty()) {
-            moveToDashBoardScreen()
-        } else {
+        // 3028
+//        if (idToken.isNotEmpty()) {
+//            moveToDashBoardScreen()
+//        } else {
             // Login Button Listener
-            onClickLoginBtn()
-        }
+            onClickSplashScreenBtn()
+       // }
     }
 
     // Sign In Button
-    private fun onClickLoginBtn() {
+    private fun onClickSplashScreenBtn() {
         mDataBinding!!.splashBtn.setOnClickListener {
             // Getting User Inputs
             var action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()

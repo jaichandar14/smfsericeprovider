@@ -16,9 +16,9 @@
             android:height="48dp" />
 
         <gradient
-            android:centerColor="@color/pairing_theme"
+            android:centerColor="@color/theme_header_blue"
             android:centerY="0.5"
-            android:endColor="@color/pairing_theme"
+            android:endColor="@color/theme_header_blue"
             android:startColor="#00ec7e2a"
             android:type="sweep"
             android:useLevel="false" />

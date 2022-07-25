@@ -98,28 +98,100 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView9"
                 app:layout_constraintVertical_bias="0.050" />
 
-            <com.chaos.view.PinView
-                android:id="@+id/otpemail"
-                style="@style/PinWidget.PinView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:cursorVisible="true"
-                android:fontFamily="@font/mulish_semi_bold"
-                android:inputType="number"
-                android:text="@={otpviewmodel.userOtpNumber}"
-                app:hideLineWhenFilled="false"
-                app:itemCount="4"
-                app:itemHeight="@dimen/_40sdp"
-                app:itemRadius="@dimen/_8sdp"
-                app:itemSpacing="@dimen/_8sdp"
-                app:itemWidth="@dimen/_40sdp"
+
+
+<!--            <com.chaos.view.PinView-->
+<!--                android:id="@+id/otpemail"-->
+<!--                style="@style/PinWidget.PinView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:cursorVisible="true"-->
+<!--                android:fontFamily="@font/mulish_semi_bold"-->
+<!--                android:inputType="number"-->
+<!--                android:text="@={otpviewmodel.userOtpNumber}"-->
+<!--                app:hideLineWhenFilled="false"-->
+<!--                app:itemCount="4"-->
+<!--                app:itemHeight="@dimen/_40sdp"-->
+<!--                app:itemRadius="@dimen/_8sdp"-->
+<!--                app:itemSpacing="@dimen/_8sdp"-->
+<!--                app:itemWidth="@dimen/_40sdp"-->
+<!--                -->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/textView10"-->
+<!--                app:layout_constraintVertical_bias="0.04"-->
+<!--                app:lineWidth="@dimen/_1sdp" />-->
+
+
+
+            <EditText
+                android:id="@+id/otp1ed"
+                style="@style/LoginSecurityCode"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:imeOptions="actionNext"
+                android:nextFocusRight="@+id/otp2ed"
+                android:text="@={otpviewmodel.userOtp1}"
+                android:textSize="@dimen/_15sdp"
+                android:selectAllOnFocus="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.23"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView10"
-                app:layout_constraintVertical_bias="0.04"
-                app:lineWidth="@dimen/_1sdp" />
+                app:layout_constraintVertical_bias="0.0" />
+
+            <EditText
+                android:inputType="text"
+                android:id="@+id/otp2ed"
+                android:selectAllOnFocus="true"
+                style="@style/LoginSecurityCode"
+                android:textSize="@dimen/_15sdp"
+                android:text="@={otpviewmodel.userOtp2}"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/otp1ed"
+                app:layout_constraintTop_toBottomOf="@+id/textView10"
+                app:layout_constraintVertical_bias="0.0"
+                android:imeOptions="actionNext"
+                android:nextFocusRight="@+id/otp3ed"/>
+
+            <EditText
+                android:inputType="text"
+                android:id="@+id/otp3ed"
+                android:selectAllOnFocus="true"
+                style="@style/LoginSecurityCode"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textSize="@dimen/_15sdp"
+                android:text="@={otpviewmodel.userOtp3}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/otp2ed"
+                app:layout_constraintTop_toBottomOf="@+id/textView10"
+                app:layout_constraintVertical_bias="0.0"
+                android:imeOptions="actionNext"
+                android:nextFocusRight="@+id/otp4ed"/>
+
+            <EditText
+                android:inputType="text"
+                android:maxLength="1"
+                android:id="@+id/otp4ed"
+                android:selectAllOnFocus="true"
+                android:textSize="@dimen/_15sdp"
+                style="@style/LoginSecurityCode"
+                android:text="@={otpviewmodel.userOtp4}"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/otp3ed"
+                app:layout_constraintTop_toBottomOf="@+id/textView10"
+                app:layout_constraintVertical_bias="0.0" />
 
             <LinearLayout
                 android:id="@+id/linearLayout4"
@@ -132,14 +204,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/otpemail"
+                app:layout_constraintTop_toBottomOf="@+id/otp1ed"
                 app:layout_constraintVertical_bias="0.03">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/mulish_regular"
-                    android:text="@string/otp_expries_in"
+                    android:text="@string/click_resend_in"
                     android:textColor="@color/gray_text"
                     android:textSize="@dimen/_11sdp" />
 

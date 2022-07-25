@@ -33,6 +33,7 @@ class ScheduleManagementViewModel @Inject constructor(
         var branchId: Int,
         var listOfDays: ArrayList<String>,
         var allDaysList: ArrayList<String>,
+        var isScroll:Boolean
     )
 
     private var scrollViewToPosition = MutableLiveData<Int>()
@@ -49,8 +50,9 @@ class ScheduleManagementViewModel @Inject constructor(
         branchId: Int,
         listOfDays: ArrayList<String>,
         allDaysList: ArrayList<String>,
+        isScroll:Boolean
     ) {
-        currentDate.value = SelectedDate(selectedDate, seviceId, branchId, listOfDays, allDaysList)
+        currentDate.value = SelectedDate(selectedDate, seviceId, branchId, listOfDays, allDaysList,isScroll)
         Log.d("TAG", "setCurrentDate: $allDaysList")
     }
 
@@ -83,6 +85,7 @@ class ScheduleManagementViewModel @Inject constructor(
         var branchId: Int,
         var weekList: ArrayList<String>,
         var bookedWeekList: ArrayList<String>,
+        var isScroll:Boolean
     )
 
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
@@ -92,10 +95,12 @@ class ScheduleManagementViewModel @Inject constructor(
         branchId: Int,
         weekList: ArrayList<String>,
         bookedWeekList: ArrayList<String>,
+        isScroll: Boolean
+
     ) {
         Log.d("TAG", "setCurrentWeekDate: $weekListMapOfMonth  ")
         weekDate.value =
-            WeekDates(weekListMapOfMonth, serviceId, branchId, weekList, bookedWeekList)
+            WeekDates(weekListMapOfMonth, serviceId, branchId, weekList, bookedWeekList,isScroll)
     }
 
     // 2686 Month From and To Date Live Data

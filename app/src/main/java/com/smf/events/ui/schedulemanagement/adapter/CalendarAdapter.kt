@@ -48,7 +48,7 @@ class CalendarAdapter(
     var i = 1
     var weekMapListAll: HashMap<LocalDate, Int> = HashMap()
     var businessValidity: LocalDate? = null
-
+    var onClickExpDate=0
     init {
         this.onItemListener = onItemListener
         this.days = day
@@ -222,8 +222,11 @@ class CalendarAdapter(
         }
 
         private fun onClickBusniessValidityDate() {
+            onClickExpDate +=1
             if (CalendarUtils.selectedDate!! > businessValidity) {
-                onItemListener.onClickBusinessExpDate(true)
+                if (onClickExpDate==1) {
+                    onItemListener.onClickBusinessExpDate(true)
+                }
             }
             if (CalendarUtils.selectedDate!! == businessValidity)
                 onItemListener.onClickBusinessExpDate(false)

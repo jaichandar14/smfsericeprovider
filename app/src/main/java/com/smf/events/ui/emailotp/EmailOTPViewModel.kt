@@ -29,32 +29,51 @@ class EmailOTPViewModel @Inject constructor(
 
     private val TAG = "EmailOTPViewModel"
     val userOtpNumber = MutableLiveData<String>()
+    val userOtp1 = MutableLiveData<String>()
+    val userOtp2= MutableLiveData<String>()
+    val userOtp3 = MutableLiveData<String>()
+    val userOtp4 = MutableLiveData<String>()
+
+    var resendRestriction=0
+
     private var idToken: String? = null
+    var num=0
 
     // Custom Confirm SignIn Function
     fun confirmSignIn(otp: String, mDataBinding: FragmentEmailOtpBinding) {
+        num += 1
         Amplify.Auth.confirmSignIn(otp,
             {
                 // Aws method for Fetching Id Token
                 fetchIdToken()
                 //Aws Method for 6 digit Validation Check
                 emailCodeValidationCheck()
+                viewModelScope.launch {
+                    callBackInterface?.otpValidation()
+                }
             },
             {
-                Log.e(
+                Log.d(
                     TAG,
-                    "Failed to confirm signIn ${it.cause!!.message!!.split(".")[0]}",
-                    it
-                )
+                    "Failed to confirm signIn1 ${ it.localizedMessage}  ",
+                    it)
+
                 viewModelScope.launch {
-                    val errMsg = mDataBinding.otpemail.text.toString()
+                    val errMsg = mDataBinding.otp1ed.text.toString()
                     if (errMsg.isEmpty()) {
                         toastMessage = AppConstants.ENTER_OTP
-                        callBackInterface!!.awsErrorResponse()
+                        callBackInterface!!.awsErrorResponse(num)
                     } else {
                         toastMessage = AppConstants.INVALID_OTP
-                        callBackInterface!!.awsErrorResponse()
+                     //   callBackInterface!!.awsErrorResponse(num)
 //                        callBackInterface!!.navigatingPage()
+                    }
+
+                    if (it.cause?.message?.contains("OTP expired") ==true || it.cause?.message?.contains("Invalid session for the user") == true){
+                        toastMessage ="OTP is expired. Click on Resend to receive new OTP"
+                        callBackInterface!!.awsErrorResponse(num)
+                    }else{
+                        callBackInterface!!.awsErrorResponse(num)
                     }
                 }
             })
@@ -98,7 +117,7 @@ class EmailOTPViewModel @Inject constructor(
                 Log.e(TAG, "Failed to fetch user attributes", it)
                 viewModelScope.launch {
                     toastMessage = AppConstants.INVALID_OTP
-                    callBackInterface!!.awsErrorResponse()
+                    callBackInterface!!.awsErrorResponse(num)
                 }
             })
     }
@@ -125,7 +144,7 @@ class EmailOTPViewModel @Inject constructor(
                 viewModelScope.launch {
                     val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorResponse()
+                    callBackInterface!!.awsErrorResponse(num)
                 }
             })
     }
@@ -144,7 +163,7 @@ class EmailOTPViewModel @Inject constructor(
                 viewModelScope.launch {
                     val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorResponse()
+                    callBackInterface!!.awsErrorResponse(num)
                 }
             })
     }
@@ -156,12 +175,17 @@ class EmailOTPViewModel @Inject constructor(
         callBackInterface = callback
     }
 
+
     // CallBack Interface
     interface CallBackInterface {
         suspend fun callBack(status: String)
-        fun awsErrorResponse()
+        fun awsErrorResponse(num: Int)
         fun navigatingPage()
+        fun showToast(resendRestriction: Int)
+        fun otpValidation()
     }
+
+
 
     // 2351 Android-OTP expires Validation Method
     fun otpTimerValidation(mDataBinding: FragmentEmailOtpBinding?, userName: String) {
@@ -184,15 +208,28 @@ class EmailOTPViewModel @Inject constructor(
             }
 
             override fun onFinish() {
-                mDataBinding.otpResend.setTextColor(
-                    ContextCompat.getColor(
-                        getApplication(), R.color.button_blue
-                    )
-                )
+                resendRestriction+=1
+
                 mDataBinding.otpResend.isClickable = true
                 countTime.text = AppConstants.INITIAL_TIME
+
+                if (resendRestriction<=10){
+                    mDataBinding.otpResend.setTextColor(
+                        ContextCompat.getColor(
+                            getApplication(), R.color.button_blue
+                        )
+                    )
                 mDataBinding.otpResend.setOnClickListener {
-                    reSendOTP(userName, mDataBinding)
+                    if (resendRestriction<=9) {
+                        reSendOTP(userName, mDataBinding)
+                        callBackInterface?.showToast(resendRestriction)
+                    }else{
+                        callBackInterface?.showToast(resendRestriction)
+                    }
+
+                }
+                }else{
+                    callBackInterface?.showToast(resendRestriction)
                 }
             }
         }.start()
