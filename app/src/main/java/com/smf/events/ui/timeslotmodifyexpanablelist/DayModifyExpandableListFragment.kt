@@ -20,10 +20,10 @@ import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapter
+import com.smf.events.ui.timeslotmodifyexpanablelist.model.BookedEventServiceDtoModify
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.Data
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
-import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
-import com.smf.events.ui.timeslotsexpandablelist.model.ListData
+import com.smf.events.ui.timeslotsexpandablelist.model.ListDataModify
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ class DayModifyExpandableListFragment : Fragment(),
     var TAG = "DayModifyExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomModifyExpandableListAdapter? = null
-    private var childData = HashMap<String, List<ListData>>()
+    private var childData = HashMap<String, List<ListDataModify>>()
     private var titleDate = ArrayList<String>()
     private lateinit var mDataBinding: FragmentTimeSlotsExpandableListBinding
     var spRegId: Int = 0
@@ -193,7 +193,7 @@ class DayModifyExpandableListFragment : Fragment(),
         childData.clear()
         titleDate.clear()
         for (i in 0 until allDaysList.size) {
-            val bookedEventDetails = ArrayList<ListData>()
+            val bookedEventDetails = ArrayList<ListDataModify>() // Need to add one variable booked r submitted inside ListData
             apiResponse.response.data.forEach {
                 if (it.bookedEventServiceDtos == null) {
                     bookedEventDetails.add(nullListData(it))
@@ -201,7 +201,7 @@ class DayModifyExpandableListFragment : Fragment(),
                     bookedEventDetails.add(isEmptyAvailableListData(it))
                 } else {
                     bookedEventDetails.add(
-                        ListData(
+                        ListDataModify(
                             it.serviceSlot,
                             it.bookedEventServiceDtos
                         )
@@ -221,7 +221,7 @@ class DayModifyExpandableListFragment : Fragment(),
         position: Int,
     ) {
         Log.d(TAG, "setDataToExpandableList position: $position")
-        val bookedEventDetails = ArrayList<ListData>()
+        val bookedEventDetails = ArrayList<ListDataModify>()
         apiResponse.response.data.forEach { data ->
             if (data.bookedEventServiceDtos == null) {
                 bookedEventDetails.add(nullListData(data))
@@ -229,7 +229,7 @@ class DayModifyExpandableListFragment : Fragment(),
                 bookedEventDetails.add(isEmptyAvailableListData(data))
             } else {
                 bookedEventDetails.add(
-                    ListData(
+                    ListDataModify(
                         data.serviceSlot,
                         data.bookedEventServiceDtos
                     )
@@ -277,13 +277,13 @@ class DayModifyExpandableListFragment : Fragment(),
     }
 
     private fun scrollToLocation() {
-        val position = allDaysList.indexOf(fromDate)
-        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
-        Log.d(
-            TAG,
-            "expandableList selected header height : ${expandableListView?.get(position)?.height!! * position}"
-        )
-        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
+//        val position = allDaysList.indexOf(fromDate)
+//        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+//        Log.d(
+//            TAG,
+//            "expandableList selected header height : ${expandableListView?.get(position)?.height!! * position}"
+//        )
+//        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     override fun onGroupClick(
@@ -302,11 +302,11 @@ class DayModifyExpandableListFragment : Fragment(),
             } else {
                 // Send Selected Date To ViewModel For Calender UI Display
                 fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
-                val bookedEventDetails = ArrayList<ListData>()
+                val bookedEventDetails = ArrayList<ListDataModify>()
                 bookedEventDetails.add(
-                    ListData(
+                    ListDataModify(
                         getString(R.string.empty),
-                        listOf(BookedEventServiceDto("", "", "", ""))
+                        listOf(BookedEventServiceDtoModify("", "","", "", ""))
                     )
                 )
                 childData[titleDate[groupPosition]] = bookedEventDetails
@@ -335,6 +335,13 @@ class DayModifyExpandableListFragment : Fragment(),
             Locale.ENGLISH
         )
         val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
+        val onlyBookedList = ArrayList<BookedEventServiceDtoModify>()
+        statusList?.forEach {
+            if (it.bidStatus == AppConstants.WON_BID){
+                onlyBookedList.add(it)
+            }
+        }
+        Log.d(TAG, "onChildClick: $statusList")
         when (branchName) {
             getString(R.string.available_small) -> {
                 serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
@@ -347,7 +354,7 @@ class DayModifyExpandableListFragment : Fragment(),
                                 currentMonth,
                                 serviceVendorOnboardingId,
                                 fromDate,
-                                toDate, statusList
+                                toDate, onlyBookedList
                             )
                                 .show(
                                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -368,7 +375,7 @@ class DayModifyExpandableListFragment : Fragment(),
                                 currentMonth,
                                 serviceVendorOnboardingId,
                                 fromDate,
-                                toDate, statusList
+                                toDate, onlyBookedList
                             )
                                 .show(
                                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -390,7 +397,7 @@ class DayModifyExpandableListFragment : Fragment(),
                                 serviceVendorOnboardingId,
                                 fromDate,
                                 toDate,
-                                statusList
+                                onlyBookedList
                             )
                                 .show(
                                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
@@ -407,23 +414,23 @@ class DayModifyExpandableListFragment : Fragment(),
     }
 
     // 2815 - Method For Set Null Value
-    private fun nullListData(data: Data): ListData {
-        return ListData(
+    private fun nullListData(data: Data): ListDataModify {
+        return ListDataModify(
             data.serviceSlot,
-            listOf(BookedEventServiceDto(getString(R.string.null_text), "", "", ""))
+            listOf(BookedEventServiceDtoModify(getString(R.string.null_text), "", "", "",""))
         )
     }
 
     // 2815 - Method For Set available Value
-    private fun isEmptyAvailableListData(data: Data): ListData {
-        return ListData(
+    private fun isEmptyAvailableListData(data: Data): ListDataModify{
+        return ListDataModify(
             data.serviceSlot,
             listOf(
-                BookedEventServiceDto(
+                BookedEventServiceDtoModify(
                     getString(R.string.available_small),
                     "",
                     "",
-                    ""
+                    "",""
                 )
             )
         )
@@ -501,11 +508,11 @@ class DayModifyExpandableListFragment : Fragment(),
 
     // 2952 - Visible Progress bar during Modify Availability
     private fun showProgress() {
-        val bookedEventDetails = ArrayList<ListData>()
+        val bookedEventDetails = ArrayList<ListDataModify>()
         bookedEventDetails.add(
-            ListData(
+            ListDataModify(
                 getString(R.string.empty),
-                listOf(BookedEventServiceDto("", "", "", ""))
+                listOf(BookedEventServiceDtoModify("", "", "", "",""))
             )
         )
         childData[titleDate[groupPosition]] = bookedEventDetails

@@ -154,19 +154,27 @@ class MonthExpandableListFragment : Fragment(),
             childData.clear()
             titleDate.clear()
             addTitle()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", ""))))
+            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "",""))))
             childData[titleDate[0]] = bookedEventDetails
         } else {
             childData.clear()
             titleDate.clear()
             addTitle()
             for (i in apiResponse.response.data.indices) {
-                bookedEventDetails.add(
-                    ListData(
-                        apiResponse.response.data[i].serviceSlot,
-                        apiResponse.response.data[i].bookedEventServiceDtos
+                val bookedList = ArrayList<BookedEventServiceDto>()
+                apiResponse.response.data[i].bookedEventServiceDtos.forEach {
+                    if (it.bidStatus == AppConstants.WON_BID) {
+                        bookedList.add(it)
+                    }
+                }
+                if (!bookedList.isNullOrEmpty()) {
+                    bookedEventDetails.add(
+                        ListData(
+                            apiResponse.response.data[i].serviceSlot,
+                            bookedList
+                        )
                     )
-                )
+                }
             }
             childData[titleDate[0]] = bookedEventDetails
         }

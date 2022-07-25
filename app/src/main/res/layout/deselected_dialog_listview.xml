@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/_3sdp">
 
     <TextView
         android:id="@+id/date_tx"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_80sdp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_regular"
+        android:text="Jul 29"
         android:textColor="@color/black"
         android:textSize="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/event_name"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_66sdp"
         android:fontFamily="@font/poppins_regular"
+        android:text="vi wedding"
         android:textColor="@color/black"
         android:textSize="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/date_tx"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/slots_tx"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_80sdp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_regular"
+        android:text="3pm - 9pm"
         android:textColor="@color/black"
         android:textSize="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_tx" />
+        app:layout_constraintTop_toBottomOf="@+id/date_tx"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/branch_tx"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_28sdp"
+        android:layout_marginStart="@dimen/_20sdp"
         android:fontFamily="@font/poppins_regular"
+        android:text="vi57fgksnfkdbsd"
         android:textColor="@color/black"
         android:textSize="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/slots_tx"
-        app:layout_constraintTop_toBottomOf="@+id/event_name" />
+        app:layout_constraintTop_toBottomOf="@+id/event_name"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

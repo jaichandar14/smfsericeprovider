@@ -10,19 +10,21 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.CalendarUtils
 import com.smf.events.ui.timeslotsexpandablelist.adapter.BookedSlotsRecyclerViewAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventsList
-import com.smf.events.ui.timeslotsexpandablelist.model.ListData
+import com.smf.events.ui.timeslotsexpandablelist.model.ListDataModify
 import java.time.LocalDate
 import java.time.Month
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CustomModifyExpandableListAdapter internal constructor(
     private val context: Context,
     private val classTag: String,
     private val titleDate: ArrayList<String>,
-    private val childData: HashMap<String, List<ListData>>,
+    private val childData: HashMap<String, List<ListDataModify>>,
 ) : BaseExpandableListAdapter() {
 
     private val TAG = "CustomModifyExpandableL"
@@ -46,7 +48,7 @@ class CustomModifyExpandableListAdapter internal constructor(
         parent: ViewGroup,
     ): View {
         var convertView = convertView
-        val expandedListData = getChild(listPosition, expandedListPosition) as ListData
+        val expandedListData = getChild(listPosition, expandedListPosition) as ListDataModify
         val layoutInflater =
             this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         convertView = if (expandedListPosition == 0) {
@@ -65,15 +67,6 @@ class CustomModifyExpandableListAdapter internal constructor(
             convertView?.findViewById<RecyclerView>(R.id.slot_list_recycler_view)
         address12To3am?.text = null
 
-        image12To3am?.setOnClickListener {
-            Log.d(TAG, "getChildView: clicked $expandedListPosition")
-            timeSlotIconOnClickListener?.onChildClick(
-                listPosition,
-                expandedListPosition,
-                expandedListData.timeSlot
-            )
-        }
-
         // Verification For Booked Events Data
         if (expandedListData.timeSlot == "" && expandedListData.status[0].branchName == "") {
             layoutLinear12To3am?.visibility = View.INVISIBLE
@@ -86,29 +79,89 @@ class CustomModifyExpandableListAdapter internal constructor(
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = context.getString(R.string.available)
             image12To3am?.setImageResource(R.drawable.new_selection)
+            image12To3am?.setOnClickListener {
+                Log.d(TAG, "getChildView: clicked $expandedListPosition")
+                timeSlotIconOnClickListener?.onChildClick(
+                    listPosition,
+                    expandedListPosition,
+                    expandedListData.timeSlot
+                )
+            }
         } else if (expandedListData.status[0].branchName == context.getString(R.string.available_small)) {
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = context.getString(R.string.available)
             image12To3am?.setImageResource(R.drawable.new_selection)
+            image12To3am?.setOnClickListener {
+                Log.d(TAG, "getChildView: clicked $expandedListPosition")
+                timeSlotIconOnClickListener?.onChildClick(
+                    listPosition,
+                    expandedListPosition,
+                    expandedListData.timeSlot
+                )
+            }
         } else if (expandedListData.status[0].branchName == context.getString(R.string.null_text)) {
             timeSlot12To3am?.text = expandedListData.timeSlot
             address12To3am?.text = context.getString(R.string.not_available)
             image12To3am?.setImageResource(R.drawable.unselect)
+            image12To3am?.setOnClickListener {
+                Log.d(TAG, "getChildView: clicked $expandedListPosition")
+                timeSlotIconOnClickListener?.onChildClick(
+                    listPosition,
+                    expandedListPosition,
+                    expandedListData.timeSlot
+                )
+            }
         } else {
             val list = ArrayList<BookedEventsList>()
+            val statusList = ArrayList<String>()
             for (i in expandedListData.status.indices) {
+                Log.d(TAG, "getChildView loop: ${expandedListData.status[i]}")
                 list.add(
                     BookedEventsList(
                         dateFormat(expandedListData.status[i].eventDate),
-                        expandedListData.status[i].eventName
+                        expandedListData.status[i].eventName,
+                        expandedListData.status[i].bidStatus
                     )
                 )
+                statusList.add(expandedListData.status[i].bidStatus)
             }
+            Log.d(TAG, "getChildView expandedListData: $expandedListData")
+            Log.d(TAG, "getChildView: $list")
+
+            val finalEventsList = ArrayList<BookedEventsList>()
+            if (statusList.contains(AppConstants.WON_BID)) {
+                address12To3am?.text = context.getString(R.string.slot_booked)
+                list.forEach {
+                    if (it.bidStatus == AppConstants.WON_BID) {
+                        finalEventsList.add(it)
+                    }
+                }
+                image12To3am?.setOnClickListener {
+                    Log.d(TAG, "getChildView: clicked $expandedListPosition")
+                    timeSlotIconOnClickListener?.onChildClick(
+                        listPosition,
+                        expandedListPosition,
+                        expandedListData.timeSlot
+                    )
+                }
+            } else {
+                address12To3am?.text = context.getString(R.string.Quote_Sent)
+                finalEventsList.addAll(list)
+                image12To3am?.setOnClickListener {
+                    Log.d(TAG, "getChildView: clicked $expandedListPosition")
+                    timeSlotIconOnClickListener?.onChildClick(
+                        listPosition,
+                        expandedListPosition,
+                        expandedListData.timeSlot
+                    )
+                }
+            }
+
             recyclerViewBookedSlot?.layoutManager = LinearLayoutManager(context)
-            val bookedSlotsRecyclerViewAdapter = BookedSlotsRecyclerViewAdapter(list)
+            val bookedSlotsRecyclerViewAdapter = BookedSlotsRecyclerViewAdapter(finalEventsList)
             recyclerViewBookedSlot?.adapter = bookedSlotsRecyclerViewAdapter
-            address12To3am?.text = context.getString(R.string.slot_booked)
             timeSlot12To3am?.text = expandedListData.timeSlot
+
         }
 
         // Loop For Last ChildView View Invisible
