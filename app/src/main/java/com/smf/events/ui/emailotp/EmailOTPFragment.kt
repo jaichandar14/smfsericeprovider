@@ -209,7 +209,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     }
 
     override fun showToast(resendRestriction: Int) {
-    if (resendRestriction<=10){
+    if (resendRestriction<=9){
         Toast.makeText(requireContext(),getString(R.string.otp_sent_to_your_mail), Toast.LENGTH_LONG).show()
     }else{
         Toast.makeText(requireContext(),getString(R.string.resend_clicked_multiple_time), Toast.LENGTH_LONG).show()

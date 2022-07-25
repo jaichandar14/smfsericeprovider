@@ -220,8 +220,13 @@ class EmailOTPViewModel @Inject constructor(
                         )
                     )
                 mDataBinding.otpResend.setOnClickListener {
-                    reSendOTP(userName, mDataBinding)
-                    callBackInterface?.showToast(resendRestriction)
+                    if (resendRestriction<=9) {
+                        reSendOTP(userName, mDataBinding)
+                        callBackInterface?.showToast(resendRestriction)
+                    }else{
+                        callBackInterface?.showToast(resendRestriction)
+                    }
+
                 }
                 }else{
                     callBackInterface?.showToast(resendRestriction)
