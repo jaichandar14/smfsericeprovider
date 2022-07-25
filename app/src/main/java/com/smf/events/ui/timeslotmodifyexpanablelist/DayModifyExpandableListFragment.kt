@@ -277,13 +277,13 @@ class DayModifyExpandableListFragment : Fragment(),
     }
 
     private fun scrollToLocation() {
-        val position = allDaysList.indexOf(fromDate)
-        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
-        Log.d(
-            TAG,
-            "expandableList selected header height : ${expandableListView?.get(position)?.height!! * position}"
-        )
-        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
+//        val position = allDaysList.indexOf(fromDate)
+//        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+//        Log.d(
+//            TAG,
+//            "expandableList selected header height : ${expandableListView?.get(position)?.height!! * position}"
+//        )
+//        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     override fun onGroupClick(

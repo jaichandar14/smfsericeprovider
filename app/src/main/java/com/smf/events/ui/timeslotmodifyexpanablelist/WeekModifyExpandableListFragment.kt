@@ -327,13 +327,13 @@ class WeekModifyExpandableListFragment : Fragment(),
     }
 
     private fun scrollToLocation() {
-        val position = listOfDatesArray.indexOf(weekList)
-        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
-        Log.d(
-            TAG,
-            "expandableList selected header height : ${position * expandableListView?.get(position)?.height!!}"
-        )
-        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
+//        val position = listOfDatesArray.indexOf(weekList)
+//        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+//        Log.d(
+//            TAG,
+//            "expandableList selected header height : ${position * expandableListView?.get(position)?.height!!}"
+//        )
+//        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     // 2776 -  Method For Perform Group Click Events

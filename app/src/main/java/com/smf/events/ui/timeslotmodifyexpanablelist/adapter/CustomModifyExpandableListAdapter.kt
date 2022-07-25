@@ -147,6 +147,14 @@ class CustomModifyExpandableListAdapter internal constructor(
             } else {
                 address12To3am?.text = context.getString(R.string.Quote_Sent)
                 finalEventsList.addAll(list)
+                image12To3am?.setOnClickListener {
+                    Log.d(TAG, "getChildView: clicked $expandedListPosition")
+                    timeSlotIconOnClickListener?.onChildClick(
+                        listPosition,
+                        expandedListPosition,
+                        expandedListData.timeSlot
+                    )
+                }
             }
 
             recyclerViewBookedSlot?.layoutManager = LinearLayoutManager(context)

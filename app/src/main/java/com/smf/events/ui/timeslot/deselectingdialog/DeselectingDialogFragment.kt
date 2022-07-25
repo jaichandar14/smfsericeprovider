@@ -302,21 +302,27 @@ class DeselectingDialogFragment(
 
     // 2803  Modify Dialog Method
     private fun modifyDialog() {
-        mDataBinding?.txTitle?.text =
-            getString(R.string.event_booked_on) + " " + timeSlot + " " + getString(R.string.slots_availability)
-        mDataBinding?.cancelBtn?.visibility = View.GONE
-        mDataBinding?.listView?.visibility = View.VISIBLE
-        val listData: ArrayList<ListData> = ArrayList()
+        Log.d(TAG, "modifyDialog: $statusList")
+        if (!statusList.isNullOrEmpty()){
+            mDataBinding?.txTitle?.text =
+                getString(R.string.event_booked_on) + " " + timeSlot + " " + getString(R.string.slots_availability)
+            mDataBinding?.cancelBtn?.visibility = View.GONE
+            mDataBinding?.listView?.visibility = View.VISIBLE
+            val listData: ArrayList<ListData> = ArrayList()
 
-        statusList?.let { data ->
-            data.forEach {
-                listData.add(
-                    ListData(dateFormat(it.eventDate), it.eventName, timeSlot, it.branchName)
-                )
+            statusList?.let { data ->
+                data.forEach {
+                    listData.add(
+                        ListData(dateFormat(it.eventDate), it.eventName, timeSlot, it.branchName)
+                    )
+                }
             }
+            adapter = DeselectedDialogAdaptor(listData, requireContext())
+            mDataBinding?.listView?.adapter = adapter
+        }else{
+            mDataBinding?.txTitle?.text =getString(R.string.quote_sent_on) + " " + timeSlot + " " + getString(R.string.slots_availability)
         }
-        adapter = DeselectedDialogAdaptor(listData, requireContext())
-        mDataBinding?.listView?.adapter = adapter
+
     }
 
     // 2803 Method for Deselection Dialog
