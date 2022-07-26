@@ -63,6 +63,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     private var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
     var listOfDates: ArrayList<String>? = ArrayList()
     private lateinit var dialogDisposable: Disposable
+    private var isScroll: Boolean = false
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -115,8 +116,9 @@ class WeekModifyExpandableListFragment : Fragment(),
                 listOfDates = currentWeekDate.bookedWeekList
                 fromDate = weekList.first()
                 toDate = weekList.last()
+                isScroll = currentWeekDate.isScroll
                 CalendarUtils.listOfDatesArray = listOfDatesArray
-                Log.d(TAG, "onViewCreated week: $listOfDatesArray")
+                Log.d(TAG, "onViewCreated week: ${currentWeekDate.isScroll}, $listOfDatesArray")
                 initializeExpandableViewData()
             })
 
@@ -276,6 +278,7 @@ class WeekModifyExpandableListFragment : Fragment(),
                     )
                 }
             }
+            Log.d(TAG, "eventsOnSelectedDateApiValueUpdate bookedList: $bookedEventDetails")
             titleDate.add(
                 "${getMonth(listOfDatesArray[i][0])}  ${dateFormat(listOfDatesArray[i][0])} - ${
                     dateFormat(listOfDatesArray[i][listOfDatesArray[i].lastIndex])
@@ -320,20 +323,22 @@ class WeekModifyExpandableListFragment : Fragment(),
                 }
             }
         }
-        // Condition for scroll to specific time slot location
-        Timer().schedule(500) {
-            scrollToLocation()
+        if (isScroll) {
+            // Condition for scroll to specific time slot location
+            Timer().schedule(500) {
+                scrollToLocation()
+            }
         }
     }
 
     private fun scrollToLocation() {
-//        val position = listOfDatesArray.indexOf(weekList)
-//        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
-//        Log.d(
-//            TAG,
-//            "expandableList selected header height : ${position * expandableListView?.get(position)?.height!!}"
-//        )
-//        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
+        val position = listOfDatesArray.indexOf(weekList)
+        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+        Log.d(
+            TAG,
+            "expandableList selected header height : ${position * expandableListView?.get(position)?.height!!}"
+        )
+        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     // 2776 -  Method For Perform Group Click Events

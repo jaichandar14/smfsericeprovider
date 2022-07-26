@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
@@ -20,6 +21,7 @@ import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
+import com.smf.events.ui.timeslotsexpandablelist.model.Data
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +34,12 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.concurrent.schedule
 
 class WeekExpandableListFragment : Fragment(),
     CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
 
+    private var TAG = "WeekExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
@@ -54,6 +58,7 @@ class WeekExpandableListFragment : Fragment(),
     private var groupPosition: Int = 0
     private var weekMap: HashMap<Int, ArrayList<String>>? = null
     private var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
+    private var isScroll: Boolean = false
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -104,85 +109,35 @@ class WeekExpandableListFragment : Fragment(),
                 Log.d("TAG", "onViewCreated booked date: ${currentWeekDate.weekListMapOfMonth}")
 
                 weekList = currentWeekDate.weekList
-                Log.d("TAG", "onViewCreated booked datemap: ${weekMap}")
-
+                Log.d("TAG", "onViewCreated booked datemap: $listOfDatesArray ${weekMap}")
+                isScroll = currentWeekDate.isScroll
                 listOfDates = currentWeekDate.bookedWeekList
 
-                if (checkCurrentWeekHaveEvent(currentWeekDate)) {
-                    mDataBinding.modifyProgressBar.visibility = View.VISIBLE
-                    mDataBinding.expandableLayout.visibility= View.GONE
-                    mDataBinding.noEventsText.visibility = View.GONE
-                    listOfDatesArray.forEach {
-                        if (currentWeekDate.weekList[0] == it[0]) {
-                            this.groupPosition = listOfDatesArray.indexOf(it)
-                            fromDate = listOfDatesArray[groupPosition][0]
-                            toDate =
-                                listOfDatesArray[groupPosition][listOfDatesArray[groupPosition].lastIndex]
-                            expandableListInitialSetUpWithEvents()
-                        }
-                    }
-                } else {
-                    listOfDatesArray.forEach {
-                        if (currentWeekDate.weekList[0] == it[0]) {
-                            this.groupPosition = listOfDatesArray.indexOf(it)
-                        }
-                    }
-                    setListOfDatesArray()
-                }
-            })
-    }
+                mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+                mDataBinding.expandableLayout.visibility = View.GONE
 
-    // 2795 - Method For Check Current Week Booked Events
-    private fun checkCurrentWeekHaveEvent(currentWeekDate: ScheduleManagementViewModel.WeekDates): Boolean {
-        var status = false
-        listOfDates.forEach {
-            if (currentWeekDate.weekList.contains(it)) {
-                status = true
-            }
-        }
-        return status
+                listOfDatesArray.forEach {
+                    if (currentWeekDate.weekList[0] == it[0]) {
+                        this.groupPosition = listOfDatesArray.indexOf(it)
+                        fromDate = listOfDatesArray[groupPosition][0]
+                        toDate =
+                            listOfDatesArray[groupPosition][listOfDatesArray[groupPosition].lastIndex]
+                    }
+                }
+                setListOfDatesArray()
+            })
     }
 
     // 2776 - Method For set week wise Dates ArrayList
     private fun setListOfDatesArray() {
         if (weekMap.isNullOrEmpty()) {
-            mDataBinding.expandableLayout.visibility = View.GONE
-//            mDataBinding.expendableList.visibility = View.GONE
+            mDataBinding.expendableList.visibility = View.GONE
+            mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         } else {
-            mDataBinding.expandableLayout.visibility = View.VISIBLE
-//            mDataBinding.expendableList.visibility = View.VISIBLE
+            mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            expandableListInitialSetUp()
-        }
-    }
-
-    // 2776 -  Method For Set titleDate and childData values
-    private fun expandableListInitialSetUp() {
-        setExpandableListEmptyData()
-        initializeExpandableListSetUp()
-    }
-
-    // 2795 -  Method For Set titleDate and childData values
-    private fun expandableListInitialSetUpWithEvents() {
-        setExpandableListEmptyData()
-        apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES_INITIAL)
-    }
-
-    // 2795 - Method For Set Expandable List Data
-    private fun setExpandableListEmptyData() {
-        childData.clear()
-        titleDate.clear()
-        for (listOfDays in 0 until listOfDatesArray.size) {
-            Log.d("TAG", "onViewCreated startingDate : ${listOfDatesArray[listOfDays][0]}")
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "",""))))
-            titleDate.add(
-                "${getMonth(listOfDatesArray[listOfDays][0])}  ${dateFormat(listOfDatesArray[listOfDays][0])} - ${
-                    dateFormat(listOfDatesArray[listOfDays][listOfDatesArray[listOfDays].lastIndex])
-                }"
-            )
-            childData[titleDate[listOfDays]] = bookedEventDetails
+            apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES_INITIAL)
         }
     }
 
@@ -194,7 +149,7 @@ class WeekExpandableListFragment : Fragment(),
         toDate: String,
         caller: String,
     ) {
-        if (view != null){
+        if (view != null) {
             sharedViewModel.getBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -206,9 +161,14 @@ class WeekExpandableListFragment : Fragment(),
                         //  2986 Hiding progress based on calender and service selection
                         mDataBinding.modifyProgressBar.visibility = View.GONE
                         mDataBinding.expandableLayout.visibility = View.VISIBLE
-                        mDataBinding.noEventsText.visibility = View.GONE
                         Log.d("TAG", "check token response: ${apiResponse.response}")
-                        updateExpandableListData(apiResponse, caller)
+                        if (caller == AppConstants.BOOKED_EVENT_SERVICES_INITIAL) {
+                            eventsOnSelectedDateApiValueUpdate(apiResponse, caller)
+                        } else {
+                            setDataToExpandableList(apiResponse, groupPosition)
+                            Log.d(TAG, "setDataToExpandableList: loop called")
+                            adapter!!.notifyDataSetChanged()
+                        }
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -220,54 +180,115 @@ class WeekExpandableListFragment : Fragment(),
         }
     }
 
-    // Method For Updating ExpandableList Data
-    private fun updateExpandableListData(
+    private fun eventsOnSelectedDateApiValueUpdate(
         apiResponse: ApisResponse.Success<BookedServiceList>,
         caller: String,
     ) {
-        if (caller == AppConstants.BOOKED_EVENT_SERVICES_INITIAL) {
-            // ExpandableView And Adapter Initialization
-            initializeExpandableListSetUp()
-            updateApiDataToExpandableView(apiResponse)
-            expandableListView?.expandGroup(groupPosition)
-            adapter!!.notifyDataSetChanged()
-            lastGroupPosition = groupPosition
-        } else {
-            updateApiDataToExpandableView(apiResponse)
-            adapter!!.notifyDataSetChanged()
-        }
-
-    }
-
-    // 2795 - Method For Update Api Data To Expandable List View
-    private fun updateApiDataToExpandableView(apiResponse: ApisResponse.Success<BookedServiceList>) {
-        val bookedEventDetails = ArrayList<ListData>()
-        if (apiResponse.response.data.isNullOrEmpty()) {
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "",""))))
-            childData[titleDate[groupPosition]] = bookedEventDetails
-        } else {
-            for (i in apiResponse.response.data.indices) {
-                val bookedList = ArrayList<BookedEventServiceDto>()
-                apiResponse.response.data[i].bookedEventServiceDtos.forEach {
-                    if (it.bidStatus == AppConstants.WON_BID) {
-                        bookedList.add(it)
+        childData.clear()
+        titleDate.clear()
+        Log.d(
+            TAG,
+            "eventsOnSelectedDateApiValueUpdate value: ${listOfDatesArray} ${apiResponse.response.data}"
+        )
+        for (i in 0 until listOfDatesArray.size) {
+            Log.d(TAG, "eventsOnSelectedDateApiValueUpdate for: ${listOfDatesArray[i]}")
+            val bookedEventDetails = ArrayList<ListData>()
+            if (apiResponse.response.data.isNullOrEmpty()) {
+                bookedEventDetails.add(
+                    ListData(
+                        "",
+                        listOf(BookedEventServiceDto("", "", "", "", ""))
+                    )
+                )
+            } else {
+                apiResponse.response.data.forEach { it ->
+                    Log.d(TAG, "setDataToExpandableList: else called $groupPosition")
+                    val bookedEventServiceDtos = getOnlyBookedEvents(it)
+                    if (!bookedEventServiceDtos.isNullOrEmpty()) {
+                        bookedEventDetails.add(
+                            ListData(
+                                it.serviceSlot,
+                                bookedEventServiceDtos
+                            )
+                        )
                     }
                 }
-                if (!bookedList.isNullOrEmpty()) {
+            }
+
+            if (bookedEventDetails.isNullOrEmpty()) {
+                bookedEventDetails.add(
+                    ListData(
+                        "",
+                        listOf(BookedEventServiceDto("", "", "", "", ""))
+                    )
+                )
+            }
+            titleDate.add(
+                "${getMonth(listOfDatesArray[i][0])}  ${dateFormat(listOfDatesArray[i][0])} - ${
+                    dateFormat(listOfDatesArray[i][listOfDatesArray[i].lastIndex])
+                }"
+            )
+            childData[titleDate[i]] = bookedEventDetails
+        }
+        initializeExpandableListSetUp(caller)
+    }
+
+    private fun setDataToExpandableList(
+        apiResponse: ApisResponse.Success<BookedServiceList>,
+        groupPosition: Int
+    ) {
+        Log.d(TAG, "setDataToExpandableList: loop method $groupPosition")
+        val bookedEventDetails = ArrayList<ListData>()
+        if (apiResponse.response.data.isNullOrEmpty()) {
+            bookedEventDetails.add(
+                ListData(
+                    "",
+                    listOf(BookedEventServiceDto("", "", "", "", ""))
+                )
+            )
+        } else {
+            apiResponse.response.data.forEach { it ->
+                Log.d(TAG, "setDataToExpandableList: else called $groupPosition")
+                val bookedEventServiceDtos = getOnlyBookedEvents(it)
+                if (!bookedEventServiceDtos.isNullOrEmpty()) {
                     bookedEventDetails.add(
                         ListData(
-                            apiResponse.response.data[i].serviceSlot,
-                            bookedList
+                            it.serviceSlot,
+                            bookedEventServiceDtos
                         )
                     )
                 }
             }
-            childData[titleDate[groupPosition]] = bookedEventDetails
         }
+
+        if (bookedEventDetails.isNullOrEmpty()) {
+            bookedEventDetails.add(
+                ListData(
+                    "",
+                    listOf(BookedEventServiceDto("", "", "", "", ""))
+                )
+            )
+        }
+
+        childData[titleDate[groupPosition]] = bookedEventDetails
+    }
+
+    private fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
+        val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
+        Log.d(TAG, "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
+        val bookedList = ArrayList<BookedEventServiceDto>()
+        data.bookedEventServiceDtos.forEach { objectList ->
+            if (objectList.bidStatus == AppConstants.WON_BID) {
+                bookedList.add(objectList)
+            }
+        }
+        Log.d(TAG, "updateUpcomingEvents week: ${bookedList}")
+        bookedEventServiceDtos.addAll(bookedList)
+        return bookedEventServiceDtos
     }
 
     // 2558 - Method for ExpandableList Initialization
-    private fun initializeExpandableListSetUp() {
+    private fun initializeExpandableListSetUp(caller: String) {
         if (expandableListView != null) {
             adapter = CustomExpandableListAdapter(
                 requireContext(),
@@ -276,10 +297,32 @@ class WeekExpandableListFragment : Fragment(),
                 childData
             )
             expandableListView!!.setAdapter(adapter)
-            expandableListView!!.expandGroup(groupPosition)
             adapter?.setOnClickListener(this)
-            lastGroupPosition = groupPosition
         }
+
+        // Condition For Expand selected Week TimeSlot
+        if (caller == AppConstants.BOOKED_EVENT_SERVICES_INITIAL) {
+            expandableListView!!.expandGroup(groupPosition)
+            lastGroupPosition = groupPosition
+            adapter?.notifyDataSetChanged()
+        }
+
+        if (isScroll) {
+            // Condition for scroll to specific time slot location
+            Timer().schedule(500) {
+                scrollToLocation()
+            }
+        }
+    }
+
+    private fun scrollToLocation() {
+        val position = listOfDatesArray.indexOf(weekList)
+        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+        Log.d(
+            TAG,
+            "expandableList selected header height : ${position * expandableListView?.get(position)?.height!!}"
+        )
+        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     // 2776 -  Method For Perform Group Click Events
@@ -299,7 +342,7 @@ class WeekExpandableListFragment : Fragment(),
             bookedEventDetails.add(
                 ListData(
                     getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", "",""))
+                    listOf(BookedEventServiceDto("", "", "", "", ""))
                 )
             )
             childData[titleDate[groupPosition]] = bookedEventDetails
@@ -328,7 +371,7 @@ class WeekExpandableListFragment : Fragment(),
                     fromDate = it.format(dateFormatter)
                 }
             }
-            Log.d("TAG", "tokenCallBack: $fromDate")
+            Log.d("TAG", "tokenCallBack: $fromDate $toDate")
             fromDate?.let { fromDate ->
                 toDate?.let { toDate ->
                     getBookedEventServices(

@@ -58,6 +58,7 @@ class DayModifyExpandableListFragment : Fragment(),
     private var allDaysList: ArrayList<String> = ArrayList()
     private var groupPosition: Int = 0
     private lateinit var dialogDisposable: Disposable
+    private var isScroll: Boolean = false
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -106,7 +107,8 @@ class DayModifyExpandableListFragment : Fragment(),
             toDate = currentDate.selectedDate
             listOfDates = currentDate.listOfDays
             allDaysList = currentDate.allDaysList
-            Log.d(TAG, "onViewCreated day: ${currentDate.allDaysList} $serviceVendorOnboardingId")
+            isScroll = currentDate.isScroll
+            Log.d(TAG, "onViewCreated day: ${currentDate.isScroll}, ${currentDate.allDaysList} $serviceVendorOnboardingId")
             initializeExpandableViewData()
         })
         // Observe Modify Dialog Result
@@ -270,20 +272,23 @@ class DayModifyExpandableListFragment : Fragment(),
                 }
             }
         }
-        // Condition for scroll to specific time slot location
-        Timer().schedule(500) {
-            scrollToLocation()
+
+        if (isScroll){
+            // Condition for scroll to specific time slot location
+            Timer().schedule(500) {
+                scrollToLocation()
+            }
         }
     }
 
     private fun scrollToLocation() {
-//        val position = allDaysList.indexOf(fromDate)
-//        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
-//        Log.d(
-//            TAG,
-//            "expandableList selected header height : ${expandableListView?.get(position)?.height!! * position}"
-//        )
-//        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
+        val position = allDaysList.indexOf(fromDate)
+        Log.d(TAG, "expandableList full height: ${expandableListView?.height}")
+        Log.d(
+            TAG,
+            "expandableList selected header height : ${expandableListView?.get(position)?.height!! * position}"
+        )
+        sharedViewModel.setScrollViewToPosition(position * expandableListView?.get(position)?.height!!)
     }
 
     override fun onGroupClick(

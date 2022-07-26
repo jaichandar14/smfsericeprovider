@@ -20,6 +20,7 @@ import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
+import com.smf.events.ui.timeslotsexpandablelist.model.Data
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.Dispatchers
@@ -111,6 +112,7 @@ class MonthExpandableListFragment : Fragment(),
             apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES)
         } else {
             mDataBinding.expendableList.visibility = View.GONE
+            mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         }
     }
@@ -149,37 +151,59 @@ class MonthExpandableListFragment : Fragment(),
 
     // Method For Updating ExpandableList Data
     private fun updateExpandableListData(apiResponse: ApisResponse.Success<BookedServiceList>) {
+        childData.clear()
+        titleDate.clear()
         val bookedEventDetails = ArrayList<ListData>()
         if (apiResponse.response.data.isNullOrEmpty()) {
-            childData.clear()
-            titleDate.clear()
-            addTitle()
-            bookedEventDetails.add(ListData("", listOf(BookedEventServiceDto("", "", "", "",""))))
-            childData[titleDate[0]] = bookedEventDetails
+            bookedEventDetails.add(
+                ListData(
+                    "",
+                    listOf(BookedEventServiceDto("", "", "", "", ""))
+                )
+            )
         } else {
-            childData.clear()
-            titleDate.clear()
-            addTitle()
-            for (i in apiResponse.response.data.indices) {
-                val bookedList = ArrayList<BookedEventServiceDto>()
-                apiResponse.response.data[i].bookedEventServiceDtos.forEach {
-                    if (it.bidStatus == AppConstants.WON_BID) {
-                        bookedList.add(it)
-                    }
-                }
-                if (!bookedList.isNullOrEmpty()) {
+            apiResponse.response.data.forEach { it ->
+                Log.d("TAG", "setDataToExpandableList: else called $groupPosition")
+                val bookedEventServiceDtos = getOnlyBookedEvents(it)
+                if (!bookedEventServiceDtos.isNullOrEmpty()) {
                     bookedEventDetails.add(
                         ListData(
-                            apiResponse.response.data[i].serviceSlot,
-                            bookedList
+                            it.serviceSlot,
+                            bookedEventServiceDtos
                         )
                     )
                 }
             }
-            childData[titleDate[0]] = bookedEventDetails
+
+            if (bookedEventDetails.isNullOrEmpty()) {
+                bookedEventDetails.add(
+                    ListData(
+                        "",
+                        listOf(BookedEventServiceDto("", "", "", "", ""))
+                    )
+                )
+            }
         }
+
+        addTitle()
+        childData[titleDate[0]] = bookedEventDetails
+
         // 2558 - ExpandableList Initialization
         initializeExpandableListSetUp()
+    }
+
+    private fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
+        val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
+        Log.d("TAG", "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
+        val bookedList = ArrayList<BookedEventServiceDto>()
+        data.bookedEventServiceDtos.forEach { objectList ->
+            if (objectList.bidStatus == AppConstants.WON_BID) {
+                bookedList.add(objectList)
+            }
+        }
+        Log.d("TAG", "updateUpcomingEvents week: ${bookedList}")
+        bookedEventServiceDtos.addAll(bookedList)
+        return bookedEventServiceDtos
     }
 
     // 2558 - Method for ExpandableList Initialization
