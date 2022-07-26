@@ -58,11 +58,12 @@ class EmailOTPViewModel @Inject constructor(
 
                 viewModelScope.launch {
                     val errMsg = mDataBinding.otp1ed.text.toString()
-                    if (errMsg.isEmpty()) {
-                        toastMessage = AppConstants.ENTER_OTP
-                      callBackInterface?.otpValidation(false)
-                        //callBackInterface!!.awsErrorResponse(num)
-                    }else if (it.cause?.message?.contains("OTP expired") ==true || it.cause?.message?.contains("Invalid session for the user") == true){
+//                    if (errMsg.isEmpty()) {
+//                        toastMessage = AppConstants.ENTER_OTP
+//                      callBackInterface?.otpValidation(false)
+//                        //callBackInterface!!.awsErrorResponse(num)
+//                    }
+                    if (it.cause?.message?.contains("OTP expired") ==true || it.cause?.message?.contains("Invalid session for the user") == true){
                         toastMessage ="OTP is expired. Click on Resend to receive new OTP"
                         callBackInterface!!.awsErrorResponse(num)
                       //  callBackInterface?.otpValidation(false)
@@ -209,14 +210,14 @@ class EmailOTPViewModel @Inject constructor(
                 mDataBinding.otpResend.isClickable = true
                 countTime.text = AppConstants.INITIAL_TIME
 
-                if (resendRestriction<=5){
+                if (resendRestriction<=6){
                     mDataBinding.otpResend.setTextColor(
                         ContextCompat.getColor(
                             getApplication(), R.color.button_blue
                         )
                     )
                 mDataBinding.otpResend.setOnClickListener {
-                    if (resendRestriction<=9) {
+                    if (resendRestriction<=5) {
                         reSendOTP(userName, mDataBinding)
                         callBackInterface?.showToast(resendRestriction)
                     }else{

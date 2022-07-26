@@ -1,19 +1,14 @@
 package com.smf.events.ui.emailotp
 
 import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -26,7 +21,6 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.ui.emailotp.model.GetLoginInfo
-import com.smf.events.ui.splash.SplashFragmentDirections
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -45,6 +39,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     lateinit var otp1: EditText
     lateinit var otp2: EditText
     lateinit var otp3: EditText
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
@@ -96,7 +91,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         otp0.setOnKeyListener(GenericKeyEvent(otp0, null))
         otp1.setOnKeyListener(GenericKeyEvent(otp1, otp0))
         otp2.setOnKeyListener(GenericKeyEvent(otp2, otp1))
-        otp3.setOnKeyListener(GenericKeyEvent(otp3,otp2))
+        otp3.setOnKeyListener(GenericKeyEvent(otp3, otp2))
     }
 
     // Method For set UserName And SharedPreferences
@@ -115,9 +110,15 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     // For confirmSignIn aws
     private fun submitBtnClicked() {
         mDataBinding!!.submitBtn.setOnClickListener {
-            showProgress()
-            getViewModel().confirmSignIn(otp0.text.toString()+otp1.text.toString()
-                    +otp2.text.toString()+otp3.text.toString(), mDataBinding!!)
+            if (mDataBinding?.otp1ed?.text.toString().isEmpty()) {
+                Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT).show()
+            }else{
+                showProgress()
+                getViewModel().confirmSignIn(
+                    otp0.text.toString() + otp1.text.toString()
+                            + otp2.text.toString() + otp3.text.toString(), mDataBinding!!
+                )
+            }
         }
     }
 
@@ -167,19 +168,21 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     override fun awsErrorResponse(num: Int) {
         showProgress()
         getOtpValidation(false)
-        // hideProgress()
-        if (num>=3){}else{
+//         hideProgress()
+        if (num >= 3) {
+        } else {
             showToast(getViewModel().toastMessage)
         }
-        mDataBinding?.otp1ed?.text=null
-        mDataBinding?.otp3ed?.text=null
-        mDataBinding?.otp2ed?.text=null
-        mDataBinding?.otp4ed?.text=null
-            }
+        mDataBinding?.otp1ed?.text = null
+        mDataBinding?.otp3ed?.text = null
+        mDataBinding?.otp2ed?.text = null
+        mDataBinding?.otp4ed?.text = null
+    }
+
     // Login api call to Fetch RollId and SpRegId
     private fun getOtpValidation(isValid: Boolean) {
         // Getting Service Provider Reg Id and Role Id
-        getViewModel().getOtpValidation(isValid,userName)
+        getViewModel().getOtpValidation(isValid, userName)
             .observe(this@EmailOTPFragment, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
@@ -187,7 +190,11 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         //setSpRegIdAndRollID(apiResponse)
                         Log.d(TAG, "getLoginApiCall11: ${apiResponse.response}")
                         // Navigate to DashBoardFragment
-                        hideProgress()
+                        if (isValid) {
+                            showProgress()
+                        } else {
+                            hideProgress()
+                        }
                         //   findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
                     }
                     is ApisResponse.CustomError -> {
@@ -205,6 +212,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 }
             })
     }
+
     // 2351 Android-OTP expires Validation
     override fun navigatingPage() {
         // Navigating from emailOtpScreen to Sign in Screen
@@ -212,16 +220,25 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     }
 
     override fun showToast(resendRestriction: Int) {
-    if (resendRestriction<=5){
-        Toast.makeText(requireContext(),getString(R.string.otp_sent_to_your_mail), Toast.LENGTH_LONG).show()
-    }else{
-        Toast.makeText(requireContext(),getString(R.string.resend_clicked_multiple_time), Toast.LENGTH_LONG).show()
-        val action = EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment()
-        findNavController().navigate(action)
-    }
+        if (resendRestriction <= 5) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.otp_sent_to_your_mail),
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.resend_clicked_multiple_time),
+                Toast.LENGTH_LONG
+            ).show()
+            val action = EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment()
+            findNavController().navigate(action)
+        }
     }
 
     override fun otpValidation(b: Boolean) {
+        hideProgress()
         Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT).show()
     }
 
@@ -231,6 +248,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         // Getting Service Provider Reg Id and Role Id
         showProgress()
         getOtpValidation(true)
+//        showProgress()
         getViewModel().getLoginInfo(idToken)
             .observe(this@EmailOTPFragment, Observer { apiResponse ->
                 when (apiResponse) {
@@ -262,9 +280,12 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         )
     }
 
-    class GenericKeyEvent internal constructor(private val currentView: EditText, private val previousView: EditText?) : View.OnKeyListener{
+    class GenericKeyEvent internal constructor(
+        private val currentView: EditText,
+        private val previousView: EditText?
+    ) : View.OnKeyListener {
         override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
-            if(event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.otp1ed && currentView.text.isEmpty()) {
+            if (event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.otp1ed && currentView.text.isEmpty()) {
                 //If current is empty then previous EditText's number will also be deleted
                 previousView!!.text = null
                 previousView.requestFocus()
@@ -276,7 +297,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     }
 
-    class GenericTextWatcher internal constructor(private val currentView: View, private val nextView: View?) : TextWatcher {
+    class GenericTextWatcher internal constructor(
+        private val currentView: View,
+        private val nextView: View?
+    ) : TextWatcher {
         override fun afterTextChanged(editable: Editable) { // TODO Auto-generated method stub
             val text = editable.toString()
             when (currentView.id) {
