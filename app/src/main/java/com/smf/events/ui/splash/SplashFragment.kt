@@ -2,10 +2,13 @@ package com.smf.events.ui.splash
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.amplifyframework.auth.options.AuthSignOutOptions
+import com.amplifyframework.core.Amplify
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
@@ -46,12 +49,23 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // 3028
-//        if (idToken.isNotEmpty()) {
+        if (idToken.isNotEmpty()) {
+            signOut()
 //            moveToDashBoardScreen()
-//        } else {
+        } else {
             // Login Button Listener
             onClickSplashScreenBtn()
-       // }
+        }
+    }
+
+    // 3028 on Close Sign out
+    private fun signOut() {
+        Amplify.Auth.signOut(
+            AuthSignOutOptions.builder().globalSignOut(true).build(),
+            {onClickSplashScreenBtn()
+            },
+            { Log.e("AuthQuickstart", "Sign out failed", it) }
+        )
     }
 
     // Sign In Button

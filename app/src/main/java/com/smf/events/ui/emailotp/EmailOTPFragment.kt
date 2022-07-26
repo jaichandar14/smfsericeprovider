@@ -84,21 +84,19 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         otp2.tag = 2
         otp3.tag = 3
 
-        otp0.addTextChangedListener(textWatcher)
-        otp1.addTextChangedListener(textWatcher)
-        otp2.addTextChangedListener(textWatcher)
-        otp3.addTextChangedListener(textWatcher)
+        //GenericTextWatcher here works only for moving to next EditText when a number is entered
+        //first parameter is the current EditText and second parameter is next EditText
+        otp0.addTextChangedListener(GenericTextWatcher(otp0, otp1))
+        otp1.addTextChangedListener(GenericTextWatcher(otp1, otp2))
+        otp2.addTextChangedListener(GenericTextWatcher(otp2, otp3))
+        otp3.addTextChangedListener(GenericTextWatcher(otp3, null))
 
-        otp0.onFocusChangeListener = focusListener
-        otp1.onFocusChangeListener = focusListener
-        otp2.onFocusChangeListener = focusListener
-        otp3.onFocusChangeListener = focusListener
-
-//        otp0.setOnKeyListener(keyListener)
-//        otp1.setOnKeyListener(keyListener)
-//        otp2.setOnKeyListener(keyListener)
-//        otp3.setOnKeyListener(keyListener)
-
+        //GenericKeyEvent here works for deleting the element and to switch back to previous EditText
+        //first parameter is the current EditText and second parameter is previous EditText
+        otp0.setOnKeyListener(GenericKeyEvent(otp0, null))
+        otp1.setOnKeyListener(GenericKeyEvent(otp1, otp0))
+        otp2.setOnKeyListener(GenericKeyEvent(otp2, otp1))
+        otp3.setOnKeyListener(GenericKeyEvent(otp3,otp2))
     }
 
     // Method For set UserName And SharedPreferences
@@ -167,10 +165,11 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // AWS Error response
     override fun awsErrorResponse(num: Int) {
+        showProgress()
         getOtpValidation(false)
-        hideProgress()
-        if (num>=4){}else{
-        showToast(getViewModel().toastMessage)
+        // hideProgress()
+        if (num>=3){}else{
+            showToast(getViewModel().toastMessage)
         }
         mDataBinding?.otp1ed?.text=null
         mDataBinding?.otp3ed?.text=null
@@ -188,15 +187,19 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         //setSpRegIdAndRollID(apiResponse)
                         Log.d(TAG, "getLoginApiCall11: ${apiResponse.response}")
                         // Navigate to DashBoardFragment
-                    //   findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+                        hideProgress()
+                        //   findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "error response: ${apiResponse.message}")
                         // Navigate to DashBoardFragment
-                       if ( !apiResponse.message.isNullOrEmpty())
-                           showToast(apiResponse.message)
-                           findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
-                       }
+                        showProgress()
+                        if (!apiResponse.message.isNullOrEmpty()) {
+                            showToast(apiResponse.message)
+                            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+                        }
+                    }
+
                     else -> {
                     }
                 }
@@ -209,7 +212,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     }
 
     override fun showToast(resendRestriction: Int) {
-    if (resendRestriction<=9){
+    if (resendRestriction<=5){
         Toast.makeText(requireContext(),getString(R.string.otp_sent_to_your_mail), Toast.LENGTH_LONG).show()
     }else{
         Toast.makeText(requireContext(),getString(R.string.resend_clicked_multiple_time), Toast.LENGTH_LONG).show()
@@ -218,14 +221,16 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     }
     }
 
-    override fun otpValidation() {
-            getOtpValidation(true)
-
+    override fun otpValidation(b: Boolean) {
+        Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT).show()
     }
+
 
     // Login api call to Fetch RollId and SpRegId
     private fun getLoginApiCall(idToken: String) {
         // Getting Service Provider Reg Id and Role Id
+        showProgress()
+        getOtpValidation(true)
         getViewModel().getLoginInfo(idToken)
             .observe(this@EmailOTPFragment, Observer { apiResponse ->
                 when (apiResponse) {
@@ -257,93 +262,47 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         )
     }
 
-    private var focusListener = View.OnFocusChangeListener { v, hasFocus ->
-        if (hasFocus) {
-            when (v.tag) {
-                0 -> {
-                    otp0.setSelectAllOnFocus(true)
-                    selectedPosition = 0
-                }
-                1 -> {
-                    otp1.setSelectAllOnFocus(true)
-                    selectedPosition = 1
-                }
-                2 -> {
-                    otp2.setSelectAllOnFocus(true)
-                    selectedPosition = 2
-                }
-                3 -> {
-                    Log.d("TAG", "called called: ")
-                    otp3.setSelectAllOnFocus(true)
-                    selectedPosition = 3
-                }
+    class GenericKeyEvent internal constructor(private val currentView: EditText, private val previousView: EditText?) : View.OnKeyListener{
+        override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
+            if(event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.otp1ed && currentView.text.isEmpty()) {
+                //If current is empty then previous EditText's number will also be deleted
+                previousView!!.text = null
+                previousView.requestFocus()
+                return true
             }
+            return false
         }
+
+
     }
 
-    private var textWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        }
-
-        override fun afterTextChanged(s: Editable?) {
-            Log.d("TAG", "afterTextChanged: called")
-            when (selectedPosition) {
-                0 -> {
-                    if (!s.isNullOrEmpty()) {
-                        selectedPosition = 1
-                        showKeyboard(otp1)
-
-                        Log.d(TAG, "afterTextChanged: $s")
-                    }
-                }
-                1 -> {
-                    if (!s.isNullOrEmpty()) {
-                        selectedPosition = 2
-                        showKeyboard(otp2)
-                        Log.d(TAG, "afterTextChanged: $s")
-                    }
-                    else{
-                        Log.d("TAG", "afterTextChanged: else called")
-                        selectedPosition = 1
-                        showKeyboard(otp0)
-                    }
-                }
-                2 -> {
-                    if (!s.isNullOrEmpty()) {
-                        selectedPosition = 3
-                        showKeyboard(otp3)
-                        Log.d(TAG, "afterTextChanged: $s")
-                    }
-                    else{
-                        Log.d("TAG", "afterTextChanged: else called")
-                        selectedPosition = 2
-                        showKeyboard(otp1)
-                    }
-                }
-                3 ->{
-                    if (!s.isNullOrEmpty()) {
-                        Log.d("TAG", "afterTextChanged: else called")
-//                        selectedPosition = 3
-//                        showKeyboard(otp4)
-
-                    }
-                    else{
-                        Log.d("TAG", "afterTextChanged: else called")
-                        selectedPosition = 3
-                        showKeyboard(otp2)
-                    }
-                }
+    class GenericTextWatcher internal constructor(private val currentView: View, private val nextView: View?) : TextWatcher {
+        override fun afterTextChanged(editable: Editable) { // TODO Auto-generated method stub
+            val text = editable.toString()
+            when (currentView.id) {
+                R.id.otp1ed -> if (text.length == 1) nextView!!.requestFocus()
+                R.id.otp2ed -> if (text.length == 1) nextView!!.requestFocus()
+                R.id.otp3ed -> if (text.length == 1) nextView!!.requestFocus()
+//                R.id.otp4ed -> if (text.length == 1) nextView!!.requestFocus()
+                //You can use EditText4 same as above to hide the keyboard
             }
         }
-    }
 
-    private fun showKeyboard(editText: EditText) {
-        editText.requestFocus()
-        val inputMethodManager =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+        override fun beforeTextChanged(
+            arg0: CharSequence,
+            arg1: Int,
+            arg2: Int,
+            arg3: Int
+        ) { // TODO Auto-generated method stub
+        }
+
+        override fun onTextChanged(
+            arg0: CharSequence,
+            arg1: Int,
+            arg2: Int,
+            arg3: Int
+        ) { // TODO Auto-generated method stub
+        }
+
     }
 }

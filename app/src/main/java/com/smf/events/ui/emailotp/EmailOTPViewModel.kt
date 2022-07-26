@@ -48,9 +48,7 @@ class EmailOTPViewModel @Inject constructor(
                 fetchIdToken()
                 //Aws Method for 6 digit Validation Check
                 emailCodeValidationCheck()
-                viewModelScope.launch {
-                    callBackInterface?.otpValidation()
-                }
+
             },
             {
                 Log.d(
@@ -62,18 +60,16 @@ class EmailOTPViewModel @Inject constructor(
                     val errMsg = mDataBinding.otp1ed.text.toString()
                     if (errMsg.isEmpty()) {
                         toastMessage = AppConstants.ENTER_OTP
-                        callBackInterface!!.awsErrorResponse(num)
-                    } else {
-                        toastMessage = AppConstants.INVALID_OTP
-                     //   callBackInterface!!.awsErrorResponse(num)
-//                        callBackInterface!!.navigatingPage()
-                    }
-
-                    if (it.cause?.message?.contains("OTP expired") ==true || it.cause?.message?.contains("Invalid session for the user") == true){
+                      callBackInterface?.otpValidation(false)
+                        //callBackInterface!!.awsErrorResponse(num)
+                    }else if (it.cause?.message?.contains("OTP expired") ==true || it.cause?.message?.contains("Invalid session for the user") == true){
                         toastMessage ="OTP is expired. Click on Resend to receive new OTP"
                         callBackInterface!!.awsErrorResponse(num)
+                      //  callBackInterface?.otpValidation(false)
                     }else{
+                        toastMessage = AppConstants.INVALID_OTP
                         callBackInterface!!.awsErrorResponse(num)
+//                        callBackInterface?.otpValidation(false)
                     }
                 }
             })
@@ -182,7 +178,7 @@ class EmailOTPViewModel @Inject constructor(
         fun awsErrorResponse(num: Int)
         fun navigatingPage()
         fun showToast(resendRestriction: Int)
-        fun otpValidation()
+        fun otpValidation(b: Boolean)
     }
 
 
@@ -213,7 +209,7 @@ class EmailOTPViewModel @Inject constructor(
                 mDataBinding.otpResend.isClickable = true
                 countTime.text = AppConstants.INITIAL_TIME
 
-                if (resendRestriction<=10){
+                if (resendRestriction<=5){
                     mDataBinding.otpResend.setTextColor(
                         ContextCompat.getColor(
                             getApplication(), R.color.button_blue

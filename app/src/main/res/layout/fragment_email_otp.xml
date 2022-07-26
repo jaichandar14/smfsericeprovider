@@ -127,6 +127,7 @@
 
 
             <EditText
+                android:inputType="number"
                 android:id="@+id/otp1ed"
                 style="@style/LoginSecurityCode"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -144,7 +145,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <EditText
-                android:inputType="text"
+                android:inputType="number"
                 android:id="@+id/otp2ed"
                 android:selectAllOnFocus="true"
                 style="@style/LoginSecurityCode"
@@ -161,7 +162,7 @@
                 android:nextFocusRight="@+id/otp3ed"/>
 
             <EditText
-                android:inputType="text"
+                android:inputType="number"
                 android:id="@+id/otp3ed"
                 android:selectAllOnFocus="true"
                 style="@style/LoginSecurityCode"
@@ -178,7 +179,7 @@
                 android:nextFocusRight="@+id/otp4ed"/>
 
             <EditText
-                android:inputType="text"
+                android:inputType="number"
                 android:maxLength="1"
                 android:id="@+id/otp4ed"
                 android:selectAllOnFocus="true"
