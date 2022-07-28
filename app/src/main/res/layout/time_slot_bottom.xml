@@ -60,6 +60,7 @@
                     android:layout_marginTop="@dimen/_3sdp"
                     android:fontFamily="@font/mulish_medium"
                     android:text="@string/_12am_3am"
+                    android:textColor="@color/text_gray_color"
                     android:textSize="@dimen/_10sdp" />
 
                 <TextView
@@ -70,6 +71,7 @@
                     android:layout_marginTop="@dimen/_3sdp"
                     android:fontFamily="@font/mulish_medium"
                     android:text="@string/available"
+                    android:textColor="@color/text_gray_color"
                     android:textSize="@dimen/_10sdp" />
 
             </LinearLayout>
@@ -94,6 +96,7 @@
         android:text="@string/no_events_available"
         android:textSize="@dimen/_11sdp"
         android:visibility="gone"
+        android:textColor="@color/text_gray_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

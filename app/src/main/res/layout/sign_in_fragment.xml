@@ -112,6 +112,7 @@
                     app:ccp_textSize="@dimen/_12sdp" />
 
                 <TextView
+                    android:textColor="@color/buttoncolor"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_36sdp"
                     android:layout_gravity="center"
@@ -129,6 +130,7 @@
                     android:background="@drawable/empty_shapes"
                     android:fontFamily="@font/mulish_bold"
                     android:hint="@string/phonenumber"
+                    android:textColorHint="@color/buttoncolor"
                     android:inputType="numberDecimal"
                     android:maxLength="10"
                     android:text="@={signinViewModel.mobileNumber}"
@@ -228,6 +230,7 @@
                     android:background="@drawable/empty_shapes"
                     android:fontFamily="@font/mulish_bold"
                     android:hint="@string/perter_gmail_com"
+                    android:textColorHint="@color/buttoncolor"
                     android:inputType="textEmailAddress"
                     android:paddingStart="@dimen/_2sdp"
                     android:text="@={signinViewModel.emailId}"

@@ -15,11 +15,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_background"
         app:cardCornerRadius="@dimen/_8sdp"
+        app:cardBackgroundColor="@color/white"
         tools:context=".ui.quotedetailsdialog.QuoteDetailsDialog">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:layout_marginLeft="@dimen/_13sdp"
             android:layout_marginTop="@dimen/_18sdp"
             android:layout_marginRight="@dimen/_18sdp"
@@ -32,6 +34,7 @@
                 android:fontFamily="@font/mulish_bold"
                 android:text="@string/quote_details_for"
                 android:textSize="@dimen/_16sdp"
+                android:textColor="@color/text_gray_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -88,6 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_17sdp"
                 android:layout_marginTop="@dimen/_4sdp"
+                android:background="@color/white"
                 android:layout_marginEnd="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radiogroup">
@@ -99,6 +103,7 @@
                     android:fontFamily="@font/mulish_bold"
                     android:text="@string/fork_amp_spoon"
                     android:textSize="@dimen/_15sdp"
+                    android:textColor="@color/text_gray_color"
                     app:layout_constraintBottom_toTopOf="@+id/cost_estimation_"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -114,6 +119,7 @@
                     android:fontFamily="@font/mulish_medium"
                     android:text="@string/cost_estimation"
                     android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/text_gray_color"
                     app:layout_constraintBottom_toTopOf="@+id/linearlayout_fork_spoon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -132,6 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.2"
+                        android:textColor="@color/text_gray_color"
                         android:fontFamily="@font/mulish_medium"
                         android:text="@string/post_any_discount"
                         android:textSize="@dimen/_12sdp" />
@@ -147,6 +154,7 @@
                     app:layout_constraintTop_toBottomOf="@id/linearlayout_fork_spoon">
 
                     <Spinner
+                        android:popupBackground="@color/white"
                         android:id="@+id/currency_type"
                         android:layout_width="@dimen/_90sdp"
                         android:layout_height="@dimen/_35sdp"
@@ -167,6 +175,7 @@
                         android:layout_height="@dimen/_35sdp"
                         android:background="@drawable/shape_dailog_curved"
                         android:hint="@string/amount"
+                        android:textColorHint="@color/buttoncolor"
                         android:inputType="number"
                         android:paddingStart="@dimen/_6sdp"
                         android:textSize="@dimen/_13sdp"
@@ -205,6 +214,7 @@
                         android:fontFamily="@font/mulish_medium"
                         android:text="Upload quote document"
                         android:textSize="@dimen/_14sdp"
+                        android:textColor="@color/text_gray_color"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -297,6 +307,7 @@
                     android:fontFamily="@font/mulish_medium"
                     android:text="@string/comments"
                     android:textSize="@dimen/_14sdp"
+                    android:textColor="@color/text_gray_color"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btn_file_upload_layout" />
 
@@ -312,6 +323,7 @@
                     android:maxLength="200"
                     android:fontFamily="@font/mulish_regular"
                     android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/text_gray_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tx_comments" />
@@ -337,6 +349,7 @@
                     android:layout_weight="1.5"
                     android:background="@drawable/custom_button_corner_cancel"
                     android:text="@string/cancel"
+                    android:textColor="@color/black"
                     android:textAllCaps="false" />
 
                 <androidx.appcompat.widget.AppCompatButton
