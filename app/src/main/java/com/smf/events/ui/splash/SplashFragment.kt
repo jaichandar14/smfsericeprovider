@@ -49,20 +49,21 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // 3028
-        if (idToken.isNotEmpty()) {
-            signOut()
-//            moveToDashBoardScreen()
-        } else {
+//        if (idToken.isNotEmpty()) {
+//
+////            moveToDashBoardScreen()
+//        } else {
             // Login Button Listener
             onClickSplashScreenBtn()
-        }
+        //}
     }
 
     // 3028 on Close Sign out
     private fun signOut() {
         Amplify.Auth.signOut(
             AuthSignOutOptions.builder().globalSignOut(true).build(),
-            {onClickSplashScreenBtn()
+            {
+                //onClickSplashScreenBtn()
             },
             { Log.e("AuthQuickstart", "Sign out failed", it) }
         )
@@ -72,6 +73,7 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     private fun onClickSplashScreenBtn() {
         mDataBinding!!.splashBtn.setOnClickListener {
             // Getting User Inputs
+           signOut()
             var action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
             // val action = SplashFragmentDirections.actionSplashFragmentToBusinessRegistrationFragment()
             findNavController().navigate(action)

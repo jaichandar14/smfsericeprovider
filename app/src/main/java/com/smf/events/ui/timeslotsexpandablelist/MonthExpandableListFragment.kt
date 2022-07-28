@@ -281,7 +281,8 @@ class MonthExpandableListFragment : Fragment(),
                 AppConstants.BOOKED_EVENT_SERVICES -> {
                     val currentMonthValue = LocalDateTime.now().monthValue.toString()
                     currentDate = if (monthValue == currentMonthValue) {
-                        currentDate
+                        val currentDay = LocalDateTime.now().format(currentDayFormatter)
+                        currentDay
                     } else {
                         fromDate
                     }

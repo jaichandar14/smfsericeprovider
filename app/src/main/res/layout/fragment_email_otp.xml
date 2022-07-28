@@ -127,6 +127,7 @@
 
 
             <EditText
+                android:textColor="@color/black"
                 android:inputType="number"
                 android:id="@+id/otp1ed"
                 style="@style/LoginSecurityCode"
@@ -145,6 +146,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <EditText
+                android:textColor="@color/black"
                 android:inputType="number"
                 android:id="@+id/otp2ed"
                 android:selectAllOnFocus="true"
@@ -162,6 +164,7 @@
                 android:nextFocusRight="@+id/otp3ed"/>
 
             <EditText
+                android:textColor="@color/black"
                 android:inputType="number"
                 android:id="@+id/otp3ed"
                 android:selectAllOnFocus="true"
@@ -179,6 +182,7 @@
                 android:nextFocusRight="@+id/otp4ed"/>
 
             <EditText
+                android:textColor="@color/black"
                 android:inputType="number"
                 android:maxLength="1"
                 android:id="@+id/otp4ed"
