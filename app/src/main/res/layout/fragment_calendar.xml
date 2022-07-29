@@ -87,6 +87,7 @@
                     android:orientation="vertical">
 
                     <Spinner
+                        android:popupBackground="@color/white"
                         android:id="@+id/spn_allServices"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -104,6 +105,7 @@
                     android:background="@drawable/shapes">
 
                     <Spinner
+                        android:popupBackground="@color/white"
                         android:id="@+id/spn_Branches"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

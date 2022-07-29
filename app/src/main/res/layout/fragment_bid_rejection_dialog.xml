@@ -13,6 +13,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/white"
         android:background="@drawable/dialog_background"
         app:cardCornerRadius="@dimen/_8sdp"
         tools:context=".ui.bidrejectiondialog.BidRejectionDialogFragment">
@@ -54,6 +55,7 @@
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/reason_for_rejection"
                 android:textSize="@dimen/_13sdp"
+                android:textColor="@color/text_gray_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title_layout" />
@@ -77,6 +79,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/spinner"
                     android:padding="@dimen/_3sdp"
+                    android:popupBackground="@color/white"
                     android:spinnerMode="dropdown"
                     android:textSize="@dimen/_13sdp" />
 
@@ -89,6 +92,7 @@
                 android:layout_marginTop="@dimen/_16sdp"
                 android:fontFamily="@font/mulish_medium"
                 android:text="@string/comments"
+                android:textColor="@color/text_gray_color"
                 android:textSize="@dimen/_14sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linear_spn_layout" />
@@ -102,6 +106,7 @@
                 android:gravity="start"
                 android:lines="6"
                 android:maxLength="200"
+                android:textColor="@color/text_gray_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tx_comments" />
@@ -126,6 +131,7 @@
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/if_you_want"
                 android:textSize="@dimen/_13sdp"
+                android:textColor="@color/text_gray_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/alert_msg" />
 

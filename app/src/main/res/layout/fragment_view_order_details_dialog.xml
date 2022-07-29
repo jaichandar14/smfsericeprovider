@@ -20,6 +20,7 @@
             android:id="@+id/quote_brief_dialog_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             tools:context=".ui.quotebriefdialog.QuoteBriefDialog">
 
             <RelativeLayout
@@ -59,6 +60,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
+                app:cardBackgroundColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_18sdp"

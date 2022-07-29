@@ -56,5 +56,6 @@
     <color name="gray_text">#707070</color>
 
     <color name="quote_details_check_black">#B5232323</color>
+    <color name="text_gray_color">#A6171313</color>
 
 </resources>
