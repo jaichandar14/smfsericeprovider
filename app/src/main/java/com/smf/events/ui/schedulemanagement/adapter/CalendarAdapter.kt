@@ -218,6 +218,10 @@ class CalendarAdapter(
                 }
             }
 
+            if (date == LocalDate.now()){
+                dayOfMonth.setTextColor(Color.BLACK)
+                dayOfMonth.setBackgroundResource(R.drawable.current_date_circle)
+            }
 
         }
 

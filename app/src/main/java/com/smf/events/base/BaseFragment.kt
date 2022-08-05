@@ -10,11 +10,9 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import dagger.android.support.AndroidSupportInjection
 
-abstract class BaseFragment<V: ViewDataBinding,out T:BaseViewModel>: Fragment() {
+abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragment() {
     protected var mDataBinding: V? = null
     private var mViewModel: T? = null
 
@@ -47,7 +45,7 @@ abstract class BaseFragment<V: ViewDataBinding,out T:BaseViewModel>: Fragment() 
     }
 
     // 2845 - Hiding Progress Bar
-    fun hideKeyBoard(){
+    fun hideKeyBoard() {
         val view: View? = requireActivity().currentFocus
         val inputManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

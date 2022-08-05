@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.InternetErrorDialog
 import com.smf.events.helper.SharedPreference
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.bidrejectiondialog.BidRejectionDialogFragment
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter
 
 class ActionDetailsAdapter(
     val context: Context,
+    val internetErrorDialog: InternetErrorDialog,
     var bidStatus: String,
     val sharedPreference: SharedPreference,
     var status: Boolean?,
@@ -162,14 +164,16 @@ class ActionDetailsAdapter(
                 callBackInterface?.showDialog(position)
             }
             holder.startserviceBtn.setOnClickListener {
-                // 2904 Dialog to For confirmation of Start service
-                CommonInfoDialog.newInstance(
-                    position, AppConstants.WON_BID
-                )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        CommonInfoDialog.TAG
+                if (internetErrorDialog.checkInternetAvailable(context)) {
+                    // 2904 Dialog to For confirmation of Start service
+                    CommonInfoDialog.newInstance(
+                        position, AppConstants.WON_BID, internetErrorDialog
                     )
+                        .show(
+                            (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                            CommonInfoDialog.TAG
+                        )
+                }
             }
             holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
         }
@@ -203,14 +207,16 @@ class ActionDetailsAdapter(
             holder.startserviceBtn.visibility = View.VISIBLE
             holder.startserviceBtn.text = AppConstants.INITIATE_CLOSER
             holder.startserviceBtn.setOnClickListener {
-                // 2904 Dialog to For confirmation of Start service
-                CommonInfoDialog.newInstance(
-                    position, AppConstants.SERVICE_DONE
-                )
-                    .show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        CommonInfoDialog.TAG
+                if (internetErrorDialog.checkInternetAvailable(context)) {
+                    // 2904 Dialog to For confirmation of Start service
+                    CommonInfoDialog.newInstance(
+                        position, AppConstants.SERVICE_DONE, internetErrorDialog
                     )
+                        .show(
+                            (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                            CommonInfoDialog.TAG
+                        )
+                }
             }
             holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
         }
@@ -230,28 +236,35 @@ class ActionDetailsAdapter(
 
         // 2904  Method for order Details
         private fun orderDetailsDialog(position: ActionDetails) {
-            ViewOrderDetailsDialogFragment.newInstance(position.eventId,
-                position.eventServiceDescriptionId,
-                position.eventDate,
-                position.eventName)
-                .show(
-                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    ViewOrderDetailsDialogFragment.TAG
+            if (internetErrorDialog.checkInternetAvailable(context)) {
+                ViewOrderDetailsDialogFragment.newInstance(
+                    position.eventId,
+                    position.eventServiceDescriptionId,
+                    position.eventDate,
+                    position.eventName,
+                    internetErrorDialog
                 )
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        ViewOrderDetailsDialogFragment.TAG
+                    )
+            }
         }
 
         // 2401 - Based On Costing Type Redirection To Other Dialogs
         private fun costingType(position: ActionDetails, holder: ActionDetailsViewHolder) {
-            if (position.costingType != "Bidding") {
-                // Update Latest bidRequestId To Shared Preference
-                updateBidRequestId(position.bidRequestId)
-                // Create Common Info Dialog
-                CommonInfoDialog.newInstance(position, "cost").show(
-                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    CommonInfoDialog.TAG
-                )
-            } else {
-                holder.bidSubmitted(position)
+            if (internetErrorDialog.checkInternetAvailable(context)) {
+                if (position.costingType != "Bidding") {
+                    // Update Latest bidRequestId To Shared Preference
+                    updateBidRequestId(position.bidRequestId)
+                    // Create Common Info Dialog
+                    CommonInfoDialog.newInstance(position, "cost",internetErrorDialog).show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        CommonInfoDialog.TAG
+                    )
+                } else {
+                    holder.bidSubmitted(position)
+                }
             }
         }
 
@@ -287,18 +300,19 @@ class ActionDetailsAdapter(
 
         // Rejecting the Bids
         private fun bidRejection(position: ActionDetails) {
-            BidRejectionDialogFragment.newInstance(
-                position.bidRequestId,
-                position.serviceName,
-                position.eventServiceDescriptionId.toString(),
-                // 2405 - Passing bidStatus to BidRejectionDialogFragment
-                bidStatus
-            )
-                .show(
-                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    BidRejectionDialogFragment.TAG
+            if (internetErrorDialog.checkInternetAvailable(context)) {
+                BidRejectionDialogFragment.newInstance(
+                    position.bidRequestId,
+                    position.serviceName,
+                    position.eventServiceDescriptionId.toString(),
+                    // 2405 - Passing bidStatus to BidRejectionDialogFragment
+                    bidStatus, internetErrorDialog
                 )
-
+                    .show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        BidRejectionDialogFragment.TAG
+                    )
+            }
         }
 
         // Submitting Bids
@@ -324,18 +338,20 @@ class ActionDetailsAdapter(
                     branchName
                 )
             } else {
-                QuoteDetailsDialog.newInstance(
-                    bidRequestId,
-                    costingType,
-                    bidStatus,
-                    cost,
-                    latestBidValue,
-                    branchName,
-                    serviceName
-                ).show(
-                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    QuoteDetailsDialog.TAG
-                )
+                if (internetErrorDialog.checkInternetAvailable(context)) {
+                    QuoteDetailsDialog.newInstance(
+                        bidRequestId,
+                        costingType,
+                        bidStatus,
+                        cost,
+                        latestBidValue,
+                        branchName,
+                        serviceName, internetErrorDialog
+                    ).show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        QuoteDetailsDialog.TAG
+                    )
+                }
             }
         }
 

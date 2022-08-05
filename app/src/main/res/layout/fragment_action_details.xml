@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_regular"
             android:textSize="@dimen/_12sdp"
+            android:textColor="@color/text_gray_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

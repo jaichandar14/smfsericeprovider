@@ -18,6 +18,7 @@ class SharedPreference @Inject constructor(var application: Application) {
         const val SP_REG_ID = "spRegId"
         const val FIRST_NAME = "userName"
         const val EMAIL_ID = "emailId"
+        var isInternetConnected: Boolean = false
     }
 
     private var sharedPreference: SharedPreferences =
@@ -28,6 +29,12 @@ class SharedPreference @Inject constructor(var application: Application) {
     // PutString Method
     fun putString(key: String, value: String?) {
         editor?.putString(key, value)
+        editor?.apply()
+    }
+
+    // Clear Method
+    fun clear() {
+        editor?.clear()
         editor?.apply()
     }
 

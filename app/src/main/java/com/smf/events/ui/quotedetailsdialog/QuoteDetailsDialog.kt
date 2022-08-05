@@ -29,13 +29,14 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -52,6 +53,7 @@ class QuoteDetailsDialog(
     var latestBidValue: String?,
     var branchName: String,
     var serviceName: String,
+    private var internetErrorDialog: InternetErrorDialog
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
     lateinit var biddingQuote: BiddingQuotDto
@@ -63,6 +65,7 @@ class QuoteDetailsDialog(
     var currencyTypeList = ArrayList<String>()
     var latestBidValueQuote: Int = 0
     var displayName: String? = null
+    private lateinit var dialogDisposable: Disposable
 
     companion object {
         const val TAG = "CustomDialogFragment"
@@ -75,6 +78,7 @@ class QuoteDetailsDialog(
             latestBidValue: String?,
             branchName: String,
             serviceName: String,
+            internetErrorDialog: InternetErrorDialog
         ): QuoteDetailsDialog {
 
             return QuoteDetailsDialog(
@@ -84,7 +88,8 @@ class QuoteDetailsDialog(
                 cost,
                 latestBidValue,
                 branchName,
-                serviceName
+                serviceName,
+                internetErrorDialog
             )
         }
     }
@@ -122,6 +127,11 @@ class QuoteDetailsDialog(
         dialogFragmentSize()
         // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(CommonInfoDialog.TAG, "onViewCreated: observer QuoteDetails dialog")
+            internetErrorDialog.dismissDialog()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -136,6 +146,8 @@ class QuoteDetailsDialog(
         getViewModel().getCurrencyType(mDataBinding, currencyTypeList)
         // Quote ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
         // fetching details based on Biding status
         fetchBasedOnStatus(view)
         mDataBinding?.btnCancel?.setOnClickListener {
@@ -165,20 +177,29 @@ class QuoteDetailsDialog(
 
     // Call back from Quote Details Dialog View Model
     override fun callBack(status: String) {
-        when (status) {
-            "iHaveQuote" ->
-                if (mDataBinding?.costEstimationAmount?.text.isNullOrEmpty()) {
-                    mDataBinding?.alertCost?.visibility = View.VISIBLE
-                } else {
-                    apiTokenValidationQuoteDetailsDialog("iHaveQuote")
+        mDataBinding?.btnOk?.setOnClickListener {
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                when (status) {
+                    "iHaveQuote" ->
+                        if (mDataBinding?.costEstimationAmount?.text.isNullOrEmpty()) {
+                            mDataBinding?.alertCost?.visibility = View.VISIBLE
+                        } else {
+                            apiTokenValidationQuoteDetailsDialog("iHaveQuote")
+                        }
+                    "quoteLater" -> apiTokenValidationQuoteDetailsDialog("quoteLater")
                 }
-            "quoteLater" -> apiTokenValidationQuoteDetailsDialog("quoteLater")
+            }
         }
     }
 
     // Call back from Quote Details Dialog View Model For CurrencyType Position
     override fun getCurrencyTypePosition(position: Int) {
         currencyType = currencyTypeList[position]
+    }
+
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     // Setting the value for put Call
@@ -236,7 +257,7 @@ class QuoteDetailsDialog(
                             //  QuoteBriefDialog.newInstance(bidRequestId)
                             Log.d(TAG, "showDialog 2: $bidRequestId")
                             sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
-                            QuoteBriefDialog.newInstance()
+                            QuoteBriefDialog.newInstance(internetErrorDialog)
                                 .show(
                                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                                     QuoteBriefDialog.TAG
@@ -443,6 +464,12 @@ class QuoteDetailsDialog(
     // Setting Id Token
     private fun setIdToken() {
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(CommonInfoDialog.TAG, "onStop: called Quote details dialog")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }
 

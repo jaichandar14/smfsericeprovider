@@ -15,10 +15,7 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionDetailsBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
@@ -36,8 +33,9 @@ import javax.inject.Inject
 
 class ActionDetailsFragment :
     BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(),
-    Tokens.IdTokenCallBackInterface, CallBackInterface {
+    Tokens.IdTokenCallBackInterface, CallBackInterface,ActionDetailsViewModel.CallBackInterface {
 
+    var TAG = "ActionDetailsFragment"
     private lateinit var myActionDetailsRecyclerView: RecyclerView
     lateinit var actionDetailsAdapter: ActionDetailsAdapter
     private var closeBtn: ImageView? = null
@@ -48,6 +46,8 @@ class ActionDetailsFragment :
     var bidStatus: String = ""
     lateinit var idToken: String
     var spRegId: Int = 0
+    private lateinit var internetErrorDialog: InternetErrorDialog
+    lateinit var dialogDisposable: Disposable
 
     @Inject
     lateinit var tokens: Tokens
@@ -57,8 +57,6 @@ class ActionDetailsFragment :
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-
-    lateinit var dialogDisposable: Disposable
 
     override fun getViewModel(): ActionDetailsViewModel =
         ViewModelProvider(this, factory).get(ActionDetailsViewModel::class.java)
@@ -72,34 +70,48 @@ class ActionDetailsFragment :
         super.onAttach(context)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        //Action Details Local Variable Initialization
-        actionDetailsVariableSetUp()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        //Token Class CallBack Initialization
-        tokens.setCallBackInterface(this)
-        //Method For Token Validation
-        apiTokenValidationBidActions()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(QuoteBriefDialog.TAG, "onViewCreated: ActionDetails")
+        //Action Details Local Variable Initialization
+        actionDetailsVariableSetUp()
+        //Token Class CallBack Initialization
+        tokens.setCallBackInterface(this)
+        // ActionDetails ViewModel CallBackInterface
+        getViewModel().setViewModelCallBackInterface(this)
         closeBtn = mDataBinding?.closeBtn
         //Initializing actions recyclerview
         myActionDetailsRecyclerView = mDataBinding?.actionDetailsRecyclerview!!
-        //Close Button Click Listener
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d("TAG", "onViewCreated: observer ActionDetails")
+            internetErrorDialog.dismissDialog()
+        }
+        // Close Button Click Listener
         clickListeners()
-        //Actions Recycler view
+        // Actions Recycler view
         myActionsStatusRecycler(false)
         dialogDisposable = RxBus.listen(RxEvent.ChangingNavDialog::class.java).subscribe {
             //  it.str?.dismiss()
         }
+        apiTokenValidationBidActions()
+    }
 
+    private fun showProgress(){
+        mDataBinding?.progressBar?.visibility = View.VISIBLE
+        mDataBinding?.textActions?.visibility =  View.GONE
+        mDataBinding?.textNewRequest?.visibility =  View.GONE
+        mDataBinding?.closeBtn?.visibility =  View.GONE
+        mDataBinding?.constraintLayout3?.visibility =  View.GONE
+    }
+
+    private fun hideProgress(){
+        mDataBinding?.progressBar?.visibility = View.GONE
+        mDataBinding?.textActions?.visibility =  View.VISIBLE
+        mDataBinding?.textNewRequest?.visibility =  View.VISIBLE
+        mDataBinding?.closeBtn?.visibility =  View.VISIBLE
+        mDataBinding?.constraintLayout3?.visibility =  View.VISIBLE
     }
 
     override fun onResume() {
@@ -136,14 +148,12 @@ class ActionDetailsFragment :
                 result["status"] as Boolean
 
             })
-
-
     }
 
     // Method For ActionDetails RecyclerView
     private fun myActionsStatusRecycler(status: Boolean) {
         actionDetailsAdapter =
-            ActionDetailsAdapter(requireContext(), bidStatus, sharedPreference, status)
+            ActionDetailsAdapter(requireContext(), internetErrorDialog, bidStatus, sharedPreference, status)
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
@@ -153,17 +163,24 @@ class ActionDetailsFragment :
     // Close Button ClickListener
     private fun clickListeners() {
         closeBtn?.setOnClickListener {
-            RxBus.publish(RxEvent.QuoteBrief1(2))
-            var args = Bundle()
-            serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
-            serviceVendorOnboardingId?.let { it1 -> args.putInt("serviceVendorOnboardingId", it1) }
-            var actionAndStatusFragment = ActionsAndStatusFragment()
-            actionAndStatusFragment.arguments = args
-            // Replace Fragment
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.action_and_status_layout, actionAndStatusFragment)
-                .setReorderingAllowed(true)
-                .commit()
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                RxBus.publish(RxEvent.QuoteBrief1(2))
+                var args = Bundle()
+                serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
+                serviceVendorOnboardingId?.let { it1 ->
+                    args.putInt(
+                        "serviceVendorOnboardingId",
+                        it1
+                    )
+                }
+                var actionAndStatusFragment = ActionsAndStatusFragment()
+                actionAndStatusFragment.arguments = args
+                // Replace Fragment
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.action_and_status_layout, actionAndStatusFragment)
+                    .setReorderingAllowed(true)
+                    .commit()
+            }
         }
     }
 
@@ -177,18 +194,22 @@ class ActionDetailsFragment :
         latestBidValue: String?,
         branchName: String,
     ) {
-        postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
+        }
     }
 
     override fun showDialog(status: ActionDetails) {
         //QuoteBriefDialog.newInstance(status.bidRequestId)
         Log.d("TAG", "showDialog: ${status.bidRequestId}")
-        sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, status.bidRequestId)
-        QuoteBriefDialog.newInstance()
-            .show(
-                (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                QuoteBriefDialog.TAG
-            )
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, status.bidRequestId)
+            QuoteBriefDialog.newInstance(internetErrorDialog)
+                .show(
+                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                    QuoteBriefDialog.TAG
+                )
+        }
     }
 
     // Method For postQuoteDetails Api Call
@@ -226,7 +247,7 @@ class ActionDetailsFragment :
                         //  QuoteBriefDialog.newInstance(bidRequestId)
                         Log.d("TAG", "showDialog1:$bidRequestId ")
                         sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
-                        QuoteBriefDialog.newInstance()
+                        QuoteBriefDialog.newInstance(internetErrorDialog)
                             .show(
                                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                                 QuoteBriefDialog.TAG
@@ -249,6 +270,15 @@ class ActionDetailsFragment :
         )
     }
 
+    // Callback From Token Class
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        withContext(Dispatchers.Main) {
+            when (caller) {
+                "bidStatus" -> bidActionsApiCall(idToken)
+            }
+        }
+    }
+
     // Method For New Request Api Call
     private fun bidActionsApiCall(idToken: String) {
         getViewModel().getBidActions(
@@ -260,6 +290,7 @@ class ActionDetailsFragment :
         ).observe(viewLifecycleOwner, Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
+//                    hideProgress()
                     recyclerViewListUpdate(apiResponse.response.data.serviceProviderBidRequestDtos)
                 }
                 is ApisResponse.Error -> {
@@ -303,7 +334,7 @@ class ActionDetailsFragment :
         }
         val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)
-
+//        hideProgress()
         mDataBinding?.progressBar?.visibility = View.GONE
     }
 
@@ -313,15 +344,6 @@ class ActionDetailsFragment :
             ArrayList()
         } else {
             serviceProviderBidRequestDtos as ArrayList
-        }
-    }
-
-    // Callback From Token Class
-    override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            when (caller) {
-                "bidStatus" -> bidActionsApiCall(idToken)
-            }
         }
     }
 
@@ -349,4 +371,17 @@ class ActionDetailsFragment :
             serviceVendorOnboardingId = args?.getInt("serviceVendorOnboardingId")
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: called ActionDetails")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
+
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+        hideProgress()
+    }
+
 }

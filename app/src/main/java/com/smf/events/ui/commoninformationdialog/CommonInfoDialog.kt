@@ -16,29 +16,38 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.CommonInformationDialogBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 // 2401
-class CommonInfoDialog(var position: ActionDetails, var status: String) :
+class CommonInfoDialog(
+    var position: ActionDetails,
+    var status: String,
+    private var internetErrorDialog: InternetErrorDialog
+) :
     BaseDialogFragment<CommonInformationDialogBinding, CommonInfoDialogViewModel>(),
-    View.OnClickListener, Tokens.IdTokenCallBackInterface {
+    View.OnClickListener, Tokens.IdTokenCallBackInterface, CommonInfoDialogViewModel.CallBackInterface {
 
     companion object {
         const val TAG = "CommonInfoDialog"
-        fun newInstance(position: ActionDetails, status: String): CommonInfoDialog {
-            return CommonInfoDialog(position, status)
+        fun newInstance(
+            position: ActionDetails,
+            status: String,
+            internetErrorDialog: InternetErrorDialog
+        ): CommonInfoDialog {
+            return CommonInfoDialog(position, status, internetErrorDialog)
         }
     }
 
     lateinit var idToken: String
+    private lateinit var dialogDisposable: Disposable
 
     @Inject
     lateinit var tokens: Tokens
@@ -70,7 +79,16 @@ class CommonInfoDialog(var position: ActionDetails, var status: String) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // token CallBackInterface
         tokens.setCallBackInterface(this)
+        // Common Dialog ViewModel CallBackInterface
+        getViewModel().setCallBackInterface(this)
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer Common dialog")
+            internetErrorDialog.dismissDialog()
+        }
+
         if (status == "cost") {
             mDataBinding?.btnCancel?.setOnClickListener(this)
             mDataBinding?.btnOk?.setOnClickListener(this)
@@ -78,16 +96,20 @@ class CommonInfoDialog(var position: ActionDetails, var status: String) :
             // 2904 Changes made for Intitate closer flow in Won Bid
             mDataBinding?.textInformation?.text = getText(R.string.initiate_closer_text)
             mDataBinding?.btnOk?.setOnClickListener {
-                apiTokenValidationBidActions(AppConstants.SERVICE_DONE)
-                Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
+                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                    apiTokenValidationBidActions(AppConstants.SERVICE_DONE)
+                    Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
+                }
             }
             mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
         } else {
             // 2904 Changes made for Start Service flow in Won Bid
             mDataBinding?.textInformation?.text = getText(R.string.start_service_text)
             mDataBinding?.btnOk?.setOnClickListener {
-                apiTokenValidationBidActions(AppConstants.SERVICE_IN_PROGRESS)
-                Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
+                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                    apiTokenValidationBidActions(AppConstants.SERVICE_IN_PROGRESS)
+                    Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
+                }
             }
             mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
         }
@@ -107,8 +129,10 @@ class CommonInfoDialog(var position: ActionDetails, var status: String) :
             when (caller) {
                 // 2904
                 AppConstants.SERVICE_DONE -> updateServiceStatus(idToken, AppConstants.SERVICE_DONE)
-                AppConstants.SERVICE_IN_PROGRESS -> updateServiceStatus(idToken,
-                    AppConstants.SERVICE_IN_PROGRESS)
+                AppConstants.SERVICE_IN_PROGRESS -> updateServiceStatus(
+                    idToken,
+                    AppConstants.SERVICE_IN_PROGRESS
+                )
             }
         }
     }
@@ -181,5 +205,16 @@ class CommonInfoDialog(var position: ActionDetails, var status: String) :
     // Setting IDToken
     private fun setIdTokenAndBidReqId() {
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
+    }
+
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: called Common dialog")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

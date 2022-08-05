@@ -123,4 +123,8 @@ object AppConstants {
     const val EXPWeek="EXPWeek"
     const val EXPMonth="EXPMonth"
     const val TIMESLOT="timeSlot"
+
+    // 3061
+    const val UNKOWNHOSTANDCONNECTEXCEPTION= "UnknownHostException"
+
 }

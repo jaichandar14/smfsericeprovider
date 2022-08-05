@@ -14,7 +14,6 @@ class QuoteDetailsRepository @Inject constructor(var apiStories: ApiStories) {
         bidRequestId: Int,
         biddingQuote: BiddingQuotDto,
     ): ApisResponse<NewRequestList> {
-
         return try {
             val getResponse = apiStories.postQuoteDetails(idToken, bidRequestId, biddingQuote)
             ApisResponse.Success(getResponse)

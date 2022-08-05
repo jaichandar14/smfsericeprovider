@@ -2,6 +2,7 @@ package com.smf.events.ui.signin
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.addCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,20 +10,30 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.amplifyframework.core.Amplify
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SignInFragmentBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.InternetErrorDialog
+import com.smf.events.helper.SharedPreference
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.signup.model.GetUserDetails
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import javax.inject.Inject
 
 class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     SignInViewModel.CallBackInterface {
 
+    var TAG = "SignInFragment"
     private lateinit var mobileNumberWithCountryCode: String
     private lateinit var encodedMobileNo: String
     private lateinit var eMail: String
@@ -31,9 +42,14 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     private var emailId: String? = null
     private lateinit var constraintLayout: ConstraintLayout
     private var userInfo: String = ""
+    lateinit var dialogDisposable: Disposable
+    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     override fun getViewModel(): SignInViewModel =
         ViewModelProvider(this, factory).get(SignInViewModel::class.java)
@@ -57,9 +73,25 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedPreference.clear()
+        Log.d(
+            "TAG",
+            "checkTokenExpiry signin ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        )
         constraintLayout = mDataBinding?.loginPage!!
         // Initialize CallBackInterface
         getViewModel().setCallBackInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer sign rx")
+            internetErrorDialog.dismissDialog()
+        }
+        init()
+    }
+
+    private fun init() {
         // SignIn Button Listener
         signInClicked()
         // SignUp Button Listener
@@ -84,40 +116,65 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         })
     }
 
+    // 3028 on Close Sign out
+    private fun signOut() {
+        Amplify.Auth.signOut(
+//            AuthSignOutOptions.builder().globalSignOut(true).build(),
+            {
+                GlobalScope.launch(Dispatchers.Main) {
+                    afterSignOut()
+                }
+            },
+            {
+                GlobalScope.launch(Dispatchers.Main) {
+                    afterSignOut()
+                }
+                Log.e("AuthQuickstart", "Sign out failed", it)
+            }
+        )
+    }
+
     // Method for SignIn Button
     private fun signInClicked() {
         mDataBinding!!.signinbtn.setOnClickListener {
-            mDataBinding?.loginMessageText?.visibility = View.GONE
-            mDataBinding?.loginEmailMessageText?.visibility = View.GONE
-            // 2845 - Hiding Progress Bar
-            hideKeyBoard()
-            val phoneNumber = mDataBinding?.editTextMobileNumber?.text.toString().trim()
-            val countryCode = mDataBinding?.cppSignIn?.selectedCountryCode
-            mobileNumberWithCountryCode = "+".plus(countryCode).plus(phoneNumber)
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                signOut()
+                showProgress()
+            }
+        }
+    }
 
-            //SingleEncoding
-            encodedMobileNo = URLEncoder.encode(mobileNumberWithCountryCode, "UTF-8")
-            eMail = mDataBinding?.editTextEmail?.text.toString()
+    private fun afterSignOut() {
+        mDataBinding?.loginMessageText?.visibility = View.GONE
+        mDataBinding?.loginEmailMessageText?.visibility = View.GONE
+        // 2845 - Hiding Progress Bar
+        hideKeyBoard()
+        val phoneNumber = mDataBinding?.editTextMobileNumber?.text.toString().trim()
+        val countryCode = mDataBinding?.cppSignIn?.selectedCountryCode
+        mobileNumberWithCountryCode = "+".plus(countryCode).plus(phoneNumber)
 
-            if (phoneNumber.isNotEmpty() || eMail.isNotEmpty()) {
-                if (phoneNumber.isEmpty() || eMail.isEmpty()) {
-                    if (phoneNumber.isEmpty()) {
-                        showProgress()
-                        userInfo = AppConstants.EMAIL
-                        getViewModel().getUserDetails(eMail)
-                            .observe(viewLifecycleOwner, getUserDetailsObserver)
-                    } else {
-                        showProgress()
-                        userInfo = AppConstants.MOBILE
-                        getViewModel().getUserDetails(encodedMobileNo)
-                            .observe(viewLifecycleOwner, getUserDetailsObserver)
-                    }
+        // Single Encoding
+        encodedMobileNo = URLEncoder.encode(mobileNumberWithCountryCode, "UTF-8")
+        eMail = mDataBinding?.editTextEmail?.text.toString()
+
+        if (phoneNumber.isNotEmpty() || eMail.isNotEmpty()) {
+            if (phoneNumber.isEmpty() || eMail.isEmpty()) {
+                if (phoneNumber.isEmpty()) {
+                    userInfo = AppConstants.EMAIL
+                    getViewModel().getUserDetails(eMail)
+                        .observe(viewLifecycleOwner, getUserDetailsObserver)
                 } else {
-                    showToast("Please Enter Any EMail or Phone Number")
+                    userInfo = AppConstants.MOBILE
+                    getViewModel().getUserDetails(encodedMobileNo)
+                        .observe(viewLifecycleOwner, getUserDetailsObserver)
                 }
             } else {
-                showToast("Please Enter Email or MobileNumber")
+                hideProgress()
+                showToast(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number))
             }
+        } else {
+            hideProgress()
+            showToast(resources.getString(R.string.Please_Enter_Email_or_MobileNumber))
         }
     }
 
@@ -129,7 +186,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 firstName = apiResponse.response.data.firstName
                 emailId = apiResponse.response.data.email
                 if (AppConstants.SERVICE_PROVIDER == apiResponse.response.data.role) {
-                    getViewModel().signIn(apiResponse.response.data.userName)
+                    getViewModel().signIn(apiResponse.response.data.userName, requireContext())
                 } else {
                     hideProgress()
                     if (userInfo == AppConstants.EMAIL) {
@@ -137,7 +194,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                     } else {
                         mDataBinding?.loginMessageText?.visibility = View.VISIBLE
                     }
-
                 }
             }
             is ApisResponse.CustomError -> {
@@ -212,8 +268,25 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         }
     }
 
-    override fun awsErrorResponse() {
-        showToast(getViewModel().toastMessage)
+    override fun awsErrorResponse(message: String) {
+        if (message == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
+            SharedPreference.isInternetConnected = false
+            internetErrorDialog.checkInternetAvailable(requireContext())
+            hideProgress()
+        } else {
+            showToast(getViewModel().toastMessage)
+        }
     }
 
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+        hideProgress()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: called signin frag")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
 }

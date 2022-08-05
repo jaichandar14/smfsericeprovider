@@ -19,4 +19,6 @@ class RxEvent {
     data class DenyStorage(val s:Boolean)
     data class ChangingNavDialog(val str: Dialog?)
     data class IsValid(val str: Boolean)
+
+    data class InternetStatus(val tag: String)
 }

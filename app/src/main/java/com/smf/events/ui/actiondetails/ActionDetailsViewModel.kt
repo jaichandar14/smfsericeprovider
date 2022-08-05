@@ -1,12 +1,18 @@
 package com.smf.events.ui.actiondetails
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.smf.events.base.BaseViewModel
+import com.smf.events.helper.AppConstants
 import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.actiondetails.model.ActionDetails
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ActionDetailsViewModel @Inject constructor(
@@ -45,13 +51,28 @@ class ActionDetailsViewModel @Inject constructor(
         return list
     }
 
-
     //Method For put QuoteDetails
     fun postQuoteDetails(idToken: String, bidRequestId: Int, biddingQuote: BiddingQuotDto) =
         liveData(
             Dispatchers.IO
         ) {
-            emit(actionDetailsRepository.postQuoteDetails(idToken, bidRequestId, biddingQuote))
+            try {
+                emit(actionDetailsRepository.postQuoteDetails(idToken, bidRequestId, biddingQuote))
+            }catch (e: Exception){
+                Log.d("TAG", "postQuoteDetails: $e")
+                when (e) {
+                    is UnknownHostException -> {
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                    is ConnectException ->{
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                }
+            }
         }
 
     // Method For Get New Request
@@ -63,14 +84,42 @@ class ActionDetailsViewModel @Inject constructor(
         bidStatus: String,
     ) =
         liveData(Dispatchers.IO) {
-            emit(
-                actionDetailsRepository.getBidActions(
-                    idToken,
-                    spRegId,
-                    serviceCategoryId,
-                    serviceVendorOnboardingId,
-                    bidStatus
+            try {
+                emit(
+                    actionDetailsRepository.getBidActions(
+                        idToken,
+                        spRegId,
+                        serviceCategoryId,
+                        serviceVendorOnboardingId,
+                        bidStatus
+                    )
                 )
-            )
+            }catch (e: Exception){
+                Log.d("TAG", "getBidActions: $e")
+                when (e) {
+                    is UnknownHostException -> {
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                    is ConnectException ->{
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                }
+            }
         }
+
+    private var callBackInterface: CallBackInterface? = null
+
+    // Initializing CallBack Interface Method
+    fun setViewModelCallBackInterface(callback: CallBackInterface) {
+        callBackInterface = callback
+    }
+
+    // CallBack Interface
+    interface CallBackInterface {
+        fun internetError(exception: String)
+    }
 }

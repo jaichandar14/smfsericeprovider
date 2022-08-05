@@ -1,12 +1,17 @@
 package com.smf.events.ui.timeslotsexpandablelist
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ExpandableListView
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +19,8 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
 import com.smf.events.helper.*
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -21,7 +28,10 @@ import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.timeslotsexpandablelist.model.Data
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.Month
@@ -34,7 +44,8 @@ import kotlin.collections.HashMap
 import kotlin.concurrent.schedule
 
 class DayExpandableListFragment : Fragment(),
-    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
+    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface,
+    ScheduleManagementViewModel.CallBackExpListInterface {
 
     private var TAG = "DayExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
@@ -54,6 +65,8 @@ class DayExpandableListFragment : Fragment(),
     private var listOfDates: ArrayList<String>? = ArrayList()
     private var groupPosition: Int = 0
     private var isScroll: Boolean = false
+    private lateinit var dialogDisposable: Disposable
+    private lateinit var internetErrorDialog: InternetErrorDialog
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -90,6 +103,18 @@ class DayExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
+        // 3061 Scheduled Management  ViewModel CallBackInterface
+        sharedViewModel.setCallBackExpListInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer day")
+            internetErrorDialog.dismissDialog()
+            if(activity != null) {
+                init()
+            }
+        }
 
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(viewLifecycleOwner, { currentDate ->
@@ -121,8 +146,14 @@ class DayExpandableListFragment : Fragment(),
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES_INITIAL)
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                init()
+            }
         }
+    }
+
+    private fun init() {
+        apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES_INITIAL)
     }
 
     // 2670 - Method For Get Booked Event Services
@@ -138,7 +169,7 @@ class DayExpandableListFragment : Fragment(),
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
                 fromDate,
-                toDate
+                toDate, AppConstants.DAY
             ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
@@ -213,28 +244,30 @@ class DayExpandableListFragment : Fragment(),
     }
 
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        this.parent = parent as ExpandableListView
-        this.groupPosition = listPosition
-        fromDate = listOfDates?.get(listPosition)
-        toDate = listOfDates?.get(listPosition)
-        if (isExpanded) {
-            parent.collapseGroup(listPosition)
-        } else {
-            // Send Selected Date To ViewModel For Calender UI Display
-            fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(
-                ListData(
-                    getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", "", ""))
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            this.parent = parent as ExpandableListView
+            this.groupPosition = listPosition
+            fromDate = listOfDates?.get(listPosition)
+            toDate = listOfDates?.get(listPosition)
+            if (isExpanded) {
+                parent.collapseGroup(listPosition)
+            } else {
+                // Send Selected Date To ViewModel For Calender UI Display
+                fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
+                val bookedEventDetails = ArrayList<ListData>()
+                bookedEventDetails.add(
+                    ListData(
+                        getString(R.string.empty),
+                        listOf(BookedEventServiceDto("", "", "", "", ""))
+                    )
                 )
-            )
-            childData[titleDate[groupPosition]] = bookedEventDetails
-            parent.collapseGroup(lastGroupPosition)
-            parent.expandGroup(listPosition)
-            apiTokenValidation("bookedEventServicesFromSelectedDate")
+                childData[titleDate[groupPosition]] = bookedEventDetails
+                parent.collapseGroup(lastGroupPosition)
+                parent.expandGroup(listPosition)
+                apiTokenValidation("bookedEventServicesFromSelectedDate")
+            }
+            lastGroupPosition = listPosition
         }
-        lastGroupPosition = listPosition
     }
 
     // 2773 - Method For Update SelectedDate To ExpandableList
@@ -410,4 +443,16 @@ class DayExpandableListFragment : Fragment(),
         )
         return "$month  $date - $currentDay"
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
+
+    override fun internetError(exception: String, tag: String) {
+        Log.d(TAG, "internetError: called day")
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
 }

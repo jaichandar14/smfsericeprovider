@@ -1,6 +1,5 @@
 package com.smf.events.ui.emailverificationcode
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -25,17 +24,21 @@ class EmailVerificationCodeFragment :
         super.onViewCreated(view, savedInstanceState)
         // Initialize CallBackInterface
         getViewModel().setCallBackInterface(this)
+        init()
+    }
 
-        // Email Verification Code Button Listener
-        mDataBinding?.eMailCodesubmitBtn?.setOnClickListener {
-            eMailCodeSubmitBtnClicked()
-        }
+    private fun init() {
+//        if (checkInternetAvailable()) {
+            // Email Verification Code Button Listener
+            mDataBinding?.eMailCodesubmitBtn?.setOnClickListener {
+                eMailCodeSubmitBtnClicked()
+            }
 
-        // Resend Email Verification Text Listener
-        mDataBinding?.eMailVerificationCodeResend?.setOnClickListener {
-            eMailVerificationCodeResend()
-        }
-
+            // Resend Email Verification Text Listener
+            mDataBinding?.eMailVerificationCodeResend?.setOnClickListener {
+                eMailVerificationCodeResend()
+            }
+//        }
     }
 
     // Method for Email Code Verification
@@ -45,14 +48,14 @@ class EmailVerificationCodeFragment :
     }
 
     // Method for Email verification code Resend
-    private fun eMailVerificationCodeResend(){
+    private fun eMailVerificationCodeResend() {
         getViewModel().resendEmailVerification()
     }
 
     override fun callBack(status: String) {
         if (status == "EmailVerifiedGoToDashBoard") {
             //Navigate to DashBoardFragment
-           findNavController().navigate(EmailVerificationCodeFragmentDirections.actionEmailVerificationCodeFragmentToDashBoardFragment())
+            findNavController().navigate(EmailVerificationCodeFragmentDirections.actionEmailVerificationCodeFragmentToDashBoardFragment())
 
         }
     }

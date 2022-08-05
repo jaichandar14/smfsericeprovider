@@ -1,8 +1,11 @@
 package com.smf.events.ui.schedulemanagement
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.core.view.get
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -12,6 +15,8 @@ import com.smf.events.R
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityScheduleManagmentBinding
 import com.smf.events.helper.CalendarUtils
+import com.smf.events.helper.ConnectionLiveData
+import com.smf.events.helper.SharedPreference
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.calendarfragment.CalendarFragment
@@ -50,8 +55,8 @@ class ScheduleManagementActivity :
         CalendarUtils.updatedTabPosition = 0
         dialogDisposable = RxBus.listen(RxEvent.ChangingNav::class.java).subscribe {
             finish()
-
         }
+
         // 2904 Refresh the Schedule management layout
         mViewDataBinding?.refreshLayout?.setOnRefreshListener {
             // Your code to refresh the list here.
@@ -63,7 +68,7 @@ class ScheduleManagementActivity :
         getViewModel().getScrollViewToPosition.observe(this, Observer {
             var totalHeaderHeight = mViewDataBinding!!.calendarFragment.height + mViewDataBinding!!.switchBtnTx.height+ mViewDataBinding!!.switchBtn.height
             totalHeaderHeight += it
-            mViewDataBinding!!.scrollView.scrollTo(0, totalHeaderHeight)
+            mViewDataBinding!!.scrollView.smoothScrollTo(0, totalHeaderHeight)
         })
     }
 

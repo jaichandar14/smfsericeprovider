@@ -56,17 +56,14 @@ class QuoteBriefFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // token CallBackInterface
         tokens.setCallBackInterface(this)
-
-        getViewModel()?.backButtonPressed(mDataBinding!!)
-
         getViewModel()?.setCallBackInterface(this)
+        init()
+    }
 
-
-        getViewModel()?.expandableView(mDataBinding, expand)
-
-
-        apiTokenValidationQuoteBrief()
-
+    private fun init() {
+            getViewModel()?.backButtonPressed(mDataBinding!!)
+            getViewModel()?.expandableView(mDataBinding, expand)
+            apiTokenValidationQuoteBrief()
 //        //state progress three completed
 //        getViewModel()?.progress3Completed(mDataBinding)
 //        //state progress four completed
@@ -84,7 +81,6 @@ class QuoteBriefFragment :
             }
         }
     }
-
 
     fun setBidSubmitQuoteBrief(response: QuoteBrief) {
         mDataBinding?.txJobTitle?.text = response.data.eventName
@@ -106,8 +102,6 @@ class QuoteBriefFragment :
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
         mDataBinding?.customerRating?.text = "NA"
-
-
     }
 
     private fun dateFormat(input: String): String {
