@@ -239,5 +239,16 @@
     <string name="click_resend_in">Click Resend in</string>
     <string name="otp_sent_to_your_mail"><![CDATA[OTP has been sent to your registered Email ID & Mobile number]]></string>
     <string name="resend_clicked_multiple_time">Clicked multiple time Resend otp. Try after some time</string>
-
+    // 3061
+    <string name="Failed_to_connect_to_cognito_idp">Failed to connect to cognito-idp</string>
+    <string name="Unable_to_resolve_host">Unable to resolve host</string>
+    <string name="CreateAuthChallenge_failed_with_error">CreateAuthChallenge failed with error PhoneNumber not Verified</string>
+    <string name="Operation_requires_signed_in_state">Operation requires a signed-in state</string>
+    <string name="OTP_expired">OTP expired</string>
+    <string name="Invalid_session_for_the_user">Invalid session for the user</string>
+    <string name="OTP_is_expired">OTP is expired. Click on Resend to receive new OTP</string>
+    <string name="Please_Enter_Any_EMail_or_Phone_Number">Please Enter Any EMail or Phone Number</string>
+    <string name="Please_Enter_Email_or_MobileNumber">Please Enter Email or MobileNumber</string>
+    <string name="Without_giving_permission_you_">Without giving permission you can\'t download the file</string>
+    <string name="Operation_requires_a_signed_in_state">Operation requires a signed-in state</string>
 </resources>

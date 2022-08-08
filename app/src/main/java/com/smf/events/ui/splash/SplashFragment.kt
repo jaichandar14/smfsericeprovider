@@ -41,41 +41,22 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setIdToken()
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+        requireActivity().window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        )
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 3028
-//        if (idToken.isNotEmpty()) {
-//
-////            moveToDashBoardScreen()
-//        } else {
-            // Login Button Listener
-            onClickSplashScreenBtn()
-        //}
-    }
-
-    // 3028 on Close Sign out
-    private fun signOut() {
-        Amplify.Auth.signOut(
-            AuthSignOutOptions.builder().globalSignOut(true).build(),
-            {
-                //onClickSplashScreenBtn()
-            },
-            { Log.e("AuthQuickstart", "Sign out failed", it) }
-        )
+        // Splash Button Listener
+        onClickSplashScreenBtn()
     }
 
     // Sign In Button
     private fun onClickSplashScreenBtn() {
         mDataBinding!!.splashBtn.setOnClickListener {
-            // Getting User Inputs
-           signOut()
-            var action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
-            // val action = SplashFragmentDirections.actionSplashFragmentToBusinessRegistrationFragment()
+            val action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
             findNavController().navigate(action)
         }
     }

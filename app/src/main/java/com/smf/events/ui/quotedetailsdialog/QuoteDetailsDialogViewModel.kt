@@ -3,16 +3,23 @@ package com.smf.events.ui.quotedetailsdialog
 import android.R
 import android.annotation.SuppressLint
 import android.app.Application
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.smf.events.base.BaseDialogViewModel
 import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
+import com.smf.events.helper.AppConstants
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.lang.Exception
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class QuoteDetailsDialogViewModel @Inject constructor(
@@ -20,6 +27,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
     application: Application,
 ) : BaseDialogViewModel(application) {
 
+    var TAG = "QuoteDetailsDialogViewModel"
     var costposition: Int? = 0
 
     //When i have Quote is clicked
@@ -36,7 +44,6 @@ class QuoteDetailsDialogViewModel @Inject constructor(
                 mDataBinding.constraint2.visibility = View.VISIBLE
                 onCLickOk(mDataBinding, quoteRadioButton.text as String)
             }
-
         }
     }
 
@@ -60,15 +67,11 @@ class QuoteDetailsDialogViewModel @Inject constructor(
         mDataBinding: FragmentQuoteDetailsDialogBinding?,
         quote: String,
     ) {
-        mDataBinding?.btnOk?.setOnClickListener {
-            if (mDataBinding.ihavequote.isChecked) {
+            if (mDataBinding?.ihavequote?.isChecked == true) {
                 callBackInterface?.callBack("iHaveQuote")
-
             } else {
                 callBackInterface?.callBack("quoteLater")
             }
-        }
-
     }
 
     // Insert CurrencyType Spinner Value
@@ -93,7 +96,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
 
         val ad: ArrayAdapter<String> =
             ArrayAdapter<String>(getApplication(), R.layout.simple_spinner_item, resources)
-        ad.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        ad.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
         // Spinner which binds data to spinner
         spin.adapter = ad
 
@@ -110,10 +113,28 @@ class QuoteDetailsDialogViewModel @Inject constructor(
     interface CallBackInterface {
         fun callBack(status: String)
         fun getCurrencyTypePosition(position: Int)
+        fun internetError(exception: String)
     }
 
     fun postQuoteDetails(idToken: String, bidRequestId: Int, biddingQuote: BiddingQuotDto) =
         liveData(Dispatchers.IO) {
-            emit(quoteDetailsRepository.postQuoteDetails(idToken, bidRequestId, biddingQuote))
+            try {
+                emit(quoteDetailsRepository.postQuoteDetails(idToken, bidRequestId, biddingQuote))
+            }catch (e: Exception){
+                Log.d(TAG, "postQuoteDetails: $e")
+                when (e) {
+                    is UnknownHostException -> {
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                    is ConnectException ->{
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                    else -> {}
+                }
+            }
         }
 }

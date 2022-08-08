@@ -1,22 +1,26 @@
 package com.smf.events.ui.timeslotsexpandablelist
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ExpandableListView
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -24,7 +28,10 @@ import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.timeslotsexpandablelist.model.Data
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.Month
@@ -37,7 +44,8 @@ import kotlin.collections.HashMap
 import kotlin.concurrent.schedule
 
 class WeekExpandableListFragment : Fragment(),
-    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
+    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface,
+    ScheduleManagementViewModel.CallBackExpListInterface {
 
     private var TAG = "WeekExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
@@ -59,6 +67,8 @@ class WeekExpandableListFragment : Fragment(),
     private var weekMap: HashMap<Int, ArrayList<String>>? = null
     private var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
     private var isScroll: Boolean = false
+    private lateinit var dialogDisposable: Disposable
+    private lateinit var internetErrorDialog: InternetErrorDialog
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -97,6 +107,18 @@ class WeekExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
+        // 3061 Scheduled Management  ViewModel CallBackInterface
+        sharedViewModel.setCallBackExpListInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer weekexp")
+            internetErrorDialog.dismissDialog()
+            if (activity != null) {
+                init()
+            }
+        }
 
         sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner,
             { currentWeekDate ->
@@ -137,8 +159,14 @@ class WeekExpandableListFragment : Fragment(),
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES_INITIAL)
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                init()
+            }
         }
+    }
+
+    private fun init() {
+        apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES_INITIAL)
     }
 
     // 2670 - Method For Get Booked Event Services
@@ -154,7 +182,7 @@ class WeekExpandableListFragment : Fragment(),
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
                 fromDate,
-                toDate
+                toDate, AppConstants.WEEK
             ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
@@ -328,29 +356,31 @@ class WeekExpandableListFragment : Fragment(),
     // 2776 -  Method For Perform Group Click Events
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
         Log.d("TAG", "onGroupClick week: called ${listOfDatesArray[listPosition]}")
-        this.parent = parent as ExpandableListView
-        this.groupPosition = listPosition
-        this.weekList = listOfDatesArray[listPosition]
-        fromDate = listOfDatesArray[listPosition][0]
-        toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
-        if (isExpanded) {
-            parent.collapseGroup(groupPosition)
-        } else {
-            // Send Selected Week To ViewModel For Calender UI Display
-            sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(
-                ListData(
-                    getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", "", ""))
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            this.parent = parent as ExpandableListView
+            this.groupPosition = listPosition
+            this.weekList = listOfDatesArray[listPosition]
+            fromDate = listOfDatesArray[listPosition][0]
+            toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
+            if (isExpanded) {
+                parent.collapseGroup(groupPosition)
+            } else {
+                // Send Selected Week To ViewModel For Calender UI Display
+                sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
+                val bookedEventDetails = ArrayList<ListData>()
+                bookedEventDetails.add(
+                    ListData(
+                        getString(R.string.empty),
+                        listOf(BookedEventServiceDto("", "", "", "", ""))
+                    )
                 )
-            )
-            childData[titleDate[groupPosition]] = bookedEventDetails
-            parent.collapseGroup(lastGroupPosition)
-            parent.expandGroup(groupPosition)
-            apiTokenValidation("bookedEventServicesFromSelectedDate")
+                childData[titleDate[groupPosition]] = bookedEventDetails
+                parent.collapseGroup(lastGroupPosition)
+                parent.expandGroup(groupPosition)
+                apiTokenValidation("bookedEventServicesFromSelectedDate")
+            }
+            lastGroupPosition = listPosition
         }
-        lastGroupPosition = listPosition
     }
 
     // 2670 - Method For AWS Token Validation
@@ -454,4 +484,17 @@ class WeekExpandableListFragment : Fragment(),
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onViewCreated: observe onDestroy: weekexp")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
+
+    override fun internetError(exception: String, tag: String) {
+        Log.d(TAG, "internetError: called day")
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
 }

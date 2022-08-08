@@ -39,6 +39,7 @@
             android:layout_marginTop="@dimen/_40sdp"
             android:text="@string/no_events_available"
             android:textSize="@dimen/_13sdp"
+            android:textColor="@color/gray_text"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

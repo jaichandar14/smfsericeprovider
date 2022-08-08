@@ -175,6 +175,7 @@
                         android:layout_height="@dimen/_35sdp"
                         android:background="@drawable/shape_dailog_curved"
                         android:hint="@string/amount"
+                        android:textColor="@color/black"
                         android:textColorHint="@color/buttoncolor"
                         android:inputType="number"
                         android:paddingStart="@dimen/_6sdp"

@@ -12,17 +12,14 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentDeseletingDialogBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.timeslot.deselectingdialog.adaptor.DeselectedDialogAdaptor
 import com.smf.events.ui.timeslot.deselectingdialog.model.ListData
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.BookedEventServiceDtoModify
-import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Month
@@ -40,14 +37,16 @@ class DeselectingDialogFragment(
     private var fromDate: String,
     private var toDate: String,
     private var statusList: List<BookedEventServiceDtoModify>?,
+    private var internetErrorDialog: InternetErrorDialog
 ) : BaseDialogFragment<FragmentDeseletingDialogBinding, DeselectingDialogViewModel>(),
-    Tokens.IdTokenCallBackInterface {
+    Tokens.IdTokenCallBackInterface, DeselectingDialogViewModel.CallBackInterface {
 
     private lateinit var adapter: DeselectedDialogAdaptor
     var spRegId: Int = 0
     lateinit var idToken: String
     private var roleId: Int = 0
     private var isAvailable: Boolean = false
+    private lateinit var dialogDisposable: Disposable
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -69,6 +68,7 @@ class DeselectingDialogFragment(
             fromDate: String,
             toDate: String,
             statusList: List<BookedEventServiceDtoModify>?,
+            internetErrorDialog: InternetErrorDialog
         ): DeselectingDialogFragment {
             return DeselectingDialogFragment(
                 classTag,
@@ -78,7 +78,8 @@ class DeselectingDialogFragment(
                 serviceVendorOnBoardingId,
                 fromDate,
                 toDate,
-                statusList
+                statusList,
+                internetErrorDialog
             )
         }
     }
@@ -125,6 +126,13 @@ class DeselectingDialogFragment(
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
+        // Initialize CallBackInterface
+        getViewModel().setCallBackInterface(this)
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer Deselecting")
+            internetErrorDialog.dismissDialog()
+        }
 
         if (purpose == AppConstants.DESELECTED) {
             isAvailable = false
@@ -140,12 +148,14 @@ class DeselectingDialogFragment(
         } else if (purpose == AppConstants.EXPWeek) {
             mDataBinding?.txTitle?.text =
                 getString(R.string.week_validtity_message) + getString(
-                    R.string.try_week)
+                    R.string.try_week
+                )
             mDataBinding?.cancelBtn?.visibility = View.GONE
         } else if (purpose == AppConstants.EXPMonth) {
             mDataBinding?.txTitle?.text =
                 getString(R.string.month_validity_msd) + getString(
-                    R.string.try_month)
+                    R.string.try_month
+                )
             mDataBinding?.cancelBtn?.visibility = View.GONE
         }
 
@@ -157,23 +167,28 @@ class DeselectingDialogFragment(
 
     // 2814 - method For OkButton
     private fun okBtnClick() {
-        mDataBinding?.let {
-            it.okBtn.setOnClickListener {
-                if (purpose == AppConstants.DESELECTED) {
-                    apiTokenValidation(AppConstants.DESELECTED)
-                } else if (purpose == AppConstants.NULL_TO_SELECT) {
-                    apiTokenValidation(AppConstants.NULL_TO_SELECT)
-                } else if (purpose == AppConstants.SELECTED) {
-                    dismiss()
-                } else if (purpose == AppConstants.DENY) {
-                    RxBus.publish(RxEvent.DenyStorage(true))
-                    dismiss()
-                } else if (purpose == AppConstants.EXPWeek) {
-                    dismiss()
-                } else if (purpose == AppConstants.EXPMonth) {
-                    dismiss()
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            mDataBinding?.let {
+                it.okBtn.setOnClickListener {
+                    if (purpose == AppConstants.DESELECTED) {
+                        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                            apiTokenValidation(AppConstants.DESELECTED)
+                        }
+                    } else if (purpose == AppConstants.NULL_TO_SELECT) {
+                        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                            apiTokenValidation(AppConstants.NULL_TO_SELECT)
+                        }
+                    } else if (purpose == AppConstants.SELECTED) {
+                        dismiss()
+                    } else if (purpose == AppConstants.DENY) {
+                        RxBus.publish(RxEvent.DenyStorage(true))
+                        dismiss()
+                    } else if (purpose == AppConstants.EXPWeek) {
+                        dismiss()
+                    } else if (purpose == AppConstants.EXPMonth) {
+                        dismiss()
+                    }
                 }
-
             }
         }
     }
@@ -303,7 +318,7 @@ class DeselectingDialogFragment(
     // 2803  Modify Dialog Method
     private fun modifyDialog() {
         Log.d(TAG, "modifyDialog: $statusList")
-        if (!statusList.isNullOrEmpty()){
+        if (!statusList.isNullOrEmpty()) {
             mDataBinding?.txTitle?.text =
                 getString(R.string.event_booked_on) + " " + timeSlot + " " + getString(R.string.slots_availability)
             mDataBinding?.cancelBtn?.visibility = View.GONE
@@ -319,8 +334,9 @@ class DeselectingDialogFragment(
             }
             adapter = DeselectedDialogAdaptor(listData, requireContext())
             mDataBinding?.listView?.adapter = adapter
-        }else{
-            mDataBinding?.txTitle?.text =getString(R.string.quote_sent_on) + " " + timeSlot + " " + getString(R.string.slots_availability)
+        } else {
+            mDataBinding?.txTitle?.text =
+                getString(R.string.quote_sent_on) + " " + timeSlot + " " + getString(R.string.slots_availability)
         }
 
     }
@@ -492,4 +508,14 @@ class DeselectingDialogFragment(
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
 
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: called Deselecting")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
 }

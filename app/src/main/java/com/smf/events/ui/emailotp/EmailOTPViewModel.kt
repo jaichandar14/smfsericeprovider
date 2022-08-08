@@ -18,8 +18,11 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.InternetErrorDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class EmailOTPViewModel @Inject constructor(
@@ -30,46 +33,42 @@ class EmailOTPViewModel @Inject constructor(
     private val TAG = "EmailOTPViewModel"
     val userOtpNumber = MutableLiveData<String>()
     val userOtp1 = MutableLiveData<String>()
-    val userOtp2= MutableLiveData<String>()
+    val userOtp2 = MutableLiveData<String>()
     val userOtp3 = MutableLiveData<String>()
     val userOtp4 = MutableLiveData<String>()
 
-    var resendRestriction=0
+    var resendRestriction = 0
 
     private var idToken: String? = null
-    var num=0
+    var num = 0
 
     // Custom Confirm SignIn Function
-    fun confirmSignIn(otp: String, mDataBinding: FragmentEmailOtpBinding) {
+    fun confirmSignIn(context: Context, otp: String, mDataBinding: FragmentEmailOtpBinding) {
         num += 1
         Amplify.Auth.confirmSignIn(otp,
             {
+                Log.d(TAG, "confirmSignIn scess: $it")
                 // Aws method for Fetching Id Token
-                fetchIdToken()
+                fetchIdToken(context)
                 //Aws Method for 6 digit Validation Check
-                emailCodeValidationCheck()
-
+                emailCodeValidationCheck(context)
             },
             {
-                Log.d(
-                    TAG,
-                    "Failed to confirm signIn1 ${ it.localizedMessage}  ",
-                    it)
-
+                Log.d(TAG, "Failed to confirm signIn ${it.localizedMessage}", it)
+                val errMsg = it.cause!!.message!!.split(".")[0]
                 viewModelScope.launch {
-                    val errMsg = mDataBinding.otp1ed.text.toString()
-//                    if (errMsg.isEmpty()) {
-//                        toastMessage = AppConstants.ENTER_OTP
-//                      callBackInterface?.otpValidation(false)
-//                        //callBackInterface!!.awsErrorResponse(num)
-//                    }
-                    if (it.cause?.message?.contains("OTP expired") ==true || it.cause?.message?.contains("Invalid session for the user") == true){
-                        toastMessage ="OTP is expired. Click on Resend to receive new OTP"
-                        callBackInterface!!.awsErrorResponse(num)
-                      //  callBackInterface?.otpValidation(false)
-                    }else{
+                    if (it.cause?.message?.contains(context.resources.getString(R.string.OTP_expired)) == true || it.cause?.message?.contains(
+                            context.resources.getString(R.string.Invalid_session_for_the_user)
+                        ) == true
+                    ) {
+                        toastMessage = context.resources.getString(R.string.OTP_is_expired)
+                        callBackInterface!!.awsErrorResponse(num.toString())
+                    } else if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))||
+                        errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))) {
+                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
+                    } else {
                         toastMessage = AppConstants.INVALID_OTP
-                        callBackInterface!!.awsErrorResponse(num)
+                        callBackInterface!!.awsErrorResponse(num.toString())
 //                        callBackInterface?.otpValidation(false)
                     }
                 }
@@ -77,28 +76,40 @@ class EmailOTPViewModel @Inject constructor(
     }
 
     // Aws method for Fetching Id Token
-    private fun fetchIdToken() {
+    private fun fetchIdToken(context: Context) {
         Amplify.Auth.fetchAuthSession(
             {
                 val session = it as AWSCognitoAuthSession
                 idToken = AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
                 setTokenToSharedPref(idToken)
             },
-            { Log.e(TAG, "Failed to fetch session", it) }
+            {
+                Log.e(TAG, "Failed to fetch session", it)
+                val errMsg = it.cause!!.message!!.split(".")[0]
+                viewModelScope.launch {
+                    if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))||
+                        errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))) {
+                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
+                    }
+                }
+            }
         )
     }
 
     // Method for save IdToken
     private fun setTokenToSharedPref(token: String?) {
         val sharedPreferences =
-            getApplication<SMFApp>().getSharedPreferences(AppConstants.MY_USER, Context.MODE_PRIVATE)
+            getApplication<SMFApp>().getSharedPreferences(
+                AppConstants.MY_USER,
+                Context.MODE_PRIVATE
+            )
         val editor = sharedPreferences?.edit()
         editor?.putString(AppConstants.ID_TOKEN, token)
         editor?.apply()
     }
 
     // Aws Method for 6 digit Validation Check
-    private fun emailCodeValidationCheck() {
+    private fun emailCodeValidationCheck(context: Context) {
         Amplify.Auth.fetchUserAttributes(
             { result ->
                 if (result[1].value.equals(AppConstants.FALSE)) {
@@ -112,20 +123,65 @@ class EmailOTPViewModel @Inject constructor(
             },
             {
                 Log.e(TAG, "Failed to fetch user attributes", it)
+                val errMsg = it.cause!!.message!!.split(".")[0]
+                Log.e(TAG, "Failed to fetch user attributes $errMsg")
                 viewModelScope.launch {
-                    toastMessage = AppConstants.INVALID_OTP
-                    callBackInterface!!.awsErrorResponse(num)
+                    if (errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host)) ||
+                        errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))) {
+                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
+                    }
+//                    else if(errMsg.contains(context.resources.getString(R.string.Operation_requires_a_signed_in_state))){
+//                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Operation_requires_a_signed_in_state))
+//                    }
+                    else {
+                        toastMessage = AppConstants.INVALID_OTP
+                        callBackInterface!!.awsErrorResponse(num.toString())
+                    }
                 }
             })
     }
 
     // Method For Getting Service Provider Reg Id and Role Id
     fun getLoginInfo(idToken: String) = liveData(Dispatchers.IO) {
-        emit(eMailOTPRepository.getLoginInfo(idToken))
+        try {
+            emit(eMailOTPRepository.getLoginInfo(idToken))
+        } catch (e: Exception) {
+            Log.d(TAG, "UnknownHostException $e")
+            when (e) {
+                is UnknownHostException -> {
+                    viewModelScope.launch {
+                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                    }
+                }
+                is ConnectException ->{
+                    viewModelScope.launch {
+                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                    }
+                }
+                else -> {}
+            }
+        }
     }
+
     // Method For Getting Service Provider Reg Id and Role Id
-    fun getOtpValidation(isValid:Boolean,username:String) = liveData(Dispatchers.IO) {
-        emit(eMailOTPRepository.getOtpValidation(isValid, username))
+    fun getOtpValidation(isValid: Boolean, username: String) = liveData(Dispatchers.IO) {
+        try {
+            emit(eMailOTPRepository.getOtpValidation(isValid, username))
+        } catch (e: Exception) {
+            when (e) {
+                is UnknownHostException -> {
+                    viewModelScope.launch {
+                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                    }
+                }
+                is ConnectException ->{
+                    viewModelScope.launch {
+                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                    }
+                }
+                else -> {}
+            }
+        }
     }
 
     // Email Verification
@@ -141,7 +197,7 @@ class EmailOTPViewModel @Inject constructor(
                 viewModelScope.launch {
                     val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorResponse(num)
+                    callBackInterface!!.awsErrorResponse(num.toString())
                 }
             })
     }
@@ -152,7 +208,7 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.signIn(userName, null, {
             Log.d(TAG, "reSendOTP: called code resented successfully")
             viewModelScope.launch {
-                otpTimerValidation(mDataBinding, userName)
+                callBackInterface?.callBack("Resend OTP")
             }
         },
             {
@@ -160,7 +216,7 @@ class EmailOTPViewModel @Inject constructor(
                 viewModelScope.launch {
                     val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorResponse(num)
+                    callBackInterface!!.awsErrorResponse(num.toString())
                 }
             })
     }
@@ -172,20 +228,21 @@ class EmailOTPViewModel @Inject constructor(
         callBackInterface = callback
     }
 
-
     // CallBack Interface
     interface CallBackInterface {
         suspend fun callBack(status: String)
-        fun awsErrorResponse(num: Int)
+        fun awsErrorResponse(num: String)
         fun navigatingPage()
         fun showToast(resendRestriction: Int)
         fun otpValidation(b: Boolean)
+        fun internetError(exception: String)
     }
 
-
-
     // 2351 Android-OTP expires Validation Method
-    fun otpTimerValidation(mDataBinding: FragmentEmailOtpBinding?, userName: String) {
+    fun otpTimerValidation(
+        mDataBinding: FragmentEmailOtpBinding?, userName: String,
+        internetErrorDialog: InternetErrorDialog, context: Context
+    ) {
         var counter = 30
         val countTime: TextView = mDataBinding!!.otpTimer
         mDataBinding.otpResend.setTextColor(
@@ -205,27 +262,28 @@ class EmailOTPViewModel @Inject constructor(
             }
 
             override fun onFinish() {
-                resendRestriction+=1
+                resendRestriction += 1
 
                 mDataBinding.otpResend.isClickable = true
                 countTime.text = AppConstants.INITIAL_TIME
 
-                if (resendRestriction<=6){
+                if (resendRestriction <= 6) {
                     mDataBinding.otpResend.setTextColor(
                         ContextCompat.getColor(
                             getApplication(), R.color.button_blue
                         )
                     )
-                mDataBinding.otpResend.setOnClickListener {
-                    if (resendRestriction<=5) {
-                        reSendOTP(userName, mDataBinding)
-                        callBackInterface?.showToast(resendRestriction)
-                    }else{
-                        callBackInterface?.showToast(resendRestriction)
+                    mDataBinding.otpResend.setOnClickListener {
+                        if (internetErrorDialog.checkInternetAvailable(context)) {
+                            if (resendRestriction <= 5) {
+                                reSendOTP(userName, mDataBinding)
+                                callBackInterface?.showToast(resendRestriction)
+                            } else {
+                                callBackInterface?.showToast(resendRestriction)
+                            }
+                        }
                     }
-
-                }
-                }else{
+                } else {
                     callBackInterface?.showToast(resendRestriction)
                 }
             }

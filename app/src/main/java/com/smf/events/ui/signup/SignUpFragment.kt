@@ -24,9 +24,7 @@ import javax.inject.Inject
 class SignUpFragment : BaseFragment<FragmentSignupBinding, SignUpViewModel>(),
     SignUpViewModel.CallBackInterface {
 
-
     private var role: String = "EVENT_ORGANIZER"
-
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -45,23 +43,16 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding, SignUpViewModel>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         // Initialize CallBackInterface
         getViewModel()?.setCallBackInterface(this)
-
-        //tabLayout for service and event in Ui
         setTabLayout()
 
         // SignUp Button Listener
         mDataBinding!!.submitSignup.setOnClickListener {
             // Method for SignUp Function
-           getViewModel()!!.signUpFunctionality(mDataBinding!!,role)
+            getViewModel()!!.signUpFunctionality(mDataBinding!!,role)
         }
     }
-
-
-
-
 
     // SignUp Method Observer
     private val userInfoObserver = Observer<ApisResponse<UserDetailsResponse>> { apiResponse ->

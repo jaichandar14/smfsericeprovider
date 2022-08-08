@@ -13,12 +13,16 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentViewOrderDetailsDialogBinding
 import com.smf.events.helper.*
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.vieworderdetails.adaptor.ViewOrderDetailsAdaptor
 import com.smf.events.ui.vieworderdetails.model.EventServiceBudgetDto
 import com.smf.events.ui.vieworderdetails.model.EventServiceDateDto
 import com.smf.events.ui.vieworderdetails.model.QuestionnaireDtos
 import com.smf.events.ui.vieworderdetails.model.VenueInformationDto
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,8 +32,9 @@ class ViewOrderDetailsDialogFragment(
     var eventServiceDescriptionId: Int,
     var eventDate: String,
     var eventName: String,
+    private var internetErrorDialog: InternetErrorDialog
 ) : BaseDialogFragment<FragmentViewOrderDetailsDialogBinding, ViewOrderDetailsViewModel>(),
-    Tokens.IdTokenCallBackInterface {
+    Tokens.IdTokenCallBackInterface, ViewOrderDetailsViewModel.CallBackInterface {
 
     companion object {
         const val TAG = "CustomDialogFragment"
@@ -38,11 +43,12 @@ class ViewOrderDetailsDialogFragment(
             eventServiceDescriptionId: Int,
             eventDate: String,
             eventName: String,
+            internetErrorDialog: InternetErrorDialog
         ): ViewOrderDetailsDialogFragment {
             return ViewOrderDetailsDialogFragment(eventId,
                 eventServiceDescriptionId,
                 eventDate,
-                eventName)
+                eventName,internetErrorDialog)
         }
     }
 
@@ -61,6 +67,7 @@ class ViewOrderDetailsDialogFragment(
     var questionList = ArrayList<String>()
     var answerList = ArrayList<String>()
     private var myList = ArrayList<QuestionnaireDtos>()
+    private lateinit var dialogDisposable: Disposable
 
     override fun getViewModel(): ViewOrderDetailsViewModel =
         ViewModelProvider(this, factory).get(ViewOrderDetailsViewModel::class.java)
@@ -84,14 +91,38 @@ class ViewOrderDetailsDialogFragment(
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
+//        mDataBinding?.progressBar?.visibility = View.VISIBLE
+//        mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
+        showProgress()
         listView = mDataBinding?.quesList!!
         // 2402 - token CallBackInterface
         tokens.setCallBackInterface(this)
+        // ViewOrderDetails ViewModel CallBackInterface
+        getViewModel().setCallBackInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
+            showProgress()
+            apiTokenValidationViewOrderDetails()
+            internetErrorDialog.dismissDialog()
+        }
+
         // 2402 - Api Token  validation ViewOrderDetails
         apiTokenValidationViewOrderDetails()
         // 2402 - Back Button pressed
         backButton()
+    }
+
+    private fun showProgress(){
+        mDataBinding?.progressBar?.visibility = View.VISIBLE
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
+    }
+
+    private fun hideProgress(){
+        mDataBinding?.progressBar?.visibility = View.GONE
+        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
     }
 
     // 2402 - Back Button pressed
@@ -107,7 +138,6 @@ class ViewOrderDetailsDialogFragment(
             .observe(viewLifecycleOwner, { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-
                         val venueInfo = apiResponse.response.data.venueInformationDto
                         val serviceDetails =
                             apiResponse.response.data.eventServiceQuestionnaireDescriptionDto?.eventServiceDescriptionDto?.eventServiceDateDto
@@ -170,7 +200,8 @@ class ViewOrderDetailsDialogFragment(
         val myListAdapter = ViewOrderDetailsAdaptor(requireActivity(), questionList, answerList)
         listView.adapter = myListAdapter
         ListHelper.getListViewSize(listView)
-        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
+        hideProgress()
+//        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
     }
 
     // 2402 - Setting IDToken
@@ -192,5 +223,15 @@ class ViewOrderDetailsDialogFragment(
             // 2402 - View order details Get Api call
             viewOrderDetails(idToken)
         }
+    }
+
+    override fun internetError(exception: String) {
+            SharedPreference.isInternetConnected = false
+            internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

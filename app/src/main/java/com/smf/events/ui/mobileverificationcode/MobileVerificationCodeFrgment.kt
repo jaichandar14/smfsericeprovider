@@ -33,21 +33,27 @@ class MobileVerificationCodeFrgment :
         // Initialize CallBackInterface
         getViewModel().setCallBackInterface(this)
 
-        // VerificationCode code Submit Button Listener
-        mDataBinding?.submitBtn?.setOnClickListener {
-            val code = mDataBinding?.verificationCode?.text.toString()
+        init()
+    }
 
-            if (code.isEmpty() || code.length < 6) {
-                Toast.makeText(requireContext(), "Enter Valid Code", Toast.LENGTH_SHORT).show()
-            } else {
-                confirmSignUpFunctionality(code)
+    private fun init() {
+//        if (checkInternetAvailable()) {
+            // VerificationCode code Submit Button Listener
+            mDataBinding?.submitBtn?.setOnClickListener {
+                val code = mDataBinding?.verificationCode?.text.toString()
+
+                if (code.isEmpty() || code.length < 6) {
+                    Toast.makeText(requireContext(), "Enter Valid Code", Toast.LENGTH_SHORT).show()
+                } else {
+                    confirmSignUpFunctionality(code)
+                }
             }
-        }
 
-        // ResendVerificationCode TextView Listener
-        mDataBinding?.codeResend?.setOnClickListener {
-            resendCodeClicked()
-        }
+            // ResendVerificationCode TextView Listener
+            mDataBinding?.codeResend?.setOnClickListener {
+                resendCodeClicked()
+            }
+//        }
     }
 
     // Resend Code Function

@@ -1,16 +1,20 @@
 package com.smf.events.ui.signin
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.core.Amplify
+import com.smf.events.R
 import com.smf.events.base.BaseViewModel
-import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
+import com.smf.events.helper.AppConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class SignInViewModel @Inject constructor(
@@ -18,43 +22,46 @@ class SignInViewModel @Inject constructor(
     application: Application
 ) : BaseViewModel(application) {
 
+    var TAG = "SignInViewModel"
     val mobileNumber = MutableLiveData<String>()
-    val getMobileNumber : LiveData<String> = mobileNumber
+    val getMobileNumber: LiveData<String> = mobileNumber
     val emailId = MutableLiveData<String>()
-    val getEmailId : LiveData<String> = emailId
+    val getEmailId: LiveData<String> = emailId
 
     //SignIn Method
-    fun signIn(userName: String) {
+    fun signIn(userName: String, context: Context) {
         Amplify.Auth.signIn(userName, null, { result ->
             if (result.isSignInComplete) {
-                Log.i("AuthQuickstart", "Sign in succeeded $result")
+                Log.i(TAG, "Sign in succeeded $result")
                 viewModelScope.launch {
                     callBackInterface?.callBack("signInCompletedGoToDashBoard")
                 }
             } else {
-                Log.i("AuthQuickstart", "Sign in not complete $result")
+                Log.i(TAG, "Sign in not complete $result")
                 viewModelScope.launch {
                     callBackInterface?.callBack("SignInNotCompleted")
                 }
             }
         }, {
-            Log.e("AuthQuickstart", "Failed to sign in${it.cause!!.message!!.split(".")[0]}")
+            Log.e(TAG, "Failed to sign in ${it.cause!!.message!!.split(".")[0]}")
             viewModelScope.launch {
                 var errMsg = it.cause!!.message!!.split(".")[0]
-                if (errMsg == "CreateAuthChallenge failed with error PhoneNumber not Verified") {
-                    resendSignUp(userName)
+                if (errMsg == context.resources.getString(R.string.CreateAuthChallenge_failed_with_error)) {
+                    resendSignUp(userName, context)
+                } else if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp)) ||
+                    errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))
+                ) {
+                    callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
                 } else {
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorResponse()
+                    callBackInterface!!.awsErrorResponse(it.cause!!.message!!.split(".")[0])
                 }
             }
         })
     }
 
-
-
     // ResendSignUpCode
-    private fun resendSignUp(userName: String) {
+    private fun resendSignUp(userName: String, context: Context) {
         Amplify.Auth.resendSignUpCode(userName,
             { result ->
                 var status: String? = null
@@ -70,17 +77,38 @@ class SignInViewModel @Inject constructor(
             }, {
                 Log.e("TAG", "resendSignUp: error called${it.cause!!.message!!.split(".")[0]}", it)
                 viewModelScope.launch {
-                    var errMsg = it.cause!!.message!!.split(".")[0]
+                    val errMsg = it.cause!!.message!!.split(".")[0]
                     toastMessage = errMsg
-                    callBackInterface!!.awsErrorResponse()
+                    if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp)) ||
+                        errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))
+                    ) {
+                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
+                    }
                 }
             })
     }
 
     // Getting UserDetails During SignIn
     fun getUserDetails(loginName: String) = liveData(Dispatchers.IO) {
-        Log.d("TAG", "setUserDetails: $loginName")
-        emit(signInRepository.getUserDetails(loginName))
+        try {
+            Log.d("TAG", "setUserDetails: $loginName")
+            emit(signInRepository.getUserDetails(loginName))
+        } catch (e: Exception) {
+            Log.d("TAG", "getActionAndStatus: UnknownHostException $e")
+            when (e) {
+                is UnknownHostException -> {
+                    viewModelScope.launch {
+                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                    }
+                }
+                is ConnectException ->{
+                    viewModelScope.launch {
+                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                    }
+                }
+                else -> {}
+            }
+        }
     }
 
     private var callBackInterface: CallBackInterface? = null
@@ -93,6 +121,7 @@ class SignInViewModel @Inject constructor(
     // CallBackInterface
     interface CallBackInterface {
         fun callBack(status: String)
-        fun awsErrorResponse()
+        fun awsErrorResponse(message: String)
+        fun internetError(exception: String)
     }
 }

@@ -13,10 +13,7 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActionsAndStatusBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.adapter.ActionsAdapter
@@ -25,14 +22,18 @@ import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ActionsAndStatusFragment :
     BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(),
-    ActionsAdapter.OnActionCardClickListener, StatusAdaptor.OnActionCardClickListener, Tokens.IdTokenCallBackInterface {
+    ActionsAdapter.OnActionCardClickListener, StatusAdaptor.OnActionCardClickListener,
+    Tokens.IdTokenCallBackInterface,
+    ActionsAndStatusViewModel.CallBackInterface {
 
+    var TAG= "ActionsAndStatusFragment"
     private lateinit var myActionRecyclerView: RecyclerView
     lateinit var actionAdapter: ActionsAdapter
     private lateinit var myStatusRecyclerView: RecyclerView
@@ -43,6 +44,8 @@ class ActionsAndStatusFragment :
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
+    private lateinit var dialogDisposable: Disposable
+    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -67,30 +70,70 @@ class ActionsAndStatusFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("TAG", "onCreate: called ")
         // Initialize Local Variables
         setIdTokenAndSpRegId()
         // Set Category Id And ServiceOnBoarding Id
         serviceCategoryIdAndServiceOnBoardingIdSetup()
+        // Token Class CallBack Initialization
+        tokens.setCallBackInterface(this)
+        apiTokenValidationActionAndStatus()
     }
 
     override fun onStart() {
         super.onStart()
-        // Token Class CallBack Initialization
-        tokens.setCallBackInterface(this)
+        Log.d("TAG", "onCreate: onstart called ")
+//        // Token Class CallBack Initialization
+//        tokens.setCallBackInterface(this)
+//        apiTokenValidationActionAndStatus()
+//        init()
+    }
+
+    private fun init() {
+//        if (checkInternetAvailable()) {
         // Action And Status Api Call
-        apiTokenValidationActionAndStatus()
+//            apiTokenValidationActionAndStatus()
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showProgress()
         //Initializing actions recyclerview
         myActionRecyclerView = mDataBinding?.actionsRecyclerview!!
         //Initializing status recyclerview
         myStatusRecyclerView = mDataBinding?.statusRecyclerview!!
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
         //Actions  Recycler view
         myActionsStatusRecycler()
         //Status Recycler view
         myStatusRecycler()
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d("TAG", "onViewCreated: observer ActionAndStatus")
+            internetErrorDialog.dismissDialog()
+        }
+    }
+
+    private fun showProgress(){
+        mDataBinding?.progressBar?.visibility = View.VISIBLE
+        mDataBinding?.txActions?.visibility =  View.GONE
+        mDataBinding?.txStatus?.visibility =  View.GONE
+        mDataBinding?.txPendtingitems?.visibility = View.GONE
+        mDataBinding?.txPendingstatus?.visibility = View.GONE
+        mDataBinding?.actionsRecyclerview?.visibility = View.GONE
+        mDataBinding?.statusRecyclerview?.visibility = View.GONE
+    }
+
+    private fun hideProgress(){
+        mDataBinding?.progressBar?.visibility = View.GONE
+        mDataBinding?.txActions?.visibility =  View.VISIBLE
+        mDataBinding?.txStatus?.visibility =  View.VISIBLE
+        mDataBinding?.txPendtingitems?.visibility = View.VISIBLE
+        mDataBinding?.txPendingstatus?.visibility = View.VISIBLE
+        mDataBinding?.actionsRecyclerview?.visibility = View.VISIBLE
+        mDataBinding?.statusRecyclerview?.visibility = View.VISIBLE
     }
 
     // Method For ActionsStatusRecyclerView SetUp
@@ -113,41 +156,42 @@ class ActionsAndStatusFragment :
 
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
-        RxBus.publish(RxEvent.QuoteBrief(1))
-        //
-        when (myEvents.titleText) {
-            AppConstants.NEW_REQUEST -> {
-                goToActionDetailsFragment(AppConstants.BID_REQUESTED)
-            }
-            AppConstants.PENDING_QUOTE -> {
-                goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
-            }
-            // 2885 Bid Rejected flow
-            AppConstants.REJECTED_BID -> {
-                goToActionDetailsFragment(AppConstants.BID_REJECTED)
-            }
-            AppConstants.QUOTE_SENT -> {
-                goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
-            }
-            // 2884 for won Bid flow
-            AppConstants.BID_WON -> {
-                goToActionDetailsFragment(AppConstants.WON_BID)
-            }
-            // 2885 Lost Bid flow
-            AppConstants.BID_LOST -> {
-                goToActionDetailsFragment(AppConstants.LOST_BID)
-            }
-            AppConstants.SERVICE_PROGRESS -> {
-                goToActionDetailsFragment(AppConstants.SERVICE_IN_PROGRESS)
-            }
-            AppConstants.REQUEST_CLOSED -> {
-                goToActionDetailsFragment(AppConstants.SERVICE_DONE)
-            }
-            AppConstants.TIMED_OUT_BID -> {
-                goToActionDetailsFragment(AppConstants.BID_TIMED_OUT)
-            }
-            else -> {
-                Log.d("TAG", "newRequestApiCallsample :else block")
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            RxBus.publish(RxEvent.QuoteBrief(1))
+            when (myEvents.titleText) {
+                AppConstants.NEW_REQUEST -> {
+                    goToActionDetailsFragment(AppConstants.BID_REQUESTED)
+                }
+                AppConstants.PENDING_QUOTE -> {
+                    goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
+                }
+                // 2885 Bid Rejected flow
+                AppConstants.REJECTED_BID -> {
+                    goToActionDetailsFragment(AppConstants.BID_REJECTED)
+                }
+                AppConstants.QUOTE_SENT -> {
+                    goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
+                }
+                // 2884 for won Bid flow
+                AppConstants.BID_WON -> {
+                    goToActionDetailsFragment(AppConstants.WON_BID)
+                }
+                // 2885 Lost Bid flow
+                AppConstants.BID_LOST -> {
+                    goToActionDetailsFragment(AppConstants.LOST_BID)
+                }
+                AppConstants.SERVICE_PROGRESS -> {
+                    goToActionDetailsFragment(AppConstants.SERVICE_IN_PROGRESS)
+                }
+                AppConstants.REQUEST_CLOSED -> {
+                    goToActionDetailsFragment(AppConstants.SERVICE_DONE)
+                }
+                AppConstants.TIMED_OUT_BID -> {
+                    goToActionDetailsFragment(AppConstants.BID_TIMED_OUT)
+                }
+                else -> {
+                    Log.d("TAG", "newRequestApiCallsample :else block")
+                }
             }
         }
     }
@@ -164,6 +208,7 @@ class ActionsAndStatusFragment :
 
     // 2560 Method For ApiCall For Action And Status Counts
     private fun actionAndStatusApiCall(idToken: String) {
+        Log.d("TAG", "onCreate: onstart called ApiCal")
         getViewModel().getActionAndStatus(
             idToken,
             spRegId,
@@ -200,15 +245,18 @@ class ActionsAndStatusFragment :
 
     // Method For Update Action And Status Count To RecyclerView List
     private fun recyclerViewListUpdate() {
+        hideProgress()
         var listActions1 = getViewModel().getActionsList(actionAndStatusData)
         actionAdapter.refreshItems(listActions1)
         val listStatus = getViewModel().getStatusList(actionAndStatusData)
         statusAdapter.refreshItems(listStatus)
         // 2891 fetching all the active and inactive count
-        var activeCounts=actionAndStatusData.bidRequestedCount+actionAndStatusData.pendingForQuoteCount+
-                actionAndStatusData.bidSubmittedCount+actionAndStatusData.wonBidCount+actionAndStatusData.serviceInProgressCount
-        var inActiveCounts=actionAndStatusData.serviceDoneCount+actionAndStatusData.bidRejectedCount+
-                actionAndStatusData.bidTimedOutCount+actionAndStatusData.lostBidCount
+        var activeCounts =
+            actionAndStatusData.bidRequestedCount + actionAndStatusData.pendingForQuoteCount +
+                    actionAndStatusData.bidSubmittedCount + actionAndStatusData.wonBidCount + actionAndStatusData.serviceInProgressCount
+        var inActiveCounts =
+            actionAndStatusData.serviceDoneCount + actionAndStatusData.bidRejectedCount +
+                    actionAndStatusData.bidTimedOutCount + actionAndStatusData.lostBidCount
         mDataBinding?.txPendtingitems?.text =
             "$activeCounts ${getString(R.string.active_status)}"
         mDataBinding?.txPendingstatus?.text =
@@ -260,6 +308,18 @@ class ActionsAndStatusFragment :
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: called ActionAndStatus")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
+
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+        hideProgress()
     }
 
 }

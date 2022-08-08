@@ -19,9 +19,13 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.InternetErrorDialog
 import com.smf.events.helper.SharedPreference
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -31,14 +35,12 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     private val TAG = "EmailOTPFragment"
     private val args: EmailOTPFragmentArgs by navArgs()
     private lateinit var userName: String
-    private lateinit var firstName: String
-    private lateinit var emailId: String
-
-    private var selectedPosition = 0
     lateinit var otp0: EditText
     lateinit var otp1: EditText
     lateinit var otp2: EditText
     lateinit var otp3: EditText
+    private lateinit var internetErrorDialog: InternetErrorDialog
+    lateinit var dialogDisposable: Disposable
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -62,12 +64,16 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         super.onViewCreated(view, savedInstanceState)
         // Initialize Local Variables
         setUserNameAndSharedPref()
+        internetErrorDialog = InternetErrorDialog.newInstance()
         // Initialize CallBackInterface
         getViewModel().setCallBackInterface(this)
-        // Submit Button Listener
-        submitBtnClicked()
         // 2351 Android-OTP expires Validation Method
-        getViewModel().otpTimerValidation(mDataBinding, userName)
+        getViewModel().otpTimerValidation(
+            mDataBinding,
+            userName,
+            internetErrorDialog,
+            requireContext()
+        )
 
         otp0 = mDataBinding?.otp1ed!!
         otp1 = mDataBinding?.otp2ed!!
@@ -92,6 +98,13 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         otp1.setOnKeyListener(GenericKeyEvent(otp1, otp0))
         otp2.setOnKeyListener(GenericKeyEvent(otp2, otp1))
         otp3.setOnKeyListener(GenericKeyEvent(otp3, otp2))
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer email rx")
+            internetErrorDialog.dismissDialog()
+        }
+
+        submitBtnClicked()
     }
 
     // Method For set UserName And SharedPreferences
@@ -110,14 +123,24 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     // For confirmSignIn aws
     private fun submitBtnClicked() {
         mDataBinding!!.submitBtn.setOnClickListener {
-            if (mDataBinding?.otp1ed?.text.toString().isEmpty()) {
-                Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT).show()
-            }else{
-                showProgress()
-                getViewModel().confirmSignIn(
-                    otp0.text.toString() + otp1.text.toString()
-                            + otp2.text.toString() + otp3.text.toString(), mDataBinding!!
-                )
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                if (mDataBinding?.otp1ed?.text.toString().isEmpty()) {
+                    Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    showProgress()
+                    Log.d(
+                        TAG, "submitBtnClicked: ${
+                            otp0.text.toString() + otp1.text.toString()
+                                    + otp2.text.toString() + otp3.text.toString()
+                        }"
+                    )
+                    getViewModel().confirmSignIn(
+                        requireContext(),
+                        otp0.text.toString() + otp1.text.toString()
+                                + otp2.text.toString() + otp3.text.toString(), mDataBinding!!
+                    )
+                }
             }
         }
     }
@@ -160,38 +183,80 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         } else if (status == AppConstants.EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD) {
             val idToken =
                 "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
-            getLoginApiCall(idToken)
+//            getLoginApiCall(idToken)
+            getOtpValidation(true)
+        } else if (status == "Resend OTP") {
+            getViewModel().otpTimerValidation(
+                mDataBinding,
+                userName,
+                internetErrorDialog,
+                requireContext()
+            )
         }
     }
 
     // AWS Error response
-    override fun awsErrorResponse(num: Int) {
-        showProgress()
-        getOtpValidation(false)
-//         hideProgress()
-        if (num >= 3) {
-        } else {
-            showToast(getViewModel().toastMessage)
-        }
-        mDataBinding?.otp1ed?.text = null
-        mDataBinding?.otp3ed?.text = null
-        mDataBinding?.otp2ed?.text = null
-        mDataBinding?.otp4ed?.text = null
+    override fun awsErrorResponse(num: String) {
+//        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            if (num == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
+                Log.e(TAG, "Failed to fetch user attributes inside")
+                SharedPreference.isInternetConnected = false
+                internetErrorDialog.checkInternetAvailable(requireContext())
+                hideProgress()
+                //Navigate to SignInFragment
+                findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+            }
+//            else if (num == resources.getString(R.string.Operation_requires_a_signed_in_state)){
+//                hideProgress()
+//                SharedPreference.isInternetConnected = false
+//                internetErrorDialog.checkInternetAvailable(requireContext())
+//            }
+            else {
+                showProgress()
+                getOtpValidation(false)
+                if (num.toInt() >= 3) {
+                } else {
+                    showToast(getViewModel().toastMessage)
+                }
+                mDataBinding?.otp1ed?.text = null
+                mDataBinding?.otp3ed?.text = null
+                mDataBinding?.otp2ed?.text = null
+                mDataBinding?.otp4ed?.text = null
+            }
+//        }
+//    else {
+//            hideProgress()
+////            //Navigate to SignInFragment
+////            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+//        }
     }
 
     // Login api call to Fetch RollId and SpRegId
     private fun getOtpValidation(isValid: Boolean) {
+        Log.d(TAG, "getLoginApiCallaaa: getOtpValidation called")
         // Getting Service Provider Reg Id and Role Id
         getViewModel().getOtpValidation(isValid, userName)
             .observe(this@EmailOTPFragment, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+                        Log.d(TAG, "getLoginApiCallaaa: getOtpValidation scess called")
                         // Initialize RegId And RoleId to Shared Preference
                         //setSpRegIdAndRollID(apiResponse)
                         Log.d(TAG, "getLoginApiCall11: ${apiResponse.response}")
+
                         // Navigate to DashBoardFragment
                         if (isValid) {
+                            Log.d(TAG, "getLoginApiCallaaa: getOtpValidation isvalid called")
                             showProgress()
+                            CoroutineScope(Dispatchers.Main).launch {
+                                getLoginApiCall(
+                                    "${AppConstants.BEARER} ${
+                                        sharedPreference.getString(
+                                            SharedPreference.ID_Token
+                                        )
+                                    }"
+                                )
+                            }
                         } else {
                             hideProgress()
                         }
@@ -206,7 +271,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
                         }
                     }
-
                     else -> {
                     }
                 }
@@ -242,20 +306,23 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT).show()
     }
 
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+        //Navigate to SignInFragment
+        findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+        hideProgress()
+    }
 
     // Login api call to Fetch RollId and SpRegId
     private fun getLoginApiCall(idToken: String) {
-        // Getting Service Provider Reg Id and Role Id
         showProgress()
-        getOtpValidation(true)
-//        showProgress()
         getViewModel().getLoginInfo(idToken)
             .observe(this@EmailOTPFragment, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         // Initialize RegId And RoleId to Shared Preference
                         setSpRegIdAndRollID(apiResponse)
-                        Log.d(TAG, "getLoginApiCall: $apiResponse")
                         // Navigate to DashBoardFragment
                         findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
                     }
@@ -293,8 +360,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             }
             return false
         }
-
-
     }
 
     class GenericTextWatcher internal constructor(
@@ -328,5 +393,11 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         ) { // TODO Auto-generated method stub
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onStop: called email")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

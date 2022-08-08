@@ -1,21 +1,25 @@
 package com.smf.events.ui.timeslotsexpandablelist
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ExpandableListView
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -23,7 +27,10 @@ import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.timeslotsexpandablelist.model.Data
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -36,8 +43,10 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class MonthExpandableListFragment : Fragment(),
-    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
+    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface,
+    ScheduleManagementViewModel.CallBackExpListInterface {
 
+    private var TAG = "MonthExpandableListFragment"
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
@@ -54,6 +63,8 @@ class MonthExpandableListFragment : Fragment(),
     private var currentDate: String? = null
     private var monthValue: String = ""
     private var groupPosition: Int = 0
+    private lateinit var dialogDisposable: Disposable
+    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var sharedPreference: SharedPreference
@@ -86,7 +97,18 @@ class MonthExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
+        // 3061 Scheduled Management  ViewModel CallBackInterface
+        sharedViewModel.setCallBackExpListInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
 
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer monthexp")
+            internetErrorDialog.dismissDialog()
+            if(activity != null) {
+                init()
+            }
+        }
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentMonthDate.observe(viewLifecycleOwner,
             { currentMonthDate ->
@@ -108,13 +130,19 @@ class MonthExpandableListFragment : Fragment(),
         if (!fromDate.isNullOrEmpty() && !toDate.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            // 2670 - Api Call Token Validation
-            apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES)
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                init()
+            }
         } else {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
         }
+    }
+
+    private fun init() {
+        // 2670 - Api Call Token Validation
+        apiTokenValidation(AppConstants.BOOKED_EVENT_SERVICES)
     }
 
     // 2670 - Method For Get Booked Event Services
@@ -129,7 +157,7 @@ class MonthExpandableListFragment : Fragment(),
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
                 fromDate,
-                toDate
+                toDate, AppConstants.MONTH
             ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
@@ -331,4 +359,17 @@ class MonthExpandableListFragment : Fragment(),
         }
         return month
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onViewCreated: observe onDestroy: monthexp")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
+
+    override fun internetError(exception: String, tag: String) {
+        Log.d(TAG, "internetError: called day")
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
 }

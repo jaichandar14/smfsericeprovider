@@ -12,7 +12,6 @@ import javax.inject.Inject
 class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
 
     suspend fun getServiceCount(idToken: String, spRegId: Int): ApisResponse<ServiceCount> {
-
         return try {
             val getResponse = apiStories.getServiceCount(idToken, spRegId)
             ApisResponse.Success(getResponse)
@@ -23,11 +22,9 @@ class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
     }
 
     suspend fun getAllServices(idToken: String, spRegId: Int): ApisResponse<AllServices> {
-
         return try {
             val getResponse = apiStories.getAllServices(idToken, spRegId)
             ApisResponse.Success(getResponse)
-
         } catch (e: HttpException) {
             ApisResponse.Error(e)
         }
@@ -38,7 +35,6 @@ class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
         spRegId: Int,
         serviceCategoryId: Int,
     ): ApisResponse<Branches> {
-
         return try {
             val getResponse =
                 apiStories.getServicesBranches(idToken, spRegId, serviceCategoryId)
@@ -46,7 +42,6 @@ class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
         } catch (e: HttpException) {
             ApisResponse.Error(e)
         }
-
     }
 
 }

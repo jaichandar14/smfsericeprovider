@@ -10,17 +10,18 @@ import com.smf.events.databinding.FragmentQuoteBriefBinding
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class QuoteBriefViewModel   @Inject constructor(val quoteBriefRepository: QuoteBriefRepository,application: Application): BaseViewModel(application) {
+class QuoteBriefViewModel @Inject constructor(
+    val quoteBriefRepository: QuoteBriefRepository,
+    application: Application
+) : BaseViewModel(application) {
 
-
+    var TAG = "QuoteBriefViewModel"
 
     fun backButtonPressed(mDataBinding: FragmentQuoteBriefBinding) {
-mDataBinding.btnBack.setOnClickListener {
-   callBackInterface!!.callBack("onBackClicked")
-
-}
+        mDataBinding.btnBack.setOnClickListener {
+            callBackInterface!!.callBack("onBackClicked")
+        }
     }
-
 
     private var callBackInterface: CallBackInterface? = null
 
@@ -30,50 +31,48 @@ mDataBinding.btnBack.setOnClickListener {
     }
 
     fun expandableView(mDataBinding: FragmentQuoteBriefBinding?, expand: Boolean) {
-var exp=false
-    val isExpandable: Boolean = expand
+        var exp = false
+        val isExpandable: Boolean = expand
 
         mDataBinding!!.expBtn.setOnClickListener {
-            if (isExpandable== exp)
-            {
+            if (isExpandable == exp) {
                 Log.d("TAG", "expandableView: true ")
-                mDataBinding.expandableView.visibility=View.VISIBLE
+                mDataBinding.expandableView.visibility = View.VISIBLE
+            } else {
+                mDataBinding.expandableView.visibility = View.GONE
             }
-            else {
-                mDataBinding.expandableView.visibility= View.GONE
-            }
-exp=!exp
-
+            exp = !exp
+        }
     }
-
-    }
-
 
     // CallBack Interface
     interface CallBackInterface {
         fun callBack(messages: String)
-
     }
-
 
     fun progress2Completed(mDataBinding: FragmentQuoteBriefBinding?) {
-        mDataBinding!!.check2Complete.visibility=View.VISIBLE
-       mDataBinding!!.check3Inprogress.visibility=View.VISIBLE
+        mDataBinding!!.check2Complete.visibility = View.VISIBLE
+        mDataBinding!!.check3Inprogress.visibility = View.VISIBLE
         mDataBinding!!.processflow2.setBackgroundColor(Color.BLACK)
-
     }
+
     fun progress3Completed(mDataBinding: FragmentQuoteBriefBinding?) {
-        mDataBinding!!.check3Completed.visibility=View.VISIBLE
-        mDataBinding!!.check4Inprogress.visibility=View.VISIBLE
+        mDataBinding!!.check3Completed.visibility = View.VISIBLE
+        mDataBinding!!.check4Inprogress.visibility = View.VISIBLE
         mDataBinding!!.processflow3.setBackgroundColor(Color.BLACK)
     }
-    fun progress4Completed(mDataBinding: FragmentQuoteBriefBinding?) {
-        mDataBinding!!.check4Completed.visibility=View.VISIBLE
 
+    fun progress4Completed(mDataBinding: FragmentQuoteBriefBinding?) {
+        mDataBinding!!.check4Completed.visibility = View.VISIBLE
     }
 
     fun getQuoteBrief(idToken: String, bidRequestId: Int) = liveData(
-        Dispatchers.IO) {
-        emit(quoteBriefRepository.getQuoteBrief(idToken, bidRequestId))
+        Dispatchers.IO
+    ) {
+        try {
+            emit(quoteBriefRepository.getQuoteBrief(idToken, bidRequestId))
+        } catch (e: Exception) {
+            Log.d(TAG, "getQuoteBrief: $e")
+        }
     }
 }

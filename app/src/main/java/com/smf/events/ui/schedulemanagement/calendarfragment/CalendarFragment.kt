@@ -38,6 +38,8 @@ import kotlin.collections.HashMap
 class CalendarFragment : Fragment(),
     CalendarAdapter.OnItemListener, ScheduleManagementViewModel.CallBackInterface,
     Tokens.IdTokenCallBackInterface {
+
+    var TAG = "CalendarFragment"
     @Inject
     lateinit var calendarUtils: CalendarUtils
 
@@ -49,6 +51,7 @@ class CalendarFragment : Fragment(),
 
     @Inject
     lateinit var tokens: Tokens
+
     // SharedViewModel Initialization
     private val sharedViewModel: ScheduleManagementViewModel by activityViewModels()
 
@@ -77,6 +80,8 @@ class CalendarFragment : Fragment(),
     private var dateList: ArrayList<String> = ArrayList()
     private var businessValidity: LocalDate? = null
     lateinit var dialogDisposable: Disposable
+    private lateinit var internetErrorDialog: InternetErrorDialog
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -86,7 +91,6 @@ class CalendarFragment : Fragment(),
         super.onCreate(savedInstanceState)
         // 2458 Method for Setting Id token and Reg Id
         setIdTokenAndSpRegId()
-
     }
 
     override fun onCreateView(
@@ -100,53 +104,75 @@ class CalendarFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         mDataBinding.progressBar.visibility = View.VISIBLE
         mDataBinding.calendarLayout.visibility = View.INVISIBLE
         // 2686 token CallBackInterface
         tokens.setCallBackInterface(this)
         // 2458 Scheduled Management  ViewModel CallBackInterface
         sharedViewModel.setCallBackInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
+//        // 2458 Method for initializing
+//        initWidgets()
+//        // 2622 Method for Calendar Format(Day,week,month) Picker
+//        setCalendarFormat()
+////        // 2686 Method for Token Validation and Service list ApiCall
+//        apiTokenValidationCalendar("AllServices")
+        // 2796 Method for observing Exp View Date
+        selectedEXPDateObserver()
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer Calendar")
+            internetErrorDialog.dismissDialog()
+        }
+
+        mDataBinding.closeCalendar.setOnClickListener {
+            RxBus.publish(RxEvent.ChangingNav(1))
+        }
+
+        dialogDisposable = RxBus.listen(RxEvent.IsValid::class.java).subscribe {
+            mDataBinding.progressBar.visibility = View.GONE
+            mDataBinding.calendarLayout.visibility = View.VISIBLE
+        }
+        Log.d("TAG", "onViewCreated: not observer Calendar")
+        init()
+
+//        // 2985
+//        getBusinessValiditiy()
+    }
+
+    private fun init(){
         // 2458 Method for initializing
         initWidgets()
         // 2622 Method for Calendar Format(Day,week,month) Picker
         setCalendarFormat()
         // 2686 Method for Token Validation and Service list ApiCall
         apiTokenValidationCalendar("AllServices")
-        // 2796 Method for observing Exp View Date
-        selectedEXPDateObserver()
-        mDataBinding.closeCalendar.setOnClickListener {
-            RxBus.publish(RxEvent.ChangingNav(1))
-        }
-        dialogDisposable = RxBus.listen(RxEvent.IsValid::class.java).subscribe {
-            mDataBinding.progressBar.visibility = View.GONE
-            mDataBinding.calendarLayout.visibility = View.VISIBLE
-        }
-// 2985
+        // 2985
         getBusinessValiditiy()
     }
 
     private fun getBusinessValiditiy() {
-        sharedViewModel.getBusinessValiditiy(idToken, spRegId)
-            .observe(viewLifecycleOwner, { apiResponse ->
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-                        val currentDayFormatter =
-                            DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
-                        val businessValidationDate =
-                            LocalDate.parse(apiResponse.response.data.toDate, currentDayFormatter)
-                        Log.d("TAG", "getBusinessValiditiy: $businessValidationDate")
-                        businessValidity = businessValidationDate
-                        CalendarUtils.businessValidity = businessValidationDate
+            sharedViewModel.getBusinessValiditiy(idToken, spRegId)
+                .observe(viewLifecycleOwner, { apiResponse ->
+                    when (apiResponse) {
+                        is ApisResponse.Success -> {
+                            val currentDayFormatter =
+                                DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                            val businessValidationDate =
+                                LocalDate.parse(apiResponse.response.data.toDate, currentDayFormatter)
+                            Log.d("TAG", "getBusinessValiditiy: $businessValidationDate")
+                            businessValidity = businessValidationDate
+                            CalendarUtils.businessValidity = businessValidationDate
+                        }
+                        is ApisResponse.Error -> {
+                            Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        }
+                        else -> {
+                            Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
-                    }
-                    else -> {
-                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
+                })
     }
 
     private fun selectedEXPDateObserver() {
@@ -168,7 +194,6 @@ class CalendarFragment : Fragment(),
             serviceVendorOnboardingId,
             fromAndToDate.weekList, serviceDate,isScroll
         )
-
     }
 
     // 2458 Method for initializing
@@ -196,7 +221,6 @@ class CalendarFragment : Fragment(),
         } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
             setCurrentMonth(monthDate)
         }
-
     }
 
     // 2796 Method for setting current Month
@@ -370,7 +394,6 @@ class CalendarFragment : Fragment(),
                 true
             )
         }
-
     }
 
     // 2685 CallBack Mehod for WeekSelected Date Onclick
@@ -393,7 +416,6 @@ class CalendarFragment : Fragment(),
     }
 
     override fun onClickBusinessExpDate(valid: Boolean) {
-
         var toast=Toast(requireContext())
         if (valid) {
             if (toast!=null){
@@ -419,21 +441,23 @@ class CalendarFragment : Fragment(),
 
     // 2458 CallBack for Clicked All Service Items
     override fun itemClick(msg: Int) {
-        if (serviceList[msg].serviceName == "All Service") {
-            val branchSpinner: ArrayList<String> = ArrayList()
-            // branchSpinner.add(0, "Branches")
-            serviceCategoryId = 0
-            sharedViewModel.branches(
-                mDataBinding,
-                branchSpinner
-            )
-        }
-        if (serviceList[msg].serviceName != "All Service") {
-            serviceCategoryId = (serviceList[msg].serviceCategoryId)
-            Log.d("TAG", "itemClick services: $serviceCategoryId")
-            apiTokenValidationCalendar("Branches")
-            branchListSpinner.clear()
-            //apiTokenValidationCalendar("EventDateApiAllService")
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            if (serviceList[msg].serviceName == "All Service") {
+                val branchSpinner: ArrayList<String> = ArrayList()
+                // branchSpinner.add(0, "Branches")
+                serviceCategoryId = 0
+                sharedViewModel.branches(
+                    mDataBinding,
+                    branchSpinner
+                )
+            }
+            if (serviceList[msg].serviceName != "All Service") {
+                serviceCategoryId = (serviceList[msg].serviceCategoryId)
+                Log.d("TAG", "itemClick services: $serviceCategoryId")
+                apiTokenValidationCalendar("Branches")
+                branchListSpinner.clear()
+                //apiTokenValidationCalendar("EventDateApiAllService")
+            }
         }
     }
 
@@ -443,37 +467,38 @@ class CalendarFragment : Fragment(),
         name: String?,
         allServiceposition: Int?,
     ) {
-        // Log.d(TAG, "branchItemClick: ")
-        this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
-        Log.d("TAG", "branchItemClick: ${this.serviceVendorOnboardingId}")
-        apiTokenValidationCalendar("EventDateApiBranches")
-        //  settingWeekDate()
-        settingMonthDate()
-
+        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            // Log.d(TAG, "branchItemClick: ")
+            this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
+            Log.d("TAG", "branchItemClick: ${this.serviceVendorOnboardingId}")
+            apiTokenValidationCalendar("EventDateApiBranches")
+            //  settingWeekDate()
+            settingMonthDate()
+        }
     }
 
     // 2458 Getting All Service
     private fun getAllServices() {
-        sharedViewModel.getAllServices(idToken, spRegId)
-            .observe(viewLifecycleOwner, { apiResponse ->
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
+            sharedViewModel.getAllServices(idToken, spRegId)
+                .observe(viewLifecycleOwner, { apiResponse ->
+                    when (apiResponse) {
+                        is ApisResponse.Success -> {
 //                        serviceList.add(ServicesData("All Service", 0))
 //                        branchListSpinner.add(BranchDatas("Branches", 0))
-                        apiResponse.response.data.forEach {
-                            serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
+                            apiResponse.response.data.forEach {
+                                serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
+                            }
+                            // 2458 Setting All Service
+                            setAllService()
                         }
-                        // 2458 Setting All Service
-                        setAllService()
+                        is ApisResponse.Error -> {
+                            Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        }
+                        else -> {
+                            Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
-                    }
-                    else -> {
-                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
+                })
     }
 
     // 2458 Setting All Service
@@ -616,10 +641,10 @@ class CalendarFragment : Fragment(),
     // 2686 - Method For AWS Token Validation
     private fun apiTokenValidationCalendar(caller: String) {
         if (idToken.isNotEmpty()) {
-            tokens.checkTokenExpiry(
-                requireActivity().applicationContext as SMFApp,
-                caller, idToken
-            )
+                tokens.checkTokenExpiry(
+                    requireActivity().applicationContext as SMFApp,
+                    caller, idToken
+                )
         }
     }
 
@@ -668,5 +693,17 @@ class CalendarFragment : Fragment(),
             }
         }
         return dateList
+    }
+
+    override fun internetError(exception: String) {
+        Log.d("TAG", "internetError: calendar called")
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("TAG", "onDestroy: called calendar frag")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

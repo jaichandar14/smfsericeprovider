@@ -10,7 +10,6 @@ import javax.inject.Inject
 class QuoteBriefDialogRepository @Inject constructor(var apiStories: ApiStories) {
 
     suspend fun getQuoteBrief(idToken: String, bidRequestId: Int): ApisResponse<QuoteBrief> {
-
         return try {
             val getResponse = apiStories.getQuoteBrief(idToken, bidRequestId)
             ApisResponse.Success(getResponse)

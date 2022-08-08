@@ -20,10 +20,7 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.QuoteBriefDialogBinding
-import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.Tokens
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.quotebrief.model.QuoteBrief
@@ -37,10 +34,11 @@ import java.io.FileOutputStream
 import java.io.IOException
 import javax.inject.Inject
 
-
-class QuoteBriefDialog :
+class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
-    Tokens.IdTokenCallBackInterface {
+    Tokens.IdTokenCallBackInterface, QuoteBriefDialogViewModel.CallBackInterface {
+
+    var TAG = "QuoteBriefDialog"
     var num: Int = 0
     var bidRequestId: Int? = 0
     lateinit var idToken: String
@@ -55,17 +53,14 @@ class QuoteBriefDialog :
     var isViewQuoteClicked = false
     var STORAGE_PERMISSION_CODE = 1
     var bidRequestIdUpdated: Int? = 0
+    private lateinit var dialogDisposable: Disposable
 
     companion object {
         const val TAG = "CustomDialogFragment"
-        fun newInstance(): QuoteBriefDialog {
-            return QuoteBriefDialog()
+        fun newInstance(internetErrorDialog: InternetErrorDialog): QuoteBriefDialog {
+            return QuoteBriefDialog(internetErrorDialog)
         }
     }
-
-//    init {
-//     bidRequestId = bidRequestIdUpdated
-//    }
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -75,8 +70,6 @@ class QuoteBriefDialog :
 
     @Inject
     lateinit var tokens: Tokens
-
-    private lateinit var dialogDisposable: Disposable
 
     override fun getViewModel(): QuoteBriefDialogViewModel =
         ViewModelProvider(this, factory).get(QuoteBriefDialogViewModel::class.java)
@@ -107,7 +100,10 @@ class QuoteBriefDialog :
         Log.d(TAG, "onViewCreated: QuoteBriefDialog")
         mDataBinding?.quoteBriefDialog?.visibility = View.INVISIBLE
         mDataBinding?.progressBar?.visibility = View.VISIBLE
-
+        // QuoteBrief ViewModel CallBackInterface
+        getViewModel().setCallBackInterface(this)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         // Back Button Pressed
@@ -123,25 +119,33 @@ class QuoteBriefDialog :
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 STORAGE_PERMISSION_CODE)
         }
+
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
+            apiTokenValidationQuoteBrief("quoteDetails")
+            internetErrorDialog.dismissDialog()
+        }
     }
 
     // 2962 view Quotes
     private fun viewQuotes() {
         mDataBinding?.viewQuote?.setOnClickListener {
-            mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
-            mDataBinding?.progressBar?.visibility = View.VISIBLE
-            isViewQuoteClicked = true
-            mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
-            mDataBinding?.txCateringViewq?.visibility = View.VISIBLE
-            mDataBinding?.txCatering?.visibility = View.GONE
-            apiTokenValidationQuoteBrief("viewQuotes")
-            mDataBinding?.btnBack?.setOnClickListener {
-                mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
-                mDataBinding?.txCateringViewq?.visibility = View.GONE
-                mDataBinding?.txCatering?.visibility = View.VISIBLE
-                mDataBinding?.viewQuotes?.visibility = View.GONE
-                isViewQuoteClicked = false
-                onResume()
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
+                mDataBinding?.progressBar?.visibility = View.VISIBLE
+                isViewQuoteClicked = true
+                mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
+                mDataBinding?.txCateringViewq?.visibility = View.VISIBLE
+                mDataBinding?.txCatering?.visibility = View.GONE
+                apiTokenValidationQuoteBrief("viewQuotes")
+                mDataBinding?.btnBack?.setOnClickListener {
+                    mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
+                    mDataBinding?.txCateringViewq?.visibility = View.GONE
+                    mDataBinding?.txCatering?.visibility = View.VISIBLE
+                    mDataBinding?.viewQuotes?.visibility = View.GONE
+                    isViewQuoteClicked = false
+                    onResume()
+                }
             }
         }
     }
@@ -281,7 +285,6 @@ class QuoteBriefDialog :
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
     }
 
     override fun onResume() {
@@ -310,11 +313,6 @@ class QuoteBriefDialog :
         mDataBinding?.txCatering?.text = "${serviceName}-${branchName}"
 
     }
-
-//    override fun onStop() {
-//        super.onStop()
-//        dialog?.dismiss()
-//    }
 
     // Back Button Pressed
     private fun backButtonClickListener() {
@@ -516,7 +514,6 @@ class QuoteBriefDialog :
         } else {
             withContext(Dispatchers.Main) {
                 quoteBriefApiCall(idToken)
-
             }
         }
     }
@@ -531,7 +528,6 @@ class QuoteBriefDialog :
         } else {
             //   Toast.makeText(requireContext(), "Permission already granted", Toast.LENGTH_SHORT).show()
             saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName)
-
         }
     }
 
@@ -542,7 +538,7 @@ class QuoteBriefDialog :
                     saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName)
                 }
                 false -> {
-                    showToast("Without giving permission you can't download the file")
+                    showToast(resources.getString(R.string.Without_giving_permission_you_))
 //                DeselectingDialogFragment.newInstance(
 //                    AppConstants.DAY,
 //                    "Deny",
@@ -569,8 +565,13 @@ class QuoteBriefDialog :
         )
     }
 
-    override fun onStop() {
-        super.onStop()
-        dialog?.dismiss()
+    override fun internetError(exception: String) {
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

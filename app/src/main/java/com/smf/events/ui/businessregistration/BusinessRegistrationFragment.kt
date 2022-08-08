@@ -54,24 +54,29 @@ class BusinessRegistrationFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+    }
 
-        //Business Registration
-        businessRegistrationRecyclerview()
-        //Business information
-        businessInformationRecyclerview()
-        //Other Information
-        otherInformationRecyclerview()
-        //Add Services
-        addServicesRecyclerview()
+    private fun init() {
+//        if (checkInternetAvailable()) {
+            //Business Registration
+            businessRegistrationRecyclerview()
+            //Business information
+            businessInformationRecyclerview()
+            //Other Information
+            otherInformationRecyclerview()
+            //Add Services
+            addServicesRecyclerview()
 
-        mDataBinding?.approvalBtn?.setOnClickListener {
-            //Calling Approval Dialog Frgment
-            ApprovalDialog.newInstance().show(
-                (context as FragmentActivity).supportFragmentManager,
-                ApprovalDialog.TAG
-            )
-        }
-
+            mDataBinding?.approvalBtn?.setOnClickListener {
+                //Calling Approval Dialog Frgment
+                ApprovalDialog.newInstance().show(
+                    (context as FragmentActivity).supportFragmentManager,
+                    ApprovalDialog.TAG
+                )
+            }
+//        }
     }
 
     private fun businessInformationRecyclerview() {
