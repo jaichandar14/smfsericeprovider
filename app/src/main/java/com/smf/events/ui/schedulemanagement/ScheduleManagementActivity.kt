@@ -16,6 +16,7 @@ import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityScheduleManagmentBinding
 import com.smf.events.helper.CalendarUtils
 import com.smf.events.helper.ConnectionLiveData
+import com.smf.events.helper.InternetErrorDialog
 import com.smf.events.helper.SharedPreference
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
@@ -31,7 +32,9 @@ import kotlin.concurrent.timerTask
 class ScheduleManagementActivity :
     BaseActivity<ActivityScheduleManagmentBinding, ScheduleManagementViewModel>() {
 
+    var TAG = "ScheduleManagementActivity"
     private var status = false
+    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -47,6 +50,8 @@ class ScheduleManagementActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
         // 2458 Method for Calendar Ui
         calendarUI()
         // 2458 Method for TimeSlots Ui
@@ -65,6 +70,11 @@ class ScheduleManagementActivity :
             mViewDataBinding?.refreshLayout?.isRefreshing = true
         }
 
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer scheduled activity")
+            internetErrorDialog.dismissDialog()
+        }
+
         getViewModel().getScrollViewToPosition.observe(this, Observer {
             var totalHeaderHeight = mViewDataBinding!!.calendarFragment.height + mViewDataBinding!!.switchBtnTx.height+ mViewDataBinding!!.switchBtn.height
             totalHeaderHeight += it
@@ -76,15 +86,20 @@ class ScheduleManagementActivity :
     private fun calendarUI() {
         // 2528 - Toggle Button Logic
         mViewDataBinding?.switchBtn?.setOnClickListener {
-            if (mViewDataBinding?.switchBtn?.isChecked == false)
-                mViewDataBinding?.switchBtnTx?.text =
-                    resources.getString(com.smf.events.R.string.switch_to_modify_slots_availability)
-            else mViewDataBinding?.switchBtnTx?.text =
-                resources.getString(R.string.switch_to_View_Event_List)
+            if (internetErrorDialog.checkInternetAvailable(this)) {
+                if (mViewDataBinding?.switchBtn?.isChecked == false)
+                    mViewDataBinding?.switchBtnTx?.text =
+                        resources.getString(com.smf.events.R.string.switch_to_modify_slots_availability)
+                else mViewDataBinding?.switchBtnTx?.text =
+                    resources.getString(R.string.switch_to_View_Event_List)
 
-            status = mViewDataBinding?.switchBtn?.isChecked != false
-            Log.d("TAG", "calendarUI: $status")
-            updateTimeSlotsUI(status)
+                status = mViewDataBinding?.switchBtn?.isChecked != false
+                Log.d("TAG", "calendarUI: $status")
+                updateTimeSlotsUI(status)
+            }else{
+                mViewDataBinding?.switchBtn?.isChecked =
+                    mViewDataBinding?.switchBtn?.isChecked != true
+            }
         }
         Log.d("TAG", "calendarUI: $status")
         val frg = CalendarFragment() //create the fragment instance for the middle fragment
@@ -116,5 +131,11 @@ class ScheduleManagementActivity :
             manager.beginTransaction() //create an instance of Fragment-transaction
         transaction.replace(R.id.timeslots_fragment, frg, status.toString())
         transaction.commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onViewCreated: observe onDestroy: called scheduled activity")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

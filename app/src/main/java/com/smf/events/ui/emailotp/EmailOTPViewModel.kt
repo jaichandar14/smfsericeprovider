@@ -47,6 +47,7 @@ class EmailOTPViewModel @Inject constructor(
         num += 1
         Amplify.Auth.confirmSignIn(otp,
             {
+                Log.d(TAG, "confirmSignIn scess: $it")
                 // Aws method for Fetching Id Token
                 fetchIdToken(context)
                 //Aws Method for 6 digit Validation Check
@@ -128,7 +129,11 @@ class EmailOTPViewModel @Inject constructor(
                     if (errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host)) ||
                         errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))) {
                         callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
-                    } else {
+                    }
+//                    else if(errMsg.contains(context.resources.getString(R.string.Operation_requires_a_signed_in_state))){
+//                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Operation_requires_a_signed_in_state))
+//                    }
+                    else {
                         toastMessage = AppConstants.INVALID_OTP
                         callBackInterface!!.awsErrorResponse(num.toString())
                     }

@@ -160,6 +160,7 @@ class DayModifyExpandableListFragment : Fragment(),
         }
     }
 
+
     private fun init() {
         apiTokenValidation(AppConstants.INITIAL_DAY)
     }
@@ -555,7 +556,7 @@ class DayModifyExpandableListFragment : Fragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: called DayMody")
+        Log.d(TAG, "onViewCreated: observe onDestroy: called DayMody")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 

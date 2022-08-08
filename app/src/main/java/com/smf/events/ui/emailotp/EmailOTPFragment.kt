@@ -197,7 +197,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // AWS Error response
     override fun awsErrorResponse(num: String) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+//        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
             if (num == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
                 Log.e(TAG, "Failed to fetch user attributes inside")
                 SharedPreference.isInternetConnected = false
@@ -205,7 +205,13 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 hideProgress()
                 //Navigate to SignInFragment
                 findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
-            } else {
+            }
+//            else if (num == resources.getString(R.string.Operation_requires_a_signed_in_state)){
+//                hideProgress()
+//                SharedPreference.isInternetConnected = false
+//                internetErrorDialog.checkInternetAvailable(requireContext())
+//            }
+            else {
                 showProgress()
                 getOtpValidation(false)
                 if (num.toInt() >= 3) {
@@ -217,11 +223,12 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 mDataBinding?.otp2ed?.text = null
                 mDataBinding?.otp4ed?.text = null
             }
-        } else {
-            hideProgress()
-            //Navigate to SignInFragment
-            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
-        }
+//        }
+//    else {
+//            hideProgress()
+////            //Navigate to SignInFragment
+////            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+//        }
     }
 
     // Login api call to Fetch RollId and SpRegId

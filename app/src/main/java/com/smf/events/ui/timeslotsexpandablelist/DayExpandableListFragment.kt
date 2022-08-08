@@ -109,7 +109,7 @@ class DayExpandableListFragment : Fragment(),
         internetErrorDialog = InternetErrorDialog.newInstance()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer day")
+            Log.d(TAG, "onViewCreated: observer dayexp")
             internetErrorDialog.dismissDialog()
             if(activity != null) {
                 init()
@@ -446,6 +446,7 @@ class DayExpandableListFragment : Fragment(),
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "onViewCreated: observe onDestroy: dayexp")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 

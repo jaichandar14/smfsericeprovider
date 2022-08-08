@@ -551,6 +551,7 @@ class MonthModifyExpandableListFragment : Fragment(),
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "onViewCreated: observe onDestroy:moth mody")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 
