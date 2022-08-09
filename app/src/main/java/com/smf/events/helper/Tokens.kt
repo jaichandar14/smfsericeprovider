@@ -11,7 +11,6 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 
-
 class Tokens @Inject constructor() {
 
     // Method for verify token validity
@@ -19,18 +18,21 @@ class Tokens @Inject constructor() {
         val newTime = Date().time / 1000
         val splitToken = idToken.split('.')
         Log.d("TAG", "checkTokenExpiry refereshTokentime inside if block $splitToken ${splitToken.size}")
-//        if (splitToken.size )
-        val decodedBytes = android.util.Base64.decode(splitToken[1], android.util.Base64.DEFAULT)
-        val decodeToken = String(decodedBytes)
-        val tokenObj = JSONObject(decodeToken)
-        val tokenObjExp = tokenObj.getString("exp").toLong()
-        val newTimeMin = newTime + 1 * 60
-        if (newTimeMin < tokenObjExp) {
-            Log.d("TAG", "checkTokenExpiry refereshTokentime inside if block")
-            tokenNotExpired(idToken, myLambFunc, caller)
-        } else {
-            Log.d("TAG", "checkTokenExpiry refereshTokentime else block")
-            fetchNewIdToken(application, myLambFunc, caller)
+        try {
+            val decodedBytes = android.util.Base64.decode(splitToken[1], android.util.Base64.DEFAULT)
+            val decodeToken = String(decodedBytes)
+            val tokenObj = JSONObject(decodeToken)
+            val tokenObjExp = tokenObj.getString("exp").toLong()
+            val newTimeMin = newTime + 1 * 60
+            if (newTimeMin < tokenObjExp) {
+                Log.d("TAG", "checkTokenExpiry refereshTokentime inside if block")
+                tokenNotExpired(idToken, myLambFunc, caller)
+            } else {
+                Log.d("TAG", "checkTokenExpiry refereshTokentime else block")
+                fetchNewIdToken(application, myLambFunc, caller)
+            }
+        }catch (e: Exception){
+            Log.d("TAG", "checkTokenExpiry refereshTokentime exception block")
         }
     }
 

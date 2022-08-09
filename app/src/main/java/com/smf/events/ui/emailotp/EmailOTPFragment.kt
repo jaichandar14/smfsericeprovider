@@ -181,9 +181,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             // Navigate to EmailVerificationCodeFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
         } else if (status == AppConstants.EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD) {
-            val idToken =
-                "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
-//            getLoginApiCall(idToken)
             getOtpValidation(true)
         } else if (status == "Resend OTP") {
             getViewModel().otpTimerValidation(
@@ -197,38 +194,32 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // AWS Error response
     override fun awsErrorResponse(num: String) {
-//        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            if (num == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
-                Log.e(TAG, "Failed to fetch user attributes inside")
-                SharedPreference.isInternetConnected = false
-                internetErrorDialog.checkInternetAvailable(requireContext())
-                hideProgress()
-                //Navigate to SignInFragment
-                findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+        if (num == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
+            Log.e(TAG, "Failed to fetch user attributes inside")
+            SharedPreference.isInternetConnected = false
+            internetErrorDialog.checkInternetAvailable(requireContext())
+            hideProgress()
+            //Navigate to SignInFragment
+            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+        } else if (num == resources.getString(R.string.Operation_requires_a_signed_in_state)) {
+            hideProgress()
+            SharedPreference.isInternetConnected = false
+            internetErrorDialog.checkInternetAvailable(requireContext())
+            showToast("Network Error. Please Sign in again")
+            //Navigate to SignInFragment
+            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+        } else {
+            showProgress()
+            getOtpValidation(false)
+            if (num.toInt() >= 3) {
+            } else {
+                showToast(getViewModel().toastMessage)
             }
-//            else if (num == resources.getString(R.string.Operation_requires_a_signed_in_state)){
-//                hideProgress()
-//                SharedPreference.isInternetConnected = false
-//                internetErrorDialog.checkInternetAvailable(requireContext())
-//            }
-            else {
-                showProgress()
-                getOtpValidation(false)
-                if (num.toInt() >= 3) {
-                } else {
-                    showToast(getViewModel().toastMessage)
-                }
-                mDataBinding?.otp1ed?.text = null
-                mDataBinding?.otp3ed?.text = null
-                mDataBinding?.otp2ed?.text = null
-                mDataBinding?.otp4ed?.text = null
-            }
-//        }
-//    else {
-//            hideProgress()
-////            //Navigate to SignInFragment
-////            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
-//        }
+            mDataBinding?.otp1ed?.text = null
+            mDataBinding?.otp3ed?.text = null
+            mDataBinding?.otp2ed?.text = null
+            mDataBinding?.otp4ed?.text = null
+        }
     }
 
     // Login api call to Fetch RollId and SpRegId
@@ -243,7 +234,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         // Initialize RegId And RoleId to Shared Preference
                         //setSpRegIdAndRollID(apiResponse)
                         Log.d(TAG, "getLoginApiCall11: ${apiResponse.response}")
-
                         // Navigate to DashBoardFragment
                         if (isValid) {
                             Log.d(TAG, "getLoginApiCallaaa: getOtpValidation isvalid called")
@@ -260,7 +250,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         } else {
                             hideProgress()
                         }
-                        //   findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "error response: ${apiResponse.message}")
@@ -392,7 +381,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             arg3: Int
         ) { // TODO Auto-generated method stub
         }
-
     }
 
     override fun onDestroy() {
