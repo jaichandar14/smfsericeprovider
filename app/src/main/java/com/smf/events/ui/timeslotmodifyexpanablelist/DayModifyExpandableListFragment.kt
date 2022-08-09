@@ -301,7 +301,7 @@ class DayModifyExpandableListFragment : Fragment(),
 
         if (isScroll){
             // Condition for scroll to specific time slot location
-            Timer().schedule(500) {
+            Timer().schedule(800) {
                 scrollToLocation()
             }
         }

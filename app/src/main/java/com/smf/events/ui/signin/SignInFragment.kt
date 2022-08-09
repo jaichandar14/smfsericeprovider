@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
 import com.smf.events.BR
 import com.smf.events.R
@@ -73,7 +74,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreference.clear()
         Log.d(
             "TAG",
             "checkTokenExpiry signin ${sharedPreference.getString(SharedPreference.ID_Token)}"
@@ -119,7 +119,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     // 3028 on Close Sign out
     private fun signOut() {
         Amplify.Auth.signOut(
-//            AuthSignOutOptions.builder().globalSignOut(true).build(),
+            AuthSignOutOptions.builder().globalSignOut(true).build(),
             {
                 GlobalScope.launch(Dispatchers.Main) {
                     afterSignOut()
@@ -251,8 +251,10 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 mDataBinding?.progressBar?.visibility = View.GONE
             }
             AppConstants.SIGN_IN_COMPLETED_GOTO_DASH_BOARD -> {
-                //Navigate to DashBoardFragment
-                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
+                Log.i(TAG, "Sign in succeeded frag")
+                signOut()
+//                //Navigate to DashBoardFragment
+//                findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToDashBoardFragment())
             }
             AppConstants.RESEND_SUCCESS -> {
                 //Navigate to MobileVerificationCode

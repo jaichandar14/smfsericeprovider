@@ -20,6 +20,7 @@ import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.InternetErrorDialog
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -48,10 +49,16 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.confirmSignIn(otp,
             {
                 Log.d(TAG, "confirmSignIn scess: $it")
-                // Aws method for Fetching Id Token
-                fetchIdToken(context)
-                //Aws Method for 6 digit Validation Check
-                emailCodeValidationCheck(context)
+                if (it.isSignInComplete) {
+                    // Aws method for Fetching Id Token
+                    fetchIdToken(context)
+                } else {
+                    Log.d(TAG, "confirmSignIn scess else: $it")
+                    viewModelScope.launch {
+                        toastMessage = AppConstants.INVALID_OTP
+                        callBackInterface?.awsErrorResponse(num.toString())
+                    }
+                }
             },
             {
                 Log.d(TAG, "Failed to confirm signIn ${it.localizedMessage}", it)
@@ -63,8 +70,9 @@ class EmailOTPViewModel @Inject constructor(
                     ) {
                         toastMessage = context.resources.getString(R.string.OTP_is_expired)
                         callBackInterface!!.awsErrorResponse(num.toString())
-                    } else if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))||
-                        errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))) {
+                    } else if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp)) ||
+                        errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))
+                    ) {
                         callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
                     } else {
                         toastMessage = AppConstants.INVALID_OTP
@@ -82,13 +90,19 @@ class EmailOTPViewModel @Inject constructor(
                 val session = it as AWSCognitoAuthSession
                 idToken = AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
                 setTokenToSharedPref(idToken)
+                Log.d(TAG, "confirmSignIn scess idToken: $it, $idToken")
+                GlobalScope.launch(Dispatchers.Main) {
+                    //Aws Method for 6 digit Validation Check
+                    emailCodeValidationCheck(context)
+                }
             },
             {
                 Log.e(TAG, "Failed to fetch session", it)
                 val errMsg = it.cause!!.message!!.split(".")[0]
                 viewModelScope.launch {
-                    if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))||
-                        errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))) {
+                    if (errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp)) ||
+                        errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host))
+                    ) {
                         callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
                     }
                 }
@@ -117,7 +131,7 @@ class EmailOTPViewModel @Inject constructor(
                 } else {
                     Log.i(TAG, "User attributes = successfully entered dashboard")
                     viewModelScope.launch {
-                        callBackInterface?.callBack("EMailVerifiedTrueGoToDashBoard")
+                        callBackInterface?.callBack(AppConstants.EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD)
                     }
                 }
             },
@@ -127,16 +141,16 @@ class EmailOTPViewModel @Inject constructor(
                 Log.e(TAG, "Failed to fetch user attributes $errMsg")
                 viewModelScope.launch {
                     if (errMsg.contains(context.resources.getString(R.string.Unable_to_resolve_host)) ||
-                        errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))) {
+                        errMsg.contains(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
+                    ) {
                         callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Failed_to_connect_to_cognito_idp))
+                    } else if (errMsg.contains(context.resources.getString(R.string.Operation_requires_a_signed_in_state))) {
+                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Operation_requires_a_signed_in_state))
                     }
-//                    else if(errMsg.contains(context.resources.getString(R.string.Operation_requires_a_signed_in_state))){
-//                        callBackInterface!!.awsErrorResponse(context.resources.getString(R.string.Operation_requires_a_signed_in_state))
+//                    else {
+//                        toastMessage = AppConstants.INVALID_OTP
+//                        callBackInterface!!.awsErrorResponse(num.toString())
 //                    }
-                    else {
-                        toastMessage = AppConstants.INVALID_OTP
-                        callBackInterface!!.awsErrorResponse(num.toString())
-                    }
                 }
             })
     }
@@ -153,7 +167,7 @@ class EmailOTPViewModel @Inject constructor(
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
                 }
-                is ConnectException ->{
+                is ConnectException -> {
                     viewModelScope.launch {
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
@@ -174,7 +188,7 @@ class EmailOTPViewModel @Inject constructor(
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
                 }
-                is ConnectException ->{
+                is ConnectException -> {
                     viewModelScope.launch {
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
@@ -189,7 +203,7 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.resendUserAttributeConfirmationCode(AuthUserAttributeKey.email(),
             {
                 viewModelScope.launch {
-                    callBackInterface?.callBack("goToEmailVerificationCodePage")
+                    callBackInterface?.callBack(AppConstants.EMAIL_VERIFICATION_CODE_PAGE)
                 }
             },
             {
@@ -208,7 +222,7 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.signIn(userName, null, {
             Log.d(TAG, "reSendOTP: called code resented successfully")
             viewModelScope.launch {
-                callBackInterface?.callBack("Resend OTP")
+                callBackInterface?.callBack(AppConstants.RESEND_OTP)
             }
         },
             {
