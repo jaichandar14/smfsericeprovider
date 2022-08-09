@@ -251,4 +251,5 @@
     <string name="Please_Enter_Email_or_MobileNumber">Please Enter Email or MobileNumber</string>
     <string name="Without_giving_permission_you_">Without giving permission you can\'t download the file</string>
     <string name="Operation_requires_a_signed_in_state">Operation requires a signed-in state</string>
+    <string name="Network_Error._Please_Sign_in_again">Network Error. Please Sign in again</string>
 </resources>

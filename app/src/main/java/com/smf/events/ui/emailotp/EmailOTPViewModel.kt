@@ -131,7 +131,7 @@ class EmailOTPViewModel @Inject constructor(
                 } else {
                     Log.i(TAG, "User attributes = successfully entered dashboard")
                     viewModelScope.launch {
-                        callBackInterface?.callBack("EMailVerifiedTrueGoToDashBoard")
+                        callBackInterface?.callBack(AppConstants.EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD)
                     }
                 }
             },
@@ -203,7 +203,7 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.resendUserAttributeConfirmationCode(AuthUserAttributeKey.email(),
             {
                 viewModelScope.launch {
-                    callBackInterface?.callBack("goToEmailVerificationCodePage")
+                    callBackInterface?.callBack(AppConstants.EMAIL_VERIFICATION_CODE_PAGE)
                 }
             },
             {
@@ -222,7 +222,7 @@ class EmailOTPViewModel @Inject constructor(
         Amplify.Auth.signIn(userName, null, {
             Log.d(TAG, "reSendOTP: called code resented successfully")
             viewModelScope.launch {
-                callBackInterface?.callBack("Resend OTP")
+                callBackInterface?.callBack(AppConstants.RESEND_OTP)
             }
         },
             {

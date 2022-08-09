@@ -126,5 +126,7 @@ object AppConstants {
 
     // 3061
     const val UNKOWNHOSTANDCONNECTEXCEPTION= "UnknownHostException"
+    // 3078
+    const val RESEND_OTP="Resend OTP"
 
 }

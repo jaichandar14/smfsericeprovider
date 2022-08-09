@@ -182,7 +182,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             findNavController().navigate(EmailOTPFragmentDirections.actionPhoneOTPFragmentToEmailVerificationCodeFragment())
         } else if (status == AppConstants.EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD) {
             getOtpValidation(true)
-        } else if (status == "Resend OTP") {
+        } else if (status == AppConstants.RESEND_OTP) {
             getViewModel().otpTimerValidation(
                 mDataBinding,
                 userName,
@@ -205,7 +205,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             hideProgress()
             SharedPreference.isInternetConnected = false
             internetErrorDialog.checkInternetAvailable(requireContext())
-            showToast("Network Error. Please Sign in again")
+            showToast(resources.getString(R.string.Network_Error__Please_Sign_in_again))
             //Navigate to SignInFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
         } else {
