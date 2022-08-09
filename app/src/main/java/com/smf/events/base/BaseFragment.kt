@@ -2,6 +2,7 @@ package com.smf.events.base
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +12,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.smf.events.helper.ToastGenerate
 
 abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragment() {
     protected var mDataBinding: V? = null
     private var mViewModel: T? = null
 
+    private lateinit var toastGenerate: ToastGenerate
     abstract fun getViewModel(): T?
 
     abstract fun getBindingVariable(): Int
@@ -27,6 +30,7 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
         savedInstanceState: Bundle?
     ): View? {
         mDataBinding = DataBindingUtil.inflate(inflater, getContentView(), container, false)
+        toastGenerate = context?.let { ToastGenerate.getInstance(it) }!!
         performDataBinding()
         return mDataBinding?.root
     }
@@ -42,6 +46,11 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
 
     fun showToast(msg: String) {
         Toast.makeText(activity?.applicationContext, msg, Toast.LENGTH_LONG).show()
+
+    }
+    fun toastGenerate(message: String,type:Int){
+        toastGenerate = context?.let { ToastGenerate.getInstance(it) }!!
+        toastGenerate.createToastMessage(message,type)
     }
 
     // 2845 - Hiding Progress Bar

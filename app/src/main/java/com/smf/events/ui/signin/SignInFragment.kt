@@ -12,6 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
@@ -52,6 +56,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     @Inject
     lateinit var sharedPreference: SharedPreference
 
+    lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun getViewModel(): SignInViewModel =
         ViewModelProvider(this, factory).get(SignInViewModel::class.java)
 
@@ -66,6 +71,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firebaseAnalytics= Firebase.analytics
         //restrict user back button
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().finish()
@@ -156,7 +162,13 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         // Single Encoding
         encodedMobileNo = URLEncoder.encode(mobileNumberWithCountryCode, "UTF-8")
         eMail = mDataBinding?.editTextEmail?.text.toString()
-
+        // Sedding log event to the firebase
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.METHOD, eMail)
+        firebaseAnalytics.logEvent("userdetails") {
+            param("email",eMail)
+            param("mobileen",encodedMobileNo)
+        }
         if (phoneNumber.isNotEmpty() || eMail.isNotEmpty()) {
             if (phoneNumber.isEmpty() || eMail.isEmpty()) {
                 if (phoneNumber.isEmpty()) {
@@ -187,6 +199,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 emailId = apiResponse.response.data.email
                 if (AppConstants.SERVICE_PROVIDER == apiResponse.response.data.role) {
                     getViewModel().signIn(apiResponse.response.data.userName, requireContext())
+                    firebaseAnalytics.setUserId(apiResponse.response.data.userName);
                 } else {
                     hideProgress()
                     if (userInfo == AppConstants.EMAIL) {

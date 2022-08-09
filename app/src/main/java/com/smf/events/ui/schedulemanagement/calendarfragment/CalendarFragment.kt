@@ -81,7 +81,8 @@ class CalendarFragment : Fragment(),
     private var businessValidity: LocalDate? = null
     lateinit var dialogDisposable: Disposable
     private lateinit var internetErrorDialog: InternetErrorDialog
-
+    var toastlevel=true
+    var toast: Toast? =null
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -416,15 +417,20 @@ class CalendarFragment : Fragment(),
     }
 
     override fun onClickBusinessExpDate(valid: Boolean) {
-        var toast=Toast(requireContext())
         if (valid) {
             if (toast!=null){
-                toast.cancel()
+                toast?.cancel()
+                toast = Toast.makeText(requireContext(),
+                    "Your Business registration valid to date is No longer available for the selected date",
+                    Toast.LENGTH_SHORT)
+                toast?.show()
+            }else{
+                toast = Toast.makeText(requireContext(),
+                    "Your Business registration valid to date is No longer available for the selected date",
+                    Toast.LENGTH_SHORT)
+                toast?.show()
             }
-            toast= Toast.makeText(requireContext(),
-            "Your Business registration valid to date is No longer available for the selected date",
-            Toast.LENGTH_SHORT)
-            toast.show()
+
 
         }else{
             Toast.makeText(requireContext(),
@@ -432,6 +438,7 @@ class CalendarFragment : Fragment(),
                 Toast.LENGTH_SHORT)
                 .show()
         }
+       CalendarUtils.toastCount=0
     }
     // 2458 Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {

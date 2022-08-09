@@ -228,7 +228,9 @@ class CalendarAdapter(
         private fun onClickBusniessValidityDate() {
             onClickExpDate +=1
             if (CalendarUtils.selectedDate!! > businessValidity) {
-                if (onClickExpDate==1) {
+                CalendarUtils.toastCount +=1
+                Log.d("TAG", "toastCount: ${CalendarUtils.toastCount}")
+                if ( CalendarUtils.toastCount==1) {
                     onItemListener.onClickBusinessExpDate(true)
                 }
             }
