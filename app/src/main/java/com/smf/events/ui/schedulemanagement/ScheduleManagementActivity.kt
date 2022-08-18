@@ -3,6 +3,7 @@ package com.smf.events.ui.schedulemanagement
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.get
@@ -50,6 +51,7 @@ class ScheduleManagementActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        super.onPostCreate(savedInstanceState, null)
         // Internet Error Dialog Initialization
         internetErrorDialog = InternetErrorDialog.newInstance()
         // 2458 Method for Calendar Ui
@@ -80,7 +82,16 @@ class ScheduleManagementActivity :
             totalHeaderHeight += it
             mViewDataBinding!!.scrollView.smoothScrollTo(0, totalHeaderHeight)
         })
+
+       // showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),"000","jai")
+
     }
+
+    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onPostCreate(savedInstanceState, persistentState)
+    }
+
+
 
     // 2458 - Method for Calendar Ui
     private fun calendarUI() {

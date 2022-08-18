@@ -57,5 +57,6 @@
 
     <color name="quote_details_check_black">#B5232323</color>
     <color name="text_gray_color">#A6171313</color>
+    <color name="snack_background">#F3F0F0</color>
 
 </resources>

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -162,13 +163,14 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         // Single Encoding
         encodedMobileNo = URLEncoder.encode(mobileNumberWithCountryCode, "UTF-8")
         eMail = mDataBinding?.editTextEmail?.text.toString()
-        // Sedding log event to the firebase
+        // Sedding log event to the adb shell setprop debug.firebase.analytics.app com.smf.events.qafirebase
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.METHOD, eMail)
         firebaseAnalytics.logEvent("userdetails") {
             param("email",eMail)
             param("mobileen",encodedMobileNo)
         }
+        firebaseAnalytics.setUserProperty("userId",userName)
         if (phoneNumber.isNotEmpty() || eMail.isNotEmpty()) {
             if (phoneNumber.isEmpty() || eMail.isEmpty()) {
                 if (phoneNumber.isEmpty()) {
@@ -182,11 +184,19 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 }
             } else {
                 hideProgress()
-                showToast(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number))
+                //showToast(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number))
+                showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
+                firebaseAnalytics.logEvent("SignInError"){
+                    param("Enter any one Id Error",resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number))
+                }
             }
         } else {
             hideProgress()
-            showToast(resources.getString(R.string.Please_Enter_Email_or_MobileNumber))
+           // showToast(resources.getString(R.string.Please_Enter_Email_or_MobileNumber))
+            showToastMessage(resources.getString(R.string.Please_Enter_Email_or_MobileNumber),Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
+            firebaseAnalytics.logEvent("SignInError"){
+                param("Not entered login Id error",resources.getString(R.string.Please_Enter_Email_or_MobileNumber))
+            }
         }
     }
 
@@ -211,7 +221,9 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             }
             is ApisResponse.CustomError -> {
                 hideProgress()
-                showToast(apiResponse.message)
+                //showToast(apiResponse.message)
+                showToastMessage(apiResponse.message,Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
+
             }
             else -> {
             }
@@ -289,7 +301,9 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             internetErrorDialog.checkInternetAvailable(requireContext())
             hideProgress()
         } else {
-            showToast(getViewModel().toastMessage)
+           // showToast(getViewModel().toastMessage)
+            showToastMessage(getViewModel().toastMessage,Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
+
         }
     }
 

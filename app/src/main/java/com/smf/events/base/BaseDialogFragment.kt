@@ -1,6 +1,7 @@
 package com.smf.events.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import com.smf.events.helper.SnackBar
 
 abstract class BaseDialogFragment<V:ViewDataBinding,out T:BaseDialogViewModel>:DialogFragment(){
     protected var mDataBinding: V? = null
@@ -39,10 +41,20 @@ abstract class BaseDialogFragment<V:ViewDataBinding,out T:BaseDialogViewModel>:D
         }
     }
 
-    fun showToast(msg: String) {
-        Toast.makeText(activity?.applicationContext, msg, Toast.LENGTH_LONG).show()
+
+    private fun toastObserver(){
+        getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner,{ toastMessageG ->
+            Log.d("TAG", "onResume Base Fragment $toastMessageG")
+            SnackBar.showSnakbarTypeOne(view,toastMessageG.msg,requireActivity(),toastMessageG.duration)
+            //Toast(context).showCustomToast(toastMessageG.msg,requireActivity(),"Toast.LENGTH_LONG","fata")
+        })
+
     }
 
+    fun showToastMessage(message: String, length: Int, property: String){
+        getViewModel()?.setToastMessageG(message,length,property)
+        // snackBarLiveData.setSnackBarParam(BaseViewModel.ToastLayoutParam(message,length,property))
+    }
 
 
 

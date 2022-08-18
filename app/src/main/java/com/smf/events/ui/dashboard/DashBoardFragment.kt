@@ -28,6 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.SMFApp
@@ -266,7 +267,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 if (pressedTime + 1500 > System.currentTimeMillis()) {
                     requireActivity().finish()
                 } else {
-                    showToast(getString(R.string.Press_back_again_to_exit))
+                    showToastMessage(getString(R.string.Press_back_again_to_exit),Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
                 }
                 pressedTime = System.currentTimeMillis()
             }

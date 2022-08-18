@@ -2,17 +2,20 @@ package com.smf.events.ui.splash
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.amplifyframework.auth.options.AuthSignOutOptions
-import com.amplifyframework.core.Amplify
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SplashScreenFragmentBinding
+import com.smf.events.helper.Analytics
+import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
@@ -25,7 +28,7 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 
     @Inject
     lateinit var sharedPreference: SharedPreference
-
+    lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun getViewModel(): SplashScreenViewModel =
         ViewModelProvider(this, factory).get(SplashScreenViewModel::class.java)
 
@@ -40,6 +43,7 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firebaseAnalytics = Firebase.analytics
         setIdToken()
         requireActivity().window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
@@ -56,7 +60,13 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
     // Sign In Button
     private fun onClickSplashScreenBtn() {
         mDataBinding!!.splashBtn.setOnClickListener {
-            val action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
+            val bundle = Bundle()
+            bundle.putString("Button Clicked", "true")
+            Analytics.logEvent(bundle, "SplashScreen", "onClick")
+//            firebaseAnalytics.logEvent("SplashScreen") {
+//                param("OnClick", bundle)
+//            }
+                val action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
             findNavController().navigate(action)
         }
     }

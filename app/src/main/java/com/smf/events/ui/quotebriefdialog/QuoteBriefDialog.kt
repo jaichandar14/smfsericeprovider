@@ -16,6 +16,7 @@ import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
@@ -275,7 +276,9 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                 os.write(pdfAsBytes)
                 os.flush()
                 os.close()
-                showToast("File Downloaded  ${myFile1.absoluteFile.name}")
+              //  showToast("File Downloaded  ${myFile1.absoluteFile.name}")
+                showToastMessage("File Downloaded  ${myFile1.absoluteFile.name}",
+                    Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
             } else {
                 num++ //increase the file index
                 createFile(prefix,
@@ -538,7 +541,9 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                     saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName)
                 }
                 false -> {
-                    showToast(resources.getString(R.string.Without_giving_permission_you_))
+                   // showToast(resources.getString(R.string.Without_giving_permission_you_))
+                    showToastMessage(resources.getString(R.string.Without_giving_permission_you_),
+                        Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
 //                DeselectingDialogFragment.newInstance(
 //                    AppConstants.DAY,
 //                    "Deny",
