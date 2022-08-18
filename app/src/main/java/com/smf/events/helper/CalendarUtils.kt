@@ -21,6 +21,7 @@ class CalendarUtils @Inject constructor() {
         var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
         var businessValidity:LocalDate?= null
         var allDaysListForMonth: ArrayList<String> = ArrayList()
+        var toastCount = 0
     }
 
     fun monthYearFromDate(date: LocalDate): String? {

@@ -17,7 +17,6 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -25,6 +24,7 @@ import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
@@ -53,7 +53,7 @@ class QuoteDetailsDialog(
     var latestBidValue: String?,
     var branchName: String,
     var serviceName: String,
-    private var internetErrorDialog: InternetErrorDialog
+    private var internetErrorDialog: InternetErrorDialog,
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
     lateinit var biddingQuote: BiddingQuotDto
@@ -78,7 +78,7 @@ class QuoteDetailsDialog(
             latestBidValue: String?,
             branchName: String,
             serviceName: String,
-            internetErrorDialog: InternetErrorDialog
+            internetErrorDialog: InternetErrorDialog,
         ): QuoteDetailsDialog {
 
             return QuoteDetailsDialog(
@@ -138,7 +138,7 @@ class QuoteDetailsDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mDataBinding?.ForksSpoon?.text = branchName
-        mDataBinding?.quoteTitle?.text = getString(R.string.quote_details_for)+" "+serviceName
+        mDataBinding?.quoteTitle?.text = getString(R.string.quote_details_for) + " " + serviceName
         // Update CurrencyType ArrayList
         currencyTypeList =
             resources.getStringArray(R.array.currency_type).toList() as ArrayList<String>
@@ -346,10 +346,8 @@ class QuoteDetailsDialog(
                     AppConstants.TEXT)
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
-                Toast.makeText(
-                    activity, "Please install a File Manager.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToastMessage("Please install a File Manager.",
+                    Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
             }
         }
         mDataBinding?.fileImgDelete?.setOnClickListener {
@@ -423,9 +421,8 @@ class QuoteDetailsDialog(
                     displayName = null
                     mDataBinding?.filenameTx?.visibility = View.GONE
                     mDataBinding?.fileImgDelete?.visibility = View.GONE
-                    Toast.makeText(activity,
-                        "File is not uploaded. File Size Should Not Exceed 5MB.",
-                        Toast.LENGTH_SHORT).show()
+                    showToastMessage("File is not uploaded. File Size Should Not Exceed 5MB.",
+                        Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
                 }
             } else {
                 mDataBinding?.quoteTitle
@@ -436,9 +433,8 @@ class QuoteDetailsDialog(
                 displayName = null
                 mDataBinding?.filenameTx?.visibility = View.GONE
                 mDataBinding?.fileImgDelete?.visibility = View.GONE
-                Toast.makeText(activity,
-                    "File is not uploaded. File Size Should Not Exceed 5MB.",
-                    Toast.LENGTH_SHORT).show()
+                showToastMessage("File is not uploaded. File Size Should Not Exceed 5MB.",
+                    Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
                 mDataBinding?.btnFileUpload?.setBackgroundColor(
                     ContextCompat.getColor(
                         context?.applicationContext!!, R.color.green))

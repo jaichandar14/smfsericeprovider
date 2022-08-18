@@ -8,11 +8,11 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
@@ -125,8 +125,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         mDataBinding!!.submitBtn.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(requireContext())) {
                 if (mDataBinding?.otp1ed?.text.toString().isEmpty()) {
-                    Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT)
-                        .show()
+                    showToastMessage(AppConstants.ENTER_OTP,
+                        Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
                 } else {
                     showProgress()
                     Log.d(
@@ -205,7 +205,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             hideProgress()
             SharedPreference.isInternetConnected = false
             internetErrorDialog.checkInternetAvailable(requireContext())
-            showToast(resources.getString(R.string.Network_Error__Please_Sign_in_again))
+            showToastMessage(resources.getString(R.string.Network_Error__Please_Sign_in_again),
+                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
             //Navigate to SignInFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
         } else {
@@ -213,7 +214,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             getOtpValidation(false)
             if (num.toInt() >= 3) {
             } else {
-                showToast(getViewModel().toastMessage)
+                showToastMessage(getViewModel().toastMessage,
+                    Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
             }
             mDataBinding?.otp1ed?.text = null
             mDataBinding?.otp3ed?.text = null
@@ -256,7 +258,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         // Navigate to DashBoardFragment
                         showProgress()
                         if (!apiResponse.message.isNullOrEmpty()) {
-                            showToast(apiResponse.message)
+                            showToastMessage(apiResponse.message,
+                                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
                             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
                         }
                     }
@@ -274,17 +277,11 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun showToast(resendRestriction: Int) {
         if (resendRestriction <= 5) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.otp_sent_to_your_mail),
-                Toast.LENGTH_LONG
-            ).show()
+            showToastMessage(getString(R.string.otp_sent_to_your_mail),
+                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
         } else {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.resend_clicked_multiple_time),
-                Toast.LENGTH_LONG
-            ).show()
+            showToastMessage(getString(R.string.resend_clicked_multiple_time),
+                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
             val action = EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment()
             findNavController().navigate(action)
         }
@@ -292,7 +289,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun otpValidation(b: Boolean) {
         hideProgress()
-        Toast.makeText(requireContext(), AppConstants.ENTER_OTP, Toast.LENGTH_SHORT).show()
+        showToastMessage(AppConstants.ENTER_OTP,
+            Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
     }
 
     override fun internetError(exception: String) {
@@ -338,7 +336,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     class GenericKeyEvent internal constructor(
         private val currentView: EditText,
-        private val previousView: EditText?
+        private val previousView: EditText?,
     ) : View.OnKeyListener {
         override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
             if (event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.otp1ed && currentView.text.isEmpty()) {
@@ -353,7 +351,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     class GenericTextWatcher internal constructor(
         private val currentView: View,
-        private val nextView: View?
+        private val nextView: View?,
     ) : TextWatcher {
         override fun afterTextChanged(editable: Editable) { // TODO Auto-generated method stub
             val text = editable.toString()
@@ -370,7 +368,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             arg0: CharSequence,
             arg1: Int,
             arg2: Int,
-            arg3: Int
+            arg3: Int,
         ) { // TODO Auto-generated method stub
         }
 
@@ -378,7 +376,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             arg0: CharSequence,
             arg1: Int,
             arg2: Int,
-            arg3: Int
+            arg3: Int,
         ) { // TODO Auto-generated method stub
         }
     }
