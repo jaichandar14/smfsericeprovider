@@ -252,4 +252,18 @@
     <string name="Without_giving_permission_you_">Without giving permission you can\'t download the file</string>
     <string name="Operation_requires_a_signed_in_state">Operation requires a signed-in state</string>
     <string name="Network_Error._Please_Sign_in_again">Network Error. Please Sign in again</string>
+    // 3103
+    <string name="notifications">Notifications</string>
+    <string name="clear_all">Clear all</string>
+    <string name="events_overview">Events Overview</string>
+    <string name="_10_may_2022_6_10_am">10/May/2022 6:10 am</string>
+    <string name="bid_won">Bid Won</string>
+    <string name="you_have_won_bid_for_catering_service_fork_spoon_catering">You have won bid for catering service - Fork Spoon catering</string>
+    <string name="moved_to_old">Moved to old</string>
+    <string name="event_type">event type</string>
+    <string name="branch">branches</string>
+    <string name="All_Service">All Service</string>
+    <string name="Branches">Branches</string>
+    <string name="actionAndStatus">actionAndStatus</string>
+    <string name="bidStatus">bidStatus</string>
 </resources>

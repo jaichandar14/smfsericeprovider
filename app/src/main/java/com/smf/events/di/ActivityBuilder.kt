@@ -16,6 +16,12 @@ import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.dashboard.DashBoardModule
 import com.smf.events.ui.emailotp.EmailOTPFragment
 import com.smf.events.ui.emailotp.EmailOTPModule
+import com.smf.events.ui.notification.NotificationActivity
+import com.smf.events.ui.notification.NotificationModule
+import com.smf.events.ui.notification.activenotification.ActiveNotificationFragment
+import com.smf.events.ui.notification.activenotification.ActiveNotificationModule
+import com.smf.events.ui.notification.oldnotification.OldNotificationFragment
+import com.smf.events.ui.notification.oldnotification.OldNotificationModule
 import com.smf.events.ui.quotebrief.QuoteBriefFragment
 import com.smf.events.ui.quotebrief.QuoteBriefModule
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
@@ -131,4 +137,15 @@ abstract class ActivityBuilder {
     @ContributesAndroidInjector(modules = [DeselectingDialogModule::class])
     abstract fun provideDeselectedDialogFragment(): DeselectingDialogFragment
 
+    // 3103
+    @ContributesAndroidInjector(modules = [NotificationModule::class])
+    abstract fun provideNotificationActivity(): NotificationActivity
+
+    // 3103
+    @ContributesAndroidInjector(modules = [ActiveNotificationModule::class])
+    abstract fun provideActiveNotificationFragment(): ActiveNotificationFragment
+
+    // 3103
+    @ContributesAndroidInjector(modules = [OldNotificationModule::class])
+    abstract fun provideOldNotificationFragment(): OldNotificationFragment
 }
