@@ -52,7 +52,7 @@ object AppConstants {
     const val EVENTS_ON_SELECTED_DATE = "EventsOnSelectedDate"
     const val INITIAL_DATE_NO_EVENTS = "InitialDateNoEvents"
     const val BOOKED_EVENT_SERVICES = "bookedEventServices"
-    const val BOOKED_EVENT_SERVICES_INITIAL =  "bookedEventServicesInitial"
+    const val BOOKED_EVENT_SERVICES_INITIAL = "bookedEventServicesInitial"
     const val BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE = "bookedEventServicesFromSelectedDate"
     const val NULL = "Null"
     const val AVAILABLE = "Available"
@@ -114,19 +114,27 @@ object AppConstants {
     const val TEXT = "text/*"
     const val PDF = "application/pdf"
     const val XLS = "application/vnd.ms-excel"
-    const val DENY="Deny"
-    const val DEV="dev"
-    const val QA="qa"
-    const val UAT="uat"
+    const val DENY = "Deny"
+    const val DEV = "dev"
+    const val QA = "qa"
+    const val UAT = "uat"
 
     // 2985
-    const val EXPWeek="EXPWeek"
-    const val EXPMonth="EXPMonth"
-    const val TIMESLOT="timeSlot"
+    const val EXPWeek = "EXPWeek"
+    const val EXPMonth = "EXPMonth"
+    const val TIMESLOT = "timeSlot"
 
     // 3061
-    const val UNKOWNHOSTANDCONNECTEXCEPTION= "UnknownHostException"
+    const val UNKOWNHOSTANDCONNECTEXCEPTION = "UnknownHostException"
+
     // 3078
-    const val RESEND_OTP="Resend OTP"
-    const val PLAIN_SNACK_BAR="Plain Snackbar"
+    const val RESEND_OTP = "Resend OTP"
+    const val PLAIN_SNACK_BAR = "Plain Snackbar"
+
+    // 3103
+    const val NOTIFICATION_PARAMS = "NotificationParams"
+    const val ACTIVE = "Active"
+    const val OLD = "Old"
+    const val SERVICE_CATEGORY_ID = "serviceCategoryId"
+    const val SERVICE_VENDOR_ON_BOARDING_ID = "serviceVendorOnboardingId"
 }

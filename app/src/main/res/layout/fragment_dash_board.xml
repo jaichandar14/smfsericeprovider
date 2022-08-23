@@ -12,9 +12,9 @@
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
@@ -51,7 +51,7 @@
                         <LinearLayout
                             android:id="@+id/myEvents_layout"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/_210sdp"
+                            android:layout_height="@dimen/_218sdp"
                             android:background="@drawable/panel"
                             android:orientation="vertical"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -61,10 +61,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_16sdp"
-                                android:layout_marginTop="@dimen/_42sdp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="@dimen/_50sdp"
                                 android:fontFamily="@font/mulish_bold"
-                                android:text="@string/event_overview"
+                                android:gravity="center_horizontal"
+                                android:text="@string/events_overview"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_14sdp" />
 
@@ -72,7 +73,7 @@
                                 android:id="@+id/service_count_layout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_18sdp"
+                                android:layout_marginTop="@dimen/_16sdp"
                                 android:orientation="horizontal">
 
                                 <ImageView
@@ -119,11 +120,11 @@
                         </LinearLayout>
 
                         <androidx.cardview.widget.CardView
-                          app:cardBackgroundColor="@color/white"
                             android:id="@+id/spinner_action"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_160sdp"
+                            android:layout_marginTop="@dimen/_162sdp"
+                            app:cardBackgroundColor="@color/white"
                             app:cardCornerRadius="@dimen/_17sdp"
                             app:cardElevation="@dimen/_3sdp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -131,11 +132,11 @@
                             app:layout_constraintTop_toTopOf="@id/myEvents_layout">
 
                             <LinearLayout
-                                android:background="@color/white"
                                 android:id="@+id/spinners"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/size_25dp"
+                                android:background="@color/white"
                                 android:orientation="vertical"
                                 android:paddingStart="@dimen/size_10dp"
                                 android:paddingEnd="@dimen/size_10dp">
@@ -148,12 +149,12 @@
                                     android:background="@drawable/shapes">
 
                                     <Spinner
-                                        android:popupBackground="@color/white"
                                         android:id="@+id/spn_allServices"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:background="@drawable/spinner"
                                         android:gravity="center"
+                                        android:popupBackground="@color/white"
                                         android:spinnerMode="dropdown"
                                         android:textSize="@dimen/_16sdp" />
                                 </LinearLayout>
@@ -167,12 +168,12 @@
                                     android:background="@drawable/shapes">
 
                                     <Spinner
-                                        android:popupBackground="@color/white"
                                         android:id="@+id/spn_Branches"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:autofillHints="All Services"
                                         android:background="@drawable/spinner"
+                                        android:popupBackground="@color/white"
                                         android:spinnerMode="dropdown"
                                         android:textSize="@dimen/_16sdp" />
                                 </LinearLayout>
@@ -204,17 +205,31 @@
 
                         </androidx.cardview.widget.CardView>
 
-
                         <ImageView
                             android:id="@+id/calander"
-                            android:layout_width="@dimen/_45sdp"
-                            android:layout_height="@dimen/_45sdp"
-                            android:layout_marginTop="@dimen/_30sdp"
-                            android:src="@drawable/calendar_icon"
-                            app:layout_constraintHorizontal_bias=".93"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:layout_width="@dimen/_23sdp"
+                            android:layout_height="@dimen/_23sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginEnd="@dimen/_15sdp"
+                            android:src="@drawable/calendar_new"
+                            app:layout_constraintBottom_toBottomOf="@+id/welcome_text"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toEndOf="@+id/welcome_text"
+                            app:layout_constraintTop_toTopOf="@+id/welcome_text" />
+
+                        <ImageView
+                            android:id="@+id/notification_bell"
+                            android:layout_width="@dimen/_23sdp"
+                            android:layout_height="@dimen/_23sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:src="@drawable/notification_bell"
+                            app:layout_constraintBottom_toBottomOf="@+id/welcome_text"
+                            app:layout_constraintEnd_toStartOf="@+id/calander"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toEndOf="@+id/welcome_text"
+                            app:layout_constraintTop_toTopOf="@+id/welcome_text" />
 
                         <androidx.appcompat.widget.Toolbar
                             android:id="@+id/tool_bar"
@@ -232,7 +247,7 @@
 
                         <TextView
                             android:id="@+id/welcome_text"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/_150sdp"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/mulish_semi_bold"
                             android:text="@string/event_overview"
@@ -243,20 +258,6 @@
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toEndOf="@+id/tool_bar"
                             app:layout_constraintTop_toTopOf="@+id/tool_bar" />
-
-                        <TextView
-                            android:id="@+id/calander_tx"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/_3sdp"
-                            android:fontFamily="@font/mulish_semi_bold"
-                            android:text="@string/calendar_view"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_11sdp"
-                            app:layout_constraintBottom_toBottomOf="@+id/calander"
-                            app:layout_constraintEnd_toStartOf="@+id/calander"
-                            app:layout_constraintTop_toTopOf="@+id/calander" />
 
                         <TextView
                             android:id="@+id/upcoming_event"
@@ -287,8 +288,8 @@
                             android:id="@+id/banner2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/banner_2"
                             android:layout_marginTop="@dimen/_15sdp"
+                            android:src="@drawable/banner_2"
                             app:layout_constraintBottom_toBottomOf="@+id/banner1"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
@@ -299,9 +300,9 @@
                             android:id="@+id/progress_bar"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/_200sdp"
                             android:indeterminateDrawable="@drawable/custom_progrss_bar"
                             android:visibility="gone"
-                            android:layout_marginTop="@dimen/_200sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />

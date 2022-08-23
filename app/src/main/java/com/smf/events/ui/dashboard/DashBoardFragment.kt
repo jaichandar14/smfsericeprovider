@@ -28,7 +28,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.SMFApp
@@ -42,6 +41,7 @@ import com.smf.events.ui.dashboard.adapter.MyEventsAdapter
 import com.smf.events.ui.dashboard.model.BranchDatas
 import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.ServicesData
+import com.smf.events.ui.notification.NotificationActivity
 import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
@@ -49,9 +49,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
-import kotlin.math.log
 
 class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewModel>(),
     DashBoardViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface, View.OnTouchListener,
@@ -128,6 +126,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         arrowLeftAndRight()
         // 2458 CalendarIcon Onclick method
         onClickCalendar()
+        // 3103 Notification Onclick method
+        onClickNotification()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer DashBoard rx")
@@ -137,7 +137,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
 
         dialogDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
-            Log.d("TAG", "onViewCreated listener: $it")
+            Log.d(TAG, "onViewCreated listener: $it")
             mDataBinding?.upcomingEvent?.visibility = View.GONE
             mDataBinding?.banner1?.visibility = View.GONE
             mDataBinding?.banner2?.visibility = View.GONE
@@ -145,8 +145,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             //  mDataBinding?.loop1?.visibility=View.VISIBLE
             // mDataBinding?.nestedScroll?.visibility=View.GONE
         }
+
         dialogDisposable = RxBus.listen(RxEvent.QuoteBrief1::class.java).subscribe {
-            Log.d("TAG", "onViewCreated listener: $it")
+            Log.d(TAG, "onViewCreated listener: $it")
             mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
             mDataBinding?.banner1?.visibility = View.VISIBLE
             mDataBinding?.banner2?.visibility = View.VISIBLE
@@ -219,18 +220,28 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
     }
 
+    private fun onClickNotification() {
+        mDataBinding?.notificationBell?.setOnClickListener {
+            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                val intent = Intent(this.requireContext(), NotificationActivity::class.java)
+                startActivity(intent)
+                activity?.finish()
+            }
+        }
+    }
+
     private fun idTokenValidation() {
         tokens.checkTokenExpiry(
             requireActivity().applicationContext as SMFApp,
-            "event_type", idToken
+            getString(R.string.event_type), idToken
         )
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
             when (caller) {
-                "event_type" -> getAllServiceAndCounts(idToken)
-                "branches" -> getBranches(idToken, serviceCategoryId)
+                getString(R.string.event_type) -> getAllServiceAndCounts(idToken)
+                getString(R.string.branch) -> getBranches(idToken, serviceCategoryId)
                 else -> {
                 }
             }
@@ -265,9 +276,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 drawerLayout.closeDrawer(GravityCompat.START)
             } else {
                 if (pressedTime + 1500 > System.currentTimeMillis()) {
+                    // 3103 - While Displaying ActionDetails fragment clicked the back key to close main activity
+                    ApplicationUtils.fromNotification = false
                     requireActivity().finish()
                 } else {
-                    showToastMessage(getString(R.string.Press_back_again_to_exit),Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
+                    showToast(getString(R.string.Press_back_again_to_exit))
                 }
                 pressedTime = System.currentTimeMillis()
             }
@@ -278,9 +291,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override fun itemClick(position: Int) {
         Log.d(TAG, "onItemSelected itemClick: $position called")
         if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            if (serviceList[position].serviceName == "All Service") {
+            if (serviceList[position].serviceName == getString(R.string.All_Service)) {
                 var branchSpinner: ArrayList<String> = ArrayList()
-                branchSpinner.add(0, "Branches")
+                branchSpinner.add(0, getString(R.string.Branches))
                 serviceCategoryId = 0
                 val branchDataSpinner = branchSpinner
                 getViewModel().branches(
@@ -292,11 +305,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     0
                 )
             }
-            if (serviceList[position].serviceName != "All Service") {
+            if (serviceList[position].serviceName != getString(R.string.All_Service)) {
                 serviceCategoryId = (serviceList[position].serviceCategoryId)
                 tokens.checkTokenExpiry(
                     requireActivity().applicationContext as SMFApp,
-                    "branches", idToken
+                    getString(R.string.branch), idToken
                 )
                 branchListSpinner.clear()
             }
@@ -314,16 +327,19 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
             var branchesName = name
             if (branchListSpinner[serviceVendorOnboardingId].branchId == 0) {
-                branchesName = "Branches"
+                branchesName = getString(R.string.Branches)
             }
             try {
                 var serviceName = (serviceList[allServiceposition!!].serviceName)
-                if (serviceName == "All Service" && branchesName == "Branches") {
+                if (serviceName == getString(R.string.All_Service) && branchesName == getString(R.string.Branches)) {
                     actionAndStatusFragmentMethod(
                         serviceCategoryId,
                         0
                     )
-                } else if (serviceName != "All Service" && branchesName == "Branches") {
+                } else if (serviceName != getString(R.string.All_Service) && branchesName == getString(
+                        R.string.Branches
+                    )
+                ) {
                     actionAndStatusFragmentMethod(
                         serviceCategoryId,
                         0
@@ -334,7 +350,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         branchListSpinner[serviceVendorOnboardingId].branchId
                     )
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "branchItemClick: $e")
             }
         }
@@ -343,13 +359,13 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     // Action And Status UI setUp
     private fun actionAndStatusFragmentMethod(serviceCategoryId: Int, branchId: Int) {
         var args = Bundle()
-        args.putInt("serviceCategoryId", serviceCategoryId)
-        args.putInt("serviceVendorOnboardingId", branchId)
+        args.putInt(AppConstants.SERVICE_CATEGORY_ID, serviceCategoryId)
+        args.putInt(AppConstants.SERVICE_VENDOR_ON_BOARDING_ID, branchId)
         var actionAndStatusFragment = ActionsAndStatusFragment()
         actionAndStatusFragment.arguments = args
 
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(com.smf.events.R.id.action_and_status_layout, actionAndStatusFragment)
+            .replace(R.id.action_and_status_layout, actionAndStatusFragment)
             .setReorderingAllowed(true)
             .commit()
     }
@@ -371,7 +387,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
                     }
                     is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
                         sharedPreference.putString(SharedPreference.ID_Token, "")
                         GlobalScope.launch(Main) {
                             // Navigate to SignInFragment
@@ -415,15 +431,15 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        serviceList.add(ServicesData("All Service", 0))
-                        branchListSpinner.add(BranchDatas("Branches", 0))
+                        serviceList.add(ServicesData(getString(R.string.All_Service), 0))
+                        branchListSpinner.add(BranchDatas(getString(R.string.Branches), 0))
                         apiResponse.response.data.forEach {
                             serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
                         }
                         setAllService()
                     }
                     is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
                     }
                     else -> {
                     }
@@ -438,7 +454,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         var branchTypeItems: List<DatasNew> = apiResponse.response.datas
-                        branchListSpinner.add(BranchDatas("Branches", 0))
+                        branchListSpinner.add(BranchDatas(getString(R.string.Branches), 0))
                         for (i in branchTypeItems.indices) {
                             val branchName: String =
                                 branchTypeItems[i].branchName
@@ -463,7 +479,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         )
                     }
                     is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
                     }
                     else -> {
                     }
@@ -496,6 +512,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     // 2904 Scroll Refresh Method
     override fun onRefresh() {
         if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+            // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
+            ApplicationUtils.fromNotification = false
             serviceList.clear()
             idTokenValidation()
         }

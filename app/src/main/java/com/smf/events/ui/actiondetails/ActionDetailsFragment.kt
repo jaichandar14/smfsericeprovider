@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class ActionDetailsFragment :
     BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(),
-    Tokens.IdTokenCallBackInterface, CallBackInterface,ActionDetailsViewModel.CallBackInterface {
+    Tokens.IdTokenCallBackInterface, CallBackInterface, ActionDetailsViewModel.CallBackInterface {
 
     var TAG = "ActionDetailsFragment"
     private lateinit var myActionDetailsRecyclerView: RecyclerView
@@ -98,20 +98,20 @@ class ActionDetailsFragment :
         apiTokenValidationBidActions()
     }
 
-    private fun showProgress(){
+    private fun showProgress() {
         mDataBinding?.progressBar?.visibility = View.VISIBLE
-        mDataBinding?.textActions?.visibility =  View.GONE
-        mDataBinding?.textNewRequest?.visibility =  View.GONE
-        mDataBinding?.closeBtn?.visibility =  View.GONE
-        mDataBinding?.constraintLayout3?.visibility =  View.GONE
+        mDataBinding?.textActions?.visibility = View.GONE
+        mDataBinding?.textNewRequest?.visibility = View.GONE
+        mDataBinding?.closeBtn?.visibility = View.GONE
+        mDataBinding?.constraintLayout3?.visibility = View.GONE
     }
 
-    private fun hideProgress(){
+    private fun hideProgress() {
         mDataBinding?.progressBar?.visibility = View.GONE
-        mDataBinding?.textActions?.visibility =  View.VISIBLE
-        mDataBinding?.textNewRequest?.visibility =  View.VISIBLE
-        mDataBinding?.closeBtn?.visibility =  View.VISIBLE
-        mDataBinding?.constraintLayout3?.visibility =  View.VISIBLE
+        mDataBinding?.textActions?.visibility = View.VISIBLE
+        mDataBinding?.textNewRequest?.visibility = View.VISIBLE
+        mDataBinding?.closeBtn?.visibility = View.VISIBLE
+        mDataBinding?.constraintLayout3?.visibility = View.VISIBLE
     }
 
     override fun onResume() {
@@ -153,7 +153,13 @@ class ActionDetailsFragment :
     // Method For ActionDetails RecyclerView
     private fun myActionsStatusRecycler(status: Boolean) {
         actionDetailsAdapter =
-            ActionDetailsAdapter(requireContext(), internetErrorDialog, bidStatus, sharedPreference, status)
+            ActionDetailsAdapter(
+                requireContext(),
+                internetErrorDialog,
+                bidStatus,
+                sharedPreference,
+                status
+            )
         myActionDetailsRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         myActionDetailsRecyclerView.adapter = actionDetailsAdapter
@@ -165,6 +171,8 @@ class ActionDetailsFragment :
         closeBtn?.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(requireContext())) {
                 RxBus.publish(RxEvent.QuoteBrief1(2))
+                // 3103 - Redirect To ActionAndDetails Fragment
+                ApplicationUtils.fromNotification = false
                 var args = Bundle()
                 serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
                 serviceVendorOnboardingId?.let { it1 ->

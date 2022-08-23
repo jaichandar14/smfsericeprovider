@@ -15,10 +15,9 @@ class RxEvent {
     data class QuoteBrief1(var bidReqId: Int)
     data class ModifyDialog(val status: String)
     data class ChangingNav(val str:Int)
-
     data class DenyStorage(val s:Boolean)
     data class ChangingNavDialog(val str: Dialog?)
     data class IsValid(val str: Boolean)
-
     data class InternetStatus(val tag: String)
+    data class ClearAllNotification(val onClick: Boolean)
 }

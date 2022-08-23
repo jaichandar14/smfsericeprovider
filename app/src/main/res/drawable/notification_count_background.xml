@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+<!--        <shape android:shape="oval">-->
+<!--            <solid android:color="@color/pairing_theme"/>-->
+<!--            <size android:width="@dimen/_100sdp" android:height="@dimen/_100sdp"/>-->
+<!--        </shape>-->
+
+        <shape>
+            <solid android:color="@color/pairing_theme"/>
+            <corners android:topRightRadius="@dimen/_250sdp"
+                android:topLeftRadius="@dimen/_250sdp"
+                android:bottomLeftRadius="@dimen/_250sdp"
+                android:bottomRightRadius="@dimen/_250sdp"/>
+        </shape>
+    </item>
+</selector>

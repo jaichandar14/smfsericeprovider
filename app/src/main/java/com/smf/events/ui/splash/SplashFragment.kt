@@ -2,11 +2,11 @@ package com.smf.events.ui.splash
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -16,15 +16,19 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SplashScreenFragmentBinding
 import com.smf.events.helper.Analytics
 import com.smf.events.helper.AppConstants
+import com.smf.events.helper.ApplicationUtils
 import com.smf.events.helper.SharedPreference
+import com.smf.events.ui.notification.model.NotificationParams
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenViewModel>() {
 
+    var TAG = "SplashFragment"
+    lateinit var idToken: String
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-    lateinit var idToken: String
 
     @Inject
     lateinit var sharedPreference: SharedPreference
@@ -53,8 +57,22 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Splash Button Listener
-        onClickSplashScreenBtn()
+        // 3103
+        val notificationParams: NotificationParams? =
+            requireActivity().intent.getParcelableExtra(AppConstants.NOTIFICATION_PARAMS)
+        // 3103 - Condition For Redirect Notification To DashBoard
+        if (notificationParams?.fromNotification == true) {
+            ApplicationUtils.fromNotification = notificationParams.fromNotification
+            moveToDashBoardScreen()
+        } else if (ApplicationUtils.backArrowNotification) {
+            // ReUpdate Status for back arrow
+            ApplicationUtils.backArrowNotification = false
+            moveToDashBoardScreen()
+        } else {
+            // Splash Button Listener
+            onClickSplashScreenBtn()
+        }
+        Log.d(TAG, "init: ${notificationParams?.fromNotification}")
     }
 
     // Sign In Button
@@ -66,7 +84,7 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 //            firebaseAnalytics.logEvent("SplashScreen") {
 //                param("OnClick", bundle)
 //            }
-                val action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
+            val action = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
             findNavController().navigate(action)
         }
     }

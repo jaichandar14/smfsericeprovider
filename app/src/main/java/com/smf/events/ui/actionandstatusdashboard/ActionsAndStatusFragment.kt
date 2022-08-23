@@ -21,6 +21,7 @@ import com.smf.events.ui.actiondetails.ActionDetailsFragment
 import com.smf.events.ui.dashboard.adapter.StatusAdaptor
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
+import com.smf.events.ui.notification.model.NotificationParams
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ class ActionsAndStatusFragment :
     Tokens.IdTokenCallBackInterface,
     ActionsAndStatusViewModel.CallBackInterface {
 
-    var TAG= "ActionsAndStatusFragment"
+    var TAG = "ActionsAndStatusFragment"
     private lateinit var myActionRecyclerView: RecyclerView
     lateinit var actionAdapter: ActionsAdapter
     private lateinit var myStatusRecyclerView: RecyclerView
@@ -70,30 +71,24 @@ class ActionsAndStatusFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "onCreate: called ")
         // Initialize Local Variables
         setIdTokenAndSpRegId()
         // Set Category Id And ServiceOnBoarding Id
         serviceCategoryIdAndServiceOnBoardingIdSetup()
         // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        apiTokenValidationActionAndStatus()
-    }
 
-    override fun onStart() {
-        super.onStart()
-        Log.d("TAG", "onCreate: onstart called ")
-//        // Token Class CallBack Initialization
-//        tokens.setCallBackInterface(this)
-//        apiTokenValidationActionAndStatus()
-//        init()
-    }
+        // 3103
+        val notificationParams: NotificationParams? =
+            requireActivity().intent.getParcelableExtra(AppConstants.NOTIFICATION_PARAMS)
 
-    private fun init() {
-//        if (checkInternetAvailable()) {
-        // Action And Status Api Call
-//            apiTokenValidationActionAndStatus()
-//        }
+        if (ApplicationUtils.fromNotification) {
+            Log.d(TAG, "onCreate: called if ${notificationParams?.bidStatus}")
+            notificationParams?.bidStatus?.let { goToActionDetailsFragment(it) }
+        } else {
+            Log.d(TAG, "onCreate: called else")
+            apiTokenValidationActionAndStatus()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,25 +106,25 @@ class ActionsAndStatusFragment :
         myStatusRecycler()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d("TAG", "onViewCreated: observer ActionAndStatus")
+            Log.d(TAG, "onViewCreated: observer ActionAndStatus")
             internetErrorDialog.dismissDialog()
         }
     }
 
-    private fun showProgress(){
+    private fun showProgress() {
         mDataBinding?.progressBar?.visibility = View.VISIBLE
-        mDataBinding?.txActions?.visibility =  View.GONE
-        mDataBinding?.txStatus?.visibility =  View.GONE
+        mDataBinding?.txActions?.visibility = View.GONE
+        mDataBinding?.txStatus?.visibility = View.GONE
         mDataBinding?.txPendtingitems?.visibility = View.GONE
         mDataBinding?.txPendingstatus?.visibility = View.GONE
         mDataBinding?.actionsRecyclerview?.visibility = View.GONE
         mDataBinding?.statusRecyclerview?.visibility = View.GONE
     }
 
-    private fun hideProgress(){
+    private fun hideProgress() {
         mDataBinding?.progressBar?.visibility = View.GONE
-        mDataBinding?.txActions?.visibility =  View.VISIBLE
-        mDataBinding?.txStatus?.visibility =  View.VISIBLE
+        mDataBinding?.txActions?.visibility = View.VISIBLE
+        mDataBinding?.txStatus?.visibility = View.VISIBLE
         mDataBinding?.txPendtingitems?.visibility = View.VISIBLE
         mDataBinding?.txPendingstatus?.visibility = View.VISIBLE
         mDataBinding?.actionsRecyclerview?.visibility = View.VISIBLE
@@ -190,7 +185,7 @@ class ActionsAndStatusFragment :
                     goToActionDetailsFragment(AppConstants.BID_TIMED_OUT)
                 }
                 else -> {
-                    Log.d("TAG", "newRequestApiCallsample :else block")
+                    Log.d(TAG, "newRequestApiCallsample :else block")
                 }
             }
         }
@@ -201,14 +196,13 @@ class ActionsAndStatusFragment :
         if (idToken.isNotEmpty()) {
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "actionAndStatus", idToken
+                getString(R.string.actionAndStatus), idToken
             )
         }
     }
 
     // 2560 Method For ApiCall For Action And Status Counts
     private fun actionAndStatusApiCall(idToken: String) {
-        Log.d("TAG", "onCreate: onstart called ApiCal")
         getViewModel().getActionAndStatus(
             idToken,
             spRegId,
@@ -235,7 +229,7 @@ class ActionsAndStatusFragment :
                         recyclerViewListUpdate()
                     }
                     is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
                     }
                     else -> {
                     }
@@ -284,7 +278,7 @@ class ActionsAndStatusFragment :
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Dispatchers.Main) {
             when (caller) {
-                "actionAndStatus" -> actionAndStatusApiCall(idToken)
+                getString(R.string.actionAndStatus) -> actionAndStatusApiCall(idToken)
             }
         }
     }
@@ -292,9 +286,14 @@ class ActionsAndStatusFragment :
     // Method For Calling ActionDetailsFragment With Action Details
     private fun goToActionDetailsFragment(bidStatus: String) {
         val args = Bundle()
-        args.putString("bidStatus", bidStatus)
-        serviceCategoryId?.let { args.putInt("serviceCategoryId", it) }
-        serviceVendorOnboardingId?.let { args.putInt("serviceVendorOnboardingId", it) }
+        args.putString(getString(R.string.bidStatus), bidStatus)
+        serviceCategoryId?.let { args.putInt(AppConstants.SERVICE_CATEGORY_ID, it) }
+        serviceVendorOnboardingId?.let {
+            args.putInt(
+                AppConstants.SERVICE_VENDOR_ON_BOARDING_ID,
+                it
+            )
+        }
         val actionDetailsFragment = ActionDetailsFragment()
         actionDetailsFragment.arguments = args
         requireActivity().supportFragmentManager.beginTransaction()
