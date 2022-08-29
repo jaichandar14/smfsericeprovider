@@ -67,6 +67,8 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
         } else if (ApplicationUtils.backArrowNotification) {
             // ReUpdate Status for back arrow
             ApplicationUtils.backArrowNotification = false
+            // Display ActionAndStatus Fragment
+            ApplicationUtils.fromNotification = false
             moveToDashBoardScreen()
         } else {
             // Splash Button Listener

@@ -21,7 +21,22 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="api_key" />
-
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/festo_nofication"
+            />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+                notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/purple_700" />
+        <service
+            android:name=".helper.MyFirebaseInstanseIdService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity android:name="com.smf.events.ui.schedulemanagement.ScheduleManagementActivity" />
         <activity
             android:name=".MainActivity"
@@ -35,7 +50,11 @@
         </activity>
         <activity
             android:name=".ui.notification.NotificationActivity"
-            android:exported="false" />
+            android:exported="false">
+        <intent-filter>
+            <action android:name="OPEN_ACTIVITY_1" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter></activity>
     </application>
 
 </manifest>
