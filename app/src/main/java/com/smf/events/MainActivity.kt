@@ -1,23 +1,19 @@
 package com.smf.events
 
 
-import android.app.Activity
-import android.content.Context
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.util.AttributeSet
 import android.util.Log
-import android.view.View
-import androidx.fragment.app.Fragment
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityMainBinding
-import com.smf.events.helper.SnackBar
 import dagger.android.AndroidInjection
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-
 import javax.inject.Inject
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
@@ -33,16 +29,41 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     override fun getBindingVariable(): Int = BR.mainViewModel
 
 
+    @SuppressLint("NewApi")
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         super.onPostCreate(null, null)
-       // showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),"000","jai")
+        // showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),"000","jai")
+        // 3104 FireBase Notification getInstance token method
+        notificationFCMToken()
+        // 3104 Firebase get payload data om background Method
+        getPayloadData()
+    }
+    // 3104 FireBase Notification getInstance token method
+    private fun getPayloadData() {
+        if (intent.extras != null) {
+            intent.extras!!.keySet().forEach {
+                Log.d("TAG", "onCreate: ${it}")
+                if (it.equals("key_1")) {
+                    Log.d("TAG", "data details: ${intent.extras!![it]}")
+                }
+            }
+        }
+    }
+    // 3104 Firebase get payload data om background Method
+    private fun notificationFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("TAG", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            // Get new FCM registration token
+            val token = task.result
+            Log.d("TAG", "token data $token")
+        })
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
-    }
 }
-
 
