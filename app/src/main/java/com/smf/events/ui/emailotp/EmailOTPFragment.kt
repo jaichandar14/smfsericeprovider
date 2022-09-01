@@ -124,24 +124,38 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     private fun submitBtnClicked() {
         mDataBinding!!.submitBtn.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                if (mDataBinding?.otp1ed?.text.toString().isEmpty()) {
-                    showToastMessage(AppConstants.ENTER_OTP,
-                        Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
-                } else {
-                    showProgress()
-                    Log.d(
-                        TAG, "submitBtnClicked: ${
-                            otp0.text.toString() + otp1.text.toString()
-                                    + otp2.text.toString() + otp3.text.toString()
-                        }"
-                    )
-                    getViewModel().confirmSignIn(
-                        requireContext(),
-                        otp0.text.toString() + otp1.text.toString()
-                                + otp2.text.toString() + otp3.text.toString(), mDataBinding!!
-                    )
-                }
+                otpValidation(
+                    otp0.text.toString(), otp1.text.toString(),
+                    otp2.text.toString(), otp3.text.toString()
+                )
             }
+        }
+    }
+
+    fun otpValidation(
+        otp0: String,
+        otp1: String,
+        otp2: String,
+        otp3: String
+    ): Boolean {
+        return if (otp0.isEmpty()) {
+            if (::factory.isInitialized) {
+                showToastMessage(
+                    AppConstants.ENTER_OTP,
+                    Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR
+                )
+            }
+            false
+        } else {
+            showProgress()
+            if (::factory.isInitialized) {
+                Log.d(TAG, "submitBtnClicked: ${otp0 + otp1 + otp2 + otp3}")
+                getViewModel().confirmSignIn(
+                    requireContext(),
+                    otp0 + otp1 + otp2 + otp3, mDataBinding!!
+                )
+            }
+            true
         }
     }
 
@@ -205,8 +219,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             hideProgress()
             SharedPreference.isInternetConnected = false
             internetErrorDialog.checkInternetAvailable(requireContext())
-            showToastMessage(resources.getString(R.string.Network_Error__Please_Sign_in_again),
-                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
+            showToastMessage(
+                resources.getString(R.string.Network_Error__Please_Sign_in_again),
+                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+            )
             //Navigate to SignInFragment
             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
         } else {
@@ -214,8 +230,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             getOtpValidation(false)
             if (num.toInt() >= 3) {
             } else {
-                showToastMessage(getViewModel().toastMessage,
-                    Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
+                showToastMessage(
+                    getViewModel().toastMessage,
+                    Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+                )
             }
             mDataBinding?.otp1ed?.text = null
             mDataBinding?.otp3ed?.text = null
@@ -258,8 +276,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         // Navigate to DashBoardFragment
                         showProgress()
                         if (!apiResponse.message.isNullOrEmpty()) {
-                            showToastMessage(apiResponse.message,
-                                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
+                            showToastMessage(
+                                apiResponse.message,
+                                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+                            )
                             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
                         }
                     }
@@ -277,11 +297,15 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun showToast(resendRestriction: Int) {
         if (resendRestriction <= 5) {
-            showToastMessage(getString(R.string.otp_sent_to_your_mail),
-                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
+            showToastMessage(
+                getString(R.string.otp_sent_to_your_mail),
+                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+            )
         } else {
-            showToastMessage(getString(R.string.resend_clicked_multiple_time),
-                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
+            showToastMessage(
+                getString(R.string.resend_clicked_multiple_time),
+                Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+            )
             val action = EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment()
             findNavController().navigate(action)
         }
@@ -289,8 +313,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun otpValidation(b: Boolean) {
         hideProgress()
-        showToastMessage(AppConstants.ENTER_OTP,
-            Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
+        showToastMessage(
+            AppConstants.ENTER_OTP,
+            Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR
+        )
     }
 
     override fun internetError(exception: String) {

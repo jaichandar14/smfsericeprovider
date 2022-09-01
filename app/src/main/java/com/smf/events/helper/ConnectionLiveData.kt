@@ -57,7 +57,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
     }
 
     private fun checkAvailability(): Boolean{
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
             if (capabilities != null) {
                     if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {

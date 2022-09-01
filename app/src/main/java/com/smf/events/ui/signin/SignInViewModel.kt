@@ -61,7 +61,7 @@ class SignInViewModel @Inject constructor(
     }
 
     // ResendSignUpCode
-    private fun resendSignUp(userName: String, context: Context) {
+    fun resendSignUp(userName: String, context: Context) {
         Amplify.Auth.resendSignUpCode(userName,
             { result ->
                 var status: String? = null
@@ -101,7 +101,7 @@ class SignInViewModel @Inject constructor(
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
                 }
-                is ConnectException ->{
+                is ConnectException -> {
                     viewModelScope.launch {
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
