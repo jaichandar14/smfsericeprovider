@@ -72,7 +72,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        firebaseAnalytics= Firebase.analytics
+        firebaseAnalytics = Firebase.analytics
         //restrict user back button
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             requireActivity().finish()
@@ -167,37 +167,66 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.METHOD, eMail)
         firebaseAnalytics.logEvent("userdetails") {
-            param("email",eMail)
-            param("mobileen",encodedMobileNo)
+            param("email", eMail)
+            param("mobileen", encodedMobileNo)
         }
-        firebaseAnalytics.setUserProperty("userId",userName)
+        firebaseAnalytics.setUserProperty("userId", userName)
+        // Validate Mail and phone number
+        emailAndNumberValidation(phoneNumber, eMail)
+    }
+
+    fun emailAndNumberValidation(phoneNumber: String, eMail: String): Boolean {
         if (phoneNumber.isNotEmpty() || eMail.isNotEmpty()) {
             if (phoneNumber.isEmpty() || eMail.isEmpty()) {
-                if (phoneNumber.isEmpty()) {
+                return if (phoneNumber.isEmpty()) {
                     userInfo = AppConstants.EMAIL
-                    getViewModel().getUserDetails(eMail)
-                        .observe(viewLifecycleOwner, getUserDetailsObserver)
+                    if (::factory.isInitialized) {
+                        getViewModel().getUserDetails(eMail)
+                            .observe(viewLifecycleOwner, getUserDetailsObserver)
+                    }
+                    true
                 } else {
                     userInfo = AppConstants.MOBILE
-                    getViewModel().getUserDetails(encodedMobileNo)
-                        .observe(viewLifecycleOwner, getUserDetailsObserver)
+                    if (::factory.isInitialized) {
+                        getViewModel().getUserDetails(encodedMobileNo)
+                            .observe(viewLifecycleOwner, getUserDetailsObserver)
+                    }
+                    true
                 }
             } else {
                 hideProgress()
-                //showToast(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number))
-                showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
-                firebaseAnalytics.logEvent("SignInError"){
-                    param("Enter any one Id Error",resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number))
+                if (context != null) {
+                    showToastMessage(
+                        resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),
+                        Snackbar.LENGTH_LONG,
+                        AppConstants.PLAIN_SNACK_BAR
+                    )
+                    firebaseAnalytics.logEvent("SignInError") {
+                        param(
+                            "Enter any one Id Error",
+                            resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number)
+                        )
+                    }
                 }
+                return false
             }
         } else {
             hideProgress()
-           // showToast(resources.getString(R.string.Please_Enter_Email_or_MobileNumber))
-            showToastMessage(resources.getString(R.string.Please_Enter_Email_or_MobileNumber),Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
-            firebaseAnalytics.logEvent("SignInError"){
-                param("Not entered login Id error",resources.getString(R.string.Please_Enter_Email_or_MobileNumber))
+            if (context != null) {
+                showToastMessage(
+                    resources.getString(R.string.Please_Enter_Email_or_MobileNumber),
+                    Snackbar.LENGTH_LONG,
+                    AppConstants.PLAIN_SNACK_BAR
+                )
+                firebaseAnalytics.logEvent("SignInError") {
+                    param(
+                        "Not entered login Id error",
+                        resources.getString(R.string.Please_Enter_Email_or_MobileNumber)
+                    )
+                }
             }
         }
+        return false
     }
 
     // Observing GetUserDetails Api Call
@@ -222,7 +251,11 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             is ApisResponse.CustomError -> {
                 hideProgress()
                 //showToast(apiResponse.message)
-                showToastMessage(apiResponse.message,Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
+                showToastMessage(
+                    apiResponse.message,
+                    Snackbar.LENGTH_LONG,
+                    AppConstants.PLAIN_SNACK_BAR
+                )
 
             }
             else -> {
@@ -301,8 +334,12 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             internetErrorDialog.checkInternetAvailable(requireContext())
             hideProgress()
         } else {
-           // showToast(getViewModel().toastMessage)
-            showToastMessage(getViewModel().toastMessage,Snackbar.LENGTH_LONG,AppConstants.PLAIN_SNACK_BAR)
+            // showToast(getViewModel().toastMessage)
+            showToastMessage(
+                getViewModel().toastMessage,
+                Snackbar.LENGTH_LONG,
+                AppConstants.PLAIN_SNACK_BAR
+            )
 
         }
     }

@@ -10,6 +10,7 @@ plugins {
 }
 
 android {
+    useLibrary 'android.test.mock'
     compileSdk 31
     defaultConfig {
         configurations.all {
@@ -23,38 +24,38 @@ android {
         versionCode 9
         versionName "1.09"
         buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
-        buildConfigField "String", "apiType",  "\"festo-\""
+        buildConfigField "String", "apiType", "\"festo-\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     flavorDimensions "festo"
 
-    productFlavors{
-        dev{
+    productFlavors {
+        dev {
             dimension "festo"
-            applicationIdSuffix".dev"
+            applicationIdSuffix ".dev"
             buildConfigField "String", "base_url", "\"https://www.epm-dev.demo-bpmlinks.com/\""
-            buildConfigField "String", "apiType",  "\"epm-\""
+            buildConfigField "String", "apiType", "\"epm-\""
         }
 
-        qa{
+        qa {
             dimension "festo"
-            applicationIdSuffix".qa"
+            applicationIdSuffix ".qa"
             buildConfigField "String", "base_url", "\"https://qa1.festocloud.com/\""
             buildConfigField "String", "apiType", "\"festo-\""
         }
 
-        uat{
+        uat {
             dimension "festo"
-            applicationIdSuffix".uat"
+            applicationIdSuffix ".uat"
             buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
-            buildConfigField "String", "apiType",  "\"festo-\""
+            buildConfigField "String", "apiType", "\"festo-\""
         }
 
         prod {
             dimension "festo"
-            applicationIdSuffix""
+            applicationIdSuffix ""
             buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
-            buildConfigField "String", "apiType",  "\"festo-\""
+            buildConfigField "String", "apiType", "\"festo-\""
         }
     }
     buildTypes {
@@ -81,10 +82,20 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.includeAndroidResources = true
+    }
+}
+
+// execute tests before realising a prod apk
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleProdRelease' || task.name == 'bundleProdRelease') {
+        task.dependsOn('test')
+    }
 }
 
 dependencies {
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0'
@@ -100,19 +111,17 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
 
-
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+
     // LiveData
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
     kapt 'com.android.databinding:compiler:3.1.4'
-
 
     // clover SDK
     implementation 'com.clover.sdk:clover-android-sdk:262.2'
     implementation 'com.clover.sdk:clover-android-connector-sdk:262.2'
 
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
     //Nav Component
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
@@ -199,13 +208,12 @@ dependencies {
     // To auto-generate google map api key of google-services.json
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
-
+    // swipe refresh layout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.google.android.material:material:1.3.0-alpha03'
 
     // sdp screen resolution
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
-
 
     //firebase
     implementation 'com.google.firebase:firebase-messaging-ktx:23.0.7'
@@ -215,4 +223,16 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    // Unit test
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:2.25.0'
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
+    testImplementation 'androidx.test.ext:junit:1.0.0'
+    testImplementation "androidx.test:core:1.2.0"
+    testImplementation "com.android.support.test:runner:1.0.1"
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation 'org.json:json:20160810'
 }
