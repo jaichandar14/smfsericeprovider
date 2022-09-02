@@ -221,7 +221,7 @@ class ActionDetailsFragment :
     }
 
     // Method For postQuoteDetails Api Call
-    private fun postQuoteDetails(
+    fun postQuoteDetails(
         bidRequestId: Int,
         costingType: String,
         bidStatus: String,
@@ -288,7 +288,7 @@ class ActionDetailsFragment :
     }
 
     // Method For New Request Api Call
-    private fun bidActionsApiCall(idToken: String) {
+    fun bidActionsApiCall(idToken: String) {
         getViewModel().getBidActions(
             idToken,
             spRegId,

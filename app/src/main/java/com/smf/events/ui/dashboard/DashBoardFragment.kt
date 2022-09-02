@@ -159,7 +159,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // 2888 - SideNav Initialization
     @SuppressLint("SetTextI18n")
-    private fun sideNavBarInitialization() {
+    fun sideNavBarInitialization() {
         drawerLayout = mDataBinding!!.drawerLayout
         navigationView = mDataBinding!!.navView
         toolbar = mDataBinding?.toolBar!!
@@ -357,7 +357,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     // Action And Status UI setUp
-    private fun actionAndStatusFragmentMethod(serviceCategoryId: Int, branchId: Int) {
+    fun actionAndStatusFragmentMethod(serviceCategoryId: Int, branchId: Int) {
         var args = Bundle()
         args.putInt(AppConstants.SERVICE_CATEGORY_ID, serviceCategoryId)
         args.putInt(AppConstants.SERVICE_VENDOR_ON_BOARDING_ID, branchId)
@@ -371,7 +371,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     // Counts And AllService ApiCall
-    private fun getAllServiceAndCounts(idToken: String) {
+    fun getAllServiceAndCounts(idToken: String) {
         // Getting Service Provider Service Counts Status
         mDataBinding?.serviceCountLayout?.visibility = View.INVISIBLE
         getViewModel().getServiceCount(idToken, spRegId)
@@ -426,7 +426,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     // 2842 Getting All Service
-    private fun getAllServices(idToken: String) {
+    fun getAllServices(idToken: String) {
         getViewModel().getAllServices(idToken, spRegId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -448,7 +448,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     // Branch ApiCall
-    private fun getBranches(idToken: String, serviceCategoryId: Int) {
+    fun getBranches(idToken: String, serviceCategoryId: Int) {
         getViewModel().getServicesBranches(idToken, spRegId, serviceCategoryId)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {

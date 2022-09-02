@@ -202,7 +202,7 @@ class ActionsAndStatusFragment :
     }
 
     // 2560 Method For ApiCall For Action And Status Counts
-    private fun actionAndStatusApiCall(idToken: String) {
+    fun actionAndStatusApiCall(idToken: String) {
         getViewModel().getActionAndStatus(
             idToken,
             spRegId,
@@ -284,7 +284,7 @@ class ActionsAndStatusFragment :
     }
 
     // Method For Calling ActionDetailsFragment With Action Details
-    private fun goToActionDetailsFragment(bidStatus: String) {
+    fun goToActionDetailsFragment(bidStatus: String) {
         val args = Bundle()
         args.putString(getString(R.string.bidStatus), bidStatus)
         serviceCategoryId?.let { args.putInt(AppConstants.SERVICE_CATEGORY_ID, it) }
