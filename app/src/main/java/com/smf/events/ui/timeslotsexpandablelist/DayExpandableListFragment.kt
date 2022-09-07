@@ -138,7 +138,7 @@ class DayExpandableListFragment : Fragment(),
     }
 
     // 2776 - Method For set Dates ArrayList
-    private fun setListOfDatesArrayList(currentDate: ScheduleManagementViewModel.SelectedDate) {
+    fun setListOfDatesArrayList(currentDate: ScheduleManagementViewModel.SelectedDate) {
         if (currentDate.listOfDays.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.modifyProgressBar.visibility = View.GONE
@@ -157,7 +157,7 @@ class DayExpandableListFragment : Fragment(),
     }
 
     // 2670 - Method For Get Booked Event Services
-    private fun getBookedEventServices(
+    fun getBookedEventServices(
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
@@ -316,7 +316,7 @@ class DayExpandableListFragment : Fragment(),
         initializeExpandableListSetUp(caller)
     }
 
-    private fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
+    fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         Log.d("TAG", "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
         val bookedList = ArrayList<BookedEventServiceDto>()

@@ -153,7 +153,7 @@ class CalendarFragment : Fragment(),
         getBusinessValiditiy()
     }
 
-    private fun getBusinessValiditiy() {
+    fun getBusinessValiditiy() {
             sharedViewModel.getBusinessValiditiy(idToken, spRegId)
                 .observe(viewLifecycleOwner, { apiResponse ->
                     when (apiResponse) {
@@ -176,7 +176,7 @@ class CalendarFragment : Fragment(),
                 })
     }
 
-    private fun selectedEXPDateObserver() {
+    fun selectedEXPDateObserver() {
         sharedViewModel.getExpCurrentDate.observe(requireActivity(), {
             val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
             val currentDay = LocalDate.parse(it, currentDayFormatter)
@@ -213,7 +213,7 @@ class CalendarFragment : Fragment(),
     }
 
     // 2685 Method for Setting the MonthDate
-    private fun settingMonthDate() {
+    fun settingMonthDate() {
         val monthDate = calendarUtils.monthFromAndToDate()
         if (CalendarUtils.selectedDate?.monthValue!! <= cmonth && CalendarUtils.selectedDate?.year!! <= cyear) {
             monthDate.fromDate = ""
@@ -225,7 +225,7 @@ class CalendarFragment : Fragment(),
     }
 
     // 2796 Method for setting current Month
-    private fun setCurrentMonth(monthDate: CalendarUtils.MonthDates) {
+    fun setCurrentMonth(monthDate: CalendarUtils.MonthDates) {
         sharedViewModel.setCurrentMonthDate(
             monthDate.fromDate,
             monthDate.toDate,
@@ -238,7 +238,7 @@ class CalendarFragment : Fragment(),
     }
 
     // 2686 Method for Setting the WeekDate
-    private fun settingWeekDate() {
+    fun settingWeekDate() {
         val fromAndToDate = calendarUtils.fromAndToDate()
         val weeksOfMonth = calendarUtils.fetchWeekOfMonth()
         val cmonth = c.get(Calendar.MONTH)
@@ -485,7 +485,7 @@ class CalendarFragment : Fragment(),
     }
 
     // 2458 Getting All Service
-    private fun getAllServices() {
+    fun getAllServices() {
             sharedViewModel.getAllServices(idToken, spRegId)
                 .observe(viewLifecycleOwner, { apiResponse ->
                     when (apiResponse) {
@@ -519,7 +519,7 @@ class CalendarFragment : Fragment(),
     }
 
     // 2458 Branch ApiCall
-    private fun getBranches(idToken: String, serviceCategoryId: Int) {
+    fun getBranches(idToken: String, serviceCategoryId: Int) {
         sharedViewModel.getServicesBranches(idToken, spRegId, serviceCategoryId)
             .observe(this, { apiResponse ->
                 when (apiResponse) {
@@ -554,7 +554,7 @@ class CalendarFragment : Fragment(),
     }
 
     // 2685 Method For Getting the Event Date and Counts from Api
-    private fun eventDateAndCounts(
+    fun eventDateAndCounts(
         serviceCategoryId: Int?,
         branchId: Int,
         idToken: String,

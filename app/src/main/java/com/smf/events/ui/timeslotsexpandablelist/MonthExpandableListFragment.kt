@@ -146,7 +146,7 @@ class MonthExpandableListFragment : Fragment(),
     }
 
     // 2670 - Method For Get Booked Event Services
-    private fun getBookedEventServices(
+    fun getBookedEventServices(
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
@@ -220,7 +220,7 @@ class MonthExpandableListFragment : Fragment(),
         initializeExpandableListSetUp()
     }
 
-    private fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
+    fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         Log.d("TAG", "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
         val bookedList = ArrayList<BookedEventServiceDto>()
