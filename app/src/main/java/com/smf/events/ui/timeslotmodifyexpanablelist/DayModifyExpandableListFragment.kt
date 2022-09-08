@@ -166,7 +166,7 @@ class DayModifyExpandableListFragment : Fragment(),
     }
 
     // 2670 - Method For Get Booked Event Services
-    private fun getBookedEventServices(
+    fun getBookedEventServices(
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
@@ -457,7 +457,7 @@ class DayModifyExpandableListFragment : Fragment(),
     }
 
     // 2815 - Method For Set available Value
-    private fun isEmptyAvailableListData(data: Data): ListDataModify{
+    fun isEmptyAvailableListData(data: Data): ListDataModify{
         return ListDataModify(
             data.serviceSlot,
             listOf(

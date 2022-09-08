@@ -153,42 +153,56 @@ class ActionsAndStatusFragment :
     override fun actionCardClick(myEvents: MyEvents) {
         if (internetErrorDialog.checkInternetAvailable(requireContext())) {
             RxBus.publish(RxEvent.QuoteBrief(1))
-            when (myEvents.titleText) {
-                AppConstants.NEW_REQUEST -> {
-                    goToActionDetailsFragment(AppConstants.BID_REQUESTED)
-                }
-                AppConstants.PENDING_QUOTE -> {
-                    goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
-                }
-                // 2885 Bid Rejected flow
-                AppConstants.REJECTED_BID -> {
-                    goToActionDetailsFragment(AppConstants.BID_REJECTED)
-                }
-                AppConstants.QUOTE_SENT -> {
-                    goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
-                }
-                // 2884 for won Bid flow
-                AppConstants.BID_WON -> {
-                    goToActionDetailsFragment(AppConstants.WON_BID)
-                }
-                // 2885 Lost Bid flow
-                AppConstants.BID_LOST -> {
-                    goToActionDetailsFragment(AppConstants.LOST_BID)
-                }
-                AppConstants.SERVICE_PROGRESS -> {
-                    goToActionDetailsFragment(AppConstants.SERVICE_IN_PROGRESS)
-                }
-                AppConstants.REQUEST_CLOSED -> {
-                    goToActionDetailsFragment(AppConstants.SERVICE_DONE)
-                }
-                AppConstants.TIMED_OUT_BID -> {
-                    goToActionDetailsFragment(AppConstants.BID_TIMED_OUT)
-                }
-                else -> {
-                    Log.d(TAG, "newRequestApiCallsample :else block")
-                }
+            cardClicked(myEvents)
+        }
+    }
+
+    fun cardClicked(myEvents: MyEvents): String {
+        when (myEvents.titleText) {
+            AppConstants.NEW_REQUEST -> {
+                goToActionDetailsFragment(AppConstants.BID_REQUESTED)
+                return AppConstants.BID_REQUESTED
+            }
+            AppConstants.PENDING_QUOTE -> {
+                goToActionDetailsFragment(AppConstants.PENDING_FOR_QUOTE)
+                return AppConstants.PENDING_FOR_QUOTE
+            }
+            // 2885 Bid Rejected flow
+            AppConstants.REJECTED_BID -> {
+                goToActionDetailsFragment(AppConstants.BID_REJECTED)
+                return AppConstants.BID_REJECTED
+            }
+            AppConstants.QUOTE_SENT -> {
+                goToActionDetailsFragment(AppConstants.BID_SUBMITTED)
+                return AppConstants.BID_SUBMITTED
+            }
+            // 2884 for won Bid flow
+            AppConstants.BID_WON -> {
+                goToActionDetailsFragment(AppConstants.WON_BID)
+                return AppConstants.WON_BID
+            }
+            // 2885 Lost Bid flow
+            AppConstants.BID_LOST -> {
+                goToActionDetailsFragment(AppConstants.LOST_BID)
+                return AppConstants.LOST_BID
+            }
+            AppConstants.SERVICE_PROGRESS -> {
+                goToActionDetailsFragment(AppConstants.SERVICE_IN_PROGRESS)
+                return AppConstants.SERVICE_IN_PROGRESS
+            }
+            AppConstants.REQUEST_CLOSED -> {
+                goToActionDetailsFragment(AppConstants.SERVICE_DONE)
+                return AppConstants.SERVICE_DONE
+            }
+            AppConstants.TIMED_OUT_BID -> {
+                goToActionDetailsFragment(AppConstants.BID_TIMED_OUT)
+                return AppConstants.BID_TIMED_OUT
+            }
+            else -> {
+                Log.d(TAG, "newRequestApiCallsample :else block")
             }
         }
+        return ""
     }
 
     // Method For AWS Token Validation Action And Status
