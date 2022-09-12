@@ -1,17 +1,13 @@
 package com.smf.events.ui.timeslotmodifyexpanablelist
 
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ExpandableListView
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -31,8 +27,6 @@ import com.smf.events.ui.timeslotsexpandablelist.model.ListDataModify
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.Month
@@ -127,7 +121,10 @@ class DayModifyExpandableListFragment : Fragment(),
             listOfDates = currentDate.listOfDays
             allDaysList = currentDate.allDaysList
             isScroll = currentDate.isScroll
-            Log.d(TAG, "onViewCreated day: ${currentDate.isScroll}, ${currentDate.allDaysList} $serviceVendorOnboardingId")
+            Log.d(
+                TAG,
+                "onViewCreated day: ${currentDate.isScroll}, ${currentDate.allDaysList} $serviceVendorOnboardingId"
+            )
             initializeExpandableViewData()
         })
         // Observe Modify Dialog Result
@@ -221,7 +218,8 @@ class DayModifyExpandableListFragment : Fragment(),
         childData.clear()
         titleDate.clear()
         for (i in 0 until allDaysList.size) {
-            val bookedEventDetails = ArrayList<ListDataModify>() // Need to add one variable booked r submitted inside ListData
+            val bookedEventDetails =
+                ArrayList<ListDataModify>() // Need to add one variable booked r submitted inside ListData
             apiResponse.response.data.forEach {
                 if (it.bookedEventServiceDtos == null) {
                     bookedEventDetails.add(nullListData(it))
@@ -299,7 +297,7 @@ class DayModifyExpandableListFragment : Fragment(),
             }
         }
 
-        if (isScroll){
+        if (isScroll) {
             // Condition for scroll to specific time slot location
             Timer().schedule(800) {
                 scrollToLocation()
@@ -452,12 +450,12 @@ class DayModifyExpandableListFragment : Fragment(),
     private fun nullListData(data: Data): ListDataModify {
         return ListDataModify(
             data.serviceSlot,
-            listOf(BookedEventServiceDtoModify(getString(R.string.null_text), "", "", "",""))
+            listOf(BookedEventServiceDtoModify(getString(R.string.null_text), "", "", "", ""))
         )
     }
 
     // 2815 - Method For Set available Value
-    fun isEmptyAvailableListData(data: Data): ListDataModify{
+    fun isEmptyAvailableListData(data: Data): ListDataModify {
         return ListDataModify(
             data.serviceSlot,
             listOf(
@@ -465,7 +463,7 @@ class DayModifyExpandableListFragment : Fragment(),
                     getString(R.string.available_small),
                     "",
                     "",
-                    "",""
+                    "", ""
                 )
             )
         )
@@ -547,7 +545,7 @@ class DayModifyExpandableListFragment : Fragment(),
         bookedEventDetails.add(
             ListDataModify(
                 getString(R.string.empty),
-                listOf(BookedEventServiceDtoModify("", "", "", "",""))
+                listOf(BookedEventServiceDtoModify("", "", "", "", ""))
             )
         )
         childData[titleDate[groupPosition]] = bookedEventDetails
