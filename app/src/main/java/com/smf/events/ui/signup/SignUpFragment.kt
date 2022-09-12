@@ -1,12 +1,12 @@
 package com.smf.events.ui.signup
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.smf.events.BR
@@ -14,7 +14,6 @@ import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentSignupBinding
 import com.smf.events.helper.ApisResponse
-
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
 import dagger.android.support.AndroidSupportInjection
@@ -50,7 +49,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding, SignUpViewModel>(),
         // SignUp Button Listener
         mDataBinding!!.submitSignup.setOnClickListener {
             // Method for SignUp Function
-            getViewModel()!!.signUpFunctionality(mDataBinding!!,role)
+            getViewModel()!!.signUpFunctionality(mDataBinding!!, role)
         }
     }
 
@@ -63,7 +62,7 @@ class SignUpFragment : BaseFragment<FragmentSignupBinding, SignUpViewModel>(),
             }
 
             is ApisResponse.CustomError -> {
-                showToast(apiResponse.message!!)
+                showToast(apiResponse.message)
                 Log.d("TAG", "response: failure ${apiResponse.message}")
             }
         }

@@ -29,15 +29,15 @@ class EmailVerificationCodeFragment :
 
     private fun init() {
 //        if (checkInternetAvailable()) {
-            // Email Verification Code Button Listener
-            mDataBinding?.eMailCodesubmitBtn?.setOnClickListener {
-                eMailCodeSubmitBtnClicked()
-            }
+        // Email Verification Code Button Listener
+        mDataBinding?.eMailCodesubmitBtn?.setOnClickListener {
+            eMailCodeSubmitBtnClicked()
+        }
 
-            // Resend Email Verification Text Listener
-            mDataBinding?.eMailVerificationCodeResend?.setOnClickListener {
-                eMailVerificationCodeResend()
-            }
+        // Resend Email Verification Text Listener
+        mDataBinding?.eMailVerificationCodeResend?.setOnClickListener {
+            eMailVerificationCodeResend()
+        }
 //        }
     }
 

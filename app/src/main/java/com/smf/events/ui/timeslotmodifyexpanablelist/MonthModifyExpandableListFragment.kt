@@ -99,7 +99,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer monthmody")
             internetErrorDialog.dismissDialog()
-            if(activity != null) {
+            if (activity != null) {
                 init()
             }
         }

@@ -111,7 +111,10 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
 
 
     // 2458 Get Api call Method for All Services
-    suspend fun getBusinessValiditiy(idToken: String, spRegId: Int): ApisResponse<BusinessValidity> {
+    suspend fun getBusinessValiditiy(
+        idToken: String,
+        spRegId: Int
+    ): ApisResponse<BusinessValidity> {
         return try {
             val getResponse = apiStories.getBusinessValiditiy(idToken, spRegId)
             ApisResponse.Success(getResponse)

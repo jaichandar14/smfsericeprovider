@@ -258,7 +258,7 @@ class ActionDetailsAdapter(
                     // Update Latest bidRequestId To Shared Preference
                     updateBidRequestId(position.bidRequestId)
                     // Create Common Info Dialog
-                    CommonInfoDialog.newInstance(position, "cost",internetErrorDialog).show(
+                    CommonInfoDialog.newInstance(position, "cost", internetErrorDialog).show(
                         (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                         CommonInfoDialog.TAG
                     )

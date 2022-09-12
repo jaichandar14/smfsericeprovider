@@ -339,15 +339,19 @@ class QuoteDetailsDialog(
             }
         view?.findViewById<Button>(R.id.btn_file_upload)?.setOnClickListener {
             try {
-                val gallaryIntent = getCustomFileChooserIntent(AppConstants.DOC,
+                val gallaryIntent = getCustomFileChooserIntent(
+                    AppConstants.DOC,
                     AppConstants.PDF,
                     AppConstants.IMAGE,
                     AppConstants.XLS,
-                    AppConstants.TEXT)
+                    AppConstants.TEXT
+                )
                 logoUploadActivity.launch(Intent.createChooser(gallaryIntent, "Choose a file"))
             } catch (ex: android.content.ActivityNotFoundException) {
-                showToastMessage("Please install a File Manager.",
-                    Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
+                showToastMessage(
+                    "Please install a File Manager.",
+                    Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR
+                )
             }
         }
         mDataBinding?.fileImgDelete?.setOnClickListener {
@@ -368,16 +372,20 @@ class QuoteDetailsDialog(
         var fileEndName: String? = null
         if (fileUri.toString().startsWith("content://")) {
             try {
-                cursor = requireContext().contentResolver.query(fileUri,
+                cursor = requireContext().contentResolver.query(
+                    fileUri,
                     null,
                     null,
                     null,
-                    null)
+                    null
+                )
                 if (cursor != null && cursor.moveToFirst()) {
                     displayName =
                         cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                    Log.d(TAG,
-                        "gettingDocName: ${displayName?.substring(displayName!!.lastIndexOf("."))}")
+                    Log.d(
+                        TAG,
+                        "gettingDocName: ${displayName?.substring(displayName!!.lastIndexOf("."))}"
+                    )
                     var subString = String()
                     var iend: Int = displayName!!.lastIndexOf(".")
                     if (iend != -1) {
@@ -421,8 +429,10 @@ class QuoteDetailsDialog(
                     displayName = null
                     mDataBinding?.filenameTx?.visibility = View.GONE
                     mDataBinding?.fileImgDelete?.visibility = View.GONE
-                    showToastMessage("File is not uploaded. File Size Should Not Exceed 5MB.",
-                        Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
+                    showToastMessage(
+                        "File is not uploaded. File Size Should Not Exceed 5MB.",
+                        Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR
+                    )
                 }
             } else {
                 mDataBinding?.quoteTitle
@@ -433,11 +443,15 @@ class QuoteDetailsDialog(
                 displayName = null
                 mDataBinding?.filenameTx?.visibility = View.GONE
                 mDataBinding?.fileImgDelete?.visibility = View.GONE
-                showToastMessage("File is not uploaded. File Size Should Not Exceed 5MB.",
-                    Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR)
+                showToastMessage(
+                    "File is not uploaded. File Size Should Not Exceed 5MB.",
+                    Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR
+                )
                 mDataBinding?.btnFileUpload?.setBackgroundColor(
                     ContextCompat.getColor(
-                        context?.applicationContext!!, R.color.green))
+                        context?.applicationContext!!, R.color.green
+                    )
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()

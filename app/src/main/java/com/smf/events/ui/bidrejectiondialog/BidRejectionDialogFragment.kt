@@ -51,6 +51,7 @@ class BidRejectionDialogFragment(
 
     companion object {
         const val TAG = "CustomDialogFragment"
+
         //take the title and subtitle form the Activity
         fun newInstance(
             bidRequestId: Int?,
@@ -60,7 +61,13 @@ class BidRejectionDialogFragment(
             internetErrorDialog: InternetErrorDialog
         ): BidRejectionDialogFragment {
 
-            return BidRejectionDialogFragment(bidRequestId, serviceName, code, bidStatus,  internetErrorDialog)
+            return BidRejectionDialogFragment(
+                bidRequestId,
+                serviceName,
+                code,
+                bidStatus,
+                internetErrorDialog
+            )
         }
     }
 

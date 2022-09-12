@@ -1,17 +1,12 @@
 package com.smf.events.ui.timeslotsexpandablelist
 
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ExpandableListView
-import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
@@ -29,8 +24,6 @@ import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -57,7 +50,8 @@ class MonthExpandableListFragment : Fragment(),
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
-    private val currentDayFormatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+    private val currentDayFormatter =
+        DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
     private var fromDate: String? = null
     private var toDate: String? = null
     private var currentDate: String? = null
@@ -105,7 +99,7 @@ class MonthExpandableListFragment : Fragment(),
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer monthexp")
             internetErrorDialog.dismissDialog()
-            if(activity != null) {
+            if (activity != null) {
                 init()
             }
         }
@@ -152,7 +146,7 @@ class MonthExpandableListFragment : Fragment(),
         fromDate: String,
         toDate: String,
     ) {
-        if (view != null){
+        if (view != null) {
             sharedViewModel.getBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -164,7 +158,10 @@ class MonthExpandableListFragment : Fragment(),
                         //  2986 Hiding progress based on calender and service selection
                         mDataBinding.modifyProgressBar.visibility = View.GONE
                         mDataBinding.expandableLayout.visibility = View.VISIBLE
-                        Log.d("TAG", "check token result success month: ${apiResponse.response.data}")
+                        Log.d(
+                            "TAG",
+                            "check token result success month: ${apiResponse.response.data}"
+                        )
                         updateExpandableListData(apiResponse)
                     }
                     is ApisResponse.Error -> {

@@ -30,7 +30,7 @@ data class ServiceAddressDto(
     val knownVenue: Boolean,
     val state: String,
     val zipCode: String
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class ServiceProviderBidRequestDto(
@@ -76,4 +76,4 @@ data class ServiceProviderBidRequestDto(
     val spRegId: Int,
     val timeLeft: Double,
     val wonBid: String
-): Parcelable
+) : Parcelable

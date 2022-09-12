@@ -238,7 +238,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 emailId = apiResponse.response.data.email
                 if (AppConstants.SERVICE_PROVIDER == apiResponse.response.data.role) {
                     getViewModel().signIn(apiResponse.response.data.userName, requireContext())
-                    firebaseAnalytics.setUserId(apiResponse.response.data.userName);
+                    firebaseAnalytics.setUserId(apiResponse.response.data.userName)
                 } else {
                     hideProgress()
                     if (userInfo == AppConstants.EMAIL) {

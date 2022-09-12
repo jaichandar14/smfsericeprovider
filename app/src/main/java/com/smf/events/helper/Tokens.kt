@@ -17,9 +17,13 @@ class Tokens @Inject constructor() {
     fun checkTokenExpiry(application: SMFApp, caller: String, idToken: String) {
         val newTime = Date().time / 1000
         val splitToken = idToken.split('.')
-        Log.d("TAG", "checkTokenExpiry refereshTokentime inside if block $splitToken ${splitToken.size}")
+        Log.d(
+            "TAG",
+            "checkTokenExpiry refereshTokentime inside if block $splitToken ${splitToken.size}"
+        )
         try {
-            val decodedBytes = android.util.Base64.decode(splitToken[1], android.util.Base64.DEFAULT)
+            val decodedBytes =
+                android.util.Base64.decode(splitToken[1], android.util.Base64.DEFAULT)
             val decodeToken = String(decodedBytes)
             val tokenObj = JSONObject(decodeToken)
             val tokenObjExp = tokenObj.getString("exp").toLong()
@@ -31,7 +35,7 @@ class Tokens @Inject constructor() {
                 Log.d("TAG", "checkTokenExpiry refereshTokentime else block")
                 fetchNewIdToken(application, myLambFunc, caller)
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.d("TAG", "checkTokenExpiry refereshTokentime exception block")
         }
     }
@@ -61,10 +65,12 @@ class Tokens @Inject constructor() {
     ) {
         SharedPreference(application).putString(SharedPreference.ID_Token, idToken)
         GlobalScope.launch {
-            myFunc("${AppConstants.BEARER} ${
-                SharedPreference(application).getString(SharedPreference.ID_Token)
-            }",
-                caller)
+            myFunc(
+                "${AppConstants.BEARER} ${
+                    SharedPreference(application).getString(SharedPreference.ID_Token)
+                }",
+                caller
+            )
         }
     }
 

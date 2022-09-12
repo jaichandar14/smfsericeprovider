@@ -8,4 +8,4 @@ data class ServiceProviderBidRequestList(
     val bidRequestId: Int,
     val branchName: String,
     val eventName: String,
-): Parcelable
+) : Parcelable

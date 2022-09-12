@@ -118,7 +118,8 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
         dialogDisposable = RxBus.listen(RxEvent.DenyStorage::class.java).subscribe {
             checkPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                STORAGE_PERMISSION_CODE)
+                STORAGE_PERMISSION_CODE
+            )
         }
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
@@ -228,7 +229,8 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
             //   saveFileNew(it.tag.toString(), fileName)
             checkPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                STORAGE_PERMISSION_CODE)
+                STORAGE_PERMISSION_CODE
+            )
         }
 
     }
@@ -276,14 +278,18 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                 os.write(pdfAsBytes)
                 os.flush()
                 os.close()
-              //  showToast("File Downloaded  ${myFile1.absoluteFile.name}")
-                showToastMessage("File Downloaded  ${myFile1.absoluteFile.name}",
-                    Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
+                //  showToast("File Downloaded  ${myFile1.absoluteFile.name}")
+                showToastMessage(
+                    "File Downloaded  ${myFile1.absoluteFile.name}",
+                    Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+                )
             } else {
                 num++ //increase the file index
-                createFile(prefix,
+                createFile(
+                    prefix,
                     fileTypepath,
-                    newContent) //simply call this method again with the same prefix
+                    newContent
+                ) //simply call this method again with the same prefix
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -461,9 +467,11 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     fun widgetWonBid(apiResponse: ApisResponse.Success<QuoteBrief>) {
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = AppConstants.BID_WON_SMALL
-        mDataBinding?.txWonBid?.setTextColor(ContextCompat.getColor(
-            context?.applicationContext!!, R.color.dark_font
-        ))
+        mDataBinding?.txWonBid?.setTextColor(
+            ContextCompat.getColor(
+                context?.applicationContext!!, R.color.dark_font
+            )
+        )
         mDataBinding?.check2?.setImageResource(R.drawable.green_check)
         mDataBinding?.check3?.setImageResource(R.drawable.inprogress)
         setBidSubmitQuoteBrief(apiResponse.response)
@@ -474,12 +482,16 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
         mDataBinding?.check2?.setImageResource(R.drawable.green_check)
         mDataBinding?.check3?.setImageResource(R.drawable.green_check)
         mDataBinding?.check4?.setImageResource(R.drawable.inprogress)
-        mDataBinding?.txWonBid?.setTextColor(ContextCompat.getColor(
-            context?.applicationContext!!, R.color.dark_font
-        ))
-        mDataBinding?.txServiceProgress?.setTextColor(ContextCompat.getColor(
-            context?.applicationContext!!, R.color.dark_font
-        ))
+        mDataBinding?.txWonBid?.setTextColor(
+            ContextCompat.getColor(
+                context?.applicationContext!!, R.color.dark_font
+            )
+        )
+        mDataBinding?.txServiceProgress?.setTextColor(
+            ContextCompat.getColor(
+                context?.applicationContext!!, R.color.dark_font
+            )
+        )
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = AppConstants.SERVICE_IN_PROGRESS_SMALL
@@ -491,15 +503,21 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
         mDataBinding?.check3?.setImageResource(R.drawable.green_check)
         mDataBinding?.check4?.setImageResource(R.drawable.green_check)
         mDataBinding?.check5?.setImageResource(R.drawable.green_check)
-        mDataBinding?.txWonBid?.setTextColor(ContextCompat.getColor(
-            context?.applicationContext!!, R.color.dark_font
-        ))
-        mDataBinding?.txServiceProgress?.setTextColor(ContextCompat.getColor(
-            context?.applicationContext!!, R.color.dark_font
-        ))
-        mDataBinding?.txServiceCompleted?.setTextColor(ContextCompat.getColor(
-            context?.applicationContext!!, R.color.dark_font
-        ))
+        mDataBinding?.txWonBid?.setTextColor(
+            ContextCompat.getColor(
+                context?.applicationContext!!, R.color.dark_font
+            )
+        )
+        mDataBinding?.txServiceProgress?.setTextColor(
+            ContextCompat.getColor(
+                context?.applicationContext!!, R.color.dark_font
+            )
+        )
+        mDataBinding?.txServiceCompleted?.setTextColor(
+            ContextCompat.getColor(
+                context?.applicationContext!!, R.color.dark_font
+            )
+        )
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow5?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
@@ -523,8 +541,10 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
 
     // Function to check and request permission.
     private fun checkPermission(permission: String, requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(requireContext(),
-                permission) == PackageManager.PERMISSION_DENIED
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                permission
+            ) == PackageManager.PERMISSION_DENIED
         ) {
             // Requesting the permission
             requestPermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -541,9 +561,11 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                     saveFileNew(mDataBinding?.fileImgDelete?.tag.toString(), fileName)
                 }
                 false -> {
-                   // showToast(resources.getString(R.string.Without_giving_permission_you_))
-                    showToastMessage(resources.getString(R.string.Without_giving_permission_you_),
-                        Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR)
+                    // showToast(resources.getString(R.string.Without_giving_permission_you_))
+                    showToastMessage(
+                        resources.getString(R.string.Without_giving_permission_you_),
+                        Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+                    )
 //                DeselectingDialogFragment.newInstance(
 //                    AppConstants.DAY,
 //                    "Deny",

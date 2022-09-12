@@ -3,7 +3,6 @@ package com.smf.events.ui.timeslot.deselectingdialog
 import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.timeslot.deselectingdialog.model.ModifyDaySlotResponse
-import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import retrofit2.HttpException
 import javax.inject.Inject
 

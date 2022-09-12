@@ -58,7 +58,7 @@ class ActionDetailsViewModel @Inject constructor(
         ) {
             try {
                 emit(actionDetailsRepository.postQuoteDetails(idToken, bidRequestId, biddingQuote))
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d("TAG", "postQuoteDetails: $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -66,7 +66,7 @@ class ActionDetailsViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
@@ -94,7 +94,7 @@ class ActionDetailsViewModel @Inject constructor(
                         bidStatus
                     )
                 )
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d("TAG", "getBidActions: $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -102,7 +102,7 @@ class ActionDetailsViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }

@@ -17,7 +17,6 @@ import com.smf.events.helper.AppConstants
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -67,16 +66,19 @@ class QuoteDetailsDialogViewModel @Inject constructor(
         mDataBinding: FragmentQuoteDetailsDialogBinding?,
         quote: String,
     ) {
-            if (mDataBinding?.ihavequote?.isChecked == true) {
-                callBackInterface?.callBack("iHaveQuote")
-            } else {
-                callBackInterface?.callBack("quoteLater")
-            }
+        if (mDataBinding?.ihavequote?.isChecked == true) {
+            callBackInterface?.callBack("iHaveQuote")
+        } else {
+            callBackInterface?.callBack("quoteLater")
+        }
     }
 
     // Insert CurrencyType Spinner Value
     @SuppressLint("ResourceType")
-    fun getCurrencyType(mDataBinding: FragmentQuoteDetailsDialogBinding?, resources: ArrayList<String>) {
+    fun getCurrencyType(
+        mDataBinding: FragmentQuoteDetailsDialogBinding?,
+        resources: ArrayList<String>
+    ) {
 
         val spin = mDataBinding!!.currencyType
         // Spinner ClickListener
@@ -120,7 +122,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
         liveData(Dispatchers.IO) {
             try {
                 emit(quoteDetailsRepository.postQuoteDetails(idToken, bidRequestId, biddingQuote))
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "postQuoteDetails: $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -128,7 +130,7 @@ class QuoteDetailsDialogViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }

@@ -23,10 +23,11 @@ class EmailOTPRepository @Inject constructor(var apiStories: ApiStories) {
             ApisResponse.Error(e)
         }
     }
-    suspend fun getOtpValidation(isValid:Boolean,username:String): ApisResponse<OTPValidation> {
+
+    suspend fun getOtpValidation(isValid: Boolean, username: String): ApisResponse<OTPValidation> {
 
         return try {
-            val getResponse = apiStories.setOTPValidation(isValid,username)
+            val getResponse = apiStories.setOTPValidation(isValid, username)
             ApisResponse.Success(getResponse)
 
         } catch (e: HttpException) {

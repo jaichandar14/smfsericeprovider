@@ -8,5 +8,4 @@ data class NotificationParams(
     var fromNotification: Boolean = false,
     var backArrow: Boolean = false,
     var bidStatus: String? = "",
-) : Parcelable {
-}
+) : Parcelable

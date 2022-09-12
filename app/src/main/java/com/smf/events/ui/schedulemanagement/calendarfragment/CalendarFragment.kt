@@ -40,6 +40,7 @@ class CalendarFragment : Fragment(),
     Tokens.IdTokenCallBackInterface {
 
     var TAG = "CalendarFragment"
+
     @Inject
     lateinit var calendarUtils: CalendarUtils
 
@@ -81,8 +82,8 @@ class CalendarFragment : Fragment(),
     private var businessValidity: LocalDate? = null
     lateinit var dialogDisposable: Disposable
     private lateinit var internetErrorDialog: InternetErrorDialog
-    var toastlevel=true
-    var toast: Toast? =null
+    var toastlevel = true
+    var toast: Toast? = null
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -142,7 +143,7 @@ class CalendarFragment : Fragment(),
 //        getBusinessValiditiy()
     }
 
-    private fun init(){
+    private fun init() {
         // 2458 Method for initializing
         initWidgets()
         // 2622 Method for Calendar Format(Day,week,month) Picker
@@ -154,26 +155,26 @@ class CalendarFragment : Fragment(),
     }
 
     fun getBusinessValiditiy() {
-            sharedViewModel.getBusinessValiditiy(idToken, spRegId)
-                .observe(viewLifecycleOwner, { apiResponse ->
-                    when (apiResponse) {
-                        is ApisResponse.Success -> {
-                            val currentDayFormatter =
-                                DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
-                            val businessValidationDate =
-                                LocalDate.parse(apiResponse.response.data.toDate, currentDayFormatter)
-                            Log.d("TAG", "getBusinessValiditiy: $businessValidationDate")
-                            businessValidity = businessValidationDate
-                            CalendarUtils.businessValidity = businessValidationDate
-                        }
-                        is ApisResponse.Error -> {
-                            Log.d("TAG", "check token result: ${apiResponse.exception}")
-                        }
-                        else -> {
-                            Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
-                        }
+        sharedViewModel.getBusinessValiditiy(idToken, spRegId)
+            .observe(viewLifecycleOwner, { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        val currentDayFormatter =
+                            DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
+                        val businessValidationDate =
+                            LocalDate.parse(apiResponse.response.data.toDate, currentDayFormatter)
+                        Log.d("TAG", "getBusinessValiditiy: $businessValidationDate")
+                        businessValidity = businessValidationDate
+                        CalendarUtils.businessValidity = businessValidationDate
                     }
-                })
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
     }
 
     fun selectedEXPDateObserver() {
@@ -187,13 +188,13 @@ class CalendarFragment : Fragment(),
 
     private fun setSelectedWeekSetter(
         weeksOfMonth: java.util.HashMap<Int, WeekDatesOfMonth>,
-        fromAndToDate: CalendarUtils.WeekDates,isScroll:Boolean
+        fromAndToDate: CalendarUtils.WeekDates, isScroll: Boolean
     ) {
         sharedViewModel.setCurrentWeekDate(
             weeksOfMonth,
             serviceCategoryId,
             serviceVendorOnboardingId,
-            fromAndToDate.weekList, serviceDate,isScroll
+            fromAndToDate.weekList, serviceDate, isScroll
         )
     }
 
@@ -245,11 +246,11 @@ class CalendarFragment : Fragment(),
         if (CalendarUtils.selectedDate?.monthValue!! < cmonth && CalendarUtils.selectedDate?.year!! <= cyear) {
             weeksOfMonth.clear()
             serviceDate.clear()
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate, false)
         } else if (CalendarUtils.selectedDate?.monthValue!! >= cmonth && CalendarUtils.selectedDate?.year!! >= cyear) {
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate, false)
         } else {
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate, false)
         }
     }
 
@@ -418,28 +419,35 @@ class CalendarFragment : Fragment(),
 
     override fun onClickBusinessExpDate(valid: Boolean) {
         if (valid) {
-            if (toast!=null){
+            if (toast != null) {
                 toast?.cancel()
-                toast = Toast.makeText(requireContext(),
+                toast = Toast.makeText(
+                    requireContext(),
                     "Your Business registration valid to date is No longer available for the selected date",
-                    Toast.LENGTH_SHORT)
+                    Toast.LENGTH_SHORT
+                )
                 toast?.show()
-            }else{
-                toast = Toast.makeText(requireContext(),
+            } else {
+                toast = Toast.makeText(
+                    requireContext(),
                     "Your Business registration valid to date is No longer available for the selected date",
-                    Toast.LENGTH_SHORT)
+                    Toast.LENGTH_SHORT
+                )
                 toast?.show()
             }
 
 
-        }else{
-            Toast.makeText(requireContext(),
+        } else {
+            Toast.makeText(
+                requireContext(),
                 "Your Last Business registration Date",
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
-       CalendarUtils.toastCount=0
+        CalendarUtils.toastCount = 0
     }
+
     // 2458 Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
@@ -486,26 +494,26 @@ class CalendarFragment : Fragment(),
 
     // 2458 Getting All Service
     fun getAllServices() {
-            sharedViewModel.getAllServices(idToken, spRegId)
-                .observe(viewLifecycleOwner, { apiResponse ->
-                    when (apiResponse) {
-                        is ApisResponse.Success -> {
+        sharedViewModel.getAllServices(idToken, spRegId)
+            .observe(viewLifecycleOwner, { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
 //                        serviceList.add(ServicesData("All Service", 0))
 //                        branchListSpinner.add(BranchDatas("Branches", 0))
-                            apiResponse.response.data.forEach {
-                                serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
-                            }
-                            // 2458 Setting All Service
-                            setAllService()
+                        apiResponse.response.data.forEach {
+                            serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
                         }
-                        is ApisResponse.Error -> {
-                            Log.d("TAG", "check token result: ${apiResponse.exception}")
-                        }
-                        else -> {
-                            Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
-                        }
+                        // 2458 Setting All Service
+                        setAllService()
                     }
-                })
+                    is ApisResponse.Error -> {
+                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
     }
 
     // 2458 Setting All Service
@@ -595,7 +603,7 @@ class CalendarFragment : Fragment(),
             val weeksOfMonth = calendarUtils.fetchWeekOfMonth()
             weeksOfMonth.clear()
             serviceDate.clear()
-            setSelectedWeekSetter(weeksOfMonth, fromAndToDate,false)
+            setSelectedWeekSetter(weeksOfMonth, fromAndToDate, false)
         } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
             sharedViewModel.getEventDates(
                 idToken,
@@ -648,10 +656,10 @@ class CalendarFragment : Fragment(),
     // 2686 - Method For AWS Token Validation
     private fun apiTokenValidationCalendar(caller: String) {
         if (idToken.isNotEmpty()) {
-                tokens.checkTokenExpiry(
-                    requireActivity().applicationContext as SMFApp,
-                    caller, idToken
-                )
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                caller, idToken
+            )
         }
     }
 
@@ -659,7 +667,7 @@ class CalendarFragment : Fragment(),
         withContext(Dispatchers.Main) {
             when (caller) {
                 "EventDateApiPreviousActionAndNextMonth" -> {
-                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken,false)
+                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken, false)
                 }
                 "EventDateApiAllService" -> {
                     Log.d("TAG", "tokenCallBack:$serviceCategoryId ")
@@ -671,7 +679,7 @@ class CalendarFragment : Fragment(),
                     )
                 }
                 "EventDateApiBranches" -> {
-                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken,false)
+                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken, false)
                 }
                 "Branches" -> {
                     // 2458 Branch ApiCall

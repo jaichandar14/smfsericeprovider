@@ -38,21 +38,21 @@ class MobileVerificationCodeFrgment :
 
     private fun init() {
 //        if (checkInternetAvailable()) {
-            // VerificationCode code Submit Button Listener
-            mDataBinding?.submitBtn?.setOnClickListener {
-                val code = mDataBinding?.verificationCode?.text.toString()
+        // VerificationCode code Submit Button Listener
+        mDataBinding?.submitBtn?.setOnClickListener {
+            val code = mDataBinding?.verificationCode?.text.toString()
 
-                if (code.isEmpty() || code.length < 6) {
-                    Toast.makeText(requireContext(), "Enter Valid Code", Toast.LENGTH_SHORT).show()
-                } else {
-                    confirmSignUpFunctionality(code)
-                }
+            if (code.isEmpty() || code.length < 6) {
+                Toast.makeText(requireContext(), "Enter Valid Code", Toast.LENGTH_SHORT).show()
+            } else {
+                confirmSignUpFunctionality(code)
             }
+        }
 
-            // ResendVerificationCode TextView Listener
-            mDataBinding?.codeResend?.setOnClickListener {
-                resendCodeClicked()
-            }
+        // ResendVerificationCode TextView Listener
+        mDataBinding?.codeResend?.setOnClickListener {
+            resendCodeClicked()
+        }
 //        }
     }
 
@@ -78,7 +78,7 @@ class MobileVerificationCodeFrgment :
     }
 
     override fun awsErrorResponse() {
-        getViewModel()?.toastMessage?.let { showToast(it) }
+        getViewModel().toastMessage.let { showToast(it) }
     }
 
 

@@ -38,7 +38,7 @@ class ApprovalDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        okButton =  view.findViewById(R.id.ok_btn)
+        okButton = view.findViewById(R.id.ok_btn)
 
         okButton.setOnClickListener {
             Toast.makeText(requireContext(), "okay clicked", Toast.LENGTH_SHORT).show()

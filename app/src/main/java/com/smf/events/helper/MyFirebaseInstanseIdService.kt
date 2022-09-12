@@ -55,8 +55,10 @@ class MyFirebaseInstanseIdService : FirebaseMessagingService() {
             Log.d(TAG, "onMessageReceived: ${remoteMessage.notification?.body}")
             remoteMessage.notification?.title?.let {
                 remoteMessage.notification?.body?.let { it1 ->
-                    showNotification(it,
-                        it1)
+                    showNotification(
+                        it,
+                        it1
+                    )
                 }
             }
             Log.d(TAG, "onMessageReceived: ${remoteMessage.data["key_1"]}")
@@ -72,11 +74,14 @@ class MyFirebaseInstanseIdService : FirebaseMessagingService() {
     ): RemoteViews? {
         val remoteViews = RemoteViews(
             applicationContext.packageName,
-            R.layout.notification)
+            R.layout.notification
+        )
         remoteViews.setTextViewText(R.id.title, title)
         remoteViews.setTextViewText(R.id.message, message)
-        remoteViews.setImageViewResource(R.id.icon,
-            R.drawable.festo_nofication)
+        remoteViews.setImageViewResource(
+            R.id.icon,
+            R.drawable.festo_nofication
+        )
         return remoteViews
     }
 
@@ -97,17 +102,23 @@ class MyFirebaseInstanseIdService : FirebaseMessagingService() {
         // next Activity
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
-            PendingIntent.FLAG_ONE_SHOT)
+            PendingIntent.FLAG_ONE_SHOT
+        )
 
         // Create a Builder object using NotificationCompat
         // class. This will allow control over all the flags
         var builder: NotificationCompat.Builder = NotificationCompat.Builder(
             applicationContext,
-            channel_id)
+            channel_id
+        )
             .setSmallIcon(R.drawable.festologo)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(1000, 1000, 1000,
-                1000, 1000))
+            .setVibrate(
+                longArrayOf(
+                    1000, 1000, 1000,
+                    1000, 1000
+                )
+            )
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
 
@@ -118,7 +129,8 @@ class MyFirebaseInstanseIdService : FirebaseMessagingService() {
             >= Build.VERSION_CODES.JELLY_BEAN
         ) {
             builder = builder.setContent(
-                getCustomDesign(title, message))
+                getCustomDesign(title, message)
+            )
         } // If Android Version is lower than Jelly Beans,
         else {
             builder = builder.setContentTitle(title)
@@ -129,16 +141,19 @@ class MyFirebaseInstanseIdService : FirebaseMessagingService() {
         // notify the
         // user of events that happen in the background.
         val notificationManager = getSystemService(
-            NOTIFICATION_SERVICE) as NotificationManager
+            NOTIFICATION_SERVICE
+        ) as NotificationManager
         // Check if the Android Version is greater than Oreo
         if (Build.VERSION.SDK_INT
             >= Build.VERSION_CODES.O
         ) {
             val notificationChannel = NotificationChannel(
                 channel_id, "web_app",
-                NotificationManager.IMPORTANCE_HIGH)
+                NotificationManager.IMPORTANCE_HIGH
+            )
             notificationManager.createNotificationChannel(
-                notificationChannel)
+                notificationChannel
+            )
         }
         notificationManager.notify(0, builder.build())
     }

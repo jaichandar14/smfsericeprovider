@@ -1,9 +1,8 @@
 package com.smf.events.ui.signin
 
-import com.smf.events.network.ApiStories
 import com.google.gson.Gson
 import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.EvenTypes
+import com.smf.events.network.ApiStories
 import com.smf.events.ui.signup.model.ErrorResponse
 import com.smf.events.ui.signup.model.GetUserDetails
 import retrofit2.HttpException

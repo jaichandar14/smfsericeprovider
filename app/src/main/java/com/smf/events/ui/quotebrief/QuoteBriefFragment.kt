@@ -61,9 +61,9 @@ class QuoteBriefFragment :
     }
 
     private fun init() {
-            getViewModel()?.backButtonPressed(mDataBinding!!)
-            getViewModel()?.expandableView(mDataBinding, expand)
-            apiTokenValidationQuoteBrief()
+        getViewModel()?.backButtonPressed(mDataBinding!!)
+        getViewModel()?.expandableView(mDataBinding, expand)
+        apiTokenValidationQuoteBrief()
 //        //state progress three completed
 //        getViewModel()?.progress3Completed(mDataBinding)
 //        //state progress four completed
@@ -164,7 +164,8 @@ class QuoteBriefFragment :
             Log.d("TAG", "onResume: called")
             tokens.checkTokenExpiry(
                 requireActivity().applicationContext as SMFApp,
-                "quote_brief", idToken)
+                "quote_brief", idToken
+            )
         }
     }
 

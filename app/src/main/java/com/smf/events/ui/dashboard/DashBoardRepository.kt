@@ -1,7 +1,6 @@
 package com.smf.events.ui.dashboard
 
 import com.smf.events.helper.ApisResponse
-import com.smf.events.helper.EvenTypes
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches

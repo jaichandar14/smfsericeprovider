@@ -4,7 +4,6 @@ package com.smf.events
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
@@ -41,6 +40,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         // 3104 Firebase get payload data om background Method
         getPayloadData()
     }
+
     // 3104 FireBase Notification getInstance token method
     private fun getPayloadData() {
         if (intent.extras != null) {
@@ -52,6 +52,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
             }
         }
     }
+
     // 3104 Firebase get payload data om background Method
     private fun notificationFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->

@@ -7,5 +7,4 @@ import javax.inject.Inject
 class OldNotificationViewModel @Inject constructor(
     private val oldNotificationRepository: OldNotificationRepository,
     application: Application
-) : BaseViewModel(application)  {
-}
+) : BaseViewModel(application)

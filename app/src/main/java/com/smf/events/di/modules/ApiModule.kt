@@ -1,20 +1,12 @@
 package com.smf.events.di.modules
 
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
-import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
-import com.amplifyframework.auth.result.AuthSessionResult
-import com.amplifyframework.core.Amplify
-import com.smf.events.network.ApiStories
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.smf.events.BuildConfig
-import com.smf.events.helper.Tokens
+import com.smf.events.network.ApiStories
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

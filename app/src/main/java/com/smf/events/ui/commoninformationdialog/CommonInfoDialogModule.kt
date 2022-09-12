@@ -2,7 +2,6 @@ package com.smf.events.ui.commoninformationdialog
 
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.helper.ViewModelProviderFactory
-import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialogViewModel
 import dagger.Module
 import dagger.Provides
 

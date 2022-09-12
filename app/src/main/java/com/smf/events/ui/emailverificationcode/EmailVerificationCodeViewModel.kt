@@ -22,10 +22,11 @@ class EmailVerificationCodeViewModel @Inject constructor(application: Applicatio
                     callBackInterface?.callBack("EmailVerifiedGoToDashBoard")
                 }
             },
-            { Log.e("AuthDemo", "Failed to confirm user attribute. Bad code?", it)
+            {
+                Log.e("AuthDemo", "Failed to confirm user attribute. Bad code?", it)
                 viewModelScope.launch {
-                    var errMsg= it.cause!!.message!!.split(".")[0]
-                    toastMessage=errMsg
+                    var errMsg = it.cause!!.message!!.split(".")[0]
+                    toastMessage = errMsg
                     callBackInterface!!.awsErrorResponse()
                 }
 
@@ -40,12 +41,14 @@ class EmailVerificationCodeViewModel @Inject constructor(application: Applicatio
             {
                 Log.i("AuthDemo", "Code was sent again: $it")
             },
-            { Log.e("AuthDemo", "Failed to resend code", it)
+            {
+                Log.e("AuthDemo", "Failed to resend code", it)
                 viewModelScope.launch {
-                    var errMsg= it.cause!!.message!!.split(".")[0]
-                    toastMessage=errMsg
+                    var errMsg = it.cause!!.message!!.split(".")[0]
+                    toastMessage = errMsg
                     callBackInterface!!.awsErrorResponse()
-                }})
+                }
+            })
     }
 
     private var callBackInterface: CallBackInterface? = null
