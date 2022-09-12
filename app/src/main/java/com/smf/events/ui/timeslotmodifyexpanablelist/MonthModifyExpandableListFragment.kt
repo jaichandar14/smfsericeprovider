@@ -136,7 +136,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2795 - Method For Restrict Previous Month
-    private fun monthValidation() {
+    fun monthValidation() {
         if (!fromDate.isNullOrEmpty() && !toDate.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
@@ -156,7 +156,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2670 - Method For Get Booked Event Services
-    private fun getBookedEventServices(
+    fun getBookedEventServices(
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
@@ -220,7 +220,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2873 - Restrict Completed Dates
-    private fun updateUpcomingEvents(data: Data): ArrayList<BookedEventServiceDtoModify> {
+    fun updateUpcomingEvents(data: Data): ArrayList<BookedEventServiceDtoModify> {
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDtoModify>()
         data.bookedEventServiceDtos?.forEach { objectList ->
             val currentDayFormatter =
@@ -438,7 +438,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     // 2815 - Method For Set available Value
-    private fun isEmptyAvailableListData(data: Data): ListDataModify {
+    fun isEmptyAvailableListData(data: Data): ListDataModify {
         return ListDataModify(
             data.serviceSlot,
             listOf(

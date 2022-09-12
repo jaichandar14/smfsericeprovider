@@ -84,7 +84,7 @@ class ScheduleManagementActivity :
 
 
     // 2458 - Method for Calendar Ui
-    private fun calendarUI() {
+    fun calendarUI() {
         // 2528 - Toggle Button Logic
         mViewDataBinding?.switchBtn?.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(this)) {
@@ -113,7 +113,7 @@ class ScheduleManagementActivity :
     }
 
     // 2527 - Method for TimeSlots Ui
-    private fun timeSlotsUI() {
+    fun timeSlotsUI() {
         val frg = TimeSlotsFragment() //create the fragment instance for the middle fragment
         val manager: FragmentManager =
             supportFragmentManager //create an instance of fragment manager

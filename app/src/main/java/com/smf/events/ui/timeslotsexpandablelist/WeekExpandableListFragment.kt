@@ -163,7 +163,7 @@ class WeekExpandableListFragment : Fragment(),
     }
 
     // 2670 - Method For Get Booked Event Services
-    private fun getBookedEventServices(
+    fun getBookedEventServices(
         idToken: String, spRegId: Int, serviceCategoryId: Int?,
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
@@ -294,7 +294,7 @@ class WeekExpandableListFragment : Fragment(),
         childData[titleDate[groupPosition]] = bookedEventDetails
     }
 
-    private fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
+    fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         Log.d(TAG, "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
         val bookedList = ArrayList<BookedEventServiceDto>()
@@ -309,7 +309,7 @@ class WeekExpandableListFragment : Fragment(),
     }
 
     // 2558 - Method for ExpandableList Initialization
-    private fun initializeExpandableListSetUp(caller: String) {
+    fun initializeExpandableListSetUp(caller: String) {
         if (expandableListView != null) {
             adapter = CustomExpandableListAdapter(
                 requireContext(),
