@@ -40,6 +40,7 @@ class ScheduleManagementActivity :
 
     override fun getBindingVariable(): Int = BR.scheduleManagementViewModel
 
+
     @SuppressLint("ResourceAsColor", "NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
