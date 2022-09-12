@@ -338,12 +338,18 @@ class ScheduleManagementViewModel @Inject constructor(
                     is UnknownHostException -> {
                         Log.d("TAG", "getBookedEventServices when called: $e")
                         viewModelScope.launch {
-                            callBackExpListInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION, caller)
+                            callBackExpListInterface?.internetError(
+                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
+                                caller
+                            )
                         }
                     }
                     is ConnectException -> {
                         viewModelScope.launch {
-                            callBackExpListInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION, caller)
+                            callBackExpListInterface?.internetError(
+                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
+                                caller
+                            )
                         }
                     }
                 }
@@ -376,12 +382,18 @@ class ScheduleManagementViewModel @Inject constructor(
                     is UnknownHostException -> {
                         Log.d("TAG", "getBookedEventServices when mody called: $e")
                         viewModelScope.launch {
-                            callBackExpListInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION, caller)
+                            callBackExpListInterface?.internetError(
+                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
+                                caller
+                            )
                         }
                     }
                     is ConnectException -> {
                         viewModelScope.launch {
-                            callBackExpListInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION, caller)
+                            callBackExpListInterface?.internetError(
+                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
+                                caller
+                            )
                         }
                     }
                 }
@@ -403,6 +415,7 @@ class ScheduleManagementViewModel @Inject constructor(
             name: String?,
             allServiceposition: Int?
         )
+
         fun internetError(exception: String)
     }
 

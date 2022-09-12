@@ -12,7 +12,6 @@ import com.smf.events.databinding.QuoteBriefDialogBinding
 import com.smf.events.helper.AppConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -56,10 +55,11 @@ class QuoteBriefDialogViewModel @Inject constructor(
     }
 
     fun getQuoteBrief(idToken: String, bidRequestId: Int) = liveData(
-        Dispatchers.IO) {
+        Dispatchers.IO
+    ) {
         try {
             emit(quoteBriefDialogRepository.getQuoteBrief(idToken, bidRequestId))
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.d(TAG, "getQuoteBrief: $e")
             when (e) {
                 is UnknownHostException -> {
@@ -68,7 +68,7 @@ class QuoteBriefDialogViewModel @Inject constructor(
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
                 }
-                is ConnectException ->{
+                is ConnectException -> {
                     viewModelScope.launch {
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
@@ -79,10 +79,11 @@ class QuoteBriefDialogViewModel @Inject constructor(
     }
 
     fun getViewQuote(idToken: String, bidRequestId: Int) = liveData(
-        Dispatchers.IO) {
+        Dispatchers.IO
+    ) {
         try {
             emit(quoteBriefDialogRepository.getViewQuote(idToken, bidRequestId))
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.d(TAG, "getViewQuote: $e")
             when (e) {
                 is UnknownHostException -> {
@@ -91,7 +92,7 @@ class QuoteBriefDialogViewModel @Inject constructor(
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
                 }
-                is ConnectException ->{
+                is ConnectException -> {
                     viewModelScope.launch {
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }

@@ -1,7 +1,6 @@
 package com.smf.events.ui.dashboard.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
 import com.smf.events.ui.dashboard.model.MyEvents
 
-class MyEventsAdapter: RecyclerView.Adapter<MyEventsAdapter.MyEventViewHolder>() {
+class MyEventsAdapter : RecyclerView.Adapter<MyEventsAdapter.MyEventViewHolder>() {
 
     private var myEventsList = ArrayList<MyEvents>()
     private var onClickListener: OnServiceClickListener? = null
@@ -22,13 +21,14 @@ class MyEventsAdapter: RecyclerView.Adapter<MyEventsAdapter.MyEventViewHolder>()
     }
 
     override fun onBindViewHolder(holder: MyEventViewHolder, position: Int) {
-         holder.onBind(myEventsList[position])
+        holder.onBind(myEventsList[position])
 
     }
 
     override fun getItemCount(): Int {
         return myEventsList.size
     }
+
     inner class MyEventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var titleText = view.findViewById<TextView>(R.id.title_text)
         var numberText = view.findViewById<TextView>(R.id.number_text)
@@ -36,10 +36,11 @@ class MyEventsAdapter: RecyclerView.Adapter<MyEventsAdapter.MyEventViewHolder>()
         // Method For Fixing xml views and Values
         fun onBind(myEvents: MyEvents) {
             titleText.text = myEvents.titleText
-            numberText.text =  myEvents.numberText
+            numberText.text = myEvents.numberText
 
         }
     }
+
     //Method For Refreshing Invoices
     @SuppressLint("NotifyDataSetChanged")
     fun refreshItems(invoice: List<MyEvents>) {
@@ -54,8 +55,6 @@ class MyEventsAdapter: RecyclerView.Adapter<MyEventsAdapter.MyEventViewHolder>()
     }
 
     // Interface For Invoice Click Listener
-    interface OnServiceClickListener {
-
-    }
+    interface OnServiceClickListener
 
 }

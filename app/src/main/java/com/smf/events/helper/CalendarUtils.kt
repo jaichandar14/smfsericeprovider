@@ -1,7 +1,10 @@
 package com.smf.events.helper
 
 import android.util.Log
-import java.time.*
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
@@ -19,7 +22,7 @@ class CalendarUtils @Inject constructor() {
         var updatedTabPosition = 0
         var allDaysList: ArrayList<String> = ArrayList()
         var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
-        var businessValidity:LocalDate?= null
+        var businessValidity: LocalDate? = null
         var allDaysListForMonth: ArrayList<String> = ArrayList()
         var toastCount = 0
     }
@@ -133,11 +136,15 @@ class CalendarUtils @Inject constructor() {
             //  weeksList.put(1, WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday, poslist))
 //j=1
         } else if (endLastDayOfWeekSunday.dayOfMonth <= LocalDateTime.now().dayOfMonth && endOfTheWeekMonthValue >= currentmonthvalue && endLastDayOfWeekSunday.year <= LocalDateTime.now().year) {
-            weeksList.put(1,
-                WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday, poslist))
+            weeksList.put(
+                1,
+                WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday, poslist)
+            )
         } else {
-            weeksList.put(1,
-                WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday, poslist))
+            weeksList.put(
+                1,
+                WeekDatesOfMonth(startOfFirstWeekSunday, endLastDayOfWeekSunday, poslist)
+            )
         }
 
         // getting Saturdays  date of the month
@@ -154,8 +161,10 @@ class CalendarUtils @Inject constructor() {
             if (startweeklist != endOfWeek && startweeklistSaturday != endOfMonthWeek) {
                 startweeklist = startweeklist.plusDays(7)
                 startweeklistSaturday = startweeklistSaturday.plusDays(7)
-                weeksList.put(j,
-                    WeekDatesOfMonth(startweeklist, startweeklistSaturday, poslist))
+                weeksList.put(
+                    j,
+                    WeekDatesOfMonth(startweeklist, startweeklistSaturday, poslist)
+                )
                 j++
             }
         }

@@ -17,7 +17,7 @@ class CommonInfoDialogViewModel @Inject constructor(
     application: Application,
 ) : BaseDialogViewModel(application) {
 
-    var TAG= "CommonInfoDialogViewModel"
+    var TAG = "CommonInfoDialogViewModel"
 
     // 2904  Status flow in QuoteDetails Api Call
     fun updateServiceStatus(
@@ -31,12 +31,16 @@ class CommonInfoDialogViewModel @Inject constructor(
             Dispatchers.IO
         ) {
             try {
-                emit(commonInfoDialogRepository.updateServiceStatus(idToken,
-                    bidRequestId,
-                    eventId,
-                    eventServiceDescriptionId,
-                    status))
-            }catch (e: Exception){
+                emit(
+                    commonInfoDialogRepository.updateServiceStatus(
+                        idToken,
+                        bidRequestId,
+                        eventId,
+                        eventServiceDescriptionId,
+                        status
+                    )
+                )
+            } catch (e: Exception) {
                 Log.d(TAG, "getActionAndStatus: UnknownHostException $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -45,7 +49,7 @@ class CommonInfoDialogViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }

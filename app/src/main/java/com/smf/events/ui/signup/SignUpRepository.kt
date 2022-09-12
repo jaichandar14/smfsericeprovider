@@ -1,10 +1,9 @@
 package com.smf.events.ui.signup
 
-import com.smf.events.network.ApiStories
 import com.google.gson.Gson
 import com.smf.events.helper.ApisResponse
+import com.smf.events.network.ApiStories
 import com.smf.events.ui.signup.model.ErrorResponse
-
 import com.smf.events.ui.signup.model.UserDetails
 import com.smf.events.ui.signup.model.UserDetailsResponse
 import retrofit2.HttpException

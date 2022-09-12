@@ -4,9 +4,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.DialogFragment
 import android.view.*
 import android.widget.*
+import androidx.fragment.app.DialogFragment
 import com.smf.events.R
 import com.smf.events.ui.addservicedialog.adapter.AddServiceCustomListAdapter
 import com.smf.events.ui.addservicedialog.model.Services
@@ -74,8 +74,8 @@ class AddServiceDialog(private var dataModel: ArrayList<Services>) : DialogFragm
         viewMoreText = view.findViewById(R.id.text_view_more)
 
         saveBtn.setOnClickListener {
-            for (i in dataModel){
-                if (i.checked){
+            for (i in dataModel) {
+                if (i.checked) {
                     finalSelectedList?.add(i.serviceName)
                 }
             }

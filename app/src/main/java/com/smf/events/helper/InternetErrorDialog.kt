@@ -55,8 +55,8 @@ class InternetErrorDialog : DialogFragment() {
         noInternetDialog?.show()
     }
 
-    fun dismissDialog(){
-        if (noInternetDialog?.isShowing == true){
+    fun dismissDialog() {
+        if (noInternetDialog?.isShowing == true) {
             noInternetDialog?.dismiss()
         }
     }

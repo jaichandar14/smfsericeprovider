@@ -44,7 +44,9 @@ class BusinessOwnerInformationAdapter :
 
     inner class BusinessRegistrationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var expand: Boolean = false
-        var businessOwnerInfoLayout: ConstraintLayout = view.findViewById(R.id.business_owner_info_layout)
-        var expandableLayout: ConstraintLayout = view.findViewById(R.id.business_owner_info_expandable_layout)
+        var businessOwnerInfoLayout: ConstraintLayout =
+            view.findViewById(R.id.business_owner_info_layout)
+        var expandableLayout: ConstraintLayout =
+            view.findViewById(R.id.business_owner_info_expandable_layout)
     }
 }

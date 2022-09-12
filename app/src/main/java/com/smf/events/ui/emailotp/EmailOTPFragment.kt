@@ -130,6 +130,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 )
             }
         }
+      //  mDataBinding?.otp1ed?.requestFocus()
     }
 
     fun otpValidation(

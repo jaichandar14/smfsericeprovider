@@ -71,4 +71,4 @@ data class ServiceProviderBidRequestDto(
 //val phoneNumber: String,
 //val state: String,
 //val zipCode:String
-   //     )
+//     )

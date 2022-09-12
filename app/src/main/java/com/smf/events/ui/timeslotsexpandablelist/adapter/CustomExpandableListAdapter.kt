@@ -9,7 +9,6 @@ import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
-import com.smf.events.helper.AppConstants
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventsList
 import com.smf.events.ui.timeslotsexpandablelist.model.ListData
 import java.time.Month
@@ -80,7 +79,7 @@ class CustomExpandableListAdapter internal constructor(
                 list.add(
                     BookedEventsList(
                         dateFormat(expandedListData.status[i].eventDate),
-                        expandedListData.status[i].eventName,expandedListData.status[i].bidStatus
+                        expandedListData.status[i].eventName, expandedListData.status[i].bidStatus
                     )
                 )
             }

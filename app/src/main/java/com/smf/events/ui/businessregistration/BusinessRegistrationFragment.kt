@@ -3,7 +3,6 @@ package com.smf.events.ui.businessregistration
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,7 +11,6 @@ import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentBusinessRegistrationBinding
-import com.smf.events.ui.addservicedialog.AddServiceDialog
 import com.smf.events.ui.approvaldialog.ApprovalDialog
 import com.smf.events.ui.businessregistration.adapter.AddServiceAdapter
 import com.smf.events.ui.businessregistration.adapter.BusinessInformationAdaptor
@@ -60,22 +58,22 @@ class BusinessRegistrationFragment :
 
     private fun init() {
 //        if (checkInternetAvailable()) {
-            //Business Registration
-            businessRegistrationRecyclerview()
-            //Business information
-            businessInformationRecyclerview()
-            //Other Information
-            otherInformationRecyclerview()
-            //Add Services
-            addServicesRecyclerview()
+        //Business Registration
+        businessRegistrationRecyclerview()
+        //Business information
+        businessInformationRecyclerview()
+        //Other Information
+        otherInformationRecyclerview()
+        //Add Services
+        addServicesRecyclerview()
 
-            mDataBinding?.approvalBtn?.setOnClickListener {
-                //Calling Approval Dialog Frgment
-                ApprovalDialog.newInstance().show(
-                    (context as FragmentActivity).supportFragmentManager,
-                    ApprovalDialog.TAG
-                )
-            }
+        mDataBinding?.approvalBtn?.setOnClickListener {
+            //Calling Approval Dialog Frgment
+            ApprovalDialog.newInstance().show(
+                (context as FragmentActivity).supportFragmentManager,
+                ApprovalDialog.TAG
+            )
+        }
 //        }
     }
 

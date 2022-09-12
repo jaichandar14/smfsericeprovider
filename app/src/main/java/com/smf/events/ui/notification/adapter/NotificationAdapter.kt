@@ -65,13 +65,13 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.MyNotificat
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun deleteItem(position: Int){
+    fun deleteItem(position: Int) {
         notificationList.removeAt(position)
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addItem(position: Int, notificationDetail: NotificationDetails){
+    fun addItem(position: Int, notificationDetail: NotificationDetails) {
         notificationList.add(notificationDetail)
         notifyDataSetChanged()
     }

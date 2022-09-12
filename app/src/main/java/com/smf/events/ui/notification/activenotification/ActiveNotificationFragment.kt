@@ -111,7 +111,7 @@ class ActiveNotificationFragment :
 
                 Snackbar.make(
                     recyclerView,
-                    getString(R.string.moved_to_old)+" "+ notificationDetail.notificationTitle,
+                    getString(R.string.moved_to_old) + " " + notificationDetail.notificationTitle,
                     Snackbar.LENGTH_LONG
                 ).setAction(
                     "Undo",

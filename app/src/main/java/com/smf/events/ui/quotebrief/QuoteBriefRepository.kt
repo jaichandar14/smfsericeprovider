@@ -6,7 +6,7 @@ import com.smf.events.ui.quotebrief.model.QuoteBrief
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class QuoteBriefRepository @Inject constructor(var apiStories: ApiStories)  {
+class QuoteBriefRepository @Inject constructor(var apiStories: ApiStories) {
 
     suspend fun getQuoteBrief(idToken: String, bidRequestId: Int): ApisResponse<QuoteBrief> {
 

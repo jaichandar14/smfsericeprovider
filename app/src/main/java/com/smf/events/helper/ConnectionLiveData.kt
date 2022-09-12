@@ -45,8 +45,8 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
           Called when a network is detected. If that network has internet, save it in the Set.
          */
         override fun onAvailable(network: Network) {
-                Log.d(TAG, "onResume network LiveData: onAvailable: net ${checkAvailability()}")
-                checkValidNetworks(checkAvailability())
+            Log.d(TAG, "onResume network LiveData: onAvailable: net ${checkAvailability()}")
+            checkValidNetworks(checkAvailability())
         }
 
         override fun onLost(network: Network) {
@@ -56,20 +56,20 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     }
 
-    private fun checkAvailability(): Boolean{
+    private fun checkAvailability(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
             if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        Log.d(TAG, "onResume network checkAvailability CELLULAR: called")
-                        return true
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        Log.d(TAG, "onResume network checkAvailability _WIFI: called")
-                        return true
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                        Log.d(TAG, "onResume network checkAvailability ETHERNET: called")
-                        return true
-                    }
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    Log.d(TAG, "onResume network checkAvailability CELLULAR: called")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    Log.d(TAG, "onResume network checkAvailability _WIFI: called")
+                    return true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                    Log.d(TAG, "onResume network checkAvailability ETHERNET: called")
+                    return true
+                }
             }
         }
         return false

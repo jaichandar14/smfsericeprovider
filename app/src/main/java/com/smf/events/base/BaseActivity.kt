@@ -1,7 +1,6 @@
 package com.smf.events.base
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -37,7 +36,7 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
         observerMethod()
     }
 
-    private fun netWorkObserver(){
+    private fun netWorkObserver() {
 //        connectionLiveData = ConnectionLiveData(this)
         connectionLiveData.observe(this, { isNetworkAvailable ->
             when (isNetworkAvailable) {
@@ -62,20 +61,22 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
     }
 
 
-     fun observerMethod(){
+    fun observerMethod() {
         Log.d("TAG", "on toast create Base Activity befor")
-        getViewModel()?.getToastMessageG?.observe(this,{ toastMessageG ->
+        getViewModel()?.getToastMessageG?.observe(this, { toastMessageG ->
             Log.d("TAG", "on toast create Base Activity $toastMessageG")
-            SnackBar.showSnakbarTypeOne(mViewDataBinding?.root,
+            SnackBar.showSnakbarTypeOne(
+                mViewDataBinding?.root,
                 toastMessageG.msg,
                 this,
-                toastMessageG.duration)
+                toastMessageG.duration
+            )
             //Toast(context).showCustomToast(toastMessageG.msg,requireActivity(),"Toast.LENGTH_LONG","fata")
         })
     }
 
-    fun showToastMessage(message: String,length:Int,property: String){
-        getViewModel()?.setToastMessageG(message,length,property)
+    fun showToastMessage(message: String, length: Int, property: String) {
+        getViewModel()?.setToastMessageG(message, length, property)
         // snackBarLiveData.setSnackBarParam(BaseViewModel.ToastLayoutParam(message,length,property))
     }
 

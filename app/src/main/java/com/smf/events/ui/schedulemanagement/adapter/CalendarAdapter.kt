@@ -48,7 +48,8 @@ class CalendarAdapter(
     var i = 1
     var weekMapListAll: HashMap<LocalDate, Int> = HashMap()
     var businessValidity: LocalDate? = null
-    var onClickExpDate=0
+    var onClickExpDate = 0
+
     init {
         this.onItemListener = onItemListener
         this.days = day
@@ -189,9 +190,11 @@ class CalendarAdapter(
                     if (businessValidity != null) {
                         val formatter = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT_MONTH)
                         date.format(formatter)
-                        businessEndDateHighlighter(businessValidity.dayOfMonth,
+                        businessEndDateHighlighter(
+                            businessValidity.dayOfMonth,
                             businessValidity.format(formatter),
-                            businessValidity)
+                            businessValidity
+                        )
                         if (date.equals(CalendarUtils.selectedDate)) {
                             onClickBusniessValidityDate()
                         }
@@ -206,19 +209,23 @@ class CalendarAdapter(
 
                 if (CalendarUtils.selectedDate == days?.get(absoluteAdapterPosition)) {
                     weekAbsPos = absoluteAdapterPosition
-                    val weekArrayDetails = daysInWeekArray(days?.get(weekAbsPos!!),
-                        absoluteAdapterPosition)
+                    val weekArrayDetails = daysInWeekArray(
+                        days?.get(weekAbsPos!!),
+                        absoluteAdapterPosition
+                    )
                     weekArrayDetails.position.forEach {
                         postionOfDate.add(it)
                     }
-                    onItemListener.weekSelection(postionOfDate.toSet().toList() as ArrayList<Int>,
+                    onItemListener.weekSelection(
+                        postionOfDate.toSet().toList() as ArrayList<Int>,
                         CalendarUtils.selectedDate,
-                        selectedDatePos)
+                        selectedDatePos
+                    )
                     postionOfDate.toSet().toList() as ArrayList<Int>
                 }
             }
 
-            if (date == LocalDate.now()){
+            if (date == LocalDate.now()) {
                 dayOfMonth.setTextColor(Color.BLACK)
                 dayOfMonth.setBackgroundResource(R.drawable.current_date_circle)
             }
@@ -226,11 +233,11 @@ class CalendarAdapter(
         }
 
         private fun onClickBusniessValidityDate() {
-            onClickExpDate +=1
+            onClickExpDate += 1
             if (CalendarUtils.selectedDate!! > businessValidity) {
-                CalendarUtils.toastCount +=1
+                CalendarUtils.toastCount += 1
                 Log.d("TAG", "toastCount: ${CalendarUtils.toastCount}")
-                if ( CalendarUtils.toastCount==1) {
+                if (CalendarUtils.toastCount == 1) {
                     onItemListener.onClickBusinessExpDate(true)
                 }
             }
@@ -250,7 +257,7 @@ class CalendarAdapter(
 //                        }
 //                    }
 //                }
-                if (date < date1){
+                if (date < date1) {
                     dayOfMonth.setTextColor(Color.GRAY)
                 }
             }
@@ -320,7 +327,7 @@ class CalendarAdapter(
             val date = days?.get(position)
             // if (date?.monthValue!! >= cmonth && date.year >= cyear)  {
             if (date != null) {
-                if (date <= businessValidity)  {
+                if (date <= businessValidity) {
                     Log.d("TAG", "weekSelection: $absoluteAdapterPosition")
                     if (absoluteAdapterPosition == previousDates?.first()) {
                         parentView.setBackgroundResource(R.drawable.week_selector)
@@ -396,10 +403,11 @@ class CalendarAdapter(
 //                        }
 //                    }
 //                }
-    if (date<=businessValidity){
-                    dayOfMonth.setTextColor(Color.WHITE)
-                    dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
-                }}
+                    if (date <= businessValidity) {
+                        dayOfMonth.setTextColor(Color.WHITE)
+                        dayOfMonth.setBackgroundResource(R.drawable.circle_fade_35)
+                    }
+                }
             }
         }
 
@@ -425,9 +433,11 @@ class CalendarAdapter(
                     .toInt() < cyear
             ) {
             } else {
-                onItemListener.onItemClick(absoluteAdapterPosition,
+                onItemListener.onItemClick(
+                    absoluteAdapterPosition,
                     days?.get(absoluteAdapterPosition),
-                    dayinWeek, daysPositon, selectedWeekDates)
+                    dayinWeek, daysPositon, selectedWeekDates
+                )
             }
         }
     }

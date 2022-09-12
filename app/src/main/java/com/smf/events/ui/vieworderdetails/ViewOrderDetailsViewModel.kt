@@ -22,12 +22,17 @@ class ViewOrderDetailsViewModel @Inject constructor(
     // 2402 - View Order Details Api Call
     fun getViewOrderDetails(idToken: String, eventId: Int, eventServiceDescriptionId: Int) =
         liveData(
-            Dispatchers.IO) {
+            Dispatchers.IO
+        ) {
             try {
-                emit(viewOrderDetailsRepository.getViewOrderDetails(idToken,
-                    eventId,
-                    eventServiceDescriptionId))
-            }catch (e: Exception){
+                emit(
+                    viewOrderDetailsRepository.getViewOrderDetails(
+                        idToken,
+                        eventId,
+                        eventServiceDescriptionId
+                    )
+                )
+            } catch (e: Exception) {
                 Log.d(TAG, "getViewOrderDetails: $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -36,7 +41,7 @@ class ViewOrderDetailsViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }

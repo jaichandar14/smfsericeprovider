@@ -1,17 +1,13 @@
 package com.smf.events.ui.timeslotmodifyexpanablelist
 
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ExpandableListView
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -31,8 +27,6 @@ import com.smf.events.ui.timeslotsexpandablelist.model.ListDataModify
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.Month
@@ -219,7 +213,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     private fun nullListData(data: Data): ListDataModify {
         return ListDataModify(
             data.serviceSlot,
-            listOf(BookedEventServiceDtoModify(getString(R.string.null_text), "", "", "",""))
+            listOf(BookedEventServiceDtoModify(getString(R.string.null_text), "", "", "", ""))
         )
     }
 
@@ -232,7 +226,7 @@ class WeekModifyExpandableListFragment : Fragment(),
                     getString(R.string.available_small),
                     "",
                     "",
-                    "",""
+                    "", ""
                 )
             )
         )
@@ -639,7 +633,7 @@ class WeekModifyExpandableListFragment : Fragment(),
         bookedEventDetails.add(
             ListDataModify(
                 getString(R.string.empty),
-                listOf(BookedEventServiceDtoModify("", "", "", "",""))
+                listOf(BookedEventServiceDtoModify("", "", "", "", ""))
             )
         )
         childData[titleDate[groupPosition]] = bookedEventDetails
@@ -655,7 +649,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     override fun internetError(exception: String, tag: String) {
         Log.d(TAG, "internetError: called week")
         SharedPreference.isInternetConnected = false
-        if (internetErrorDialog.noInternetDialog?.isShowing != true){
+        if (internetErrorDialog.noInternetDialog?.isShowing != true) {
             internetErrorDialog.checkInternetAvailable(requireContext())
         }
     }

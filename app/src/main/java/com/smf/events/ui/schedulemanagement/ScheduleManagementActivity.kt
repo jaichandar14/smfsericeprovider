@@ -1,12 +1,9 @@
 package com.smf.events.ui.schedulemanagement
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
-import android.view.View
-import androidx.core.view.get
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -16,18 +13,14 @@ import com.smf.events.R
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityScheduleManagmentBinding
 import com.smf.events.helper.CalendarUtils
-import com.smf.events.helper.ConnectionLiveData
 import com.smf.events.helper.InternetErrorDialog
-import com.smf.events.helper.SharedPreference
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.calendarfragment.CalendarFragment
 import com.smf.events.ui.timeslot.TimeSlotsFragment
 import dagger.android.AndroidInjection
 import io.reactivex.disposables.Disposable
-import java.util.*
 import javax.inject.Inject
-import kotlin.concurrent.timerTask
 
 // 2458
 class ScheduleManagementActivity :
@@ -47,7 +40,7 @@ class ScheduleManagementActivity :
 
     override fun getBindingVariable(): Int = BR.scheduleManagementViewModel
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint("ResourceAsColor", "NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -78,19 +71,15 @@ class ScheduleManagementActivity :
         }
 
         getViewModel().getScrollViewToPosition.observe(this, Observer {
-            var totalHeaderHeight = mViewDataBinding!!.calendarFragment.height + mViewDataBinding!!.switchBtnTx.height+ mViewDataBinding!!.switchBtn.height
+            var totalHeaderHeight =
+                mViewDataBinding!!.calendarFragment.height + mViewDataBinding!!.switchBtnTx.height + mViewDataBinding!!.switchBtn.height
             totalHeaderHeight += it
             mViewDataBinding!!.scrollView.smoothScrollTo(0, totalHeaderHeight)
         })
 
-       // showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),"000","jai")
+        // showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),"000","jai")
 
     }
-
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
-    }
-
 
 
     // 2458 - Method for Calendar Ui
@@ -107,7 +96,7 @@ class ScheduleManagementActivity :
                 status = mViewDataBinding?.switchBtn?.isChecked != false
                 Log.d("TAG", "calendarUI: $status")
                 updateTimeSlotsUI(status)
-            }else{
+            } else {
                 mViewDataBinding?.switchBtn?.isChecked =
                     mViewDataBinding?.switchBtn?.isChecked != true
             }

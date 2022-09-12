@@ -33,7 +33,8 @@ class CommonInfoDialog(
     private var internetErrorDialog: InternetErrorDialog
 ) :
     BaseDialogFragment<CommonInformationDialogBinding, CommonInfoDialogViewModel>(),
-    View.OnClickListener, Tokens.IdTokenCallBackInterface, CommonInfoDialogViewModel.CallBackInterface {
+    View.OnClickListener, Tokens.IdTokenCallBackInterface,
+    CommonInfoDialogViewModel.CallBackInterface {
 
     companion object {
         const val TAG = "CommonInfoDialog"

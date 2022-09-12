@@ -48,18 +48,24 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
         Toast.makeText(activity?.applicationContext, msg, Toast.LENGTH_LONG).show()
 
     }
-    private fun toastObserver(){
-        getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner,{ toastMessageG ->
+
+    private fun toastObserver() {
+        getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner, { toastMessageG ->
             Log.d("TAG", "onResume Base Fragment $toastMessageG")
-            SnackBar.showSnakbarTypeOne(view,toastMessageG.msg,requireActivity(),toastMessageG.duration)
+            SnackBar.showSnakbarTypeOne(
+                view,
+                toastMessageG.msg,
+                requireActivity(),
+                toastMessageG.duration
+            )
             //Toast(context).showCustomToast(toastMessageG.msg,requireActivity(),"Toast.LENGTH_LONG","fata")
         })
 
     }
 
-    fun showToastMessage(message: String, length: Int, property: String){
-      getViewModel()?.setToastMessageG(message,length,property)
-       // snackBarLiveData.setSnackBarParam(BaseViewModel.ToastLayoutParam(message,length,property))
+    fun showToastMessage(message: String, length: Int, property: String) {
+        getViewModel()?.setToastMessageG(message, length, property)
+        // snackBarLiveData.setSnackBarParam(BaseViewModel.ToastLayoutParam(message,length,property))
     }
 
     // 2845 - Hiding Progress Bar
@@ -68,12 +74,6 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
         val inputManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-
     }
 
 }

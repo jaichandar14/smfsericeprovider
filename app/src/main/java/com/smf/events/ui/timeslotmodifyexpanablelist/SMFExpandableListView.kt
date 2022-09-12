@@ -6,14 +6,13 @@ import android.widget.ExpandableListView
 
 
 class SMFExpandableListView : ExpandableListView {
-    constructor(context: Context?) : super(context) {}
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         context,
         attrs,
         defStyle
-    ) {
-    }
+    )
 
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val heightMeasureSpec_custom = MeasureSpec.makeMeasureSpec(

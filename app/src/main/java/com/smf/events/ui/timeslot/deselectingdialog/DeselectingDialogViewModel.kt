@@ -42,7 +42,7 @@ class DeselectingDialogViewModel @Inject constructor(
                         toDate
                     )
                 )
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "getModifyMonthSlot: $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -50,7 +50,7 @@ class DeselectingDialogViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
@@ -83,7 +83,7 @@ class DeselectingDialogViewModel @Inject constructor(
                         toDate
                     )
                 )
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "getModifyMonthSlot: $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -91,7 +91,7 @@ class DeselectingDialogViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
@@ -124,7 +124,7 @@ class DeselectingDialogViewModel @Inject constructor(
                         toDate
                     )
                 )
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "getModifyMonthSlot: $e")
                 when (e) {
                     is UnknownHostException -> {
@@ -132,7 +132,7 @@ class DeselectingDialogViewModel @Inject constructor(
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }
                     }
-                    is ConnectException ->{
+                    is ConnectException -> {
                         viewModelScope.launch {
                             callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                         }

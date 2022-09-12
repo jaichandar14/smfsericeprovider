@@ -26,8 +26,6 @@ import com.smf.events.ui.timeslotsexpandablelist.model.ListDataModify
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.Month
@@ -101,7 +99,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer monthmody")
             internetErrorDialog.dismissDialog()
-            if(activity != null) {
+            if (activity != null) {
                 init()
             }
         }

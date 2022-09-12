@@ -15,7 +15,6 @@ import com.smf.events.databinding.FragmentViewOrderDetailsDialogBinding
 import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
-import com.smf.events.ui.quotedetailsdialog.QuoteDetailsDialog
 import com.smf.events.ui.vieworderdetails.adaptor.ViewOrderDetailsAdaptor
 import com.smf.events.ui.vieworderdetails.model.EventServiceBudgetDto
 import com.smf.events.ui.vieworderdetails.model.EventServiceDateDto
@@ -45,10 +44,12 @@ class ViewOrderDetailsDialogFragment(
             eventName: String,
             internetErrorDialog: InternetErrorDialog
         ): ViewOrderDetailsDialogFragment {
-            return ViewOrderDetailsDialogFragment(eventId,
+            return ViewOrderDetailsDialogFragment(
+                eventId,
                 eventServiceDescriptionId,
                 eventDate,
-                eventName,internetErrorDialog)
+                eventName, internetErrorDialog
+            )
         }
     }
 
@@ -115,12 +116,12 @@ class ViewOrderDetailsDialogFragment(
         backButton()
     }
 
-    private fun showProgress(){
+    private fun showProgress() {
         mDataBinding?.progressBar?.visibility = View.VISIBLE
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
     }
 
-    private fun hideProgress(){
+    private fun hideProgress() {
         mDataBinding?.progressBar?.visibility = View.GONE
         mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
     }
@@ -147,11 +148,13 @@ class ViewOrderDetailsDialogFragment(
                             apiResponse.response.data.eventServiceQuestionnaireDescriptionDto?.eventServiceDescriptionDto?.eventServiceVenueDto?.redius
                         val questionnaire =
                             apiResponse.response.data.eventServiceQuestionnaireDescriptionDto?.questionnaireWrapperDto?.questionnaireDtos
-                        settingOrderDetails(questionnaire,
+                        settingOrderDetails(
+                            questionnaire,
                             venueInfo,
                             serviceDetails,
                             serviceBudget,
-                            radius)
+                            radius
+                        )
                     }
                     is ApisResponse.Error -> {
                         Log.d("TAG", "check token result: ${apiResponse.exception}")
@@ -174,10 +177,10 @@ class ViewOrderDetailsDialogFragment(
         mDataBinding?.question?.text = "Questions"
         mDataBinding?.txJobTitle?.text = eventName
         mDataBinding?.txJobIdnum?.text = eventServiceDescriptionId.toString()
-        mDataBinding?.etEventDate?.text =(eventDate)
+        mDataBinding?.etEventDate?.text = (eventDate)
         mDataBinding?.etZipCode?.text = venueInfo.zipCode.toString()
-        mDataBinding?.etServiceDate?.text =(serviceDetails?.serviceDate.toString())
-        mDataBinding?.etBidCutOffDate?.text =(serviceDetails?.biddingCutOffDate.toString())
+        mDataBinding?.etServiceDate?.text = (serviceDetails?.serviceDate.toString())
+        mDataBinding?.etBidCutOffDate?.text = (serviceDetails?.biddingCutOffDate.toString())
         mDataBinding?.etEstimationBudget?.text =
             serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
         mDataBinding?.etServiceRadius?.text = radius
@@ -226,8 +229,8 @@ class ViewOrderDetailsDialogFragment(
     }
 
     override fun internetError(exception: String) {
-            SharedPreference.isInternetConnected = false
-            internetErrorDialog.checkInternetAvailable(requireContext())
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     override fun onDestroy() {

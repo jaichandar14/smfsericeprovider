@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import com.smf.events.R
 import com.smf.events.ui.addservicedialog.model.Services
 

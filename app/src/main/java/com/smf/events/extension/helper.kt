@@ -2,7 +2,7 @@ package com.smf.events.extension
 
 import java.util.regex.Pattern
 
-fun String.isEmailValid(email:String): Boolean {
+fun String.isEmailValid(email: String): Boolean {
     val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
     val pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
     val matcher = pattern.matcher(email)

@@ -108,7 +108,7 @@ class ActionsAndStatusViewModel @Inject constructor(
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
                 }
-                is ConnectException ->{
+                is ConnectException -> {
                     viewModelScope.launch {
                         callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
                     }
