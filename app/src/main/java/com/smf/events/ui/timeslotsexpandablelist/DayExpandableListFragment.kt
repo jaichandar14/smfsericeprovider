@@ -362,10 +362,6 @@ class DayExpandableListFragment : Fragment(),
         childData[titleDate[position]] = bookedEventDetails
     }
 
-    override fun onClick(expandedListPosition: Int) {
-//        TODO - Click Events
-    }
-
     // 2670 - Method For Set IdToken And SpRegId From SharedPreferences
     private fun setIdTokenAndSpRegId() {
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)

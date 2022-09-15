@@ -466,11 +466,6 @@ class WeekExpandableListFragment : Fragment(),
         return weekMap
     }
 
-    override fun onClick(expandedListPosition: Int) {
-        Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
-//        TODO - Click Events
-    }
-
     // 2670 - Method For Set IdToken And SpRegId From SharedPreferences
     private fun setIdTokenAndSpRegId() {
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
