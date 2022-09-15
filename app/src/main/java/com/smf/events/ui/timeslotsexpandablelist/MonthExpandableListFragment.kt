@@ -35,8 +35,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class MonthExpandableListFragment : Fragment(),
-    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface,
+class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface,
     ScheduleManagementViewModel.CallBackExpListInterface {
 
     private var TAG = "MonthExpandableListFragment"
@@ -241,21 +240,11 @@ class MonthExpandableListFragment : Fragment(),
                 childData
             )
             expandableListView!!.setAdapter(adapter)
-            adapter?.setOnClickListener(this)
 
             // Default Expansion Into The ExpandableList
             expandableListView!!.expandGroup(groupPosition)
             adapter!!.notifyDataSetChanged()
         }
-    }
-
-    override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        Log.d("TAG", "onGroupClick month: called")
-    }
-
-    override fun onClick(expandedListPosition: Int) {
-        Log.d("TAG", "onCreateView viewModel called $expandedListPosition")
-//        TODO - Click Events
     }
 
     // 2697 - Method For Add ExpandableList Title Group

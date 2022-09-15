@@ -1,7 +1,6 @@
 package com.smf.events.ui.timeslotsexpandablelist.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +48,6 @@ class CustomExpandableListAdapter internal constructor(
         } else {
             layoutInflater.inflate(R.layout.time_slot_bottom, null)
         }
-        val image12To3am = convertView?.findViewById<ImageView>(R.id.image_view_12_3am)
         val timeSlot12To3am = convertView?.findViewById<TextView>(R.id.time_slot_12_3am)
         val address12To3am = convertView?.findViewById<TextView>(R.id.address_12_3am)
         val view12To3am = convertView?.findViewById<View>(R.id.view_12_3am)
@@ -59,11 +57,6 @@ class CustomExpandableListAdapter internal constructor(
         val recyclerViewBookedSlot =
             convertView?.findViewById<RecyclerView>(R.id.slot_list_recycler_view)
         address12To3am?.text = null
-
-        image12To3am?.setOnClickListener {
-            Log.d("TAG", "getChildView: clicked $expandedListPosition")
-            timeSlotIconOnClickListener?.onClick(expandedListPosition)
-        }
 
         // Verification For Booked Events Data
         if (expandedListData.timeSlot == "") {
@@ -161,7 +154,6 @@ class CustomExpandableListAdapter internal constructor(
 
     // Interface For TimeSlot Icon Click
     interface TimeSlotIconClickListener {
-        fun onClick(expandedListPosition: Int)
         fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean)
     }
 
