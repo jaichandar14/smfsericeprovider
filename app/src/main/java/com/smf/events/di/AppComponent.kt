@@ -2,6 +2,7 @@ package com.example.demodragger.di
 
 import android.app.Application
 import com.smf.events.SMFApp
+import com.smf.events.di.ActivityBuilder
 import com.smf.events.di.modules.ApiModule
 import dagger.BindsInstance
 import dagger.Component

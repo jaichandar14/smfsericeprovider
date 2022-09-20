@@ -1,5 +1,6 @@
 package com.smf.events.ui.timeslot
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,12 +15,8 @@ import com.smf.events.R
 import com.smf.events.databinding.FragmentTimeSlotsBinding
 import com.smf.events.helper.CalendarUtils
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
-import com.smf.events.ui.timeslotmodifyexpanablelist.DayModifyExpandableListFragment
-import com.smf.events.ui.timeslotmodifyexpanablelist.MonthModifyExpandableListFragment
-import com.smf.events.ui.timeslotmodifyexpanablelist.WeekModifyExpandableListFragment
-import com.smf.events.ui.timeslotsexpandablelist.DayExpandableListFragment
-import com.smf.events.ui.timeslotsexpandablelist.MonthExpandableListFragment
-import com.smf.events.ui.timeslotsexpandablelist.WeekExpandableListFragment
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 // 2487
 class TimeSlotsFragment : Fragment() {
@@ -30,6 +27,14 @@ class TimeSlotsFragment : Fragment() {
 
     // SharedViewModel Initialization
     private val sharedViewModel: ScheduleManagementViewModel by activityViewModels()
+
+    @Inject
+    lateinit var getTimeSlotFragments: GetTimeSlotFragments
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,32 +90,8 @@ class TimeSlotsFragment : Fragment() {
     }
 
     private fun updateTimeSlotsUI(status: String) {
-        val frg = when (CalendarUtils.updatedTabPosition) {
-            0 -> {
-                if (tag == getString(R.string.trueText)) {
-                    DayModifyExpandableListFragment()
-                } else {
-                    DayExpandableListFragment()
-                }
-            }
-            1 -> {
-                if (tag == getString(R.string.trueText)) {
-                    WeekModifyExpandableListFragment()
-                } else {
-                    WeekExpandableListFragment()
-                }
-            }
-            2 -> {
-                if (tag == getString(R.string.trueText)) {
-                    MonthModifyExpandableListFragment()
-                } else {
-                    MonthExpandableListFragment()
-                }
-            }
-            else -> {
-                DayExpandableListFragment()
-            }
-        }
+        // 3204 - Getting Selected Fragment
+        val frg = getTimeSlotFragments.getSlot(tag, requireContext())
         val manager: FragmentManager =
             requireActivity().supportFragmentManager //create an instance of fragment manager
         val transaction: FragmentTransaction =
