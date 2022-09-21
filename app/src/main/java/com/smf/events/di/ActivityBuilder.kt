@@ -1,4 +1,4 @@
-package com.example.demodragger.di
+package com.smf.events.di
 
 import com.smf.events.MainActivity
 import com.smf.events.MainModule
@@ -37,6 +37,7 @@ import com.smf.events.ui.signup.SignUpFragment
 import com.smf.events.ui.signup.SignUpModule
 import com.smf.events.ui.splash.SplashFragment
 import com.smf.events.ui.splash.SplashModule
+import com.smf.events.ui.timeslot.TimeSlotsFragment
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogModule
 import com.smf.events.ui.timeslotmodifyexpanablelist.DayModifyExpandableListFragment
@@ -148,4 +149,9 @@ abstract class ActivityBuilder {
     // 3103
     @ContributesAndroidInjector(modules = [OldNotificationModule::class])
     abstract fun provideOldNotificationFragment(): OldNotificationFragment
+
+    // 3204 - TimeSlots Fragment Injection
+    @ContributesAndroidInjector
+    abstract fun provideTimeSlotsFragment(): TimeSlotsFragment
+
 }
