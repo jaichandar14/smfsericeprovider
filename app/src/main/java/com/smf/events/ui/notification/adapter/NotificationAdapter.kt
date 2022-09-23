@@ -1,19 +1,31 @@
 package com.smf.events.ui.notification.adapter
 
 import android.annotation.SuppressLint
+import android.os.Build
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.R
+import com.smf.events.helper.AppConstants
+import com.smf.events.ui.notification.callbacks.CardViewClear
 import com.smf.events.ui.notification.model.NotificationDetails
 
-class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.MyNotificationViewHolder>() {
+class NotificationAdapter(private val tag: String) :
+    RecyclerView.Adapter<NotificationAdapter.MyNotificationViewHolder>() {
 
     private var notificationList = ArrayList<NotificationDetails>()
     private var onClickListener: OnNotificationClickListener? = null
+    private var clearButtonListener: CardViewClear? = null
+
+    // Initializing Clear Listener Interface
+    fun setOnClickClearListener(listener: CardViewClear) {
+        clearButtonListener = listener
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -34,6 +46,12 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.MyNotificat
         holder.itemView.setOnClickListener {
             onClickListener?.onNotificationClicked(notificationList[position], position)
         }
+
+        holder.clearBtn.setOnClickListener {
+            if (tag == AppConstants.ACTIVE) {
+                clearButtonListener?.onClearButtonClicked(position)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -42,15 +60,28 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.MyNotificat
 
     inner class MyNotificationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var date: TextView = view.findViewById(R.id.date_time_text)
+        var clearBtn: ImageView = view.findViewById(R.id.clear_btn)
         var title: TextView = view.findViewById(R.id.bid_status_title)
         var description: TextView = view.findViewById(R.id.bid_status_des)
         var image: ImageView = view.findViewById(R.id.imageView2)
 
         // Method For Fixing xml views and Values
         fun onBind(notification: NotificationDetails) {
+            if (tag == AppConstants.ACTIVE) {
+                clearBtn.visibility = View.VISIBLE
+            } else {
+                clearBtn.visibility = View.GONE
+            }
             date.text = notification.notificationDate
             title.text = notification.notificationTitle
-            description.text = notification.description
+            description.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(notification.notificationContent, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                HtmlCompat.fromHtml(
+                    notification.notificationContent,
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            }
 //            TODO set imageview
 
         }
@@ -61,18 +92,6 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.MyNotificat
     fun refreshItems(notification: List<NotificationDetails>) {
         notificationList.clear()
         notificationList.addAll(notification)
-        notifyDataSetChanged()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun deleteItem(position: Int) {
-        notificationList.removeAt(position)
-        notifyDataSetChanged()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun addItem(position: Int, notificationDetail: NotificationDetails) {
-        notificationList.add(notificationDetail)
         notifyDataSetChanged()
     }
 
