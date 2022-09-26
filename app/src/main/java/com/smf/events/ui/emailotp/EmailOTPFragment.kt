@@ -130,7 +130,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 )
             }
         }
-      //  mDataBinding?.otp1ed?.requestFocus()
+        //  mDataBinding?.otp1ed?.requestFocus()
     }
 
     fun otpValidation(
@@ -358,6 +358,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         sharedPreference.putInt(
             SharedPreference.ROLE_ID,
             apiResponse.response.data.roleId
+        )
+        sharedPreference.putString(
+            SharedPreference.USER_ID,
+            apiResponse.response.data.userName
         )
     }
 

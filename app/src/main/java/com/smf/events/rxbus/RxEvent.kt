@@ -20,4 +20,5 @@ class RxEvent {
     data class IsValid(val str: Boolean)
     data class InternetStatus(val tag: String)
     data class ClearAllNotification(val onClick: Boolean)
+    data class UpdateNotificationCount(val tag: String)
 }

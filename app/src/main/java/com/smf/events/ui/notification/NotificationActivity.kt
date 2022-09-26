@@ -7,29 +7,46 @@ import android.view.View
 import androidx.activity.addCallback
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.smf.events.BR
 import com.smf.events.MainActivity
 import com.smf.events.R
+import com.smf.events.SMFApp
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityNotificationBinding
-import com.smf.events.helper.AppConstants
-import com.smf.events.helper.ApplicationUtils
+import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.notification.activenotification.ActiveNotificationFragment
 import com.smf.events.ui.notification.oldnotification.OldNotificationFragment
 import dagger.android.AndroidInjection
+import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NotificationActivity :
-    BaseActivity<ActivityNotificationBinding, NotificationViewModel>() {
+    BaseActivity<ActivityNotificationBinding, NotificationViewModel>(),
+    Tokens.IdTokenCallBackInterface, NotificationViewModel.CallBackInterface {
 
     var TAG = "NotificationActivity"
     lateinit var tabLayout: TabLayout
     var tabSelectedPosition: Int = 0
+    var activeNotificationCount: Int = 0
     var status: String = ""
+    lateinit var idToken: String
+    lateinit var userId: String
+    private lateinit var internetStatusDisposable: Disposable
+    private lateinit var dialogDisposable: Disposable
+    private lateinit var internetErrorDialog: InternetErrorDialog
+
+    @Inject
+    lateinit var tokens: Tokens
+
+    @Inject
+    lateinit var sharedPreference: SharedPreference
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -44,9 +61,91 @@ class NotificationActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        // Initialize Tabview
+        tabLayout = mViewDataBinding!!.tabLayout
+        // Internet Error Dialog Initialization
+        internetErrorDialog = InternetErrorDialog.newInstance()
+        // Initialize Local Variables
+        setIdTokenAndSpRegId()
+        // Back Key Listener
         backKeyListener()
+        // Initialize IdTokenCallBackInterface
+        tokens.setCallBackInterface(this)
+        // Notification ViewModel CallBackInterface
+        getViewModel().setCallBackInterface(this)
+        // Check IdToken Validity
+        idTokenValidation(getString(R.string.notification_count))
         // UI Initialization
         uiInitialization()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Listener For Internet Connectivity
+        internetStatusDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer no activity")
+            internetErrorDialog.dismissDialog()
+//            // Check IdToken Validity
+//            idTokenValidation(getString(R.string.notification_count))
+//            updateNotificationUI()
+        }
+        // Listener For ClearAll Button
+        dialogDisposable = RxBus.listen(RxEvent.UpdateNotificationCount::class.java).subscribe {
+            // Check IdToken Validity
+            idTokenValidation(getString(R.string.notification_count))
+        }
+        // Observe & Set Active notification count
+        getViewModel().getActiveNotificationCount.observe(this, Observer {
+            tabLayout.getTabAt(0)?.text = "${AppConstants.ACTIVE}(${it})"
+        })
+        // Observe & Set Old notification count
+        getViewModel().getOldNotificationCount.observe(this, Observer {
+            tabLayout.getTabAt(1)?.text = "${AppConstants.OLD}(${it})"
+        })
+
+    }
+
+    private fun idTokenValidation(caller: String) {
+        tokens.checkTokenExpiry(
+            applicationContext as SMFApp,
+            caller, idToken
+        )
+    }
+
+    override suspend fun tokenCallBack(idToken: String, caller: String) {
+        withContext(Dispatchers.Main) {
+            when (caller) {
+                getString(R.string.notification_count) -> getNotificationCount(idToken, userId)
+            }
+        }
+    }
+
+    private fun getNotificationCount(
+        idToken: String,
+        userId: String
+    ) {
+        getViewModel().getNotificationCount(idToken, userId)
+            .observe(this, Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        Log.d(TAG, "getNotifications count: $apiResponse")
+                        // Active notification count
+                        getViewModel()
+                            .setActiveNotificationCount(apiResponse.response.data.activeCounts)
+                        // Old notification count
+                        getViewModel()
+                            .setOldNotificationCount(apiResponse.response.data.oldCounts)
+                        // Update clearAllButton Visibility
+                        activeNotificationCount = apiResponse.response.data.activeCounts
+                        clearAllBtnVisibility()
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
     }
 
     private fun backKeyListener() {
@@ -57,8 +156,6 @@ class NotificationActivity :
     }
 
     private fun uiInitialization() {
-        // Initialize Tabview
-        tabLayout = mViewDataBinding!!.tabLayout
         // Setting Tabview
         setTabView()
         // Initial Tab Position
@@ -97,7 +194,7 @@ class NotificationActivity :
     }
 
     private fun clearAllBtnVisibility() {
-        if (tabSelectedPosition == 0) {
+        if (tabSelectedPosition == 0 && activeNotificationCount != 0) {
             mViewDataBinding!!.closeAllBtn.visibility = View.VISIBLE
             mViewDataBinding!!.clearAllText.visibility = View.VISIBLE
         } else {
@@ -113,11 +210,13 @@ class NotificationActivity :
     }
 
     private fun moveToDashBoard() {
-        // Update Status for back arrow
-        ApplicationUtils.backArrowNotification = true
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
+        if (internetErrorDialog.checkInternetAvailable(this)) {
+            // Update Status for back arrow
+            ApplicationUtils.backArrowNotification = true
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun clearAllBtnClickListener() {
@@ -149,6 +248,25 @@ class NotificationActivity :
 
             }
         })
+    }
+
+    // Setting IdToken, SpRegId And RollId
+    private fun setIdTokenAndSpRegId() {
+        idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
+        userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
+    }
+
+    override fun internetError(exception: String) {
+        Log.d(TAG, "onViewCreated: observer no inter dialog")
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onViewCreated: observer NotificationActivity Destroy")
+        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (!internetStatusDisposable.isDisposed) internetStatusDisposable.dispose()
     }
 
 }

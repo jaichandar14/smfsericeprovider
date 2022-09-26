@@ -19,6 +19,7 @@ class SharedPreference @Inject constructor(var application: Application) {
         const val FIRST_NAME = "userName"
         const val EMAIL_ID = "emailId"
         var isInternetConnected: Boolean = false
+        const val USER_ID = "userId"
     }
 
     private var sharedPreference: SharedPreferences =
