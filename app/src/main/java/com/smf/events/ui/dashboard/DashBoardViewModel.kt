@@ -188,6 +188,27 @@ class DashBoardViewModel @Inject constructor(
                 }
             }
         }
-
+    // 3218 - Method For move the notifications active to old
+    fun getNotificationCount(idToken: String, userId: String) =
+        liveData(Dispatchers.IO) {
+            try {
+                emit(dashBoardRepository.getNotificationCount(idToken, userId))
+            } catch (e: Exception) {
+                Log.d("TAG", "getBookedEventServices mody: $e")
+                when (e) {
+                    is UnknownHostException -> {
+                        Log.d("TAG", "getBookedEventServices when mody called: $e")
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                    is ConnectException -> {
+                        viewModelScope.launch {
+                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
+                        }
+                    }
+                }
+            }
+        }
 
 }

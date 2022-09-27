@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -14,6 +16,7 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -62,6 +65,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     var roleId: Int = 0
     var firstName: String = ""
     var emailId: String = ""
+    var notificationCount:Int=0
+    lateinit var userId: String
     private lateinit var myEventsRecyclerView: RecyclerView
     lateinit var adapter: MyEventsAdapter
     var serviceList = ArrayList<ServicesData>()
@@ -240,7 +245,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
             when (caller) {
-                getString(R.string.event_type) -> getAllServiceAndCounts(idToken)
+                getString(R.string.event_type) -> {getAllServiceAndCounts(idToken)
+                getNotificationCount(idToken, userId)}
                 getString(R.string.branch) -> getBranches(idToken, serviceCategoryId)
                 else -> {
                 }
@@ -411,6 +417,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         mDataBinding?.myEventsLayout?.visibility = View.INVISIBLE
         mDataBinding?.spinnerAction?.visibility = View.INVISIBLE
         mDataBinding?.serviceCountLayout?.visibility = View.INVISIBLE
+        mDataBinding?.notificationBell?.visibility = View.INVISIBLE
+
     }
 
     // 2839 After Api call Done
@@ -423,6 +431,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         mDataBinding?.myEventsLayout?.visibility = View.VISIBLE
         mDataBinding?.spinnerAction?.visibility = View.VISIBLE
         mDataBinding?.serviceCountLayout?.visibility = View.VISIBLE
+        mDataBinding?.notificationBell?.visibility = View.VISIBLE
     }
 
     // 2842 Getting All Service
@@ -494,6 +503,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
         firstName = sharedPreference.getString(SharedPreference.FIRST_NAME).toString()
         emailId = sharedPreference.getString(SharedPreference.EMAIL_ID).toString()
+        userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
     }
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
@@ -541,6 +551,45 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    // 3218 Notification bell icon counts
+    private fun notificationCount(activeCounts: Int) {
+        if (activeCounts!=0){
+            mDataBinding?.notificationBell?.setImageResource(R.drawable.notification)
+            if (activeCounts<=9){
+                mDataBinding?.notificationCountSingle?.text=activeCounts.toString()
+                mDataBinding?.notificationCount?.visibility=View.INVISIBLE
+                mDataBinding?.notificationPlus?.visibility=View.INVISIBLE
+            }else {
+                mDataBinding?.notificationCount?.text =getString(R.string.nine)
+                mDataBinding?.notificationPlus?.text =getString(R.string.plus_symbol)
+                mDataBinding?.notificationCountSingle?.visibility=View.INVISIBLE
+            }
+        }else{
+            mDataBinding?.notificationCountSingle?.visibility=View.INVISIBLE
+            mDataBinding?.notificationCount?.visibility=View.INVISIBLE
+            mDataBinding?.notificationPlus?.visibility=View.INVISIBLE
+        }
+    }
+    private fun getNotificationCount(
+        idToken: String,
+        userId: String
+    ) {
+         getViewModel().getNotificationCount(idToken, userId)
+            .observe(this, Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        // Active notification count
+                        notificationCount( apiResponse.response.data.activeCounts)
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
     }
 
     private fun logOut() {
