@@ -2,7 +2,6 @@ package com.smf.events.ui.schedulemanagement
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -32,14 +31,14 @@ class ScheduleManagementActivity :
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-    private lateinit var dialogDisposable: Disposable
+    private lateinit var changingNavDisposable: Disposable
+    private lateinit var internetDisposable: Disposable
     override fun getContentView(): Int = com.smf.events.R.layout.activity_schedule_managment
 
     override fun getViewModel(): ScheduleManagementViewModel =
         ViewModelProvider(this, factory).get(ScheduleManagementViewModel::class.java)
 
     override fun getBindingVariable(): Int = BR.scheduleManagementViewModel
-
 
     @SuppressLint("ResourceAsColor", "NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +53,7 @@ class ScheduleManagementActivity :
         timeSlotsUI()
         // 2842 Setting the updatedTabPosition when we press back button
         CalendarUtils.updatedTabPosition = 0
-        dialogDisposable = RxBus.listen(RxEvent.ChangingNav::class.java).subscribe {
+        changingNavDisposable = RxBus.listen(RxEvent.ChangingNav::class.java).subscribe {
             finish()
         }
 
@@ -66,7 +65,7 @@ class ScheduleManagementActivity :
             mViewDataBinding?.refreshLayout?.isRefreshing = true
         }
 
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+        internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer scheduled activity")
             internetErrorDialog.dismissDialog()
         }
@@ -77,8 +76,6 @@ class ScheduleManagementActivity :
             totalHeaderHeight += it
             mViewDataBinding!!.scrollView.smoothScrollTo(0, totalHeaderHeight)
         })
-
-        // showToastMessage(resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),"000","jai")
 
     }
 
@@ -137,6 +134,8 @@ class ScheduleManagementActivity :
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: called scheduled activity")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (!changingNavDisposable.isDisposed) changingNavDisposable.dispose()
+        if (!internetDisposable.isDisposed) internetDisposable.dispose()
     }
+
 }

@@ -1,41 +1,45 @@
 package com.smf.events.helper
 
 import android.content.Context
+import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
+import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.net.NetworkRequest
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 
+/**
+ * Save all available networks with an internet connection to a set (@validNetworks).
+ * As long as the size of the set > 0, this LiveData emits true.
+ * MinSdk = 21.
+ * */
 class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
-    val TAG = "ConnectionLiveData"
+    val TAG = "C-Manager"
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
-    private val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
     private val validNetworks: MutableSet<Network> = HashSet()
 
-    private fun checkValidNetworks(status: Boolean) {
-        postValue(status)
+    private fun checkValidNetworks() {
+        Log.d(TAG, "checkValidNetworks: ${validNetworks.size}")
+        val s = validNetworks.size > 0
+        postValue(validNetworks.size > 0)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onActive() {
         networkCallback = createNetworkCallback()
-        Log.d(TAG, "onResume network LiveData: onActive: called ")
         val networkRequest = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+            .addCapability(NET_CAPABILITY_INTERNET)
             .build()
         cm.registerNetworkCallback(networkRequest, networkCallback)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onInactive() {
-        Log.d(TAG, "onResume network LiveData: onInactive: called")
         cm.unregisterNetworkCallback(networkCallback)
     }
 
@@ -43,36 +47,28 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
     object : ConnectivityManager.NetworkCallback() {
         /*
           Called when a network is detected. If that network has internet, save it in the Set.
-         */
+          */
+        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         override fun onAvailable(network: Network) {
-            Log.d(TAG, "onResume network LiveData: onAvailable: net ${checkAvailability()}")
-            checkValidNetworks(checkAvailability())
-        }
-
-        override fun onLost(network: Network) {
-            Log.d(TAG, "onResume network LiveData: onLost: ${checkAvailability()}")
-            checkValidNetworks(checkAvailability())
-        }
-
-    }
-
-    private fun checkAvailability(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-            if (capabilities != null) {
-                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    Log.d(TAG, "onResume network checkAvailability CELLULAR: called")
-                    return true
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    Log.d(TAG, "onResume network checkAvailability _WIFI: called")
-                    return true
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                    Log.d(TAG, "onResume network checkAvailability ETHERNET: called")
-                    return true
-                }
+            Log.d(TAG, "onAvailable: ${network}")
+            val networkCapabilities = cm.getNetworkCapabilities(network)
+            val hasInternetCapability = networkCapabilities?.hasCapability(NET_CAPABILITY_INTERNET)
+            Log.d(TAG, "onAvailable: ${network}, $hasInternetCapability")
+            if (hasInternetCapability == true) {
+                validNetworks.add(network)
             }
+            checkValidNetworks()
         }
-        return false
+
+        /*
+          If the callback was registered with registerNetworkCallback() it will be called for each network which no longer satisfies the criteria of the callback.
+         */
+        override fun onLost(network: Network) {
+            Log.d(TAG, "onLost: ${network}")
+            validNetworks.remove(network)
+            checkValidNetworks()
+        }
+
     }
 
 }

@@ -34,16 +34,16 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
         performDataBinding()
         connectionLiveData = ConnectionLiveData(this)
         observerMethod()
+        netWorkObserver()
     }
 
     private fun netWorkObserver() {
-//        connectionLiveData = ConnectionLiveData(this)
         connectionLiveData.observe(this, { isNetworkAvailable ->
             when (isNetworkAvailable) {
                 true -> {
                     Log.d("TAG", "onResume network observer: act available $isNetworkAvailable")
                     SharedPreference.isInternetConnected = true
-                    RxBus.publish(RxEvent.InternetStatus("Available"))
+                    RxBus.publish(RxEvent.InternetStatus(true))
                 }
                 false -> {
                     Log.d("TAG", "onResume network observer: act not available $isNetworkAvailable")
@@ -52,14 +52,6 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
             }
         })
     }
-
-    override fun onResume() {
-        super.onResume()
-        SharedPreference.isInternetConnected = false
-        netWorkObserver()
-        Log.d("TAG", "onResume network observer: base act resume called")
-    }
-
 
     fun observerMethod() {
         Log.d("TAG", "on toast create Base Activity befor")
@@ -71,7 +63,6 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
                 this,
                 toastMessageG.duration
             )
-            //Toast(context).showCustomToast(toastMessageG.msg,requireActivity(),"Toast.LENGTH_LONG","fata")
         })
     }
 
@@ -94,6 +85,5 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
     fun showToast(msg: String) {
         Toast.makeText(this.applicationContext, msg, Toast.LENGTH_LONG).show()
     }
-
 
 }

@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -16,7 +14,6 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.addCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -25,6 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -60,13 +58,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     NavigationView.OnNavigationItemSelectedListener {
 
     val TAG = DashBoardFragment::class.java.toString()
+    private val args: DashBoardFragmentArgs by navArgs()
     var spRegId: Int = 0
     lateinit var idToken: String
     var roleId: Int = 0
     var firstName: String = ""
     var emailId: String = ""
-    var notificationCount:Int=0
-    lateinit var userId: String
     private lateinit var myEventsRecyclerView: RecyclerView
     lateinit var adapter: MyEventsAdapter
     var serviceList = ArrayList<ServicesData>()
@@ -77,6 +74,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     lateinit var drawerLayout: DrawerLayout
     lateinit var navigationView: NavigationView
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
+    lateinit var userId: String
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -95,8 +93,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     lateinit var tokens: Tokens
     private var pressedTime: Long = 0
     var p = 0
-    private lateinit var dialogDisposable: Disposable
+    private lateinit var internetDisposable: Disposable
+    private lateinit var quoteBriefDisposable: Disposable
+    private lateinit var quoteBriefDisposable1: Disposable
     private lateinit var internetErrorDialog: InternetErrorDialog
+
+    companion object {
+        var actionAndDetailsVisibility = true
+    }
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -133,33 +137,38 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         onClickCalendar()
         // 3103 Notification Onclick method
         onClickNotification()
+        if (args.fromEmailOtp == AppConstants.TRUE) {
+            // Check token validation
+            idTokenValidation()
+        }
+    }
 
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+    override fun onResume() {
+        super.onResume()
+        internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer DashBoard rx")
             internetErrorDialog.dismissDialog()
-//            serviceList.clear()
-//            getAllServices(idToken)
+            idTokenValidation()
         }
 
-        dialogDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
-            Log.d(TAG, "onViewCreated listener: $it")
-            mDataBinding?.upcomingEvent?.visibility = View.GONE
-            mDataBinding?.banner1?.visibility = View.GONE
-            mDataBinding?.banner2?.visibility = View.GONE
-            valueweget = it.bidReqId
-            //  mDataBinding?.loop1?.visibility=View.VISIBLE
-            // mDataBinding?.nestedScroll?.visibility=View.GONE
+        quoteBriefDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
+            // Declaration for show action and details page
+            actionAndDetailsVisibility = it.status
+            if (!actionAndDetailsVisibility) {
+                hideUpComingEvents()
+                valueweget = it.bidReqId
+            }
+            Log.d(TAG, "actionAndDetailsVisibility  dash $actionAndDetailsVisibility")
         }
 
-        dialogDisposable = RxBus.listen(RxEvent.QuoteBrief1::class.java).subscribe {
-            Log.d(TAG, "onViewCreated listener: $it")
-            mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
-            mDataBinding?.banner1?.visibility = View.VISIBLE
-            mDataBinding?.banner2?.visibility = View.VISIBLE
-            mDataBinding?.nestedScroll?.visibility = View.VISIBLE
+        quoteBriefDisposable1 = RxBus.listen(RxEvent.QuoteBrief1::class.java).subscribe {
+            // Declaration for show action and details page
+            actionAndDetailsVisibility = it.status
+            if (actionAndDetailsVisibility) {
+                showUpComingEvents()
+            }
+            Log.d(TAG, "actionAndDetailsVisibility  dash $actionAndDetailsVisibility")
         }
-
-        idTokenValidation()
     }
 
     // 2888 - SideNav Initialization
@@ -219,6 +228,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     private fun onClickCalendar() {
         mDataBinding?.calander?.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                // Declaration for show action and details page
+                actionAndDetailsVisibility = true
                 val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
                 startActivity(intent)
             }
@@ -228,9 +239,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     private fun onClickNotification() {
         mDataBinding?.notificationBell?.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                // Declaration for show action and details page
+                actionAndDetailsVisibility = true
                 val intent = Intent(this.requireContext(), NotificationActivity::class.java)
                 startActivity(intent)
-                activity?.finish()
             }
         }
     }
@@ -245,8 +257,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         withContext(Main) {
             when (caller) {
-                getString(R.string.event_type) -> {getAllServiceAndCounts(idToken)
-                getNotificationCount(idToken, userId)}
+                getString(R.string.event_type) -> {
+                    getAllServiceAndCounts(idToken)
+                    getNotificationCount(idToken, userId)
+                }
                 getString(R.string.branch) -> getBranches(idToken, serviceCategoryId)
                 else -> {
                 }
@@ -261,7 +275,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             allServiceList.add(it.serviceName)
         }
         widgetAfter()
-
         //spinner view for all Services
         getViewModel().allServices(mDataBinding, allServiceList)
     }
@@ -312,6 +325,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 )
             }
             if (serviceList[position].serviceName != getString(R.string.All_Service)) {
+                // Declaration for show action and details page
+                actionAndDetailsVisibility = true
+                showUpComingEvents()
                 serviceCategoryId = (serviceList[position].serviceCategoryId)
                 tokens.checkTokenExpiry(
                     requireActivity().applicationContext as SMFApp,
@@ -336,7 +352,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 branchesName = getString(R.string.Branches)
             }
             try {
-                var serviceName = (serviceList[allServiceposition!!].serviceName)
+                // Declaration for show action and details page
+                actionAndDetailsVisibility = true
+                val serviceName = (serviceList[allServiceposition!!].serviceName)
                 if (serviceName == getString(R.string.All_Service) && branchesName == getString(R.string.Branches)) {
                     actionAndStatusFragmentMethod(
                         serviceCategoryId,
@@ -364,15 +382,17 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // Action And Status UI setUp
     fun actionAndStatusFragmentMethod(serviceCategoryId: Int, branchId: Int) {
-        var args = Bundle()
+        val args = Bundle()
         args.putInt(AppConstants.SERVICE_CATEGORY_ID, serviceCategoryId)
         args.putInt(AppConstants.SERVICE_VENDOR_ON_BOARDING_ID, branchId)
-        var actionAndStatusFragment = ActionsAndStatusFragment()
+        Log.d(TAG, "actionAndDetailsVisibility  dash method $actionAndDetailsVisibility")
+        args.putBoolean("actionAndDetailsVisibility", actionAndDetailsVisibility)
+        val actionAndStatusFragment = ActionsAndStatusFragment(internetErrorDialog)
         actionAndStatusFragment.arguments = args
 
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.action_and_status_layout, actionAndStatusFragment)
-            .setReorderingAllowed(true)
+            .addToBackStack(null)
             .commit()
     }
 
@@ -418,7 +438,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         mDataBinding?.spinnerAction?.visibility = View.INVISIBLE
         mDataBinding?.serviceCountLayout?.visibility = View.INVISIBLE
         mDataBinding?.notificationBell?.visibility = View.INVISIBLE
-
     }
 
     // 2839 After Api call Done
@@ -440,6 +459,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
+                        serviceList.clear()
                         serviceList.add(ServicesData(getString(R.string.All_Service), 0))
                         branchListSpinner.add(BranchDatas(getString(R.string.Branches), 0))
                         apiResponse.response.data.forEach {
@@ -498,12 +518,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
+        userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
         firstName = sharedPreference.getString(SharedPreference.FIRST_NAME).toString()
         emailId = sharedPreference.getString(SharedPreference.EMAIL_ID).toString()
-        userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
     }
 
     override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
@@ -525,6 +545,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
             ApplicationUtils.fromNotification = false
             serviceList.clear()
+            // Declaration for show action and details page
+            actionAndDetailsVisibility = true
             idTokenValidation()
         }
         mDataBinding?.refreshLayout?.isRefreshing = false
@@ -551,45 +573,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    // 3218 Notification bell icon counts
-    private fun notificationCount(activeCounts: Int) {
-        if (activeCounts!=0){
-            mDataBinding?.notificationBell?.setImageResource(R.drawable.notification)
-            if (activeCounts<=9){
-                mDataBinding?.notificationCountSingle?.text=activeCounts.toString()
-                mDataBinding?.notificationCount?.visibility=View.INVISIBLE
-                mDataBinding?.notificationPlus?.visibility=View.INVISIBLE
-            }else {
-                mDataBinding?.notificationCount?.text =getString(R.string.nine)
-                mDataBinding?.notificationPlus?.text =getString(R.string.plus_symbol)
-                mDataBinding?.notificationCountSingle?.visibility=View.INVISIBLE
-            }
-        }else{
-            mDataBinding?.notificationCountSingle?.visibility=View.INVISIBLE
-            mDataBinding?.notificationCount?.visibility=View.INVISIBLE
-            mDataBinding?.notificationPlus?.visibility=View.INVISIBLE
-        }
-    }
-    private fun getNotificationCount(
-        idToken: String,
-        userId: String
-    ) {
-         getViewModel().getNotificationCount(idToken, userId)
-            .observe(this, Observer { apiResponse ->
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-                        // Active notification count
-                        notificationCount( apiResponse.response.data.activeCounts)
-                    }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
-                    }
-                    else -> {
-                    }
-                }
-            })
     }
 
     private fun logOut() {
@@ -620,15 +603,71 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     override fun internetError(exception: String) {
+        Log.d(TAG, "internetError: inside dashboard")
         SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
+        internetErrorDialog.checkInternetAvailable(requireActivity())
         widgetAfter()
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: Destroy called dash")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    private fun showUpComingEvents() {
+        mDataBinding?.upcomingEvent?.visibility = View.VISIBLE
+        mDataBinding?.banner1?.visibility = View.VISIBLE
+        mDataBinding?.banner2?.visibility = View.VISIBLE
+        mDataBinding?.nestedScroll?.visibility = View.VISIBLE
+    }
+
+    private fun hideUpComingEvents() {
+        mDataBinding?.upcomingEvent?.visibility = View.GONE
+        mDataBinding?.banner1?.visibility = View.GONE
+        mDataBinding?.banner2?.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onStop: Destroy called dash onpause")
+        if (!internetDisposable.isDisposed) internetDisposable.dispose()
+        if (!quoteBriefDisposable.isDisposed) quoteBriefDisposable.dispose()
+        if (!quoteBriefDisposable1.isDisposed) quoteBriefDisposable1.dispose()
+    }
+
+    private fun getNotificationCount(
+        idToken: String,
+        userId: String
+    ) {
+        getViewModel().getNotificationCount(idToken, userId)
+            .observe(this, Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        // Active notification count
+                        notificationCount(apiResponse.response.data.activeCounts)
+                    }
+                    is ApisResponse.Error -> {
+                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    }
+                    else -> {
+                    }
+                }
+            })
+    }
+
+    // 3218 Notification bell icon counts
+    private fun notificationCount(activeCounts: Int) {
+        if (activeCounts != 0) {
+            mDataBinding?.notificationBell?.setImageResource(R.drawable.notification)
+            if (activeCounts <= 9) {
+                mDataBinding?.notificationCountSingle?.text = activeCounts.toString()
+                mDataBinding?.notificationCount?.visibility = View.INVISIBLE
+                mDataBinding?.notificationPlus?.visibility = View.INVISIBLE
+            } else {
+                mDataBinding?.notificationCount?.text = getString(R.string.nine)
+                mDataBinding?.notificationPlus?.text = getString(R.string.plus_symbol)
+                mDataBinding?.notificationCountSingle?.visibility = View.INVISIBLE
+            }
+        } else {
+            mDataBinding?.notificationCountSingle?.visibility = View.INVISIBLE
+            mDataBinding?.notificationCount?.visibility = View.INVISIBLE
+            mDataBinding?.notificationPlus?.visibility = View.INVISIBLE
+        }
     }
 
 }

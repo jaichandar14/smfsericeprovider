@@ -76,7 +76,7 @@ class QuoteBriefFragment :
 
             "onBackClicked" -> {
                 findNavController().navigate(
-                    QuoteBriefFragmentDirections.actionQuoteBriefFragmentToDashBoardFragment()
+                    QuoteBriefFragmentDirections.actionQuoteBriefFragmentToDashBoardFragment("false")
                 )
             }
         }

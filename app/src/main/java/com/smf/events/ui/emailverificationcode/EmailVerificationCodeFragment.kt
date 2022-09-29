@@ -55,7 +55,7 @@ class EmailVerificationCodeFragment :
     override fun callBack(status: String) {
         if (status == "EmailVerifiedGoToDashBoard") {
             //Navigate to DashBoardFragment
-            findNavController().navigate(EmailVerificationCodeFragmentDirections.actionEmailVerificationCodeFragmentToDashBoardFragment())
+            findNavController().navigate(EmailVerificationCodeFragmentDirections.actionEmailVerificationCodeFragmentToDashBoardFragment("true"))
 
         }
     }

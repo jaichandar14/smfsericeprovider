@@ -137,4 +137,5 @@ object AppConstants {
     const val OLD = "Old"
     const val SERVICE_CATEGORY_ID = "serviceCategoryId"
     const val SERVICE_VENDOR_ON_BOARDING_ID = "serviceVendorOnboardingId"
+    const val TRUE = "true"
 }

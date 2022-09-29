@@ -130,7 +130,8 @@ class QuoteDetailsDialog(
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(CommonInfoDialog.TAG, "onViewCreated: observer QuoteDetails dialog")
-            internetErrorDialog.dismissDialog()
+//            internetErrorDialog.dismissDialog()
+            dismiss()
         }
     }
 
@@ -146,8 +147,8 @@ class QuoteDetailsDialog(
         getViewModel().getCurrencyType(mDataBinding, currencyTypeList)
         // Quote ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
+//        // Internet Error Dialog Initialization
+//        internetErrorDialog = InternetErrorDialog.newInstance()
         // fetching details based on Biding status
         fetchBasedOnStatus(view)
         mDataBinding?.btnCancel?.setOnClickListener {

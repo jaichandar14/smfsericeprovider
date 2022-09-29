@@ -87,7 +87,7 @@ class CommonInfoDialog(
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer Common dialog")
-            internetErrorDialog.dismissDialog()
+            dismiss()
         }
 
         if (status == "cost") {
