@@ -83,7 +83,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         super.onViewCreated(view, savedInstanceState)
         Log.d(
             "TAG",
-            "checkTokenExpiry signin ${sharedPreference.getString(SharedPreference.ID_Token)}"
+            "TokenExpiry signin ${sharedPreference.getString(SharedPreference.ID_Token)}"
         )
         constraintLayout = mDataBinding?.loginPage!!
         // Initialize CallBackInterface
@@ -91,11 +91,15 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         // Internet Error Dialog Initialization
         internetErrorDialog = InternetErrorDialog.newInstance()
 
+        init()
+    }
+
+    override fun onResume() {
+        super.onResume()
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer sign rx")
+            Log.d(TAG, "onViewCreated: observer sign frag called")
             internetErrorDialog.dismissDialog()
         }
-        init()
     }
 
     private fun init() {
@@ -143,6 +147,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     // Method for SignIn Button
     private fun signInClicked() {
+        Log.d(TAG, "signInClicked: ${SharedPreference.isInternetConnected}")
         mDataBinding!!.signinbtn.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(requireContext())) {
                 signOut()
@@ -345,6 +350,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     }
 
     override fun internetError(exception: String) {
+        Log.d(InternetErrorDialog.TAG, "onViewCreated: observer sign internetError called")
         SharedPreference.isInternetConnected = false
         internetErrorDialog.checkInternetAvailable(requireContext())
         hideProgress()

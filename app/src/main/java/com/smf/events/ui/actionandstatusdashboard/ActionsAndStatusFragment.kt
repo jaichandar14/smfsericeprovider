@@ -23,12 +23,11 @@ import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
 import com.smf.events.ui.notification.model.NotificationParams
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ActionsAndStatusFragment :
+class ActionsAndStatusFragment(val internetErrorDialog: InternetErrorDialog) :
     BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(),
     ActionsAdapter.OnActionCardClickListener, StatusAdaptor.OnActionCardClickListener,
     Tokens.IdTokenCallBackInterface,
@@ -45,8 +44,8 @@ class ActionsAndStatusFragment :
     var roleId: Int = 0
     var serviceCategoryId: Int? = null
     var serviceVendorOnboardingId: Int? = null
-    private lateinit var dialogDisposable: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
+    var actionAndDetailsVisibility: Boolean? = true
+    var bidStatus: String? = null
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -77,18 +76,26 @@ class ActionsAndStatusFragment :
         serviceCategoryIdAndServiceOnBoardingIdSetup()
         // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
+        // viewModel CallBack Initialization
+        getViewModel().setCallBackInterface(this)
 
-        // 3103
-        val notificationParams: NotificationParams? =
-            requireActivity().intent.getParcelableExtra(AppConstants.NOTIFICATION_PARAMS)
+        Log.d(TAG, "onCreate www: $actionAndDetailsVisibility")
+        if (actionAndDetailsVisibility == true) {
+            // 3103
+            val notificationParams: NotificationParams? =
+                requireActivity().intent.getParcelableExtra(AppConstants.NOTIFICATION_PARAMS)
 
-        if (ApplicationUtils.fromNotification) {
-            Log.d(TAG, "onCreate: called if ${notificationParams?.bidStatus}")
-            notificationParams?.bidStatus?.let { goToActionDetailsFragment(it) }
+            if (ApplicationUtils.fromNotification) {
+                Log.d(TAG, "onCreate: called if ${notificationParams?.bidStatus}")
+                notificationParams?.bidStatus?.let { goToActionDetailsFragment(it) }
+            } else {
+                Log.d(TAG, "onCreate: called else")
+                apiTokenValidationActionAndStatus()
+            }
         } else {
-            Log.d(TAG, "onCreate: called else")
-            apiTokenValidationActionAndStatus()
+            bidStatus?.let { goToActionDetailsFragment(it) }
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,17 +105,10 @@ class ActionsAndStatusFragment :
         myActionRecyclerView = mDataBinding?.actionsRecyclerview!!
         //Initializing status recyclerview
         myStatusRecyclerView = mDataBinding?.statusRecyclerview!!
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
         //Actions  Recycler view
         myActionsStatusRecycler()
         //Status Recycler view
         myStatusRecycler()
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer ActionAndStatus")
-            internetErrorDialog.dismissDialog()
-        }
     }
 
     private fun showProgress() {
@@ -152,8 +152,9 @@ class ActionsAndStatusFragment :
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
         if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            RxBus.publish(RxEvent.QuoteBrief(1))
-            cardClicked(myEvents)
+            RxBus.publish(RxEvent.QuoteBrief(1, false))
+            bidStatus = cardClicked(myEvents)
+            Log.d(TAG, "actionCardClick: $bidStatus")
         }
     }
 
@@ -274,6 +275,7 @@ class ActionsAndStatusFragment :
     // Method For Set ServiceCategoryId And ServiceOnboardId For Api Call
     private fun serviceCategoryIdAndServiceOnBoardingIdSetup() {
         val args = arguments
+        actionAndDetailsVisibility = args?.getBoolean("actionAndDetailsVisibility")
         if (args?.getInt("serviceCategoryId") == 0) {
             if (args.getInt("serviceVendorOnboardingId") == 0) {
                 serviceCategoryId = null
@@ -308,11 +310,11 @@ class ActionsAndStatusFragment :
                 it
             )
         }
-        val actionDetailsFragment = ActionDetailsFragment()
+        val actionDetailsFragment = ActionDetailsFragment(internetErrorDialog)
         actionDetailsFragment.arguments = args
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.action_and_status_layout, actionDetailsFragment)
-            .addToBackStack(ActionsAndStatusFragment::class.java.name)
+            .addToBackStack(null)
             .commit()
     }
 
@@ -323,16 +325,16 @@ class ActionsAndStatusFragment :
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: called ActionAndStatus")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    override fun internetError(exception: String) {
+        Log.d(TAG, "internetError: inside actionAndDetails")
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireActivity())
+        hideProgress()
     }
 
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
-        hideProgress()
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onDestroy: stop calleddddd")
     }
 
 }

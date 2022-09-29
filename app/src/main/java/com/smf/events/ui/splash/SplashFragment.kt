@@ -93,7 +93,7 @@ class SplashFragment : BaseFragment<SplashScreenFragmentBinding, SplashScreenVie
 
     // Method for Moving DashBoard Screen
     private fun moveToDashBoardScreen() {
-        val action = SplashFragmentDirections.actionSplashFragmentToDashBoardFragment()
+        val action = SplashFragmentDirections.actionSplashFragmentToDashBoardFragment("false")
         findNavController().navigate(action)
     }
 

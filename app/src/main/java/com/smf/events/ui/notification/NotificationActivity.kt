@@ -77,17 +77,18 @@ class NotificationActivity :
         idTokenValidation(getString(R.string.notification_count))
         // UI Initialization
         uiInitialization()
+
+        observers()
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun observers() {
         // Listener For Internet Connectivity
         internetStatusDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer no activity")
+            Log.d(TAG, "onViewCreated: observer notification activity")
             internetErrorDialog.dismissDialog()
-//            // Check IdToken Validity
-//            idTokenValidation(getString(R.string.notification_count))
-//            updateNotificationUI()
+            // Check IdToken Validity
+            idTokenValidation(getString(R.string.notification_count))
+            updateNotificationUI()
         }
         // Listener For ClearAll Button
         dialogDisposable = RxBus.listen(RxEvent.UpdateNotificationCount::class.java).subscribe {
@@ -102,7 +103,6 @@ class NotificationActivity :
         getViewModel().getOldNotificationCount.observe(this, Observer {
             tabLayout.getTabAt(1)?.text = "${AppConstants.OLD}(${it})"
         })
-
     }
 
     private fun idTokenValidation(caller: String) {
@@ -176,13 +176,13 @@ class NotificationActivity :
         }
         val frg = when (tabSelectedPosition) {
             0 -> {
-                ActiveNotificationFragment()
+                ActiveNotificationFragment(internetErrorDialog)
             }
             1 -> {
-                OldNotificationFragment()
+                OldNotificationFragment(internetErrorDialog)
             }
             else -> {
-                ActiveNotificationFragment()
+                ActiveNotificationFragment(internetErrorDialog)
             }
         }
         val manager: FragmentManager =
@@ -211,10 +211,6 @@ class NotificationActivity :
 
     private fun moveToDashBoard() {
         if (internetErrorDialog.checkInternetAvailable(this)) {
-            // Update Status for back arrow
-            ApplicationUtils.backArrowNotification = true
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
             finish()
         }
     }

@@ -100,14 +100,15 @@ class ViewOrderDetailsDialogFragment(
         tokens.setCallBackInterface(this)
         // ViewOrderDetails ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
+//        // Internet Error Dialog Initialization
+//        internetErrorDialog = InternetErrorDialog.newInstance()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
-            showProgress()
-            apiTokenValidationViewOrderDetails()
-            internetErrorDialog.dismissDialog()
+            dismiss()
+//            showProgress()
+//            apiTokenValidationViewOrderDetails()
+//            internetErrorDialog.dismissDialog()
         }
 
         // 2402 - Api Token  validation ViewOrderDetails

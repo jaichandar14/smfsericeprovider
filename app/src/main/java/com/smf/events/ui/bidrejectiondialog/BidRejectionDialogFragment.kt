@@ -113,8 +113,7 @@ class BidRejectionDialogFragment(
         mDataBinding!!.quoteTitle.text = "You are rejecting a $serviceName #$code"
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d("TAG", "onViewCreated: observer DashBoard rx")
-            internetErrorDialog.dismissDialog()
+            dismiss()
         }
     }
 
@@ -216,16 +215,16 @@ class BidRejectionDialogFragment(
 
     // Setting Dialog Size
     private fun dialogFragmentSize() {
-        var window: Window? = dialog?.window
-        var params: WindowManager.LayoutParams = window!!.attributes
+        val window: Window? = dialog?.window
+        val params: WindowManager.LayoutParams = window!!.attributes
         params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
         window.attributes = params
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: called dash")
+    override fun onDestroy() {
+        super.onDestroy()
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
+
 }

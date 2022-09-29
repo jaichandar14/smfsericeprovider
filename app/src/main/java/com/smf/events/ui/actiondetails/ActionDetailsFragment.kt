@@ -23,6 +23,7 @@ import com.smf.events.ui.actionandstatusdashboard.model.ServiceProviderBidReques
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter
 import com.smf.events.ui.actiondetails.adapter.ActionDetailsAdapter.CallBackInterface
 import com.smf.events.ui.actiondetails.model.ActionDetails
+import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.quotebriefdialog.QuoteBriefDialog
 import com.smf.events.ui.quotedetailsdialog.model.BiddingQuotDto
 import dagger.android.support.AndroidSupportInjection
@@ -31,7 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ActionDetailsFragment :
+class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
     BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(),
     Tokens.IdTokenCallBackInterface, CallBackInterface, ActionDetailsViewModel.CallBackInterface {
 
@@ -46,7 +47,6 @@ class ActionDetailsFragment :
     var bidStatus: String = ""
     lateinit var idToken: String
     var spRegId: Int = 0
-    private lateinit var internetErrorDialog: InternetErrorDialog
     lateinit var dialogDisposable: Disposable
 
     @Inject
@@ -72,6 +72,7 @@ class ActionDetailsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showProgress()
         //Action Details Local Variable Initialization
         actionDetailsVariableSetUp()
         //Token Class CallBack Initialization
@@ -81,13 +82,6 @@ class ActionDetailsFragment :
         closeBtn = mDataBinding?.closeBtn
         //Initializing actions recyclerview
         myActionDetailsRecyclerView = mDataBinding?.actionDetailsRecyclerview!!
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d("TAG", "onViewCreated: observer ActionDetails")
-            internetErrorDialog.dismissDialog()
-        }
         // Close Button Click Listener
         clickListeners()
         // Actions Recycler view
@@ -115,6 +109,7 @@ class ActionDetailsFragment :
     }
 
     override fun onResume() {
+        Log.d(TAG, "onStop: Destroy called actDetails onResume")
         super.onResume()
         // ResultListener For Observe Data From Dialogs
         parentFragmentManager.setFragmentResultListener("1", viewLifecycleOwner,
@@ -170,10 +165,10 @@ class ActionDetailsFragment :
     private fun clickListeners() {
         closeBtn?.setOnClickListener {
             if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                RxBus.publish(RxEvent.QuoteBrief1(2))
+                RxBus.publish(RxEvent.QuoteBrief1(2, true))
                 // 3103 - Redirect To ActionAndDetails Fragment
                 ApplicationUtils.fromNotification = false
-                var args = Bundle()
+                val args = Bundle()
                 serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
                 serviceVendorOnboardingId?.let { it1 ->
                     args.putInt(
@@ -181,12 +176,16 @@ class ActionDetailsFragment :
                         it1
                     )
                 }
-                var actionAndStatusFragment = ActionsAndStatusFragment()
+                args.putBoolean(
+                    "actionAndDetailsVisibility",
+                    DashBoardFragment.actionAndDetailsVisibility
+                )
+                val actionAndStatusFragment = ActionsAndStatusFragment(internetErrorDialog)
                 actionAndStatusFragment.arguments = args
                 // Replace Fragment
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.action_and_status_layout, actionAndStatusFragment)
-                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
                     .commit()
             }
         }
@@ -298,7 +297,6 @@ class ActionDetailsFragment :
         ).observe(viewLifecycleOwner, Observer { apiResponse ->
             when (apiResponse) {
                 is ApisResponse.Success -> {
-//                    hideProgress()
                     recyclerViewListUpdate(apiResponse.response.data.serviceProviderBidRequestDtos)
                 }
                 is ApisResponse.Error -> {
@@ -312,6 +310,7 @@ class ActionDetailsFragment :
 
     // Method For Action Details RecyclerView List Update
     private fun recyclerViewListUpdate(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>?) {
+        hideProgress()
         myList = settingBidActionsList(serviceProviderBidRequestDtos)
         newRequestCount = myList.size
         when (bidStatus) {
@@ -342,7 +341,6 @@ class ActionDetailsFragment :
         }
         val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)
-//        hideProgress()
         mDataBinding?.progressBar?.visibility = View.GONE
     }
 
@@ -388,7 +386,7 @@ class ActionDetailsFragment :
 
     override fun internetError(exception: String) {
         SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
+        internetErrorDialog.checkInternetAvailable(requireActivity())
         hideProgress()
     }
 

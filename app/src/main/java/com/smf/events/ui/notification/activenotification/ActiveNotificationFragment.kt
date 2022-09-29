@@ -30,7 +30,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class ActiveNotificationFragment :
+class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
     BaseFragment<FragmentActiveNotificationBinding, ActiveNotificationViewModel>(),
     NotificationAdapter.OnNotificationClickListener, Tokens.IdTokenCallBackInterface,
     ActiveNotificationViewModel.CallBackInterface, CardViewClear {
@@ -44,8 +44,6 @@ class ActiveNotificationFragment :
     private lateinit var clearAllDisposable: Disposable
     lateinit var idToken: String
     lateinit var userId: String
-//    private lateinit var internetErrorDialog: InternetErrorDialog
-//    private lateinit var internetStatusDisposable: Disposable
 
     companion object {
         var clearBtnClickedPosition = 0
@@ -77,8 +75,6 @@ class ActiveNotificationFragment :
         super.onViewCreated(view, savedInstanceState)
         // Initialize Local Variables
         setIdTokenAndSpRegId()
-//        // Internet Error Dialog Initialization
-//        internetErrorDialog = InternetErrorDialog.newInstance()
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
         // ActiveNotification ViewModel CallBackInterface
@@ -91,13 +87,6 @@ class ActiveNotificationFragment :
             // Check IdToken Validity
             idTokenValidation(getString(R.string.delete))
         }
-
-//        // Listener For Internet Connectivity
-//        internetStatusDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-//            Log.d(TAG, "onViewCreated: observer no activity")
-//            internetErrorDialog.dismissDialog()
-//        }
-
         // Initializing RecyclerView
         initializeRecyclerView()
     }
@@ -218,8 +207,8 @@ class ActiveNotificationFragment :
     }
 
     override fun internetError(exception: String) {
-//        SharedPreference.isInternetConnected = false
-//        internetErrorDialog.checkInternetAvailable(requireContext())
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     private fun showProgress() {
@@ -277,7 +266,6 @@ class ActiveNotificationFragment :
         super.onStop()
         Log.d(TAG, "onViewCreated: observer ActiveNotificationFragment stop")
         if (!clearAllDisposable.isDisposed) clearAllDisposable.dispose()
-//        if (!internetStatusDisposable.isDisposed) internetStatusDisposable.dispose()
     }
 
 }

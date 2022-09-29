@@ -103,8 +103,6 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
         mDataBinding?.progressBar?.visibility = View.VISIBLE
         // QuoteBrief ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         // Back Button Pressed
@@ -124,8 +122,7 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
-            apiTokenValidationQuoteBrief("quoteDetails")
-            internetErrorDialog.dismissDialog()
+            dismiss()
         }
     }
 

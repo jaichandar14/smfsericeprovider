@@ -14,14 +14,11 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentOldNotificationBinding
 import com.smf.events.helper.*
-import com.smf.events.rxbus.RxBus
-import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.notification.adapter.NotificationAdapter
 import com.smf.events.ui.notification.model.Data
 import com.smf.events.ui.notification.model.Notification
 import com.smf.events.ui.notification.model.NotificationDetails
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Month
@@ -29,7 +26,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class OldNotificationFragment :
+class OldNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
     BaseFragment<FragmentOldNotificationBinding, OldNotificationViewModel>(),
     NotificationAdapter.OnNotificationClickListener, Tokens.IdTokenCallBackInterface,
     OldNotificationViewModel.CallBackInterface {
@@ -40,8 +37,6 @@ class OldNotificationFragment :
     private val notificationList = ArrayList<NotificationDetails>()
     lateinit var idToken: String
     lateinit var userId: String
-//    private lateinit var internetErrorDialog: InternetErrorDialog
-//    private lateinit var internetStatusDisposable: Disposable
 
     @Inject
     lateinit var tokens: Tokens
@@ -66,8 +61,6 @@ class OldNotificationFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        // Internet Error Dialog Initialization
-//        internetErrorDialog = InternetErrorDialog.newInstance()
         // Initialize Local Variables
         setIdTokenAndSpRegId()
         // Initialize IdTokenCallBackInterface
@@ -76,11 +69,6 @@ class OldNotificationFragment :
         getViewModel().setCallBackInterface(this)
         // Initializing RecyclerView
         initializeRecyclerView()
-//        // Listener For Internet Connectivity
-//        internetStatusDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-//            Log.d(TAG, "onViewCreated: observer no activity")
-//            internetErrorDialog.dismissDialog()
-//        }
     }
 
     private fun initializeRecyclerView() {
@@ -170,7 +158,6 @@ class OldNotificationFragment :
             } else {
                 "${data.formatedCreatedDate.split(",")[1].substring(0, 5)} Pm"
             }
-        Log.d(TAG, "createNotificationList: $month $date - $updatedTime")
 
         return "$month $date - $updatedTime"
     }
@@ -187,8 +174,8 @@ class OldNotificationFragment :
     }
 
     override fun internetError(exception: String) {
-//        SharedPreference.isInternetConnected = false
-//        internetErrorDialog.checkInternetAvailable(requireContext())
+        SharedPreference.isInternetConnected = false
+        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     private fun showProgress() {
@@ -200,10 +187,5 @@ class OldNotificationFragment :
         mDataBinding?.progressBar?.visibility = View.GONE
         mDataBinding?.oldNotificationRecycler?.visibility = View.VISIBLE
     }
-
-//    override fun onStop() {
-//        super.onStop()
-//        if (!internetStatusDisposable.isDisposed) internetStatusDisposable.dispose()
-//    }
 
 }

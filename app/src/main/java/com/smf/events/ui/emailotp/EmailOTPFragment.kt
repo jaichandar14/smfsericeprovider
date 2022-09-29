@@ -41,6 +41,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     lateinit var otp3: EditText
     private lateinit var internetErrorDialog: InternetErrorDialog
     lateinit var dialogDisposable: Disposable
+    var isInternetError = false
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -98,13 +99,25 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         otp1.setOnKeyListener(GenericKeyEvent(otp1, otp0))
         otp2.setOnKeyListener(GenericKeyEvent(otp2, otp1))
         otp3.setOnKeyListener(GenericKeyEvent(otp3, otp2))
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer email rx")
-            internetErrorDialog.dismissDialog()
-        }
-
+        // Method for submit event implementation
         submitBtnClicked()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(TAG, "onViewCreated: observer email otp")
+            internetErrorDialog.dismissDialog()
+            if (isInternetError) {
+                moveToSignIn()
+            }
+        }
+    }
+
+    private fun moveToSignIn() {
+        //Navigate to SignInFragment
+        findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
+        isInternetError = false
     }
 
     // Method For set UserName And SharedPreferences
@@ -130,7 +143,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                 )
             }
         }
-        //  mDataBinding?.otp1ed?.requestFocus()
     }
 
     fun otpValidation(
@@ -212,20 +224,16 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         if (num == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
             Log.e(TAG, "Failed to fetch user attributes inside")
             SharedPreference.isInternetConnected = false
+            isInternetError = true
             internetErrorDialog.checkInternetAvailable(requireContext())
-            hideProgress()
-            //Navigate to SignInFragment
-            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
         } else if (num == resources.getString(R.string.Operation_requires_a_signed_in_state)) {
-            hideProgress()
             SharedPreference.isInternetConnected = false
+            isInternetError = true
             internetErrorDialog.checkInternetAvailable(requireContext())
             showToastMessage(
                 resources.getString(R.string.Network_Error__Please_Sign_in_again),
                 Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
             )
-            //Navigate to SignInFragment
-            findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
         } else {
             showProgress()
             getOtpValidation(false)
@@ -321,11 +329,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     }
 
     override fun internetError(exception: String) {
+        Log.d(InternetErrorDialog.TAG, "onViewCreated: observer otp internetError called")
         SharedPreference.isInternetConnected = false
+        isInternetError = true
         internetErrorDialog.checkInternetAvailable(requireContext())
-        //Navigate to SignInFragment
-        findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
-        hideProgress()
     }
 
     // Login api call to Fetch RollId and SpRegId
@@ -338,7 +345,11 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         // Initialize RegId And RoleId to Shared Preference
                         setSpRegIdAndRollID(apiResponse)
                         // Navigate to DashBoardFragment
-                        findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment())
+                        findNavController().navigate(
+                            EmailOTPFragmentDirections.actionEMailOTPFragmentToDashBoardFragment(
+                                AppConstants.TRUE
+                            )
+                        )
                     }
                     is ApisResponse.Error -> {
                         Log.d(TAG, "check token result: ${apiResponse.exception}")
@@ -412,9 +423,9 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onStop: called email")
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: called email otp")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }
