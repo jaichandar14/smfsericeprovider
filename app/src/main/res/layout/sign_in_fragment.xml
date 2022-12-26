@@ -99,7 +99,7 @@
 
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/cppSignIn"
-                    android:layout_width="@dimen/_95sdp"
+                    android:layout_width="@dimen/_105sdp"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/mulish_bold"
                     android:gravity="center"
@@ -226,7 +226,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_gravity="center"
-                    android:autofillHints="@gmail"
                     android:background="@drawable/empty_shapes"
                     android:fontFamily="@font/mulish_bold"
                     android:hint="@string/perter_gmail_com"

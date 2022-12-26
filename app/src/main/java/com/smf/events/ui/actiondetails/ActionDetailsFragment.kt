@@ -310,7 +310,6 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
 
     // Method For Action Details RecyclerView List Update
     private fun recyclerViewListUpdate(serviceProviderBidRequestDtos: List<ServiceProviderBidRequestDto>?) {
-        hideProgress()
         myList = settingBidActionsList(serviceProviderBidRequestDtos)
         newRequestCount = myList.size
         when (bidStatus) {
@@ -341,7 +340,8 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
         }
         val listActions = getViewModel().getActionsDetailsList(myList)
         actionDetailsAdapter.refreshItems(listActions)
-        mDataBinding?.progressBar?.visibility = View.GONE
+        // Hide progress bar
+        hideProgress()
     }
 
     //Setting Bid action list if the value is null

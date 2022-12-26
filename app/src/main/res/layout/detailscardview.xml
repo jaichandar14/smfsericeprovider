@@ -10,8 +10,8 @@
     android:layout_marginTop="@dimen/size_2dp"
     android:layout_marginEnd="@dimen/size_5dp"
     android:layout_marginBottom="@dimen/size_15dp"
-    app:cardBackgroundColor="@color/white"
     android:background="@drawable/event_detail_cardview_background"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_5sdp"
     app:cardElevation="@dimen/_8sdp">
 
@@ -45,8 +45,8 @@
             android:layout_marginEnd="@dimen/_6sdp"
             android:fontFamily="@font/mulish_regular"
             android:text="@string/quote"
-            android:textSize="@dimen/_10sdp"
             android:textColor="@color/text_gray_color"
+            android:textSize="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="@+id/event_title_text"
             app:layout_constraintEnd_toStartOf="@+id/amount_text"
             app:layout_constraintHorizontal_bias="1.0"
@@ -90,8 +90,8 @@
             android:fontFamily="@font/poppins_semibold"
             android:paddingTop="@dimen/_2sdp"
             android:text="@string/fork_amp_spoon_catering"
-            android:textSize="@dimen/_11sdp"
             android:textColor="@color/calendar_background"
+            android:textSize="@dimen/_11sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -143,7 +143,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_bid_cut_off" />
 
             <ProgressBar
-                android:id="@+id/progress_bar"
+                android:id="@+id/time_left_progress_bar"
                 style="@style/CircularDeterminateProgressBar"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
@@ -163,10 +163,10 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_10sdp"
-                app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
-                app:layout_constraintEnd_toEndOf="@+id/progress_bar"
-                app:layout_constraintStart_toStartOf="@+id/progress_bar"
-                app:layout_constraintTop_toTopOf="@+id/progress_bar" />
+                app:layout_constraintBottom_toBottomOf="@+id/time_left_progress_bar"
+                app:layout_constraintEnd_toEndOf="@+id/time_left_progress_bar"
+                app:layout_constraintStart_toStartOf="@+id/time_left_progress_bar"
+                app:layout_constraintTop_toTopOf="@+id/time_left_progress_bar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -175,8 +175,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_regular"
             android:text="@string/event_date"
-            android:textSize="@dimen/_11sdp"
             android:textColor="@color/text_gray_color"
+            android:textSize="@dimen/_11sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.03"
@@ -190,8 +190,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/mulish_regular"
             android:text="@string/service_date"
-            android:textSize="@dimen/_11sdp"
             android:textColor="@color/text_gray_color"
+            android:textSize="@dimen/_11sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.15"

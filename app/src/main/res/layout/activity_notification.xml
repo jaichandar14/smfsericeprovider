@@ -61,7 +61,7 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
-            android:layout_width="@dimen/_150sdp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/_32sdp"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/_10sdp"
@@ -80,7 +80,7 @@
             app:tabIndicatorColor="@color/white"
             app:tabIndicatorGravity="center"
             app:tabIndicatorHeight="@dimen/dp_0"
-            app:tabMode="fixed"
+            app:tabMode="scrollable"
             app:tabSelectedTextColor="@color/theme_color"
             app:tabTextAppearance="@style/CustomTextAppearanceNotification"
             app:tabTextColor="@color/gray_text" />
