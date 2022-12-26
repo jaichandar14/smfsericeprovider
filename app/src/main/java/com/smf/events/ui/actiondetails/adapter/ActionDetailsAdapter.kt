@@ -70,7 +70,7 @@ class ActionDetailsAdapter(
         var likeButton: ImageView = view.findViewById(R.id.like_imageView)
         var rightArrowButton: ImageView = view.findViewById(R.id.imageView)
         var cutoffMonthText: TextView = view.findViewById(R.id.cutoff_month_text)
-        var progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
+        var progressBar: ProgressBar = view.findViewById(R.id.time_left_progress_bar)
         var progressDateNumber: TextView = view.findViewById(R.id.progress_date_number)
         var changeOfMind: TextView = view.findViewById(R.id.change_of_mind)
         var startserviceBtn: TextView = view.findViewById(R.id.btn_start_service)

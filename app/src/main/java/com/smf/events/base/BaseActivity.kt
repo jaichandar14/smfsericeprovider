@@ -38,7 +38,7 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
     }
 
     private fun netWorkObserver() {
-        connectionLiveData.observe(this, { isNetworkAvailable ->
+        connectionLiveData.observe(this) { isNetworkAvailable ->
             when (isNetworkAvailable) {
                 true -> {
                     Log.d("TAG", "onResume network observer: act available $isNetworkAvailable")
@@ -50,7 +50,7 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
                     SharedPreference.isInternetConnected = false
                 }
             }
-        })
+        }
     }
 
     fun observerMethod() {
