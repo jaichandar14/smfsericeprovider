@@ -25,7 +25,6 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     private fun checkValidNetworks() {
         Log.d(TAG, "checkValidNetworks: ${validNetworks.size}")
-        val s = validNetworks.size > 0
         postValue(validNetworks.size > 0)
     }
 
@@ -40,6 +39,7 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onInactive() {
+        validNetworks.clear()
         cm.unregisterNetworkCallback(networkCallback)
     }
 
@@ -57,7 +57,10 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
             if (hasInternetCapability == true) {
                 validNetworks.add(network)
             }
-            checkValidNetworks()
+            if (validNetworks.size <= 1) {
+                Log.d(TAG, "connect onAvailable inside if: ${validNetworks.size}")
+                checkValidNetworks()
+            }
         }
 
         /*
@@ -66,7 +69,9 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
         override fun onLost(network: Network) {
             Log.d(TAG, "onLost: ${network}")
             validNetworks.remove(network)
-            checkValidNetworks()
+            if (validNetworks.size == 0) {
+                checkValidNetworks()
+            }
         }
 
     }
