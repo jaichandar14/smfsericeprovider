@@ -30,34 +30,39 @@ class InternetErrorDialog : DialogFragment() {
     }
 
     private fun showFullScreenDialog(context: Context) {
-        noInternetDialog = Dialog(context, R.style.Theme)
-        noInternetDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        noInternetDialog?.setContentView(com.smf.events.R.layout.dialog_no_internet)
-        noInternetDialog?.setCancelable(false)
-        val window = noInternetDialog?.window
-        window?.setLayout(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        val retryBtn: AppCompatButton? =
-            noInternetDialog?.findViewById(com.smf.events.R.id.btn_retry)
-        retryBtn?.setOnClickListener {
-            if (SharedPreference.isInternetConnected) {
-                noInternetDialog?.dismiss()
-            } else {
-                Toast.makeText(
-                    context,
-                    "Internet Connection is not available. Please check your network connection.",
-                    Toast.LENGTH_SHORT
-                ).show()
+        // Create dialog when noInternetDialog value is null
+        if (noInternetDialog == null) {
+            noInternetDialog = Dialog(context, R.style.Theme)
+            noInternetDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            noInternetDialog?.setContentView(com.smf.events.R.layout.dialog_no_internet)
+            noInternetDialog?.setCancelable(false)
+            val window = noInternetDialog?.window
+            window?.setLayout(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+            val retryBtn: AppCompatButton? =
+                noInternetDialog?.findViewById(com.smf.events.R.id.btn_retry)
+            retryBtn?.setOnClickListener {
+                if (SharedPreference.isInternetConnected) {
+                    noInternetDialog?.dismiss()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Internet Connection is not available. Please check your network connection.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
+            noInternetDialog?.show()
         }
-        noInternetDialog?.show()
     }
 
     fun dismissDialog() {
         if (noInternetDialog?.isShowing == true) {
             noInternetDialog?.dismiss()
+            // Set noInternetDialog value is null to avoid create multiple dialog object
+            noInternetDialog = null
         }
     }
 }
