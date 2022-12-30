@@ -17,14 +17,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/quote_brief_dialog"
             android:layout_width="match_parent"
-            android:background="@color/white"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/white">
 
             <RelativeLayout
                 android:id="@+id/linear_catering"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/theme_header_blue"
+                android:background="@color/theme_color"
                 android:gravity="center"
                 android:paddingStart="@dimen/_13sdp"
                 android:paddingTop="@dimen/_13sdp"
@@ -52,9 +52,9 @@
                     android:text="@string/catering_fork_spoon"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_16sdp" />
+
                 <TextView
                     android:id="@+id/tx_catering_viewq"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -62,7 +62,8 @@
                     android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/catering_fork_spoon"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_16sdp" />
+                    android:textSize="@dimen/_16sdp"
+                    android:visibility="gone" />
             </RelativeLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -91,12 +92,12 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_view"
-                    app:cardBackgroundColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_16sdp"
                     android:layout_marginTop="@dimen/_8sdp"
                     android:layout_marginRight="@dimen/_16sdp"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/_10sdp"
                     app:cardElevation="@dimen/_8sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -873,13 +874,13 @@
                             app:layout_constraintVertical_bias="0.04000002" />
 
                         <TextView
-                            android:visibility="gone"
                             android:id="@+id/tx_quote_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/mulish_bold"
                             android:text="@string/quote_details__"
                             android:textSize="@dimen/_14sdp"
+                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
@@ -951,9 +952,9 @@
                             android:id="@+id/et_comments"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_2sdp"
                             android:layout_marginTop="@dimen/_5sdp"
                             android:layout_marginRight="@dimen/_8sdp"
-                            android:layout_marginStart="@dimen/_2sdp"
                             android:fontFamily="@font/mulish_medium"
                             android:gravity="start"
                             android:lines="6"

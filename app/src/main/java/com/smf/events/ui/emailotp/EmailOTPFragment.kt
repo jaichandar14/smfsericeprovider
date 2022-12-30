@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -26,7 +27,9 @@ import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
@@ -63,6 +66,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Set Status bar
+        setStatusBarColor()
         // Initialize Local Variables
         setUserNameAndSharedPref()
         internetErrorDialog = InternetErrorDialog.newInstance()
@@ -427,5 +432,13 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         super.onStop()
         Log.d(TAG, "onStop: called email otp")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+    }
+
+    private fun setStatusBarColor() {
+        requireActivity().window.statusBarColor = requireActivity().getColor(R.color.theme_color)
+        WindowInsetsControllerCompat(
+            requireActivity().window,
+            requireActivity().window.decorView
+        ).isAppearanceLightStatusBars = false
     }
 }

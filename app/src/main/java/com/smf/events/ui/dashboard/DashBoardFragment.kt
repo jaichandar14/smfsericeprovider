@@ -18,6 +18,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -112,6 +113,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         restrictBackButton()
         // Initialize Local Variables
         setIdTokenAndSpRegId()
+        setStatusBarColor()
     }
 
     @SuppressLint("ResourceType", "ClickableViewAccessibility")
@@ -668,6 +670,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             mDataBinding?.notificationCount?.visibility = View.INVISIBLE
             mDataBinding?.notificationPlus?.visibility = View.INVISIBLE
         }
+    }
+
+    private fun setStatusBarColor() {
+        requireActivity().window.statusBarColor = requireActivity().getColor(R.color.theme_color)
+        WindowInsetsControllerCompat(
+            requireActivity().window,
+            requireActivity().window.decorView
+        ).isAppearanceLightStatusBars = false
     }
 
 }

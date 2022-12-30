@@ -19,7 +19,7 @@
             android:id="@+id/title_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/theme_header_blue"
+            android:background="@color/theme_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -87,12 +87,12 @@
                     android:orientation="vertical">
 
                     <Spinner
-                        android:popupBackground="@color/white"
                         android:id="@+id/spn_allServices"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/spinner"
                         android:gravity="center"
+                        android:popupBackground="@color/white"
                         android:spinnerMode="dropdown" />
 
                 </LinearLayout>
@@ -105,12 +105,12 @@
                     android:background="@drawable/shapes">
 
                     <Spinner
-                        android:popupBackground="@color/white"
                         android:id="@+id/spn_Branches"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autofillHints="All Services"
                         android:background="@drawable/spinner"
+                        android:popupBackground="@color/white"
                         android:spinnerMode="dropdown" />
 
                 </LinearLayout>
@@ -313,8 +313,8 @@
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             android:indeterminateDrawable="@drawable/custom_progrss_bar"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/title_layout"
             app:layout_constraintStart_toStartOf="parent"
