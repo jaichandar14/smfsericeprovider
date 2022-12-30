@@ -3,7 +3,6 @@ package com.smf.events.ui.schedulemanagement
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -46,6 +45,8 @@ class ScheduleManagementActivity :
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         super.onPostCreate(savedInstanceState, null)
+        // Set Status bar
+        setStatusBarColor()
         // Internet Error Dialog Initialization
         internetErrorDialog = InternetErrorDialog.newInstance()
         // 2458 Method for Calendar Ui
@@ -77,13 +78,6 @@ class ScheduleManagementActivity :
             totalHeaderHeight += it
             mViewDataBinding!!.scrollView.smoothScrollTo(0, totalHeaderHeight)
         })
-
-        setStatusBarColor()
-    }
-
-    private fun setStatusBarColor() {
-        window.statusBarColor = getColor(R.color.theme_color)
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
     }
 
     // 2458 - Method for Calendar Ui

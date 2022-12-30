@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
@@ -67,7 +68,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Set Status bar
-        setStatusBarColor()
+        (requireActivity() as MainActivity).setStatusBarColor()
         // Initialize Local Variables
         setUserNameAndSharedPref()
         internetErrorDialog = InternetErrorDialog.newInstance()
@@ -432,13 +433,5 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         super.onStop()
         Log.d(TAG, "onStop: called email otp")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-    }
-
-    private fun setStatusBarColor() {
-        requireActivity().window.statusBarColor = requireActivity().getColor(R.color.theme_color)
-        WindowInsetsControllerCompat(
-            requireActivity().window,
-            requireActivity().window.decorView
-        ).isAppearanceLightStatusBars = false
     }
 }

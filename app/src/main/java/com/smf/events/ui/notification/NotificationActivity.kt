@@ -266,9 +266,9 @@ class NotificationActivity :
         if (!internetStatusDisposable.isDisposed) internetStatusDisposable.dispose()
     }
 
-    private fun setStatusBarColor() {
-        window.statusBarColor = getColor(R.color.theme_color)
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
-    }
+//    private fun setStatusBarColor() {
+//        window.statusBarColor = getColor(R.color.theme_color)
+//        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
+//    }
 
 }

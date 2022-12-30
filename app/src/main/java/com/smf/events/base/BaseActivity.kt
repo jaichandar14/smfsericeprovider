@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
+import com.smf.events.R
 import com.smf.events.helper.ConnectionLiveData
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.SnackBar
@@ -84,6 +86,11 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
 
     fun showToast(msg: String) {
         Toast.makeText(this.applicationContext, msg, Toast.LENGTH_LONG).show()
+    }
+
+    open fun setStatusBarColor() {
+        window.statusBarColor = getColor(R.color.theme_color)
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
     }
 
 }

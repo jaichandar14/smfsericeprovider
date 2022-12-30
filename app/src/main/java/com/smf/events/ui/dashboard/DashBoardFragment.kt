@@ -18,7 +18,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +30,7 @@ import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
 import com.google.android.material.navigation.NavigationView
 import com.smf.events.BR
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
@@ -110,10 +110,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Set Status bar
+        (requireActivity() as MainActivity).setStatusBarColor()
         restrictBackButton()
         // Initialize Local Variables
         setIdTokenAndSpRegId()
-        setStatusBarColor()
     }
 
     @SuppressLint("ResourceType", "ClickableViewAccessibility")
@@ -671,13 +672,4 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             mDataBinding?.notificationPlus?.visibility = View.INVISIBLE
         }
     }
-
-    private fun setStatusBarColor() {
-        requireActivity().window.statusBarColor = requireActivity().getColor(R.color.theme_color)
-        WindowInsetsControllerCompat(
-            requireActivity().window,
-            requireActivity().window.decorView
-        ).isAppearanceLightStatusBars = false
-    }
-
 }

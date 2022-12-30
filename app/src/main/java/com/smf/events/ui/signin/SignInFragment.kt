@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.addCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +18,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import com.smf.events.BR
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SignInFragmentBinding
@@ -74,7 +74,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Set Status bar
-        setStatusBarColor()
+        (requireActivity() as MainActivity).setStatusBarColor()
         firebaseAnalytics = Firebase.analytics
         //restrict user back button
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -363,13 +363,5 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         super.onStop()
         Log.d(TAG, "onStop: called signin frag")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-    }
-
-    private fun setStatusBarColor() {
-        requireActivity().window.statusBarColor = requireActivity().getColor(R.color.theme_color)
-        WindowInsetsControllerCompat(
-            requireActivity().window,
-            requireActivity().window.decorView
-        ).isAppearanceLightStatusBars = false
     }
 }
