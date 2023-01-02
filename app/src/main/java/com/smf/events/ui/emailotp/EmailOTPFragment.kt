@@ -8,12 +8,14 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
@@ -26,7 +28,9 @@ import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.emailotp.model.GetLoginInfo
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
@@ -63,6 +67,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Set Status bar
+        (requireActivity() as MainActivity).setStatusBarColor()
         // Initialize Local Variables
         setUserNameAndSharedPref()
         internetErrorDialog = InternetErrorDialog.newInstance()

@@ -45,6 +45,8 @@ class ScheduleManagementActivity :
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         super.onPostCreate(savedInstanceState, null)
+        // Set Status bar
+        setStatusBarColor()
         // Internet Error Dialog Initialization
         internetErrorDialog = InternetErrorDialog.newInstance()
         // 2458 Method for Calendar Ui
@@ -76,9 +78,7 @@ class ScheduleManagementActivity :
             totalHeaderHeight += it
             mViewDataBinding!!.scrollView.smoothScrollTo(0, totalHeaderHeight)
         })
-
     }
-
 
     // 2458 - Method for Calendar Ui
     fun calendarUI() {

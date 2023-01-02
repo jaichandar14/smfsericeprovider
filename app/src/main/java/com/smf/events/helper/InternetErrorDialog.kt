@@ -1,6 +1,5 @@
 package com.smf.events.helper
 
-import android.R
 import android.app.Dialog
 import android.content.Context
 import android.view.Window
@@ -32,7 +31,7 @@ class InternetErrorDialog : DialogFragment() {
     private fun showFullScreenDialog(context: Context) {
         // Create dialog when noInternetDialog value is null
         if (noInternetDialog == null) {
-            noInternetDialog = Dialog(context, R.style.Theme)
+            noInternetDialog = Dialog(context, com.smf.events.R.style.InternetDialogTheme)
             noInternetDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
             noInternetDialog?.setContentView(com.smf.events.R.layout.dialog_no_internet)
             noInternetDialog?.setCancelable(false)

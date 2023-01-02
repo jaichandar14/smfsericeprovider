@@ -1,17 +1,16 @@
 package com.smf.events.ui.notification
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.addCallback
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.smf.events.BR
-import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseActivity
@@ -61,6 +60,8 @@ class NotificationActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        // Set Status bar
+        setStatusBarColor()
         // Initialize Tabview
         tabLayout = mViewDataBinding!!.tabLayout
         // Internet Error Dialog Initialization
@@ -264,5 +265,10 @@ class NotificationActivity :
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
         if (!internetStatusDisposable.isDisposed) internetStatusDisposable.dispose()
     }
+
+//    private fun setStatusBarColor() {
+//        window.statusBarColor = getColor(R.color.theme_color)
+//        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
+//    }
 
 }

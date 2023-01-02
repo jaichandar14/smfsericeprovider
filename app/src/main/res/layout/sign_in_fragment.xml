@@ -59,7 +59,7 @@
                 android:fontFamily="@font/mulish_bold"
                 android:text="@string/signin"
                 android:textColor="@color/black_event_title"
-                android:textSize="@dimen/_16sdp"
+                android:textSize="@dimen/_16ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +75,7 @@
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/mobile"
                 android:textColor="@color/gray_text"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -112,12 +112,12 @@
                     app:ccp_textSize="@dimen/_12sdp" />
 
                 <TextView
-                    android:textColor="@color/buttoncolor"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_36sdp"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_3sdp"
                     android:text="@string/colonen"
+                    android:textColor="@color/buttoncolor"
                     android:textSize="@dimen/_20sdp" />
 
                 <EditText
@@ -130,12 +130,12 @@
                     android:background="@drawable/empty_shapes"
                     android:fontFamily="@font/mulish_bold"
                     android:hint="@string/phonenumber"
-                    android:textColorHint="@color/buttoncolor"
                     android:inputType="numberDecimal"
                     android:maxLength="10"
                     android:text="@={signinViewModel.mobileNumber}"
                     android:textColor="@color/fade_black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textColorHint="@color/buttoncolor"
+                    android:textSize="@dimen/_12ssp" />
 
             </LinearLayout>
 
@@ -168,7 +168,7 @@
                     android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/login_message"
                     android:textColor="@color/thumbs_down_red"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11ssp" />
 
             </LinearLayout>
 
@@ -198,7 +198,7 @@
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/emailid"
                 android:textColor="@color/gray_text"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -229,12 +229,12 @@
                     android:background="@drawable/empty_shapes"
                     android:fontFamily="@font/mulish_bold"
                     android:hint="@string/perter_gmail_com"
-                    android:textColorHint="@color/buttoncolor"
                     android:inputType="textEmailAddress"
                     android:paddingStart="@dimen/_2sdp"
                     android:text="@={signinViewModel.emailId}"
                     android:textColor="@color/fade_black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textColorHint="@color/buttoncolor"
+                    android:textSize="@dimen/_12ssp"
                     tools:ignore="RtlSymmetry" />
 
             </LinearLayout>
@@ -268,14 +268,14 @@
                     android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/login_email_message"
                     android:textColor="@color/thumbs_down_red"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11ssp" />
 
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/signinbtn"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="@dimen/_33sdp"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
@@ -285,12 +285,12 @@
                 android:text="@string/sign_in"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_11sdp"
+                android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/login_email_message_text"
-                app:layout_constraintVertical_bias="0.8" />
+                app:layout_constraintVertical_bias="0.75" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

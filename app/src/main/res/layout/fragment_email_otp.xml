@@ -58,7 +58,7 @@
                 android:fontFamily="@font/mulish_bold"
                 android:text="@string/otp_verification"
                 android:textColor="@color/black_event_title"
-                android:textSize="@dimen/_16sdp"
+                android:textSize="@dimen/_16ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +74,7 @@
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/please_enter_your_verification_code_sent_your_email"
                 android:textColor="@color/gray_text"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +91,7 @@
                 android:gravity="center"
                 android:text="@string/enter_otp_sent_to_your_email"
                 android:textColor="@color/gray_text"
-                android:textSize="@dimen/_14sdp"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,45 +99,43 @@
                 app:layout_constraintVertical_bias="0.050" />
 
 
-
-<!--            <com.chaos.view.PinView-->
-<!--                android:id="@+id/otpemail"-->
-<!--                style="@style/PinWidget.PinView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:cursorVisible="true"-->
-<!--                android:fontFamily="@font/mulish_semi_bold"-->
-<!--                android:inputType="number"-->
-<!--                android:text="@={otpviewmodel.userOtpNumber}"-->
-<!--                app:hideLineWhenFilled="false"-->
-<!--                app:itemCount="4"-->
-<!--                app:itemHeight="@dimen/_40sdp"-->
-<!--                app:itemRadius="@dimen/_8sdp"-->
-<!--                app:itemSpacing="@dimen/_8sdp"-->
-<!--                app:itemWidth="@dimen/_40sdp"-->
-<!--                -->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/textView10"-->
-<!--                app:layout_constraintVertical_bias="0.04"-->
-<!--                app:lineWidth="@dimen/_1sdp" />-->
-
+            <!--            <com.chaos.view.PinView-->
+            <!--                android:id="@+id/otpemail"-->
+            <!--                style="@style/PinWidget.PinView"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:cursorVisible="true"-->
+            <!--                android:fontFamily="@font/mulish_semi_bold"-->
+            <!--                android:inputType="number"-->
+            <!--                android:text="@={otpviewmodel.userOtpNumber}"-->
+            <!--                app:hideLineWhenFilled="false"-->
+            <!--                app:itemCount="4"-->
+            <!--                app:itemHeight="@dimen/_40sdp"-->
+            <!--                app:itemRadius="@dimen/_8sdp"-->
+            <!--                app:itemSpacing="@dimen/_8sdp"-->
+            <!--                app:itemWidth="@dimen/_40sdp"-->
+            <!--                -->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toBottomOf="@+id/textView10"-->
+            <!--                app:layout_constraintVertical_bias="0.04"-->
+            <!--                app:lineWidth="@dimen/_1sdp" />-->
 
 
             <EditText
-                android:textColor="@color/black"
-                android:inputType="number"
                 android:id="@+id/otp1ed"
                 style="@style/LoginSecurityCode"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="center"
                 android:imeOptions="actionNext"
+                android:inputType="number"
                 android:nextFocusRight="@+id/otp2ed"
-                android:text="@={otpviewmodel.userOtp1}"
-                android:textSize="@dimen/_15sdp"
                 android:selectAllOnFocus="true"
+                android:text="@={otpviewmodel.userOtp1}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.23"
@@ -146,51 +144,51 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <EditText
-                android:textColor="@color/black"
-                android:inputType="number"
                 android:id="@+id/otp2ed"
-                android:selectAllOnFocus="true"
                 style="@style/LoginSecurityCode"
-                android:textSize="@dimen/_15sdp"
-                android:text="@={otpviewmodel.userOtp2}"
                 android:layout_marginTop="@dimen/_10sdp"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:nextFocusRight="@+id/otp3ed"
+                android:selectAllOnFocus="true"
+                android:text="@={otpviewmodel.userOtp2}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/otp1ed"
                 app:layout_constraintTop_toBottomOf="@+id/textView10"
-                app:layout_constraintVertical_bias="0.0"
-                android:imeOptions="actionNext"
-                android:nextFocusRight="@+id/otp3ed"/>
+                app:layout_constraintVertical_bias="0.0" />
 
             <EditText
-                android:textColor="@color/black"
-                android:inputType="number"
                 android:id="@+id/otp3ed"
-                android:selectAllOnFocus="true"
                 style="@style/LoginSecurityCode"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:textSize="@dimen/_15sdp"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:nextFocusRight="@+id/otp4ed"
+                android:selectAllOnFocus="true"
                 android:text="@={otpviewmodel.userOtp3}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/otp2ed"
                 app:layout_constraintTop_toBottomOf="@+id/textView10"
-                app:layout_constraintVertical_bias="0.0"
-                android:imeOptions="actionNext"
-                android:nextFocusRight="@+id/otp4ed"/>
+                app:layout_constraintVertical_bias="0.0" />
 
             <EditText
-                android:textColor="@color/black"
+                android:id="@+id/otp4ed"
+                style="@style/LoginSecurityCode"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:inputType="number"
                 android:maxLength="1"
-                android:id="@+id/otp4ed"
                 android:selectAllOnFocus="true"
-                android:textSize="@dimen/_15sdp"
-                style="@style/LoginSecurityCode"
                 android:text="@={otpviewmodel.userOtp4}"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -218,7 +216,7 @@
                     android:fontFamily="@font/mulish_regular"
                     android:text="@string/click_resend_in"
                     android:textColor="@color/gray_text"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11ssp" />
 
                 <TextView
                     android:id="@+id/otp_timer"
@@ -228,7 +226,7 @@
                     android:fontFamily="@font/mulish_regular"
                     android:text="@string/_00_30"
                     android:textColor="@color/gray_text"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11ssp" />
 
             </LinearLayout>
 
@@ -241,7 +239,7 @@
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/did_t_receive_otp"
                 android:textColor="@color/gray_text"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -257,7 +255,7 @@
                 android:fontFamily="@font/mulish_semi_bold"
                 android:text="@string/resend"
                 android:textColor="@color/buttoncolor"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -267,7 +265,7 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/submitBtn"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="@dimen/_33sdp"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
@@ -276,12 +274,12 @@
                 android:text="@string/submit"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_11sdp"
+                android:textSize="@dimen/_11ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/otp_resend"
-                app:layout_constraintVertical_bias="0.8" />
+                app:layout_constraintVertical_bias="0.75" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
