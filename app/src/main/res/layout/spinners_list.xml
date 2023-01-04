@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fontFamily="@font/mulish_medium"
-    android:paddingStart="@dimen/_1sdp"
+    android:paddingStart="@dimen/_2sdp"
     android:paddingTop="@dimen/_8sdp"
-    android:paddingBottom="@dimen/_8sdp"
+    android:paddingBottom="@dimen/_6sdp"
     android:textColor="@color/black"
-    android:textSize="@dimen/_14sdp" />
+    android:textSize="@dimen/_14ssp" />

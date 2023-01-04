@@ -148,6 +148,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     override fun onResume() {
         super.onResume()
+        // Setting current navigation view item(Highlighting)
+        navigationView.setCheckedItem(R.id.nav_dashboard)
+
         internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer DashBoard rx")
             internetErrorDialog.dismissDialog()
@@ -202,7 +205,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         activity.supportActionBar?.setHomeAsUpIndicator(drawable)
         activity.supportActionBar?.setDisplayShowTitleEnabled(false)
         navigationView.setNavigationItemSelectedListener(this)
-        navigationView.setCheckedItem(R.id.nav_dashboard)
 
         // 2888 - Side Navigation Header Inside Close Button ClickListener
         navigationView.getHeaderView(0).findViewById<ImageView>(R.id.side_nav_close_btn)

@@ -100,6 +100,7 @@
                                     app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintStart_toEndOf="@+id/left_dtn"
                                     app:layout_constraintTop_toTopOf="parent"
+                                    tools:itemCount="1"
                                     tools:listitem="@layout/events_card_view" />
 
                                 <ImageView
@@ -155,8 +156,7 @@
                                         android:background="@drawable/spinner"
                                         android:gravity="center"
                                         android:popupBackground="@color/white"
-                                        android:spinnerMode="dropdown"
-                                        android:textSize="@dimen/_16sdp" />
+                                        android:spinnerMode="dropdown" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -171,11 +171,9 @@
                                         android:id="@+id/spn_Branches"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:autofillHints="All Services"
                                         android:background="@drawable/spinner"
                                         android:popupBackground="@color/white"
-                                        android:spinnerMode="dropdown"
-                                        android:textSize="@dimen/_16sdp" />
+                                        android:spinnerMode="dropdown" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -197,10 +195,10 @@
                                         android:layout_marginTop="@dimen/_14sdp"
                                         android:layout_marginEnd="@dimen/_10sdp"
                                         android:layout_marginBottom="@dimen/_23sdp"
-                                        android:descendantFocusability="blocksDescendants">
-
-                                    </androidx.fragment.app.FragmentContainerView>
+                                        android:descendantFocusability="blocksDescendants"
+                                        tools:layout="@layout/fragment_actions_and_status" />
                                 </LinearLayout>
+
                             </LinearLayout>
 
                         </androidx.cardview.widget.CardView>
@@ -262,6 +260,7 @@
                             app:layout_constraintStart_toStartOf="@+id/notification_bell"
                             app:layout_constraintTop_toTopOf="@+id/notification_bell"
                             tools:ignore="RtlSymmetry" />
+
                         <TextView
                             android:id="@+id/notification_plus"
                             android:layout_width="0dp"
