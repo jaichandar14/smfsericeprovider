@@ -79,7 +79,7 @@ class NotificationAdapter(private val tag: String) :
             } else {
                 HtmlCompat.fromHtml(
                     notification.notificationContent,
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                    HtmlCompat.FROM_HTML_MODE_COMPACT
                 )
             }
 //            TODO set imageview
