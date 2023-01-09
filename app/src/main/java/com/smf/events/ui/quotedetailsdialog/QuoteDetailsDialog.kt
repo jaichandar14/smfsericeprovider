@@ -131,7 +131,8 @@ class QuoteDetailsDialog(
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(CommonInfoDialog.TAG, "onViewCreated: observer QuoteDetails dialog")
 //            internetErrorDialog.dismissDialog()
-            dismiss()
+            // 3328 upload file issue
+            //   dismiss()
         }
     }
 
