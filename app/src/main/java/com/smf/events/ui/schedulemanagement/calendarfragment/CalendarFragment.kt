@@ -33,6 +33,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
 // 2458
 class CalendarFragment : Fragment(),
@@ -187,7 +188,7 @@ class CalendarFragment : Fragment(),
     }
 
     private fun setSelectedWeekSetter(
-        weeksOfMonth: java.util.HashMap<Int, WeekDatesOfMonth>,
+        weeksOfMonth:LinkedHashMap<Int, WeekDatesOfMonth>,
         fromAndToDate: CalendarUtils.WeekDates, isScroll: Boolean
     ) {
         sharedViewModel.setCurrentWeekDate(

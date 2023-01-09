@@ -59,7 +59,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     private var weekList: ArrayList<String> = ArrayList()
     var parent: ViewGroup? = null
     private var groupPosition: Int = 0
-    private var weekMap: HashMap<Int, ArrayList<String>>? = null
+    private var weekMap: LinkedHashMap<Int, ArrayList<String>>? = null
     private var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
     var listOfDates: ArrayList<String>? = ArrayList()
     private lateinit var dialogDisposable: Disposable
@@ -114,26 +114,28 @@ class WeekModifyExpandableListFragment : Fragment(),
             }
         }
 
-        sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner,
-            { currentWeekDate ->
-                //  2986 Showing progress based on calender and service selection
-                mDataBinding.modifyProgressBar.visibility = View.VISIBLE
-                mDataBinding.expandableLayout.visibility = View.GONE
-                serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
-                weekMap = getWeekListMap(currentWeekDate)
-                listOfDatesArray.clear()
-                weekMap?.forEach { it ->
-                    listOfDatesArray.add(it.value)
-                }
-                weekList = currentWeekDate.weekList
-                listOfDates = currentWeekDate.bookedWeekList
-                fromDate = weekList.first()
-                toDate = weekList.last()
-                isScroll = currentWeekDate.isScroll
-                CalendarUtils.listOfDatesArray = listOfDatesArray
-                Log.d(TAG, "onViewCreated week: ${currentWeekDate.isScroll}, $listOfDatesArray")
-                initializeExpandableViewData()
-            })
+        sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner
+        ) { currentWeekDate ->
+            Log.d(TAG, "onViewCreated: currentWeekDate $currentWeekDate")
+            //  2986 Showing progress based on calender and service selection
+            mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+            mDataBinding.expandableLayout.visibility = View.GONE
+            serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
+            weekMap = getWeekListMap(currentWeekDate)
+            Log.d(TAG, "onViewCreated: current weekMap $weekMap")
+            listOfDatesArray.clear()
+            weekMap?.forEach { it ->
+                listOfDatesArray.add(it.value)
+            }
+            weekList = currentWeekDate.weekList // Current week list
+            listOfDates = currentWeekDate.bookedWeekList
+            fromDate = weekList.first()
+            toDate = weekList.last()
+            isScroll = currentWeekDate.isScroll
+            CalendarUtils.listOfDatesArray = listOfDatesArray
+            Log.d(TAG, "onViewCreated week: ${currentWeekDate.isScroll}, $listOfDatesArray")
+            initializeExpandableViewData()
+        }
 
         // Observe Modify Dialog Result
         observeModifyDialogResult()
@@ -604,8 +606,8 @@ class WeekModifyExpandableListFragment : Fragment(),
     }
 
     // 2776 - method For getting Week Map List
-    private fun getWeekListMap(currentWeekDate: ScheduleManagementViewModel.WeekDates): HashMap<Int, ArrayList<String>> {
-        val weekMap = HashMap<Int, ArrayList<String>>()
+    private fun getWeekListMap(currentWeekDate: ScheduleManagementViewModel.WeekDates): LinkedHashMap<Int, ArrayList<String>> {
+        val weekMap = LinkedHashMap<Int, ArrayList<String>>()
         currentWeekDate.weekListMapOfMonth.forEach {
             Log.d(TAG, "getWeekListMap: ${it.key}")
             val weekFromDate = currentWeekDate.weekListMapOfMonth[it.key]?.fromDate

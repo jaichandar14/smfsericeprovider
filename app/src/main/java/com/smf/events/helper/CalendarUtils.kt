@@ -12,6 +12,7 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
 
 // 2528
 @Singleton
@@ -113,11 +114,11 @@ class CalendarUtils @Inject constructor() {
         return daysInMonthArray
     }
 
-    // 2743 Fetcching the entire week of a month
-    fun fetchWeekOfMonth(): HashMap<Int, WeekDatesOfMonth> {
+    // 2743 Fetching the entire week of a month
+    fun fetchWeekOfMonth(): LinkedHashMap<Int, WeekDatesOfMonth> {
         // getting sundays  date of the month
         var j = 2
-        var weeksList: HashMap<Int, WeekDatesOfMonth> = HashMap()
+        var weeksList: LinkedHashMap<Int, WeekDatesOfMonth> = LinkedHashMap()
         val fromDateMonth: LocalDate = CalendarUtils.selectedDate!!.withDayOfMonth(1)
         val toDateMonth: LocalDate =
             CalendarUtils.selectedDate!!.plusMonths(1).withDayOfMonth(1).minusDays(1)

@@ -29,7 +29,8 @@ data class Results(var info: String) : Parcelable
 @Parcelize
 data class ErrorResponse(
     var id: Int,
-    var errorMessage: String,
+    var errorMessage: String?,
+    var message: String?,
     var errorCode: String,
     var timeStamp: String,
     var exceptionMessage: String
