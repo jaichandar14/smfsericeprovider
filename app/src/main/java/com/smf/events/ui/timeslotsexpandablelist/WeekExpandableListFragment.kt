@@ -34,6 +34,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 import kotlin.concurrent.schedule
 
 class WeekExpandableListFragment : Fragment(),
@@ -57,7 +58,7 @@ class WeekExpandableListFragment : Fragment(),
     private var weekList: ArrayList<String>? = null
     var parent: ViewGroup? = null
     private var groupPosition: Int = 0
-    private var weekMap: HashMap<Int, ArrayList<String>>? = null
+    private var weekMap: LinkedHashMap<Int, ArrayList<String>>? = null
     private var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
     private var isScroll: Boolean = false
     private lateinit var dialogDisposable: Disposable
@@ -113,34 +114,34 @@ class WeekExpandableListFragment : Fragment(),
             }
         }
 
-        sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner,
-            { currentWeekDate ->
-                serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
-                weekMap = getWeekListMap(currentWeekDate)
-                listOfDatesArray.clear()
-                weekMap?.forEach { it ->
-                    listOfDatesArray.add(it.value)
+        sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner
+        ) { currentWeekDate ->
+            serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
+            weekMap = getWeekListMap(currentWeekDate)
+            listOfDatesArray.clear()
+            weekMap?.forEach { it ->
+                listOfDatesArray.add(it.value)
+            }
+            Log.d("TAG", "onViewCreated booked date: ${currentWeekDate.weekListMapOfMonth}")
+
+            weekList = currentWeekDate.weekList
+            Log.d("TAG", "onViewCreated booked datemap: $listOfDatesArray ${weekMap}")
+            isScroll = currentWeekDate.isScroll
+            listOfDates = currentWeekDate.bookedWeekList
+
+            mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+            mDataBinding.expandableLayout.visibility = View.GONE
+
+            listOfDatesArray.forEach {
+                if (currentWeekDate.weekList[0] == it[0]) {
+                    this.groupPosition = listOfDatesArray.indexOf(it)
+                    fromDate = listOfDatesArray[groupPosition][0]
+                    toDate =
+                        listOfDatesArray[groupPosition][listOfDatesArray[groupPosition].lastIndex]
                 }
-                Log.d("TAG", "onViewCreated booked date: ${currentWeekDate.weekListMapOfMonth}")
-
-                weekList = currentWeekDate.weekList
-                Log.d("TAG", "onViewCreated booked datemap: $listOfDatesArray ${weekMap}")
-                isScroll = currentWeekDate.isScroll
-                listOfDates = currentWeekDate.bookedWeekList
-
-                mDataBinding.modifyProgressBar.visibility = View.VISIBLE
-                mDataBinding.expandableLayout.visibility = View.GONE
-
-                listOfDatesArray.forEach {
-                    if (currentWeekDate.weekList[0] == it[0]) {
-                        this.groupPosition = listOfDatesArray.indexOf(it)
-                        fromDate = listOfDatesArray[groupPosition][0]
-                        toDate =
-                            listOfDatesArray[groupPosition][listOfDatesArray[groupPosition].lastIndex]
-                    }
-                }
-                setListOfDatesArray()
-            })
+            }
+            setListOfDatesArray()
+        }
     }
 
     // 2776 - Method For set week wise Dates ArrayList
@@ -450,8 +451,8 @@ class WeekExpandableListFragment : Fragment(),
     }
 
     // 2776 - method For getting Week Map List
-    private fun getWeekListMap(currentWeekDate: ScheduleManagementViewModel.WeekDates): HashMap<Int, ArrayList<String>> {
-        val weekMap = HashMap<Int, ArrayList<String>>()
+    private fun getWeekListMap(currentWeekDate: ScheduleManagementViewModel.WeekDates): LinkedHashMap<Int, ArrayList<String>> {
+        val weekMap = LinkedHashMap<Int, ArrayList<String>>()
         currentWeekDate.weekListMapOfMonth.forEach {
             Log.d("TAG", "getWeekListMap: ${it.key}")
             val weekFromDate = currentWeekDate.weekListMapOfMonth[it.key]?.fromDate

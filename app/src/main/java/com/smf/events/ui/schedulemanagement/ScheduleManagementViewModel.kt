@@ -19,6 +19,7 @@ import java.net.ConnectException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.LinkedHashMap
 
 class ScheduleManagementViewModel @Inject constructor(
     private val scheduleManagementRepository: ScheduleManagementRepository,
@@ -95,7 +96,7 @@ class ScheduleManagementViewModel @Inject constructor(
 
     val getCurrentWeekDate: LiveData<WeekDates> = weekDate
     fun setCurrentWeekDate(
-        weekListMapOfMonth: HashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
+        weekListMapOfMonth: LinkedHashMap<Int, com.smf.events.helper.WeekDatesOfMonth>,
         serviceId: Int,
         branchId: Int,
         weekList: ArrayList<String>,
