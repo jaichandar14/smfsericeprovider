@@ -178,28 +178,30 @@ class ViewOrderDetailsDialogFragment(
         mDataBinding?.question?.text = "Questions"
         mDataBinding?.txJobTitle?.text = eventName
         mDataBinding?.txJobIdnum?.text = eventServiceDescriptionId.toString()
-        mDataBinding?.etEventDate?.text = (eventDate)
-        mDataBinding?.etZipCode?.text = venueInfo.zipCode.toString()
-        mDataBinding?.etServiceDate?.text = (serviceDetails?.serviceDate.toString())
-        mDataBinding?.etBidCutOffDate?.text = (serviceDetails?.biddingCutOffDate.toString())
-        mDataBinding?.etEstimationBudget?.text =
+        mDataBinding?.etEventDate?.text = ": $eventDate"
+        mDataBinding?.etZipCode?.text =": "+ venueInfo.zipCode.toString()
+        mDataBinding?.etServiceDate?.text = ": "+(serviceDetails?.serviceDate.toString())
+        mDataBinding?.etBidCutOffDate?.text = ": "+(serviceDetails?.biddingCutOffDate.toString())
+        mDataBinding?.etEstimationBudget?.text =": "+
             serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
-        mDataBinding?.etServiceRadius?.text = radius
-        myList = questionnaireDtos as ArrayList
-        for (i in myList.indices) {
-            questionList.add(myList[i].questionMetadata?.question.toString())
-            answerList.add(myList[i].questionMetadata?.answer.toString())
-        }
+        mDataBinding?.etServiceRadius?.text = ": $radius"
+
+
         val slots = serviceDetails?.preferredSlots as ArrayList
         slots.forEach {
             preferedSlot.add(it)
         }
         val timing = preferedSlot.toString()
-        mDataBinding?.etPreferedTimeSlot?.text = timing.substring(1, timing.length - 1)
+        mDataBinding?.etPreferedTimeSlot?.text =": "+ timing.substring(1, timing.length - 1)
         if (questionnaireDtos.isNullOrEmpty()) {
             mDataBinding?.question?.visibility = View.GONE
         } else {
             mDataBinding?.question?.visibility = View.VISIBLE
+            myList = questionnaireDtos as ArrayList
+            for (i in myList.indices) {
+                questionList.add(myList[i].questionMetadata?.question.toString())
+                answerList.add(myList[i].questionMetadata?.answer.toString())
+            }
         }
         val myListAdapter = ViewOrderDetailsAdaptor(requireActivity(), questionList, answerList)
         listView.adapter = myListAdapter

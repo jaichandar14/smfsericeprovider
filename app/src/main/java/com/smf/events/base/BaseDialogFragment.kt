@@ -28,6 +28,7 @@ abstract class BaseDialogFragment<V : ViewDataBinding, out T : BaseDialogViewMod
     ): View? {
         mDataBinding = DataBindingUtil.inflate(inflater, getContentView(), container, false)
         performDataBinding()
+        toastObserver()
         return mDataBinding?.root
     }
 

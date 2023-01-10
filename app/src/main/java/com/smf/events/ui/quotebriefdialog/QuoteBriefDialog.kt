@@ -353,16 +353,17 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.cost}"
         }
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text = (response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text = (response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text = (response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text = (response.data.serviceDate)
-        mDataBinding?.paymentStatusValue?.text = "NA"
-        mDataBinding?.servicedBy?.text = "NA"
-        mDataBinding?.address?.text = "${response.data.serviceAddressDto.addressLine1}  " +
+        mDataBinding?.txEventdateValue?.text = ": "+(response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text = ": "+(response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text = ": "+(response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text = ": "+(response.data.serviceDate)
+        mDataBinding?.paymentStatusValue?.text = ": "+"NA"
+        mDataBinding?.servicedBy?.text = ": "+"NA"
+        mDataBinding?.address?.text = ": "+"${response.data.serviceAddressDto.addressLine1}  " +
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
-        mDataBinding?.customerRating?.text = "NA"
+        mDataBinding?.customerRating?.text = ": "+"NA"
+        mDataBinding?.reviewComment?.text = ": "+"NA"
 
         //  mDataBinding?.progressBar?.visibility = View.INVISIBLE
 
