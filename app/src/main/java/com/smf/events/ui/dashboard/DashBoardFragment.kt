@@ -154,7 +154,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer DashBoard rx")
             internetErrorDialog.dismissDialog()
-         //   idTokenValidation()
+            //   idTokenValidation()
         }
 
         quoteBriefDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
@@ -561,6 +561,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_dashboard -> {
+                // Refreshing the dashboard page
+                onRefresh()
                 drawerLayout.closeDrawer(GravityCompat.START)
             }
             R.id.nav_availability -> {

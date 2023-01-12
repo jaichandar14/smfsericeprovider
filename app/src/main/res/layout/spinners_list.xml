@@ -6,5 +6,6 @@
     android:paddingStart="@dimen/_2sdp"
     android:paddingTop="@dimen/_8sdp"
     android:paddingBottom="@dimen/_6sdp"
+    android:paddingEnd="@dimen/_23sdp"
     android:textColor="@color/black"
-    android:textSize="@dimen/_14ssp" />
+    android:textSize="@dimen/_14ssp"/>

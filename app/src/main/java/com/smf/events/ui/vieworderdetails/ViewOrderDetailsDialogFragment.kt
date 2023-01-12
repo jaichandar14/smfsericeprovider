@@ -92,8 +92,6 @@ class ViewOrderDetailsDialogFragment(
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        mDataBinding?.progressBar?.visibility = View.VISIBLE
-//        mDataBinding?.quoteBriefDialogLayout?.visibility = View.INVISIBLE
         showProgress()
         listView = mDataBinding?.quesList!!
         // 2402 - token CallBackInterface
@@ -105,10 +103,10 @@ class ViewOrderDetailsDialogFragment(
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
-            dismiss()
+//            dismiss()
 //            showProgress()
 //            apiTokenValidationViewOrderDetails()
-//            internetErrorDialog.dismissDialog()
+            internetErrorDialog.dismissDialog()
         }
 
         // 2402 - Api Token  validation ViewOrderDetails
@@ -137,7 +135,7 @@ class ViewOrderDetailsDialogFragment(
     // 2402 - View order details Get Api call
     private fun viewOrderDetails(idToken: String) {
         getViewModel().getViewOrderDetails(idToken, eventId, eventServiceDescriptionId)
-            .observe(viewLifecycleOwner, { apiResponse ->
+            .observe(viewLifecycleOwner) { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         val venueInfo = apiResponse.response.data.venueInformationDto
@@ -163,7 +161,7 @@ class ViewOrderDetailsDialogFragment(
                     else -> {
                     }
                 }
-            })
+            }
     }
 
     // 2402 - Setting the orderDetails Method
@@ -179,20 +177,19 @@ class ViewOrderDetailsDialogFragment(
         mDataBinding?.txJobTitle?.text = eventName
         mDataBinding?.txJobIdnum?.text = eventServiceDescriptionId.toString()
         mDataBinding?.etEventDate?.text = ": $eventDate"
-        mDataBinding?.etZipCode?.text =": "+ venueInfo.zipCode.toString()
-        mDataBinding?.etServiceDate?.text = ": "+(serviceDetails?.serviceDate.toString())
-        mDataBinding?.etBidCutOffDate?.text = ": "+(serviceDetails?.biddingCutOffDate.toString())
-        mDataBinding?.etEstimationBudget?.text =": "+
-            serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
+        mDataBinding?.etZipCode?.text = ": " + venueInfo.zipCode.toString()
+        mDataBinding?.etServiceDate?.text = ": " + (serviceDetails?.serviceDate.toString())
+        mDataBinding?.etBidCutOffDate?.text = ": " + (serviceDetails?.biddingCutOffDate.toString())
+        mDataBinding?.etEstimationBudget?.text = ": " +
+                serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
         mDataBinding?.etServiceRadius?.text = ": $radius"
-
 
         val slots = serviceDetails?.preferredSlots as ArrayList
         slots.forEach {
             preferedSlot.add(it)
         }
         val timing = preferedSlot.toString()
-        mDataBinding?.etPreferedTimeSlot?.text =": "+ timing.substring(1, timing.length - 1)
+        mDataBinding?.etPreferedTimeSlot?.text = ": " + timing.substring(1, timing.length - 1)
         if (questionnaireDtos.isNullOrEmpty()) {
             mDataBinding?.question?.visibility = View.GONE
         } else {
@@ -207,7 +204,6 @@ class ViewOrderDetailsDialogFragment(
         listView.adapter = myListAdapter
         ListHelper.getListViewSize(listView)
         hideProgress()
-//        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
     }
 
     // 2402 - Setting IDToken
