@@ -91,16 +91,9 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
         setIdTokenAndBidReqId()
     }
 
-    override fun onStart() {
-        super.onStart()
-        apiTokenValidationQuoteBrief("quoteDetails")
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: QuoteBriefDialog")
-        mDataBinding?.quoteBriefDialog?.visibility = View.INVISIBLE
-        mDataBinding?.progressBar?.visibility = View.VISIBLE
+        showProgress()
         // QuoteBrief ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
         // token CallBackInterface
@@ -122,8 +115,10 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
-            dismiss()
+            internetErrorDialog.dismissDialog()
         }
+        // Quote details api call
+        apiTokenValidationQuoteBrief("quoteDetails")
     }
 
     // 2962 view Quotes
@@ -162,7 +157,7 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                             val data = apiResponse.response.data
                             setViewQuote(data)
                             mDataBinding?.viewQuotes?.visibility = View.VISIBLE
-
+                            mDataBinding?.progressBar?.visibility = View.INVISIBLE
                         }
                         is ApisResponse.Error -> {
                             Log.d(TAG, "check token result: ${apiResponse.exception}")
@@ -353,20 +348,17 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
             mDataBinding?.txJobAmount?.text = "$currencyType${response.data.cost}"
         }
         mDataBinding?.txJobIdnum?.text = response.data.eventServiceDescriptionId.toString()
-        mDataBinding?.txEventdateValue?.text = ": "+(response.data.eventDate)
-        mDataBinding?.txBidProposalDateValue?.text = ": "+(response.data.bidRequestedDate)
-        mDataBinding?.txCutOffDateValue?.text = ": "+(response.data.biddingCutOffDate)
-        mDataBinding?.serviceDateValue?.text = ": "+(response.data.serviceDate)
-        mDataBinding?.paymentStatusValue?.text = ": "+"NA"
-        mDataBinding?.servicedBy?.text = ": "+"NA"
-        mDataBinding?.address?.text = ": "+"${response.data.serviceAddressDto.addressLine1}  " +
+        mDataBinding?.txEventdateValue?.text = ": " + (response.data.eventDate)
+        mDataBinding?.txBidProposalDateValue?.text = ": " + (response.data.bidRequestedDate)
+        mDataBinding?.txCutOffDateValue?.text = ": " + (response.data.biddingCutOffDate)
+        mDataBinding?.serviceDateValue?.text = ": " + (response.data.serviceDate)
+        mDataBinding?.paymentStatusValue?.text = ": " + "NA"
+        mDataBinding?.servicedBy?.text = ": " + "NA"
+        mDataBinding?.address?.text = ": " + "${response.data.serviceAddressDto.addressLine1}  " +
                 "${response.data.serviceAddressDto.addressLine2}   " +
                 "${response.data.serviceAddressDto.city}"
-        mDataBinding?.customerRating?.text = ": "+"NA"
-        mDataBinding?.reviewComment?.text = ": "+"NA"
-
-        //  mDataBinding?.progressBar?.visibility = View.INVISIBLE
-
+        mDataBinding?.customerRating?.text = ": " + "NA"
+        mDataBinding?.reviewComment?.text = ": " + "NA"
     }
 
     // 2354 - Method For Setting CurrencyType
@@ -389,8 +381,6 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     // Setting Bid Pending Quote
     @SuppressLint("SetTextI18n")
     private fun setPendingQuoteBrief(response: QuoteBrief) {
-        mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
-        mDataBinding?.progressBar?.visibility = View.INVISIBLE
         mDataBinding?.txJobTitle?.text = response.data.eventName
         mDataBinding?.txCatering?.text = "${response.data.serviceName}-${response.data.branchName}"
         mDataBinding?.serviceName?.text = response.data.serviceName
@@ -447,8 +437,7 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                                     widgetServiceCloser(apiResponse)
                                 }
                             }
-                            mDataBinding?.quoteBriefDialog?.visibility = View.VISIBLE
-                            mDataBinding?.progressBar?.visibility = View.INVISIBLE
+                            hideProgress()
                         }
                         is ApisResponse.Error -> {
                             Log.d(TAG, "check token result: ${apiResponse.exception}")
@@ -593,6 +582,16 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     override fun internetError(exception: String) {
         SharedPreference.isInternetConnected = false
         internetErrorDialog.checkInternetAvailable(requireContext())
+    }
+
+    private fun showProgress() {
+        mDataBinding?.quoteBriefDialog?.visibility = View.INVISIBLE
+        mDataBinding?.progressBar?.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        mDataBinding?.quoteBriefDialog?.visibility = View.VISIBLE
+        mDataBinding?.progressBar?.visibility = View.INVISIBLE
     }
 
     override fun onDestroy() {
