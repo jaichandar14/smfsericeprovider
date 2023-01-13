@@ -31,14 +31,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashMap
 
 // 2458
-class CalendarFragment : Fragment(),
-    CalendarAdapter.OnItemListener, ScheduleManagementViewModel.CallBackInterface,
-    Tokens.IdTokenCallBackInterface {
+class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
+    ScheduleManagementViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
     var TAG = "CalendarFragment"
 
@@ -157,7 +153,7 @@ class CalendarFragment : Fragment(),
 
     fun getBusinessValiditiy() {
         sharedViewModel.getBusinessValiditiy(idToken, spRegId)
-            .observe(viewLifecycleOwner, { apiResponse ->
+            .observe(viewLifecycleOwner) { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         val currentDayFormatter =
@@ -175,28 +171,43 @@ class CalendarFragment : Fragment(),
                         Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
                     }
                 }
-            })
+            }
     }
 
     fun selectedEXPDateObserver() {
-        sharedViewModel.getExpCurrentDate.observe(requireActivity(), {
+        sharedViewModel.getExpCurrentDate.observe(requireActivity()) {
             val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
             val currentDay = LocalDate.parse(it, currentDayFormatter)
             CalendarUtils.selectedDate = currentDay
             setMonthView(dayinWeek, daysPositon)
-        })
+        }
     }
 
     private fun setSelectedWeekSetter(
-        weeksOfMonth:LinkedHashMap<Int, WeekDatesOfMonth>,
-        fromAndToDate: CalendarUtils.WeekDates, isScroll: Boolean
+        weeksOfMonth: LinkedHashMap<Int, WeekDatesOfMonth>,
+        fromAndToDate: CalendarUtils.WeekDates,
+        isScroll: Boolean
     ) {
-        sharedViewModel.setCurrentWeekDate(
-            weeksOfMonth,
-            serviceCategoryId,
-            serviceVendorOnboardingId,
-            fromAndToDate.weekList, serviceDate, isScroll
-        )
+        // 3339 added a logic to validate the year
+        if (CalendarUtils.selectedDate?.year!! < cyear) {
+            sharedViewModel.setCurrentWeekDate(
+                LinkedHashMap(),
+                serviceCategoryId,
+                serviceVendorOnboardingId,
+                fromAndToDate.weekList,
+                serviceDate,
+                isScroll
+            )
+        } else {
+            sharedViewModel.setCurrentWeekDate(
+                weeksOfMonth,
+                serviceCategoryId,
+                serviceVendorOnboardingId,
+                fromAndToDate.weekList,
+                serviceDate,
+                isScroll
+            )
+        }
     }
 
     // 2458 Method for initializing
@@ -222,6 +233,12 @@ class CalendarFragment : Fragment(),
             monthDate.toDate = ""
             setCurrentMonth(monthDate)
         } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
+            setCurrentMonth(monthDate)
+        }
+        // 3339 added a logic to validate the year
+        else if (CalendarUtils.selectedDate?.year!! < cyear) {
+            monthDate.fromDate = ""
+            monthDate.toDate = ""
             setCurrentMonth(monthDate)
         }
     }
@@ -261,17 +278,17 @@ class CalendarFragment : Fragment(),
             calendarFormat = "Day"
             setMonthView(dayinWeek, daysPositon)
         }
-        sharedViewModel.getCalendarFormat.observe(requireActivity(), {
+        sharedViewModel.getCalendarFormat.observe(requireActivity()) {
             calendarFormat = it
             // 2458 Method For Setting Month View in Calendar
             setMonthView(dayinWeek, daysPositon)
-        })
+        }
         selectedWeekEXPObserver()
     }
 
     // 2796 Method for week Observer
     private fun selectedWeekEXPObserver() {
-        sharedViewModel.getExpCurrentWeek.observe(requireActivity(), {
+        sharedViewModel.getExpCurrentWeek.observe(requireActivity()) {
             val currentDayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH)
             val selectedDate: ArrayList<String> = ArrayList()
             it.forEach {
@@ -289,7 +306,7 @@ class CalendarFragment : Fragment(),
             }
             CalendarUtils.selectedDate = currentDay
             setMonthView(dayinWeek, daysPositon)
-        })
+        }
     }
 
     // 2622
@@ -318,13 +335,17 @@ class CalendarFragment : Fragment(),
                 calendarType = CalendarFormat.MONTH
             }
         }
-        calendarAdapter =
-            CalendarAdapter(
-                daysInMonth, this, mDataBinding, calendarType, dayinWeek,
-                daysPositon, serviceDate, businessValidity
-            )
-        val layoutManager: RecyclerView.LayoutManager =
-            GridLayoutManager(context, 7)
+        calendarAdapter = CalendarAdapter(
+            daysInMonth,
+            this,
+            mDataBinding,
+            calendarType,
+            dayinWeek,
+            daysPositon,
+            serviceDate,
+            businessValidity
+        )
+        val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(context, 7)
         calendarRecyclerView?.layoutManager = layoutManager
         calendarRecyclerView?.adapter = calendarAdapter
 
@@ -384,7 +405,8 @@ class CalendarFragment : Fragment(),
                 calendarUtils.fetchWeekOfMonth(),
                 serviceCategoryId,
                 serviceVendorOnboardingId,
-                weekList, serviceDate,
+                weekList,
+                serviceDate,
                 true
             )
             setMonthView(dayinWeek, daysPositon)
@@ -440,11 +462,8 @@ class CalendarFragment : Fragment(),
 
         } else {
             Toast.makeText(
-                requireContext(),
-                "Your Last Business registration Date",
-                Toast.LENGTH_SHORT
-            )
-                .show()
+                requireContext(), "Your Last Business registration Date", Toast.LENGTH_SHORT
+            ).show()
         }
         CalendarUtils.toastCount = 0
     }
@@ -463,8 +482,7 @@ class CalendarFragment : Fragment(),
                 // branchSpinner.add(0, "Branches")
                 serviceCategoryId = 0
                 sharedViewModel.branches(
-                    mDataBinding,
-                    branchSpinner
+                    mDataBinding, branchSpinner
                 )
             }
             if (serviceList[msg].serviceName != "All Service") {
@@ -496,7 +514,7 @@ class CalendarFragment : Fragment(),
     // 2458 Getting All Service
     fun getAllServices() {
         sharedViewModel.getAllServices(idToken, spRegId)
-            .observe(viewLifecycleOwner, { apiResponse ->
+            .observe(viewLifecycleOwner) { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
 //                        serviceList.add(ServicesData("All Service", 0))
@@ -514,7 +532,7 @@ class CalendarFragment : Fragment(),
                         Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
                     }
                 }
-            })
+            }
     }
 
     // 2458 Setting All Service
@@ -530,14 +548,13 @@ class CalendarFragment : Fragment(),
     // 2458 Branch ApiCall
     fun getBranches(idToken: String, serviceCategoryId: Int) {
         sharedViewModel.getServicesBranches(idToken, spRegId, serviceCategoryId)
-            .observe(this, { apiResponse ->
+            .observe(this) { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         val branchTypeItems: List<DatasNew> = apiResponse.response.datas
                         // branchListSpinner.add(BranchDatas("Branches", 0))
                         for (i in branchTypeItems.indices) {
-                            val branchName: String =
-                                branchTypeItems[i].branchName
+                            val branchName: String = branchTypeItems[i].branchName
                             // 2458I want to show this when Selected
                             val branchId: Int = branchTypeItems[i].serviceVendorOnboardingId
                             branchListSpinner.add(BranchDatas(branchName, branchId))
@@ -549,8 +566,7 @@ class CalendarFragment : Fragment(),
                             branchList.add(branchName)
                         }
                         sharedViewModel.branches(
-                            mDataBinding,
-                            branchList
+                            mDataBinding, branchList
                         )
                     }
                     is ApisResponse.Error -> {
@@ -559,15 +575,12 @@ class CalendarFragment : Fragment(),
                     else -> {
                     }
                 }
-            })
+            }
     }
 
     // 2685 Method For Getting the Event Date and Counts from Api
     fun eventDateAndCounts(
-        serviceCategoryId: Int?,
-        branchId: Int,
-        idToken: String,
-        b: Boolean
+        serviceCategoryId: Int?, branchId: Int, idToken: String, b: Boolean
     ) {
         Log.d("TAG", "eventDateAndCounts in s: $serviceCategoryId")
         val serviceId: Int?
@@ -597,7 +610,8 @@ class CalendarFragment : Fragment(),
                 CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                 this.serviceCategoryId,
                 this.serviceVendorOnboardingId,
-                serviceDate, monthFromAndToDate(),
+                serviceDate,
+                monthFromAndToDate(),
                 false
             )
             val fromAndToDate = calendarUtils.fromAndToDate()
@@ -607,19 +621,13 @@ class CalendarFragment : Fragment(),
             setSelectedWeekSetter(weeksOfMonth, fromAndToDate, false)
         } else if (CalendarUtils.selectedDate?.year!! >= cyear) {
             sharedViewModel.getEventDates(
-                idToken,
-                spRegId,
-                serviceId,
-                branchesId,
-                monthDate.fromDate,
-                monthDate.toDate
-            ).observe(viewLifecycleOwner, { apiresponse ->
+                idToken, spRegId, serviceId, branchesId, monthDate.fromDate, monthDate.toDate
+            ).observe(viewLifecycleOwner) { apiresponse ->
                 serviceDate.clear()
                 when (apiresponse) {
                     is ApisResponse.Success -> {
                         Log.d(
-                            "TAG",
-                            "Calendar Event List : ${apiresponse.response.data.serviceDates}"
+                            "TAG", "Calendar Event List : ${apiresponse.response.data.serviceDates}"
                         )
                         apiresponse.response.data.serviceDates.forEach {
                             val currentDayFormatter =
@@ -635,7 +643,8 @@ class CalendarFragment : Fragment(),
                             CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                             this.serviceCategoryId,
                             this.serviceVendorOnboardingId,
-                            serviceDate, monthFromAndToDate(),
+                            serviceDate,
+                            monthFromAndToDate(),
                             false
                         )
                         // 2796
@@ -650,7 +659,19 @@ class CalendarFragment : Fragment(),
                         Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
                     }
                 }
-            })
+            }
+        }
+        // 3339 added a logic to validate the year
+        else if (CalendarUtils.selectedDate?.year!! < cyear) {
+            sharedViewModel.setCurrentDate(
+                CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
+                this.serviceCategoryId,
+                this.serviceVendorOnboardingId,
+                java.util.ArrayList(),
+                java.util.ArrayList(),
+                false
+            )
+            settingWeekDate()
         }
     }
 
@@ -658,8 +679,7 @@ class CalendarFragment : Fragment(),
     private fun apiTokenValidationCalendar(caller: String) {
         if (idToken.isNotEmpty()) {
             tokens.checkTokenExpiry(
-                requireActivity().applicationContext as SMFApp,
-                caller, idToken
+                requireActivity().applicationContext as SMFApp, caller, idToken
             )
         }
     }
@@ -673,10 +693,7 @@ class CalendarFragment : Fragment(),
                 "EventDateApiAllService" -> {
                     Log.d("TAG", "tokenCallBack:$serviceCategoryId ")
                     eventDateAndCounts(
-                        serviceCategoryId,
-                        0,
-                        idToken,
-                        true
+                        serviceCategoryId, 0, idToken, true
                     )
                 }
                 "EventDateApiBranches" -> {
