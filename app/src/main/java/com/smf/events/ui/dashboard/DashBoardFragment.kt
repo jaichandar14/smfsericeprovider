@@ -562,8 +562,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         when (item.itemId) {
             R.id.nav_dashboard -> {
                 // Refreshing the dashboard page
-                onRefresh()
-                drawerLayout.closeDrawer(GravityCompat.START)
+                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
+                    // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
+                    ApplicationUtils.fromNotification = false
+                    serviceList.clear()
+                    // Declaration for show action and details page
+                    actionAndDetailsVisibility = true
+                    idTokenValidation()
+                }
             }
             R.id.nav_availability -> {
                 if (internetErrorDialog.checkInternetAvailable(requireContext())) {
