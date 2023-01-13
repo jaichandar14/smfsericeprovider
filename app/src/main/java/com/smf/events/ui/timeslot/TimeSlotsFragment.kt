@@ -14,8 +14,11 @@ import com.google.android.material.tabs.TabLayout
 import com.smf.events.R
 import com.smf.events.databinding.FragmentTimeSlotsBinding
 import com.smf.events.helper.CalendarUtils
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 // 2487
@@ -24,6 +27,7 @@ class TimeSlotsFragment : Fragment() {
     private var TAG = "TimeSlotsFragment"
     lateinit var tabLayout: TabLayout
     private lateinit var mDataBinding: FragmentTimeSlotsBinding
+    private lateinit var tabVisibilityDisposable: Disposable
 
     // SharedViewModel Initialization
     private val sharedViewModel: ScheduleManagementViewModel by activityViewModels()
@@ -49,10 +53,24 @@ class TimeSlotsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // 2527 - Initialize tabLayout
         tabLayout = mDataBinding.tabLayout
+        // Setting Time slot visibility
+        timeSlotVisibility()
         // 2527 - tabLayout And ViewPager Initialization
         tabLayoutAndViewPagerSetUp()
         // 2843 - Initial Tab Position
         updatePosition()
+    }
+
+    private fun timeSlotVisibility() {
+        if (tag == "Frag_Bottom_tag") {
+            mDataBinding.timeSlotLayout.visibility = View.GONE
+        } else {
+            mDataBinding.timeSlotLayout.visibility = View.VISIBLE
+        }
+        // Observer for visible timeSlotLayout after calendar visibility
+        tabVisibilityDisposable = RxBus.listen(RxEvent.IsValid::class.java).subscribe {
+            mDataBinding.timeSlotLayout.visibility = View.VISIBLE
+        }
     }
 
     private fun tabLayoutAndViewPagerSetUp() {
@@ -98,6 +116,11 @@ class TimeSlotsFragment : Fragment() {
             manager.beginTransaction() //create an instance of Fragment-transaction
         transaction.replace(R.id.expandable_fragment, frg, status)
         transaction.commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!tabVisibilityDisposable.isDisposed) tabVisibilityDisposable.dispose()
     }
 
 }

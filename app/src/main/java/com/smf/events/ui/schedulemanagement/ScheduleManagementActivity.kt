@@ -3,6 +3,7 @@ package com.smf.events.ui.schedulemanagement
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -33,6 +34,7 @@ class ScheduleManagementActivity :
     lateinit var factory: ViewModelProvider.Factory
     private lateinit var changingNavDisposable: Disposable
     private lateinit var internetDisposable: Disposable
+    private lateinit var toggleBtnVisibilityDisposable: Disposable
     override fun getContentView(): Int = com.smf.events.R.layout.activity_schedule_managment
 
     override fun getViewModel(): ScheduleManagementViewModel =
@@ -70,6 +72,12 @@ class ScheduleManagementActivity :
         internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer scheduled activity")
             internetErrorDialog.dismissDialog()
+        }
+
+        // Observer for visible switch button and text
+        toggleBtnVisibilityDisposable = RxBus.listen(RxEvent.IsValid::class.java).subscribe {
+            mViewDataBinding?.switchBtnTx?.visibility = View.VISIBLE
+            mViewDataBinding?.switchBtn?.visibility = View.VISIBLE
         }
 
         getViewModel().getScrollViewToPosition.observe(this, Observer {
@@ -136,6 +144,7 @@ class ScheduleManagementActivity :
         Log.d(TAG, "onViewCreated: observe onDestroy: called scheduled activity")
         if (!changingNavDisposable.isDisposed) changingNavDisposable.dispose()
         if (!internetDisposable.isDisposed) internetDisposable.dispose()
+        if (!toggleBtnVisibilityDisposable.isDisposed) toggleBtnVisibilityDisposable.dispose()
     }
 
 }
