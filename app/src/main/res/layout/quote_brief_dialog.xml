@@ -442,22 +442,28 @@
                                     android:layout_marginLeft="@dimen/_8sdp"
                                     android:layout_marginTop="@dimen/_3sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
                                         android:id="@+id/tx_eventdate"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/event_date"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/tx_eventdate_value"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
@@ -470,22 +476,28 @@
                                     android:layout_marginStart="@dimen/_17sdp"
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
                                         android:id="@+id/tx_bid_proposal_date"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/bid_proposal_date"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/tx_bid_proposal_date_value"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2021"
                                         android:textColor="@color/dark_font"
@@ -498,22 +510,28 @@
                                     android:layout_marginStart="@dimen/_17sdp"
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
                                         android:id="@+id/tx_cut_off_date"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/cut_off_date"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/tx_cut_off_date_value"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
@@ -527,22 +545,28 @@
                                     android:layout_marginStart="@dimen/_17sdp"
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
                                         android:id="@+id/service_date"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/service_date_"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/service_date_value"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
@@ -555,22 +579,28 @@
                                     android:layout_marginStart="@dimen/_17sdp"
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
                                         android:id="@+id/payment_status"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/payment_status"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/payment_status_value"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
@@ -584,21 +614,27 @@
                                     android:layout_marginStart="@dimen/_17sdp"
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/serviced_by"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/serviced_by"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/na"
                                         android:textColor="@color/dark_font"
@@ -611,21 +647,28 @@
                                     android:layout_marginStart="@dimen/_17sdp"
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/address"
                                         android:textSize="@dimen/_12sdp" />
 
                                     <TextView
-                                        android:id="@+id/address"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
+                                    <TextView
+                                        android:id="@+id/address"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:lines="3"
                                         android:textColor="@color/dark_font"
@@ -639,21 +682,27 @@
                                     android:layout_marginStart="@dimen/_17sdp"
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/customer_rating"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/customer_rating"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:lines="2"
                                         android:text="@string/_9_aug_2021"
@@ -669,21 +718,27 @@
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_marginEnd="@dimen/_18sdp"
                                     android:layout_marginBottom="@dimen/_22sdp"
-                                    android:weightSum="3">
+                                    android:weightSum="4">
 
                                     <TextView
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/review_comment"
                                         android:textSize="@dimen/_12sdp" />
-
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight=".10"
+                                        android:fontFamily="@font/mulish_regular"
+                                        android:text="@string/colon_space"
+                                        android:textSize="@dimen/_12sdp" />
                                     <TextView
                                         android:id="@+id/review_comment"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1.5"
+                                        android:layout_weight="1.90"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/na"
                                         android:textColor="@color/dark_font"
@@ -952,6 +1007,8 @@
                                 android:layout_marginStart="@dimen/_2sdp"
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:layout_marginRight="@dimen/_8sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:background="@drawable/box_login_text"
                                 android:fontFamily="@font/mulish_medium"
                                 android:gravity="start"
                                 android:lines="6"

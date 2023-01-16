@@ -273,4 +273,5 @@
     <string name="no_records_found">No Records Found</string>
     <string name="nine">9</string>
     <string name="plus_symbol">+</string>
+    <string name="colon_space">:</string>
 </resources>

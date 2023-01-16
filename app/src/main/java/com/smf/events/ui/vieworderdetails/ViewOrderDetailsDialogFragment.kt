@@ -178,18 +178,18 @@ class ViewOrderDetailsDialogFragment(
         mDataBinding?.txJobIdnum?.text = eventServiceDescriptionId.toString()
         mDataBinding?.etEventDate?.text = ": $eventDate"
         mDataBinding?.etZipCode?.text = ": " + venueInfo.zipCode.toString()
-        mDataBinding?.etServiceDate?.text = ": " + (serviceDetails?.serviceDate.toString())
-        mDataBinding?.etBidCutOffDate?.text = ": " + (serviceDetails?.biddingCutOffDate.toString())
-        mDataBinding?.etEstimationBudget?.text = ": " +
+        mDataBinding?.etServiceDate?.text =(serviceDetails?.serviceDate.toString())
+        mDataBinding?.etBidCutOffDate?.text =(serviceDetails?.biddingCutOffDate.toString())
+        mDataBinding?.etEstimationBudget?.text =
                 serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
-        mDataBinding?.etServiceRadius?.text = ": $radius"
+        mDataBinding?.etServiceRadius?.text = "$radius"
 
         val slots = serviceDetails?.preferredSlots as ArrayList
         slots.forEach {
             preferedSlot.add(it)
         }
         val timing = preferedSlot.toString()
-        mDataBinding?.etPreferedTimeSlot?.text = ": " + timing.substring(1, timing.length - 1)
+        mDataBinding?.etPreferedTimeSlot?.text =timing.substring(1, timing.length - 1)
         if (questionnaireDtos.isNullOrEmpty()) {
             mDataBinding?.question?.visibility = View.GONE
         } else {
