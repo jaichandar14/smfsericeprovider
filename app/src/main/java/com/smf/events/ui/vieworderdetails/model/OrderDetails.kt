@@ -17,6 +17,7 @@ data class OrderDetails(
 data class DataValue(
     val venueInformationDto: VenueInformationDto,
     var eventServiceQuestionnaireDescriptionDto: EventServiceQuestionnaireDescriptionDto?,
+    val eventTemplateIcon: String?
 ) : Parcelable
 
 @Parcelize

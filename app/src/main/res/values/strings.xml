@@ -274,4 +274,7 @@
     <string name="nine">9</string>
     <string name="plus_symbol">+</string>
     <string name="colon_space">:</string>
+    //3336
+    <string name="title">title</string>
+    <string name="data">data</string>
 </resources>

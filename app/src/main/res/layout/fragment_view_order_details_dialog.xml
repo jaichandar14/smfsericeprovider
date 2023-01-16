@@ -68,7 +68,7 @@
                         android:fontFamily="@font/mulish_semi_bold"
                         android:text="@string/order_details"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/_17sdp" />
+                        android:textSize="@dimen/_17ssp" />
                 </RelativeLayout>
 
                 <androidx.cardview.widget.CardView
@@ -99,37 +99,52 @@
                             android:layout_height="match_parent"
                             android:layout_margin="@dimen/_18sdp">
 
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/event_image"
+                                android:layout_width="@dimen/_40sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:src="@drawable/no_image"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+
                             <TextView
                                 android:id="@+id/tx_job_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_10sdp"
                                 android:fontFamily="@font/mulish_bold"
-                                android:text="jai"
+                                android:text="@string/title"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/_16sdp"
+                                android:textSize="@dimen/_16ssp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/event_image"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/tx_job_idnum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_3sdp"
+                                android:layout_marginStart="@dimen/_10sdp"
                                 android:fontFamily="@font/mulish_regular"
                                 android:textColor="@color/lightblue"
-                                android:textSize="@dimen/_12sdp"
-                                app:layout_constraintStart_toStartOf="parent"
+                                android:textSize="@dimen/_12ssp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toEndOf="@+id/event_image"
                                 app:layout_constraintTop_toBottomOf="@+id/tx_job_title" />
 
                             <LinearLayout
                                 android:id="@+id/event_date_layout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_10sdp"
                                 android:weightSum="3"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/tx_job_idnum">
+                                app:layout_constraintTop_toBottomOf="@+id/event_image">
 
                                 <TextView
                                     android:id="@+id/tx_eventdate"
@@ -139,7 +154,7 @@
                                     android:layout_weight="1.5"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/event_dates"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
 
                                 <TextView
                                     android:id="@+id/et_event_date"
@@ -149,8 +164,7 @@
                                     android:layout_weight="1.5"
                                     android:fontFamily="@font/mulish_regular"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_12sdp" />
-
+                                    android:textSize="@dimen/_12ssp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -169,7 +183,7 @@
                                     android:layout_weight="1.5"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/venue_zip_code"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
 
                                 <TextView
                                     android:id="@+id/et_zip_code"
@@ -179,9 +193,7 @@
                                     android:layout_weight="1.5"
                                     android:fontFamily="@font/mulish_regular"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_12sdp" />
-
-
+                                    android:textSize="@dimen/_12ssp" />
                             </LinearLayout>
 
                             <View
@@ -193,7 +205,6 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/zip_layout" />
-
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -215,7 +226,7 @@
                                 android:paddingStart="@dimen/_8sdp"
                                 android:paddingTop="@dimen/_3sdp"
                                 android:text="@string/service_details"
-                                android:textSize="@dimen/_13sdp" />
+                                android:textSize="@dimen/_13ssp" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -233,14 +244,16 @@
                                     android:layout_weight="2"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/service_date"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.10"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/colon_space"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:id="@+id/et_service_date"
                                     android:layout_width="0dp"
@@ -249,7 +262,7 @@
                                     android:fontFamily="@font/mulish_regular"
                                     android:paddingStart="@dimen/_3sdp"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -268,14 +281,15 @@
                                     android:layout_weight="2"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/bid_cut_off_date"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.10"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/colon_space"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
 
                                 <TextView
                                     android:id="@+id/et_bid_cut_off_date"
@@ -285,7 +299,7 @@
                                     android:fontFamily="@font/mulish_regular"
                                     android:paddingStart="@dimen/_3sdp"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -303,14 +317,16 @@
                                     android:layout_weight="2"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/estimation_budget"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.10"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/colon_space"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:id="@+id/et_estimation_budget"
                                     android:layout_width="0dp"
@@ -319,8 +335,7 @@
                                     android:fontFamily="@font/mulish_regular"
                                     android:paddingStart="@dimen/_3sdp"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_12sdp" />
-
+                                    android:textSize="@dimen/_12ssp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -338,14 +353,16 @@
                                     android:layout_weight="2"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/service_radius"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.10"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/colon_space"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:id="@+id/et_service_radius"
                                     android:layout_width="0dp"
@@ -354,7 +371,7 @@
                                     android:fontFamily="@font/mulish_regular"
                                     android:paddingStart="@dimen/_3sdp"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -372,14 +389,16 @@
                                     android:layout_weight="2"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/prefered_time_slot"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="0.10"
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/colon_space"
-                                    android:textSize="@dimen/_12sdp" />
+                                    android:textSize="@dimen/_12ssp" />
+
                                 <TextView
                                     android:id="@+id/et_prefered_time_slot"
                                     android:layout_width="0dp"
@@ -388,8 +407,7 @@
                                     android:fontFamily="@font/mulish_regular"
                                     android:paddingStart="@dimen/_3sdp"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_12sdp" />
-
+                                    android:textSize="@dimen/_12ssp" />
                             </LinearLayout>
                         </LinearLayout>
 
@@ -416,18 +434,15 @@
                                 android:fontFamily="@font/mulish_semi_bold"
                                 android:paddingStart="@dimen/_8sdp"
                                 android:paddingTop="@dimen/_3sdp"
-                                android:textSize="@dimen/_16sdp" />
+                                android:textSize="@dimen/_16ssp" />
 
                             <ListView
                                 android:id="@+id/ques_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:scrollbars="none" />
-
                         </LinearLayout>
                     </LinearLayout>
-
-
                 </androidx.cardview.widget.CardView>
 
                 <View
