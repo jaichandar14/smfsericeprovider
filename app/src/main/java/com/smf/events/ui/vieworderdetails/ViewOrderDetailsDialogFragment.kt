@@ -3,11 +3,14 @@ package com.smf.events.ui.vieworderdetails
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.ListView
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.smf.events.BR
+import com.smf.events.BuildConfig
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
@@ -147,12 +150,14 @@ class ViewOrderDetailsDialogFragment(
                             apiResponse.response.data.eventServiceQuestionnaireDescriptionDto?.eventServiceDescriptionDto?.eventServiceVenueDto?.redius
                         val questionnaire =
                             apiResponse.response.data.eventServiceQuestionnaireDescriptionDto?.questionnaireWrapperDto?.questionnaireDtos
+                        val image = apiResponse.response.data.eventTemplateIcon
                         settingOrderDetails(
                             questionnaire,
                             venueInfo,
                             serviceDetails,
                             serviceBudget,
-                            radius
+                            radius,
+                            image
                         )
                     }
                     is ApisResponse.Error -> {
@@ -172,8 +177,21 @@ class ViewOrderDetailsDialogFragment(
         serviceDetails: EventServiceDateDto?,
         serviceBudget: EventServiceBudgetDto?,
         radius: String?,
+        image: String?
     ) {
-        mDataBinding?.question?.text = "Questions"
+        // Load image
+        image?.let {
+            if (image.startsWith(getString(R.string.data))) {
+                val img = it.substring(it.indexOf(",") + 1).trim()
+                Glide.with(requireContext()).load(Base64.decode(img, Base64.DEFAULT))
+                    .error(R.drawable.no_image).into(mDataBinding!!.eventImage)
+            } else {
+                Glide.with(requireContext()).load((BuildConfig.base_url + it).replace(" ", "%20"))
+                    .error(R.drawable.no_image)
+                    .into(mDataBinding!!.eventImage)
+            }
+        }
+        mDataBinding?.question?.text = getString(R.string.questions)
         mDataBinding?.txJobTitle?.text = eventName
         mDataBinding?.txJobIdnum?.text = eventServiceDescriptionId.toString()
         mDataBinding?.etEventDate?.text = ": $eventDate"
