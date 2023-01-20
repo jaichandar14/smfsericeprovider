@@ -184,10 +184,10 @@ class ViewOrderDetailsDialogFragment(
             if (image.startsWith(getString(R.string.data))) {
                 val img = it.substring(it.indexOf(",") + 1).trim()
                 Glide.with(requireContext()).load(Base64.decode(img, Base64.DEFAULT))
-                    .error(R.drawable.no_image).into(mDataBinding!!.eventImage)
+                    .error(R.drawable.cake_icon).into(mDataBinding!!.eventImage)
             } else {
                 Glide.with(requireContext()).load((BuildConfig.base_url + it).replace(" ", "%20"))
-                    .error(R.drawable.no_image)
+                    .error(R.drawable.cake_icon)
                     .into(mDataBinding!!.eventImage)
             }
         }
