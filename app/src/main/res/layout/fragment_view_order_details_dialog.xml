@@ -10,7 +10,6 @@
             type="com.smf.events.ui.vieworderdetails.ViewOrderDetailsViewModel" />
     </data>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -103,7 +102,7 @@
                                 android:id="@+id/event_image"
                                 android:layout_width="@dimen/_40sdp"
                                 android:layout_height="@dimen/_40sdp"
-                                android:src="@drawable/no_image"
+                                android:src="@drawable/cake_icon"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
                                 app:layout_constraintStart_toStartOf="parent"
