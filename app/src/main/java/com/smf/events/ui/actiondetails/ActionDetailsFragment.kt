@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
@@ -32,9 +33,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
+class ActionDetailsFragment :
     BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(),
-    Tokens.IdTokenCallBackInterface, CallBackInterface, ActionDetailsViewModel.CallBackInterface {
+    Tokens.IdTokenCallBackInterface, CallBackInterface {
 
     var TAG = "ActionDetailsFragment"
     private lateinit var myActionDetailsRecyclerView: RecyclerView
@@ -77,8 +78,6 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
         actionDetailsVariableSetUp()
         //Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        // ActionDetails ViewModel CallBackInterface
-        getViewModel().setViewModelCallBackInterface(this)
         closeBtn = mDataBinding?.closeBtn
         //Initializing actions recyclerview
         myActionDetailsRecyclerView = mDataBinding?.actionDetailsRecyclerview!!
@@ -150,7 +149,6 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
         actionDetailsAdapter =
             ActionDetailsAdapter(
                 requireContext(),
-                internetErrorDialog,
                 bidStatus,
                 sharedPreference,
                 status
@@ -164,30 +162,28 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
     // Close Button ClickListener
     private fun clickListeners() {
         closeBtn?.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                RxBus.publish(RxEvent.QuoteBrief1(2, true))
-                // 3103 - Redirect To ActionAndDetails Fragment
-                ApplicationUtils.fromNotification = false
-                val args = Bundle()
-                serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
-                serviceVendorOnboardingId?.let { it1 ->
-                    args.putInt(
-                        "serviceVendorOnboardingId",
-                        it1
-                    )
-                }
-                args.putBoolean(
-                    "actionAndDetailsVisibility",
-                    DashBoardFragment.actionAndDetailsVisibility
+            RxBus.publish(RxEvent.QuoteBrief1(2, true))
+            // 3103 - Redirect To ActionAndDetails Fragment
+            ApplicationUtils.fromNotification = false
+            val args = Bundle()
+            serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
+            serviceVendorOnboardingId?.let { it1 ->
+                args.putInt(
+                    "serviceVendorOnboardingId",
+                    it1
                 )
-                val actionAndStatusFragment = ActionsAndStatusFragment(internetErrorDialog)
-                actionAndStatusFragment.arguments = args
-                // Replace Fragment
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.action_and_status_layout, actionAndStatusFragment)
-                    .addToBackStack(null)
-                    .commit()
             }
+            args.putBoolean(
+                "actionAndDetailsVisibility",
+                DashBoardFragment.actionAndDetailsVisibility
+            )
+            val actionAndStatusFragment = ActionsAndStatusFragment()
+            actionAndStatusFragment.arguments = args
+            // Replace Fragment
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.action_and_status_layout, actionAndStatusFragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -201,22 +197,17 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
         latestBidValue: String?,
         branchName: String,
     ) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
-        }
+        postQuoteDetails(bidRequestId, costingType, bidStatus, cost, latestBidValue, branchName)
     }
 
     override fun showDialog(status: ActionDetails) {
         //QuoteBriefDialog.newInstance(status.bidRequestId)
         Log.d("TAG", "showDialog: ${status.bidRequestId}")
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, status.bidRequestId)
-            QuoteBriefDialog.newInstance(internetErrorDialog)
-                .show(
-                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    QuoteBriefDialog.TAG
-                )
-        }
+        sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, status.bidRequestId)
+        QuoteBriefDialog.newInstance().show(
+            (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+            QuoteBriefDialog.TAG
+        )
     }
 
     // Method For postQuoteDetails Api Call
@@ -254,17 +245,20 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
                         //  QuoteBriefDialog.newInstance(bidRequestId)
                         Log.d("TAG", "showDialog1:$bidRequestId ")
                         sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
-                        QuoteBriefDialog.newInstance(internetErrorDialog)
+                        QuoteBriefDialog.newInstance()
                             .show(
                                 (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
                                 QuoteBriefDialog.TAG
                             )
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        hideProgress()
                     }
+                    else -> {}
                 }
             })
     }
@@ -299,11 +293,14 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
                 is ApisResponse.Success -> {
                     recyclerViewListUpdate(apiResponse.response.data.serviceProviderBidRequestDtos)
                 }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result: ${apiResponse.exception}")
+                is ApisResponse.CustomError -> {
+                    Log.d("TAG", "check token result: ${apiResponse.message}")
                 }
-                else -> {
+                is ApisResponse.InternetError -> {
+                    (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                    hideProgress()
                 }
+                else -> {}
             }
         })
     }
@@ -382,12 +379,6 @@ class ActionDetailsFragment(val internetErrorDialog: InternetErrorDialog) :
         super.onStop()
         Log.d(TAG, "onStop: called ActionDetails")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-    }
-
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireActivity())
-        hideProgress()
     }
 
 }

@@ -1,47 +1,30 @@
 package com.smf.events.ui.dashboard
 
+import com.smf.events.base.BaseRepo
 import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.dashboard.model.AllServices
 import com.smf.events.ui.dashboard.model.Branches
 import com.smf.events.ui.dashboard.model.ServiceCount
 import com.smf.events.ui.notification.model.NotificationCount
-import retrofit2.HttpException
 import javax.inject.Inject
 
-class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
+class DashBoardRepository @Inject constructor(var apiStories: ApiStories) : BaseRepo() {
 
     suspend fun getServiceCount(idToken: String, spRegId: Int): ApisResponse<ServiceCount> {
-        return try {
-            val getResponse = apiStories.getServiceCount(idToken, spRegId)
-            ApisResponse.Success(getResponse)
-
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getServiceCount(idToken, spRegId) }
     }
 
     suspend fun getAllServices(idToken: String, spRegId: Int): ApisResponse<AllServices> {
-        return try {
-            val getResponse = apiStories.getAllServices(idToken, spRegId)
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getAllServices(idToken, spRegId) }
     }
 
     suspend fun getServicesBranches(
         idToken: String,
         spRegId: Int,
-        serviceCategoryId: Int,
+        serviceCategoryId: Int
     ): ApisResponse<Branches> {
-        return try {
-            val getResponse =
-                apiStories.getServicesBranches(idToken, spRegId, serviceCategoryId)
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getServicesBranches(idToken, spRegId, serviceCategoryId) }
     }
 
     // 3218 - Api call for get Notification count
@@ -49,11 +32,6 @@ class DashBoardRepository @Inject constructor(var apiStories: ApiStories) {
         idToken: String,
         userId: String
     ): ApisResponse<NotificationCount> {
-        return try {
-            val getResponse = apiStories.getNotificationCount(idToken, userId)
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getNotificationCount(idToken, userId) }
     }
 }

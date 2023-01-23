@@ -18,12 +18,9 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.AppConstants
-import com.smf.events.helper.InternetErrorDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class EmailOTPViewModel @Inject constructor(
@@ -91,7 +88,7 @@ class EmailOTPViewModel @Inject constructor(
                 idToken = AuthSessionResult.success(session.userPoolTokens.value?.idToken).value
                 setTokenToSharedPref(idToken)
                 Log.d(TAG, "confirmSignIn scess idToken: $it, $idToken")
-                GlobalScope.launch(Dispatchers.Main) {
+                viewModelScope.launch {
                     //Aws Method for 6 digit Validation Check
                     emailCodeValidationCheck(context)
                 }
@@ -157,45 +154,12 @@ class EmailOTPViewModel @Inject constructor(
 
     // Method For Getting Service Provider Reg Id and Role Id
     fun getLoginInfo(idToken: String) = liveData(Dispatchers.IO) {
-        try {
-            emit(eMailOTPRepository.getLoginInfo(idToken))
-        } catch (e: Exception) {
-            Log.d(TAG, "UnknownHostException $e")
-            when (e) {
-                is UnknownHostException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                else -> {}
-            }
-        }
+        emit(eMailOTPRepository.getLoginInfo(idToken))
     }
 
     // Method For Getting Service Provider Reg Id and Role Id
     fun getOtpValidation(isValid: Boolean, username: String) = liveData(Dispatchers.IO) {
-        try {
-            emit(eMailOTPRepository.getOtpValidation(isValid, username))
-        } catch (e: Exception) {
-            when (e) {
-                is UnknownHostException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                else -> {}
-            }
-        }
+        emit(eMailOTPRepository.getOtpValidation(isValid, username))
     }
 
     // Email Verification
@@ -249,13 +213,11 @@ class EmailOTPViewModel @Inject constructor(
         fun navigatingPage()
         fun showToast(resendRestriction: Int)
         fun otpValidation(b: Boolean)
-        fun internetError(exception: String)
     }
 
     // 2351 Android-OTP expires Validation Method
     fun otpTimerValidation(
-        mDataBinding: FragmentEmailOtpBinding?, userName: String,
-        internetErrorDialog: InternetErrorDialog, context: Context
+        mDataBinding: FragmentEmailOtpBinding?, userName: String
     ) {
         var counter = 30
         val countTime: TextView = mDataBinding!!.otpTimer
@@ -288,13 +250,11 @@ class EmailOTPViewModel @Inject constructor(
                         )
                     )
                     mDataBinding.otpResend.setOnClickListener {
-                        if (internetErrorDialog.checkInternetAvailable(context)) {
-                            if (resendRestriction <= 5) {
-                                reSendOTP(userName, mDataBinding)
-                                callBackInterface?.showToast(resendRestriction)
-                            } else {
-                                callBackInterface?.showToast(resendRestriction)
-                            }
+                        if (resendRestriction <= 5) {
+                            reSendOTP(userName, mDataBinding)
+                            callBackInterface?.showToast(resendRestriction)
+                        } else {
+                            callBackInterface?.showToast(resendRestriction)
                         }
                     }
                 } else {

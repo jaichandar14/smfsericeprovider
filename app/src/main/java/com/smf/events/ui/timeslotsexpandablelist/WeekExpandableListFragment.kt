@@ -13,9 +13,13 @@ import androidx.fragment.app.activityViewModels
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -32,16 +36,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashMap
 import kotlin.concurrent.schedule
 
 class WeekExpandableListFragment : Fragment(),
-    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface,
-    ScheduleManagementViewModel.CallBackExpListInterface {
+    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
 
-    private var TAG = "WeekExpandableListFragment"
+    private var TAG = this::class.java.name
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
@@ -62,7 +62,6 @@ class WeekExpandableListFragment : Fragment(),
     private var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
     private var isScroll: Boolean = false
     private lateinit var dialogDisposable: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -101,20 +100,16 @@ class WeekExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        // 3061 Scheduled Management  ViewModel CallBackInterface
-        sharedViewModel.setCallBackExpListInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer weekexp")
-            internetErrorDialog.dismissDialog()
             if (activity != null) {
                 init()
             }
         }
 
-        sharedViewModel.getCurrentWeekDate.observe(viewLifecycleOwner
+        sharedViewModel.getCurrentWeekDate.observe(
+            viewLifecycleOwner
         ) { currentWeekDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentWeekDate)
             weekMap = getWeekListMap(currentWeekDate)
@@ -153,9 +148,7 @@ class WeekExpandableListFragment : Fragment(),
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                init()
-            }
+            init()
         }
     }
 
@@ -192,11 +185,15 @@ class WeekExpandableListFragment : Fragment(),
                             adapter!!.notifyDataSetChanged()
                         }
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiResponse.message
+                        )
                     }
+                    else -> {}
                 }
             })
         }
@@ -350,31 +347,31 @@ class WeekExpandableListFragment : Fragment(),
     // 2776 -  Method For Perform Group Click Events
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
         Log.d("TAG", "onGroupClick week: called ${listOfDatesArray[listPosition]}")
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            this.parent = parent as ExpandableListView
-            this.groupPosition = listPosition
-            this.weekList = listOfDatesArray[listPosition]
-            fromDate = listOfDatesArray[listPosition][0]
-            toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
-            if (isExpanded) {
-                parent.collapseGroup(groupPosition)
-            } else {
-                // Send Selected Week To ViewModel For Calender UI Display
-                sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
-                val bookedEventDetails = ArrayList<ListData>()
-                bookedEventDetails.add(
-                    ListData(
-                        getString(R.string.empty),
-                        listOf(BookedEventServiceDto("", "", "", "", ""))
-                    )
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        this.parent = parent as ExpandableListView
+        this.groupPosition = listPosition
+        this.weekList = listOfDatesArray[listPosition]
+        fromDate = listOfDatesArray[listPosition][0]
+        toDate = listOfDatesArray[listPosition][listOfDatesArray[listPosition].lastIndex]
+        if (isExpanded) {
+            parent.collapseGroup(groupPosition)
+        } else {
+            // Send Selected Week To ViewModel For Calender UI Display
+            sharedViewModel.setExpCurrentWeek(listOfDatesArray[listPosition])
+            val bookedEventDetails = ArrayList<ListData>()
+            bookedEventDetails.add(
+                ListData(
+                    getString(R.string.empty),
+                    listOf(BookedEventServiceDto("", "", "", "", ""))
                 )
-                childData[titleDate[groupPosition]] = bookedEventDetails
-                parent.collapseGroup(lastGroupPosition)
-                parent.expandGroup(groupPosition)
-                apiTokenValidation("bookedEventServicesFromSelectedDate")
-            }
-            lastGroupPosition = listPosition
+            )
+            childData[titleDate[groupPosition]] = bookedEventDetails
+            parent.collapseGroup(lastGroupPosition)
+            parent.expandGroup(groupPosition)
+            apiTokenValidation("bookedEventServicesFromSelectedDate")
         }
+        lastGroupPosition = listPosition
+//        }
     }
 
     // 2670 - Method For AWS Token Validation
@@ -478,12 +475,6 @@ class WeekExpandableListFragment : Fragment(),
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: weekexp")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-    }
-
-    override fun internetError(exception: String, tag: String) {
-        Log.d(TAG, "internetError: called day")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
 }

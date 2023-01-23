@@ -16,6 +16,7 @@ import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
 import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -32,15 +33,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.concurrent.schedule
 
 class DayExpandableListFragment : Fragment(),
-    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface,
-    ScheduleManagementViewModel.CallBackExpListInterface {
+    CustomExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
 
-    private var TAG = "DayExpandableListFragment"
+    private var TAG = this::class.java.name
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
@@ -59,7 +57,6 @@ class DayExpandableListFragment : Fragment(),
     private var groupPosition: Int = 0
     private var isScroll: Boolean = false
     private lateinit var dialogDisposable: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -96,21 +93,16 @@ class DayExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        // 3061 Scheduled Management  ViewModel CallBackInterface
-        sharedViewModel.setCallBackExpListInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer dayexp")
-            internetErrorDialog.dismissDialog()
             if (activity != null) {
                 init()
             }
         }
 
         // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getCurrentDate.observe(viewLifecycleOwner, { currentDate ->
+        sharedViewModel.getCurrentDate.observe(viewLifecycleOwner) { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
             mDataBinding.modifyProgressBar.visibility = View.VISIBLE
             mDataBinding.expandableLayout.visibility = View.GONE
@@ -127,7 +119,7 @@ class DayExpandableListFragment : Fragment(),
                 "onViewCreated: ${CalendarUtils.selectedDate}, $fromDate $toDate $selectedDate $listOfDates"
             )
             setListOfDatesArrayList(currentDate)
-        })
+        }
     }
 
     // 2776 - Method For set Dates ArrayList
@@ -139,9 +131,7 @@ class DayExpandableListFragment : Fragment(),
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                init()
-            }
+            init()
         }
     }
 
@@ -180,13 +170,16 @@ class DayExpandableListFragment : Fragment(),
                             Log.d("TAG", "setDataToExpandableList: loop called")
                             adapter!!.notifyDataSetChanged()
                         }
-
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result BookedEvent exp: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result BookedEvent exp: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiResponse.message
+                        )
                     }
+                    else -> {}
                 }
             })
         }
@@ -237,30 +230,30 @@ class DayExpandableListFragment : Fragment(),
     }
 
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            this.parent = parent as ExpandableListView
-            this.groupPosition = listPosition
-            fromDate = listOfDates?.get(listPosition)
-            toDate = listOfDates?.get(listPosition)
-            if (isExpanded) {
-                parent.collapseGroup(listPosition)
-            } else {
-                // Send Selected Date To ViewModel For Calender UI Display
-                fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
-                val bookedEventDetails = ArrayList<ListData>()
-                bookedEventDetails.add(
-                    ListData(
-                        getString(R.string.empty),
-                        listOf(BookedEventServiceDto("", "", "", "", ""))
-                    )
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        this.parent = parent as ExpandableListView
+        this.groupPosition = listPosition
+        fromDate = listOfDates?.get(listPosition)
+        toDate = listOfDates?.get(listPosition)
+        if (isExpanded) {
+            parent.collapseGroup(listPosition)
+        } else {
+            // Send Selected Date To ViewModel For Calender UI Display
+            fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
+            val bookedEventDetails = ArrayList<ListData>()
+            bookedEventDetails.add(
+                ListData(
+                    getString(R.string.empty),
+                    listOf(BookedEventServiceDto("", "", "", "", ""))
                 )
-                childData[titleDate[groupPosition]] = bookedEventDetails
-                parent.collapseGroup(lastGroupPosition)
-                parent.expandGroup(listPosition)
-                apiTokenValidation("bookedEventServicesFromSelectedDate")
-            }
-            lastGroupPosition = listPosition
+            )
+            childData[titleDate[groupPosition]] = bookedEventDetails
+            parent.collapseGroup(lastGroupPosition)
+            parent.expandGroup(listPosition)
+            apiTokenValidation("bookedEventServicesFromSelectedDate")
         }
+        lastGroupPosition = listPosition
+//        }
     }
 
     // 2773 - Method For Update SelectedDate To ExpandableList
@@ -437,12 +430,6 @@ class DayExpandableListFragment : Fragment(),
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: dayexp")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-    }
-
-    override fun internetError(exception: String, tag: String) {
-        Log.d(TAG, "internetError: called day")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
 }

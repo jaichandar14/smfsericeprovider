@@ -12,11 +12,16 @@ import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.CommonInformationDialogBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.SharedPreference.Companion.isDialogShown
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actiondetails.model.ActionDetails
@@ -29,21 +34,17 @@ import javax.inject.Inject
 // 2401
 class CommonInfoDialog(
     var position: ActionDetails,
-    var status: String,
-    private var internetErrorDialog: InternetErrorDialog
-) :
-    BaseDialogFragment<CommonInformationDialogBinding, CommonInfoDialogViewModel>(),
-    View.OnClickListener, Tokens.IdTokenCallBackInterface,
-    CommonInfoDialogViewModel.CallBackInterface {
+    var status: String
+) : BaseDialogFragment<CommonInformationDialogBinding, CommonInfoDialogViewModel>(),
+    View.OnClickListener, Tokens.IdTokenCallBackInterface {
 
     companion object {
         const val TAG = "CommonInfoDialog"
         fun newInstance(
             position: ActionDetails,
-            status: String,
-            internetErrorDialog: InternetErrorDialog
+            status: String
         ): CommonInfoDialog {
-            return CommonInfoDialog(position, status, internetErrorDialog)
+            return CommonInfoDialog(position, status)
         }
     }
 
@@ -72,6 +73,7 @@ class CommonInfoDialog(
 
     override fun onStart() {
         super.onStart()
+        isDialogShown = true
         // 2904 SharedPreference token
         setIdTokenAndBidReqId()
         // 2904 Setting the dialog size
@@ -82,14 +84,15 @@ class CommonInfoDialog(
         super.onViewCreated(view, savedInstanceState)
         // token CallBackInterface
         tokens.setCallBackInterface(this)
-        // Common Dialog ViewModel CallBackInterface
-        getViewModel().setCallBackInterface(this)
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer Common dialog")
-            dismiss()
         }
 
+        init()
+    }
+
+    private fun init() {
         if (status == "cost") {
             mDataBinding?.btnCancel?.setOnClickListener(this)
             mDataBinding?.btnOk?.setOnClickListener(this)
@@ -97,20 +100,20 @@ class CommonInfoDialog(
             // 2904 Changes made for Intitate closer flow in Won Bid
             mDataBinding?.textInformation?.text = getText(R.string.initiate_closer_text)
             mDataBinding?.btnOk?.setOnClickListener {
-                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                    apiTokenValidationBidActions(AppConstants.SERVICE_DONE)
-                    Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
-                }
+//                if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+                apiTokenValidationBidActions(AppConstants.SERVICE_DONE)
+                Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
+//                }
             }
             mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
         } else {
             // 2904 Changes made for Start Service flow in Won Bid
             mDataBinding?.textInformation?.text = getText(R.string.start_service_text)
             mDataBinding?.btnOk?.setOnClickListener {
-                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                    apiTokenValidationBidActions(AppConstants.SERVICE_IN_PROGRESS)
-                    Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
-                }
+//                if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+                apiTokenValidationBidActions(AppConstants.SERVICE_IN_PROGRESS)
+                Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
+//                }
             }
             mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
         }
@@ -154,11 +157,13 @@ class CommonInfoDialog(
                     dismiss()
                     Log.d(TAG, "updateServiceStatus: updated")
                 }
-                is ApisResponse.Error -> {
-                    Log.d("TAG", "check token result: ${apiResponse.exception}")
+                is ApisResponse.CustomError -> {
+                    Log.d("TAG", "check token result: ${apiResponse.message}")
                 }
-                else -> {
+                is ApisResponse.InternetError -> {
+                    (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
                 }
+                else -> {}
             }
         })
     }
@@ -174,8 +179,8 @@ class CommonInfoDialog(
 
     // Setting Dialog Fragment Size
     private fun dialogFragmentSize() {
-        var window: Window? = dialog?.window
-        var params: WindowManager.LayoutParams = window!!.attributes
+        val window: Window? = dialog?.window
+        val params: WindowManager.LayoutParams = window!!.attributes
         params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
         window.attributes = params
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -208,14 +213,10 @@ class CommonInfoDialog(
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
     }
 
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
-    }
-
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: called Common dialog")
+        isDialogShown = false
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

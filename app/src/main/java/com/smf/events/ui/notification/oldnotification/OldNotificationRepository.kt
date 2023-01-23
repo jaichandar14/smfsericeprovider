@@ -1,12 +1,12 @@
 package com.smf.events.ui.notification.oldnotification
 
+import com.smf.events.base.BaseRepo
 import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.notification.model.Notification
-import retrofit2.HttpException
 import javax.inject.Inject
 
-class OldNotificationRepository @Inject constructor(var apiStories: ApiStories) {
+class OldNotificationRepository @Inject constructor(var apiStories: ApiStories) : BaseRepo() {
 
     // 3212 - Api call for Active Notifications
     suspend fun getNotifications(
@@ -14,12 +14,7 @@ class OldNotificationRepository @Inject constructor(var apiStories: ApiStories) 
         userId: String,
         isActive: Boolean
     ): ApisResponse<Notification> {
-        return try {
-            val getResponse = apiStories.getNotifications(idToken, userId, isActive)
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getNotifications(idToken, userId, isActive) }
     }
 
 }

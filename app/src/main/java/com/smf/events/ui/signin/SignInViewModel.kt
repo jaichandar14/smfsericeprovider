@@ -10,11 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.amplifyframework.core.Amplify
 import com.smf.events.R
 import com.smf.events.base.BaseViewModel
-import com.smf.events.helper.AppConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class SignInViewModel @Inject constructor(
@@ -90,25 +87,7 @@ class SignInViewModel @Inject constructor(
 
     // Getting UserDetails During SignIn
     fun getUserDetails(loginName: String) = liveData(Dispatchers.IO) {
-        try {
-            Log.d("TAG", "setUserDetails: $loginName")
-            emit(signInRepository.getUserDetails(loginName))
-        } catch (e: Exception) {
-            Log.d("TAG", "getActionAndStatus: UnknownHostException $e")
-            when (e) {
-                is UnknownHostException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                else -> {}
-            }
-        }
+        emit(signInRepository.getUserDetails(loginName))
     }
 
     private var callBackInterface: CallBackInterface? = null
@@ -122,6 +101,5 @@ class SignInViewModel @Inject constructor(
     interface CallBackInterface {
         fun callBack(status: String)
         fun awsErrorResponse(message: String)
-        fun internetError(exception: String)
     }
 }

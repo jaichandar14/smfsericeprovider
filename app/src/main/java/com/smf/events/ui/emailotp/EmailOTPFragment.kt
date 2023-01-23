@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -21,7 +20,6 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentEmailOtpBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
-import com.smf.events.helper.InternetErrorDialog
 import com.smf.events.helper.SharedPreference
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
@@ -36,14 +34,13 @@ import javax.inject.Inject
 class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel>(),
     EmailOTPViewModel.CallBackInterface {
 
-    private val TAG = "EmailOTPFragment"
+    private val TAG = this::class.java.name
     private val args: EmailOTPFragmentArgs by navArgs()
     private lateinit var userName: String
     lateinit var otp0: EditText
     lateinit var otp1: EditText
     lateinit var otp2: EditText
     lateinit var otp3: EditText
-    private lateinit var internetErrorDialog: InternetErrorDialog
     lateinit var dialogDisposable: Disposable
     var isInternetError = false
 
@@ -71,16 +68,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         (requireActivity() as MainActivity).setStatusBarColor()
         // Initialize Local Variables
         setUserNameAndSharedPref()
-        internetErrorDialog = InternetErrorDialog.newInstance()
         // Initialize CallBackInterface
         getViewModel().setCallBackInterface(this)
         // 2351 Android-OTP expires Validation Method
-        getViewModel().otpTimerValidation(
-            mDataBinding,
-            userName,
-            internetErrorDialog,
-            requireContext()
-        )
+        getViewModel().otpTimerValidation(mDataBinding, userName)
 
         otp0 = mDataBinding?.otp1ed!!
         otp1 = mDataBinding?.otp2ed!!
@@ -113,7 +104,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         super.onResume()
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer email otp")
-            internetErrorDialog.dismissDialog()
             if (isInternetError) {
                 moveToSignIn()
             }
@@ -142,12 +132,10 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     // For confirmSignIn aws
     private fun submitBtnClicked() {
         mDataBinding!!.submitBtn.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                otpValidation(
-                    otp0.text.toString(), otp1.text.toString(),
-                    otp2.text.toString(), otp3.text.toString()
-                )
-            }
+            otpValidation(
+                otp0.text.toString(), otp1.text.toString(),
+                otp2.text.toString(), otp3.text.toString()
+            )
         }
     }
 
@@ -216,12 +204,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         } else if (status == AppConstants.EMAIL_VERIFIED_TRUE_GOTO_DASHBOARD) {
             getOtpValidation(true)
         } else if (status == AppConstants.RESEND_OTP) {
-            getViewModel().otpTimerValidation(
-                mDataBinding,
-                userName,
-                internetErrorDialog,
-                requireContext()
-            )
+            getViewModel().otpTimerValidation(mDataBinding, userName)
         }
     }
 
@@ -229,13 +212,13 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     override fun awsErrorResponse(num: String) {
         if (num == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
             Log.e(TAG, "Failed to fetch user attributes inside")
-            SharedPreference.isInternetConnected = false
+            (requireActivity() as MainActivity).showInternetDialog(AppConstants.SHOW_INTERNET_DIALOG)
             isInternetError = true
-            internetErrorDialog.checkInternetAvailable(requireContext())
+            hideProgress()
         } else if (num == resources.getString(R.string.Operation_requires_a_signed_in_state)) {
-            SharedPreference.isInternetConnected = false
+            (requireActivity() as MainActivity).showInternetDialog(AppConstants.SHOW_INTERNET_DIALOG)
             isInternetError = true
-            internetErrorDialog.checkInternetAvailable(requireContext())
+            hideProgress()
             showToastMessage(
                 resources.getString(R.string.Network_Error__Please_Sign_in_again),
                 Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
@@ -288,9 +271,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "error response: ${apiResponse.message}")
-                        // Navigate to DashBoardFragment
                         showProgress()
-                        if (!apiResponse.message.isNullOrEmpty()) {
+                        if (apiResponse.message.isNotEmpty()) {
                             showToastMessage(
                                 apiResponse.message,
                                 Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
@@ -298,8 +280,12 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                             findNavController().navigate(EmailOTPFragmentDirections.actionEMailOTPFragmentToSignInFragment())
                         }
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        isInternetError = true
+                        hideProgress()
                     }
+                    else -> {}
                 }
             })
     }
@@ -334,13 +320,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
         )
     }
 
-    override fun internetError(exception: String) {
-        Log.d(InternetErrorDialog.TAG, "onViewCreated: observer otp internetError called")
-        SharedPreference.isInternetConnected = false
-        isInternetError = true
-        internetErrorDialog.checkInternetAvailable(requireContext())
-    }
-
     // Login api call to Fetch RollId and SpRegId
     private fun getLoginApiCall(idToken: String) {
         showProgress()
@@ -357,11 +336,15 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                             )
                         )
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        isInternetError = true
+                        hideProgress()
                     }
+                    else -> {}
                 }
             })
     }

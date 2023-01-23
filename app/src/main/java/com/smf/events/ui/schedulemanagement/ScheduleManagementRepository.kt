@@ -1,5 +1,6 @@
 package com.smf.events.ui.schedulemanagement
 
+import com.smf.events.base.BaseRepo
 import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.dashboard.model.AllServices
@@ -8,20 +9,14 @@ import com.smf.events.ui.schedulemanagement.model.BusinessValidity
 import com.smf.events.ui.schedulemanagement.model.EventDates
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
-import retrofit2.HttpException
 import javax.inject.Inject
 
 //2458
-class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStories) {
+class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStories) : BaseRepo() {
 
     // 2458 Get Api call Method for All Services
     suspend fun getAllServices(idToken: String, spRegId: Int): ApisResponse<AllServices> {
-        return try {
-            val getResponse = apiStories.getAllServices(idToken, spRegId)
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getAllServices(idToken, spRegId) }
     }
 
     // 2458 Get Api call Method for Branches
@@ -30,13 +25,7 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
         spRegId: Int,
         serviceCategoryId: Int,
     ): ApisResponse<Branches> {
-        return try {
-            val getResponse =
-                apiStories.getServicesBranches(idToken, spRegId, serviceCategoryId)
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getServicesBranches(idToken, spRegId, serviceCategoryId) }
     }
 
     // 2670 - Method For Get Booked Event Services
@@ -46,8 +35,8 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
         fromDate: String,
         toDate: String
     ): ApisResponse<BookedServiceList> {
-        return try {
-            val getResponse = apiStories.getBookedEventServices(
+        return safeApiCall {
+            apiStories.getBookedEventServices(
                 idToken,
                 spRegId,
                 serviceCategoryId,
@@ -55,9 +44,6 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
                 fromDate,
                 toDate
             )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
         }
     }
 
@@ -70,8 +56,8 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
         fromDate: String,
         toDate: String,
     ): ApisResponse<EventDates> {
-        return try {
-            val getResponse = apiStories.getEventDates(
+        return safeApiCall {
+            apiStories.getEventDates(
                 idToken,
                 spRegId,
                 serviceCategoryId,
@@ -79,9 +65,6 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
                 fromDate,
                 toDate
             )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
         }
     }
 
@@ -93,8 +76,8 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
         fromDate: String,
         toDate: String
     ): ApisResponse<ModifyBookedServiceEvents> {
-        return try {
-            val getResponse = apiStories.getModifyBookedEventServices(
+        return safeApiCall {
+            apiStories.getModifyBookedEventServices(
                 idToken,
                 spRegId,
                 serviceCategoryId,
@@ -103,23 +86,14 @@ class ScheduleManagementRepository @Inject constructor(var apiStories: ApiStorie
                 fromDate,
                 toDate
             )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
         }
     }
-
 
     // 2458 Get Api call Method for All Services
     suspend fun getBusinessValiditiy(
         idToken: String,
         spRegId: Int
     ): ApisResponse<BusinessValidity> {
-        return try {
-            val getResponse = apiStories.getBusinessValiditiy(idToken, spRegId)
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
-        }
+        return safeApiCall { apiStories.getBusinessValiditiy(idToken, spRegId) }
     }
 }

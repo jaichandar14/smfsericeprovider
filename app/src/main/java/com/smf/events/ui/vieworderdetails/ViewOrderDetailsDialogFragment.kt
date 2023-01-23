@@ -9,13 +9,11 @@ import android.view.View
 import android.widget.ListView
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.smf.events.BR
-import com.smf.events.BuildConfig
-import com.smf.events.R
-import com.smf.events.SMFApp
+import com.smf.events.*
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentViewOrderDetailsDialogBinding
 import com.smf.events.helper.*
+import com.smf.events.helper.SharedPreference.Companion.isDialogShown
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.vieworderdetails.adaptor.ViewOrderDetailsAdaptor
@@ -33,10 +31,9 @@ class ViewOrderDetailsDialogFragment(
     var eventId: Int,
     var eventServiceDescriptionId: Int,
     var eventDate: String,
-    var eventName: String,
-    private var internetErrorDialog: InternetErrorDialog
+    var eventName: String
 ) : BaseDialogFragment<FragmentViewOrderDetailsDialogBinding, ViewOrderDetailsViewModel>(),
-    Tokens.IdTokenCallBackInterface, ViewOrderDetailsViewModel.CallBackInterface {
+    Tokens.IdTokenCallBackInterface {
 
     companion object {
         const val TAG = "CustomDialogFragment"
@@ -44,14 +41,13 @@ class ViewOrderDetailsDialogFragment(
             eventId: Int,
             eventServiceDescriptionId: Int,
             eventDate: String,
-            eventName: String,
-            internetErrorDialog: InternetErrorDialog
+            eventName: String
         ): ViewOrderDetailsDialogFragment {
             return ViewOrderDetailsDialogFragment(
                 eventId,
                 eventServiceDescriptionId,
                 eventDate,
-                eventName, internetErrorDialog
+                eventName
             )
         }
     }
@@ -87,6 +83,7 @@ class ViewOrderDetailsDialogFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isDialogShown = true
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogTheme)
         // Initialize Local Variables
         setIdToken()
@@ -99,17 +96,11 @@ class ViewOrderDetailsDialogFragment(
         listView = mDataBinding?.quesList!!
         // 2402 - token CallBackInterface
         tokens.setCallBackInterface(this)
-        // ViewOrderDetails ViewModel CallBackInterface
-        getViewModel().setCallBackInterface(this)
-//        // Internet Error Dialog Initialization
-//        internetErrorDialog = InternetErrorDialog.newInstance()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
-//            dismiss()
-//            showProgress()
-//            apiTokenValidationViewOrderDetails()
-            internetErrorDialog.dismissDialog()
+            showProgress()
+            apiTokenValidationViewOrderDetails()
         }
 
         // 2402 - Api Token  validation ViewOrderDetails
@@ -160,11 +151,14 @@ class ViewOrderDetailsDialogFragment(
                             image
                         )
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        hideProgress()
                     }
+                    else -> {}
                 }
             }
     }
@@ -196,10 +190,10 @@ class ViewOrderDetailsDialogFragment(
         mDataBinding?.txJobIdnum?.text = eventServiceDescriptionId.toString()
         mDataBinding?.etEventDate?.text = ": $eventDate"
         mDataBinding?.etZipCode?.text = ": " + venueInfo.zipCode.toString()
-        mDataBinding?.etServiceDate?.text =(serviceDetails?.serviceDate.toString())
-        mDataBinding?.etBidCutOffDate?.text =(serviceDetails?.biddingCutOffDate.toString())
+        mDataBinding?.etServiceDate?.text = (serviceDetails?.serviceDate.toString())
+        mDataBinding?.etBidCutOffDate?.text = (serviceDetails?.biddingCutOffDate.toString())
         mDataBinding?.etEstimationBudget?.text =
-                serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
+            serviceBudget?.currencyType + " ${serviceBudget?.estimatedBudget}"
         mDataBinding?.etServiceRadius?.text = "$radius"
 
         val slots = serviceDetails?.preferredSlots as ArrayList
@@ -207,7 +201,7 @@ class ViewOrderDetailsDialogFragment(
             preferedSlot.add(it)
         }
         val timing = preferedSlot.toString()
-        mDataBinding?.etPreferedTimeSlot?.text =timing.substring(1, timing.length - 1)
+        mDataBinding?.etPreferedTimeSlot?.text = timing.substring(1, timing.length - 1)
         if (questionnaireDtos.isNullOrEmpty()) {
             mDataBinding?.question?.visibility = View.GONE
         } else {
@@ -245,13 +239,9 @@ class ViewOrderDetailsDialogFragment(
         }
     }
 
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        isDialogShown = false
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

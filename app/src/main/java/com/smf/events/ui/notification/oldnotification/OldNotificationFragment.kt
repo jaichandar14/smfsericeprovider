@@ -13,7 +13,11 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentOldNotificationBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
+import com.smf.events.ui.notification.NotificationActivity
 import com.smf.events.ui.notification.adapter.NotificationAdapter
 import com.smf.events.ui.notification.model.Data
 import com.smf.events.ui.notification.model.Notification
@@ -24,14 +28,12 @@ import kotlinx.coroutines.withContext
 import java.time.Month
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
-class OldNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
+class OldNotificationFragment :
     BaseFragment<FragmentOldNotificationBinding, OldNotificationViewModel>(),
-    NotificationAdapter.OnNotificationClickListener, Tokens.IdTokenCallBackInterface,
-    OldNotificationViewModel.CallBackInterface {
+    NotificationAdapter.OnNotificationClickListener, Tokens.IdTokenCallBackInterface {
 
-    var TAG = "OldNotificationFragment"
+    var TAG = this::class.java.name
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: NotificationAdapter
     private val notificationList = ArrayList<NotificationDetails>()
@@ -48,7 +50,7 @@ class OldNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
     lateinit var factory: ViewModelProvider.Factory
 
     override fun getViewModel(): OldNotificationViewModel =
-        ViewModelProvider(this, factory).get(OldNotificationViewModel::class.java)
+        ViewModelProvider(this, factory)[OldNotificationViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.oldnotificationViewModel
 
@@ -65,8 +67,6 @@ class OldNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
         setIdTokenAndSpRegId()
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
-        // ActiveNotification ViewModel CallBackInterface
-        getViewModel().setCallBackInterface(this)
         // Initializing RecyclerView
         initializeRecyclerView()
     }
@@ -111,11 +111,15 @@ class OldNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
                         Log.d(TAG, "getNotifications: $apiResponse")
                         createNotificationList(apiResponse)
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as NotificationActivity)
+                            .showInternetDialog(apiResponse.message)
+                        hideProgress()
                     }
+                    else -> {}
                 }
             })
     }
@@ -171,11 +175,6 @@ class OldNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
     private fun setIdTokenAndSpRegId() {
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
-    }
-
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     private fun showProgress() {

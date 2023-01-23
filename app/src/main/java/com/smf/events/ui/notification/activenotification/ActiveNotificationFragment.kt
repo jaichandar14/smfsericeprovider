@@ -13,9 +13,13 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentActiveNotificationBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.notification.NotificationActivity
 import com.smf.events.ui.notification.adapter.NotificationAdapter
 import com.smf.events.ui.notification.callbacks.CardViewClear
 import com.smf.events.ui.notification.model.Data
@@ -28,14 +32,13 @@ import kotlinx.coroutines.withContext
 import java.time.Month
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
-class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
+class ActiveNotificationFragment :
     BaseFragment<FragmentActiveNotificationBinding, ActiveNotificationViewModel>(),
     NotificationAdapter.OnNotificationClickListener, Tokens.IdTokenCallBackInterface,
-    ActiveNotificationViewModel.CallBackInterface, CardViewClear {
+    CardViewClear {
 
-    var TAG = "ActiveNotificationFragment"
+    var TAG = this::class.java.name
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: NotificationAdapter
     private val notificationList = ArrayList<NotificationDetails>()
@@ -60,7 +63,7 @@ class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
     lateinit var factory: ViewModelProvider.Factory
 
     override fun getViewModel(): ActiveNotificationViewModel =
-        ViewModelProvider(this, factory).get(ActiveNotificationViewModel::class.java)
+        ViewModelProvider(this, factory)[ActiveNotificationViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.activenotificationViewModel
 
@@ -77,8 +80,6 @@ class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
         setIdTokenAndSpRegId()
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
-        // ActiveNotification ViewModel CallBackInterface
-        getViewModel().setCallBackInterface(this)
         // Listener For ClearAll Button
         clearAllDisposable = RxBus.listen(RxEvent.ClearAllNotification::class.java).subscribe {
             isClearAllClicked = true
@@ -107,23 +108,23 @@ class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
 
     private fun idTokenValidation(caller: String) {
         tokens.checkTokenExpiry(
-            requireActivity().applicationContext as SMFApp,
-            caller, idToken
+            requireActivity().applicationContext as SMFApp, caller, idToken
         )
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            when (caller) {
-                getString(R.string.notification) -> getNotifications(idToken, userId)
-                getString(R.string.delete) -> moveToOldNotification(idToken)
+        if (view != null) {
+            withContext(Dispatchers.Main) {
+                when (caller) {
+                    getString(R.string.notification) -> getNotifications(idToken, userId)
+                    getString(R.string.delete) -> moveToOldNotification(idToken)
+                }
             }
         }
     }
 
     private fun getNotifications(
-        idToken: String,
-        userId: String
+        idToken: String, userId: String
     ) {
         // Showing Progressbar
         showProgress()
@@ -134,11 +135,14 @@ class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
                         Log.d(TAG, "getNotifications: $apiResponse")
                         createNotificationList(apiResponse)
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as NotificationActivity).showInternetDialog(apiResponse.message)
+                        hideProgress()
                     }
+                    else -> {}
                 }
             })
     }
@@ -206,11 +210,6 @@ class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
         userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
     }
 
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
-    }
-
     private fun showProgress() {
         mDataBinding?.progressBar?.visibility = View.VISIBLE
         mDataBinding?.activeNotificationRecycler?.visibility = View.INVISIBLE
@@ -250,14 +249,17 @@ class ActiveNotificationFragment(val internetErrorDialog: InternetErrorDialog) :
                         // Update Notification Count
                         RxBus.publish(RxEvent.UpdateNotificationCount(AppConstants.ACTIVE))
                     }
-                    is ApisResponse.Error -> {
+                    is ApisResponse.CustomError -> {
                         Log.d(
-                            TAG,
-                            "check token result moveToOldNotification: ${apiResponse.exception}"
+                            TAG, "check token result moveToOldNotification: ${apiResponse.message}"
                         )
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as NotificationActivity)
+                            .showInternetDialog(apiResponse.message)
+                        hideProgress()
                     }
+                    else -> {}
                 }
             })
     }

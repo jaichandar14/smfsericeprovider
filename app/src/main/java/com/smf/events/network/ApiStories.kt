@@ -1,6 +1,7 @@
 package com.smf.events.network
 
 import com.smf.events.BuildConfig
+import com.smf.events.helper.ApisResponse
 import com.smf.events.ui.actionandstatusdashboard.model.NewRequestList
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import com.smf.events.ui.commoninformationdialog.model.StartService
@@ -25,6 +26,7 @@ import com.smf.events.ui.timeslot.deselectingdialog.model.ModifyDaySlotResponse
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.ModifyBookedServiceEvents
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedServiceList
 import com.smf.events.ui.vieworderdetails.model.OrderDetails
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiStories {
@@ -33,29 +35,29 @@ interface ApiStories {
     suspend fun addUserDetails(@Body userDetails: UserDetails): UserDetailsResponse
 
     @GET(BuildConfig.apiType + "no-auth/api/authentication/user-info")
-    suspend fun getUserDetails(@Query("loginName") loginName: String): GetUserDetails
+    suspend fun getUserDetails(@Query("loginName") loginName: String): Response<GetUserDetails>
 
     @GET(BuildConfig.apiType + "user/api/app-authentication/login")
-    suspend fun getLoginInfo(@Header("Authorization") idToken: String): GetLoginInfo
+    suspend fun getLoginInfo(@Header("Authorization") idToken: String): Response<GetLoginInfo>
 
     @GET(BuildConfig.apiType + "service/api/app-services/service-counts/{sp-reg-id}")
     suspend fun getServiceCount(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
-    ): ServiceCount
+    ): Response<ServiceCount>
 
     @GET(BuildConfig.apiType + "service/api/app-services/services/{sp-reg-id}")
     suspend fun getAllServices(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
-    ): AllServices
+    ): Response<AllServices>
 
     @GET(BuildConfig.apiType + "service/api/app-services/service-branches/{sp-reg-id}")
     suspend fun getServicesBranches(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int,
-    ): Branches
+    ): Response<Branches>
 
     @GET(BuildConfig.apiType + "service/api/app-services/service-provider-bidding-counts/{sp-reg-id}")
     suspend fun getActionAndStatus(
@@ -63,7 +65,7 @@ interface ApiStories {
         @Path("sp-reg-id") spRegId: Int,
         @Query("serviceCategoryId") serviceCategoryId: Int?,
         @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int?,
-    ): ActionAndStatus
+    ): Response<ActionAndStatus>
 
     @GET(BuildConfig.apiType + "service/api/app-services/bidding-status-info/{sp-reg-id}")
     suspend fun getBidActions(
@@ -72,27 +74,26 @@ interface ApiStories {
         @Query("serviceCategoryId") serviceCategoryId: Int?,
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int?,
         @Query("bidStatus") bidStatus: List<String>,
-    ): NewRequestList
+    ): Response<NewRequestList>
 
     @PUT(BuildConfig.apiType + "service/api/app-services/accept-bid/{bid-request-id}")
     suspend fun postQuoteDetails(
         @Header("Authorization") idToken: String,
         @Path("bid-request-id") bidRequestId: Int,
         @Body biddingQuoteDto: BiddingQuotDto,
-    ): NewRequestList
-
+    ): Response<NewRequestList>
 
     @GET(BuildConfig.apiType + "service/api/app-services/order-info/{bid-request-Id}")
     suspend fun getQuoteBrief(
         @Header("Authorization") idToken: String,
         @Path("bid-request-Id") bidRequestId: Int,
-    ): QuoteBrief
+    ): Response<QuoteBrief>
 
     @PUT(BuildConfig.apiType + "service/api/app-services/bid-request-info")
     suspend fun putBidRejection(
         @Header("Authorization") idToken: String,
         @Body serviceProviderBidRequestDto: ServiceProviderBidRequestDto,
-    ): NewRequestList
+    ): Response<NewRequestList>
 
     //2402 - ViewOrderDetails API
     @GET(BuildConfig.apiType + "service/api/app-services/order-description/{event-id}/{event-service-desc-id}")
@@ -100,7 +101,7 @@ interface ApiStories {
         @Header("Authorization") idToken: String,
         @Path("event-id") eventId: Int,
         @Path("event-service-desc-id") eventServiceDescId: Int,
-    ): OrderDetails
+    ): Response<OrderDetails>
 
     // 2670 - Booked Event Services API
     @GET(BuildConfig.apiType + "service/api/app-services/booked-service-slots/{sp-reg-id}")
@@ -111,7 +112,7 @@ interface ApiStories {
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int?,
         @Query("fromDate") fromDate: String,
         @Query("toDate") toDate: String
-    ): BookedServiceList
+    ): Response<BookedServiceList>
 
     // 2622 EventDates for Calendar Api
     @GET(BuildConfig.apiType + "service/api/app-services/calendar-events/{sp-reg-id}")
@@ -122,7 +123,7 @@ interface ApiStories {
         @Query("serviceVendorOnboardingId") serviceVendorOnboardingId: Int?,
         @Query("fromDate") fromDate: String,
         @Query("toDate") toDate: String,
-    ): EventDates
+    ): Response<EventDates>
 
     // 2801 - Booked Event Services API For Modify Slots
     @GET(BuildConfig.apiType + "service/api/app-services/slot-availability/{sp-reg-id}")
@@ -134,7 +135,7 @@ interface ApiStories {
         @Query("isMonth") isMonth: Boolean,
         @Query("fromDate") fromDate: String,
         @Query("toDate") toDate: String
-    ): ModifyBookedServiceEvents
+    ): Response<ModifyBookedServiceEvents>
 
     // 2814 - modify-day-slot
     @PUT(BuildConfig.apiType + "service/api/app-services/modify-day-slot/{sp-reg-id}")
@@ -146,7 +147,7 @@ interface ApiStories {
         @Query("modifiedSlot") modifiedSlot: String,
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int,
         @Query("toDate") toDate: String
-    ): ModifyDaySlotResponse
+    ): Response<ModifyDaySlotResponse>
 
     // 2815 - modify-week-slot
     @PUT(BuildConfig.apiType + "service/api/app-services/modify-week-slot/{sp-reg-id}")
@@ -158,7 +159,7 @@ interface ApiStories {
         @Query("modifiedSlot") modifiedSlot: String,
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int,
         @Query("toDate") toDate: String
-    ): ModifyDaySlotResponse
+    ): Response<ModifyDaySlotResponse>
 
     // 2823 - modify-month-slot
     @PUT(BuildConfig.apiType + "service/api/app-services/modify-month-slot/{sp-reg-id}")
@@ -170,7 +171,7 @@ interface ApiStories {
         @Query("modifiedSlot") modifiedSlot: String,
         @Query("serviceVendorOnboardingId") serviceVendorOnBoardingId: Int,
         @Query("toDate") toDate: String
-    ): ModifyDaySlotResponse
+    ): Response<ModifyDaySlotResponse>
 
     // 2904
     //API to update service status and Initiate closer
@@ -181,35 +182,35 @@ interface ApiStories {
         @Query("eventId") eventId: Int,
         @Query("eventServiceDescriptionId") eventServiceDescriptionId: Int,
         @Query("status") status: String,
-    ): StartService
+    ): Response<StartService>
 
     // 2962 - View Quotes Api Call
     @GET(BuildConfig.apiType + "service/api/app-services/quote/{bid-request-id}")
     suspend fun getViewQuotes(
         @Header("Authorization") idToken: String,
         @Path("bid-request-id") bidRequestId: Int,
-    ): ViewQuotes
+    ): Response<ViewQuotes>
 
     // 2900 - Invalid OTP Entry validation
     @GET(BuildConfig.apiType + "no-auth/api/authentication/login-failure")
     suspend fun setOTPValidation(
         @Query("isSuccessful") isSuccessful: Boolean,
         @Query("userName") userName: String,
-    ): OTPValidation
+    ): Response<OTPValidation>
 
     // 2985
     @GET(BuildConfig.apiType + "service/api/app-services/business-validity/{sp-reg-id}")
     suspend fun getBusinessValiditiy(
         @Header("Authorization") idToken: String,
         @Path("sp-reg-id") spRegId: Int,
-    ): BusinessValidity
+    ): Response<BusinessValidity>
 
     // 3212
     @GET(BuildConfig.apiType + "user/api/mobile-notification/notification-count/{user-id}")
     suspend fun getNotificationCount(
         @Header("Authorization") idToken: String,
         @Path("user-id") userId: String
-    ): NotificationCount
+    ): Response<NotificationCount>
 
     // 3212
     @GET(BuildConfig.apiType + "user/api/mobile-notification/notifications/{user-id}")
@@ -217,13 +218,13 @@ interface ApiStories {
         @Header("Authorization") idToken: String,
         @Path("user-id") userId: String,
         @Query("isActive") isActive: Boolean
-    ): Notification
+    ): Response<Notification>
 
     // 3212
     @PUT(BuildConfig.apiType + "user/api/mobile-notification/notification")
     suspend fun moveToOldNotification(
         @Header("Authorization") idToken: String,
         @Body notificationIds: List<Int>,
-    ): MoveOldResponse
+    ): Response<MoveOldResponse>
 
 }

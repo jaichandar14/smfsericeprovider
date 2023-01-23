@@ -138,4 +138,7 @@ object AppConstants {
     const val SERVICE_CATEGORY_ID = "serviceCategoryId"
     const val SERVICE_VENDOR_ON_BOARDING_ID = "serviceVendorOnboardingId"
     const val TRUE = "true"
+
+    const val INTERNET_DIALOG = "INTERNET_DIALOG"
+    const val SHOW_INTERNET_DIALOG = "Show Internet Dialog"
 }

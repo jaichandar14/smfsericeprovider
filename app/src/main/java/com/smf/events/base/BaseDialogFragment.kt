@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import com.smf.events.MainActivity
 import com.smf.events.helper.SnackBar
 
 abstract class BaseDialogFragment<V : ViewDataBinding, out T : BaseDialogViewModel> :
@@ -44,7 +45,7 @@ abstract class BaseDialogFragment<V : ViewDataBinding, out T : BaseDialogViewMod
 
 
     private fun toastObserver() {
-        getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner, { toastMessageG ->
+        getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner) { toastMessageG ->
             Log.d("TAG", "onResume Base Fragment $toastMessageG")
             SnackBar.showSnakbarTypeOne(
                 view,
@@ -53,7 +54,7 @@ abstract class BaseDialogFragment<V : ViewDataBinding, out T : BaseDialogViewMod
                 toastMessageG.duration
             )
             //Toast(context).showCustomToast(toastMessageG.msg,requireActivity(),"Toast.LENGTH_LONG","fata")
-        })
+        }
 
     }
 
@@ -61,6 +62,4 @@ abstract class BaseDialogFragment<V : ViewDataBinding, out T : BaseDialogViewMod
         getViewModel()?.setToastMessageG(message, length, property)
         // snackBarLiveData.setSnackBarParam(BaseViewModel.ToastLayoutParam(message,length,property))
     }
-
-
 }

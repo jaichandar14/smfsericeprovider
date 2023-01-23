@@ -25,11 +25,16 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentQuoteDetailsDialogBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.SharedPreference.Companion.isDialogShown
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
@@ -52,8 +57,7 @@ class QuoteDetailsDialog(
     var cost: String?,
     var latestBidValue: String?,
     var branchName: String,
-    var serviceName: String,
-    private var internetErrorDialog: InternetErrorDialog,
+    var serviceName: String
 ) : BaseDialogFragment<FragmentQuoteDetailsDialogBinding, QuoteDetailsDialogViewModel>(),
     QuoteDetailsDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
     lateinit var biddingQuote: BiddingQuotDto
@@ -77,8 +81,7 @@ class QuoteDetailsDialog(
             cost: String?,
             latestBidValue: String?,
             branchName: String,
-            serviceName: String,
-            internetErrorDialog: InternetErrorDialog,
+            serviceName: String
         ): QuoteDetailsDialog {
 
             return QuoteDetailsDialog(
@@ -88,8 +91,7 @@ class QuoteDetailsDialog(
                 cost,
                 latestBidValue,
                 branchName,
-                serviceName,
-                internetErrorDialog
+                serviceName
             )
         }
     }
@@ -104,7 +106,7 @@ class QuoteDetailsDialog(
     lateinit var tokens: Tokens
 
     override fun getViewModel(): QuoteDetailsDialogViewModel =
-        ViewModelProvider(this, factory).get(QuoteDetailsDialogViewModel::class.java)
+        ViewModelProvider(this, factory)[QuoteDetailsDialogViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.quoteDetailsDialogViewModel
 
@@ -117,6 +119,7 @@ class QuoteDetailsDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isDialogShown = true
         // getting IdToken
         setIdToken()
     }
@@ -127,13 +130,6 @@ class QuoteDetailsDialog(
         dialogFragmentSize()
         // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(CommonInfoDialog.TAG, "onViewCreated: observer QuoteDetails dialog")
-//            internetErrorDialog.dismissDialog()
-            // 3328 upload file issue
-            //   dismiss()
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -150,13 +146,19 @@ class QuoteDetailsDialog(
         getViewModel().setCallBackInterface(this)
 //        // Internet Error Dialog Initialization
 //        internetErrorDialog = InternetErrorDialog.newInstance()
-        // fetching details based on Biding status
-        fetchBasedOnStatus(view)
         mDataBinding?.btnCancel?.setOnClickListener {
             btnCancel()
         }
+        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+            Log.d(CommonInfoDialog.TAG, "onViewCreated: observer QuoteDetails dialog")
+//            internetErrorDialog.dismissDialog()
+            // 3328 upload file issue
+            //   dismiss()
+        }
         // file uploader
         fileUploader()
+        // fetching details based on Biding status
+        fetchBasedOnStatus(view)
     }
 
     private fun btnCancel() {
@@ -180,17 +182,17 @@ class QuoteDetailsDialog(
     // Call back from Quote Details Dialog View Model
     override fun callBack(status: String) {
         mDataBinding?.btnOk?.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                when (status) {
-                    "iHaveQuote" ->
-                        if (mDataBinding?.costEstimationAmount?.text.isNullOrEmpty()) {
-                            mDataBinding?.alertCost?.visibility = View.VISIBLE
-                        } else {
-                            apiTokenValidationQuoteDetailsDialog("iHaveQuote")
-                        }
-                    "quoteLater" -> apiTokenValidationQuoteDetailsDialog("quoteLater")
-                }
+//            if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+            when (status) {
+                "iHaveQuote" ->
+                    if (mDataBinding?.costEstimationAmount?.text.isNullOrEmpty()) {
+                        mDataBinding?.alertCost?.visibility = View.VISIBLE
+                    } else {
+                        apiTokenValidationQuoteDetailsDialog("iHaveQuote")
+                    }
+                "quoteLater" -> apiTokenValidationQuoteDetailsDialog("quoteLater")
             }
+//            }
         }
     }
 
@@ -199,14 +201,9 @@ class QuoteDetailsDialog(
         currencyType = currencyTypeList[position]
     }
 
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
-    }
-
     // Setting the value for put Call
     private fun putQuoteDetails(bidStatus: String, idToken: String) {
-        var bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
+        val bidValueQuote = mDataBinding?.costEstimationAmount?.text.toString()
         latestBidValueQuote = if (bidValueQuote == "") {
             0
         } else {
@@ -259,20 +256,22 @@ class QuoteDetailsDialog(
                             //  QuoteBriefDialog.newInstance(bidRequestId)
                             Log.d(TAG, "showDialog 2: $bidRequestId")
                             sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
-                            QuoteBriefDialog.newInstance(internetErrorDialog)
-                                .show(
-                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                    QuoteBriefDialog.TAG
-                                )
+                            QuoteBriefDialog.newInstance().show(
+                                (context as androidx.fragment.app.FragmentActivity)
+                                    .supportFragmentManager,
+                                QuoteBriefDialog.TAG
+                            )
                         }
                         actionDetailsFragmentListUpdate()
                         dismiss()
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
                     }
+                    else -> {}
                 }
             })
     }  // Method For Send Data To actionDetails Fragment
@@ -303,14 +302,14 @@ class QuoteDetailsDialog(
 
     // Setting Dialog Fragment Size
     private fun dialogFragmentSize() {
-        var window: Window? = dialog?.window
-        var params: WindowManager.LayoutParams = window!!.attributes
+        val window: Window? = dialog?.window
+        val params: WindowManager.LayoutParams = window!!.attributes
         params.width = ((resources.displayMetrics.widthPixels * 0.9).toInt())
         window.attributes = params
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
-    private fun getCustomFileChooserIntent(vararg types: String?): Intent? {
+    private fun getCustomFileChooserIntent(vararg types: String?): Intent {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         // Filter to only show results that can be "opened"
         intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -482,6 +481,7 @@ class QuoteDetailsDialog(
         super.onStop()
         Log.d(CommonInfoDialog.TAG, "onStop: called Quote details dialog")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        isDialogShown = false
     }
 }
 

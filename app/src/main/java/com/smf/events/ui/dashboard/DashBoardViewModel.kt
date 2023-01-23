@@ -7,16 +7,11 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentDashBoardBinding
-import com.smf.events.helper.AppConstants
 import com.smf.events.ui.dashboard.model.Datas
 import com.smf.events.ui.dashboard.model.MyEvents
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class DashBoardViewModel @Inject constructor(
@@ -98,7 +93,6 @@ class DashBoardViewModel @Inject constructor(
     interface CallBackInterface {
         fun itemClick(msg: Int)
         fun branchItemClick(serviceVendorOnboardingId: Int, name: String?, allServiceposition: Int?)
-        fun internetError(exception: String)
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position1: Int, p3: Long) {
@@ -112,7 +106,7 @@ class DashBoardViewModel @Inject constructor(
 
     // Getting Service Provider Service List Counts
     fun getServiceCountList(data: Datas): ArrayList<MyEvents> {
-        var list = ArrayList<MyEvents>()
+        val list = ArrayList<MyEvents>()
         list.add(MyEvents("${data.activeServiceCount}", "Active"))
         list.add(MyEvents("${data.approvalPendingServiceCount}", "Pending"))
         list.add(MyEvents("${data.draftServiceCount}", "Draft"))
@@ -124,91 +118,23 @@ class DashBoardViewModel @Inject constructor(
 
     // Method For Getting Service Counts
     fun getServiceCount(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
-        try {
-            emit(dashBoardRepository.getServiceCount(idToken, spRegId))
-        } catch (e: Exception) {
-            when (e) {
-                is UnknownHostException -> {
-                    Log.d("TAG", "getActionAndStatus: UnknownHostException $e")
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                else -> {}
-            }
-        }
+        emit(dashBoardRepository.getServiceCount(idToken, spRegId))
     }
 
     // Method For Getting All Service
     fun getAllServices(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
-        try {
-            emit(dashBoardRepository.getAllServices(idToken, spRegId))
-        } catch (e: Exception) {
-            when (e) {
-                is UnknownHostException -> {
-                    Log.d("TAG", "getActionAndStatus: UnknownHostException $e")
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                else -> {}
-            }
-        }
+        emit(dashBoardRepository.getAllServices(idToken, spRegId))
     }
 
     // Method For Getting Branches
     fun getServicesBranches(idToken: String, spRegId: Int, serviceCategoryId: Int) =
         liveData(Dispatchers.IO) {
-            try {
-                emit(dashBoardRepository.getServicesBranches(idToken, spRegId, serviceCategoryId))
-            } catch (e: Exception) {
-                when (e) {
-                    is UnknownHostException -> {
-                        Log.d("TAG", "getActionAndStatus: UnknownHostException $e")
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                    is ConnectException -> {
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                    else -> {}
-                }
-            }
+            emit(dashBoardRepository.getServicesBranches(idToken, spRegId, serviceCategoryId))
         }
+
     // 3218 - Method For move the notifications active to old
-    fun getNotificationCount(idToken: String, userId: String) =
-        liveData(Dispatchers.IO) {
-            try {
-                emit(dashBoardRepository.getNotificationCount(idToken, userId))
-            } catch (e: Exception) {
-                Log.d("TAG", "getBookedEventServices mody: $e")
-                when (e) {
-                    is UnknownHostException -> {
-                        Log.d("TAG", "getBookedEventServices when mody called: $e")
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                    is ConnectException -> {
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                }
-            }
-        }
+    fun getNotificationCount(idToken: String, userId: String) = liveData(Dispatchers.IO) {
+        emit(dashBoardRepository.getNotificationCount(idToken, userId))
+    }
 
 }

@@ -12,9 +12,13 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentDeseletingDialogBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import com.smf.events.ui.timeslot.deselectingdialog.adaptor.DeselectedDialogAdaptor
 import com.smf.events.ui.timeslot.deselectingdialog.model.ListData
 import com.smf.events.ui.timeslotmodifyexpanablelist.model.BookedEventServiceDtoModify
@@ -25,7 +29,6 @@ import kotlinx.coroutines.withContext
 import java.time.Month
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 // 2803 Deselecting and modify Dialog Fragment
 class DeselectingDialogFragment(
@@ -36,10 +39,9 @@ class DeselectingDialogFragment(
     private var serviceVendorOnBoardingId: Int,
     private var fromDate: String,
     private var toDate: String,
-    private var statusList: List<BookedEventServiceDtoModify>?,
-    private var internetErrorDialog: InternetErrorDialog
+    private var statusList: List<BookedEventServiceDtoModify>?
 ) : BaseDialogFragment<FragmentDeseletingDialogBinding, DeselectingDialogViewModel>(),
-    Tokens.IdTokenCallBackInterface, DeselectingDialogViewModel.CallBackInterface {
+    Tokens.IdTokenCallBackInterface {
 
     private lateinit var adapter: DeselectedDialogAdaptor
     var spRegId: Int = 0
@@ -67,8 +69,7 @@ class DeselectingDialogFragment(
             serviceVendorOnBoardingId: Int,
             fromDate: String,
             toDate: String,
-            statusList: List<BookedEventServiceDtoModify>?,
-            internetErrorDialog: InternetErrorDialog
+            statusList: List<BookedEventServiceDtoModify>?
         ): DeselectingDialogFragment {
             return DeselectingDialogFragment(
                 classTag,
@@ -78,8 +79,7 @@ class DeselectingDialogFragment(
                 serviceVendorOnBoardingId,
                 fromDate,
                 toDate,
-                statusList,
-                internetErrorDialog
+                statusList
             )
         }
     }
@@ -126,12 +126,10 @@ class DeselectingDialogFragment(
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        // Initialize CallBackInterface
-        getViewModel().setCallBackInterface(this)
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer Deselecting")
-            internetErrorDialog.dismissDialog()
+//            internetErrorDialogOld.dismissDialog()
         }
 
         if (purpose == AppConstants.DESELECTED) {
@@ -167,30 +165,30 @@ class DeselectingDialogFragment(
 
     // 2814 - method For OkButton
     private fun okBtnClick() {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            mDataBinding?.let {
-                it.okBtn.setOnClickListener {
-                    if (purpose == AppConstants.DESELECTED) {
-                        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                            apiTokenValidation(AppConstants.DESELECTED)
-                        }
-                    } else if (purpose == AppConstants.NULL_TO_SELECT) {
-                        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                            apiTokenValidation(AppConstants.NULL_TO_SELECT)
-                        }
-                    } else if (purpose == AppConstants.SELECTED) {
-                        dismiss()
-                    } else if (purpose == AppConstants.DENY) {
-                        RxBus.publish(RxEvent.DenyStorage(true))
-                        dismiss()
-                    } else if (purpose == AppConstants.EXPWeek) {
-                        dismiss()
-                    } else if (purpose == AppConstants.EXPMonth) {
-                        dismiss()
-                    }
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        mDataBinding?.let {
+            it.okBtn.setOnClickListener {
+                if (purpose == AppConstants.DESELECTED) {
+//                        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+                    apiTokenValidation(AppConstants.DESELECTED)
+//                        }
+                } else if (purpose == AppConstants.NULL_TO_SELECT) {
+//                        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+                    apiTokenValidation(AppConstants.NULL_TO_SELECT)
+//                        }
+                } else if (purpose == AppConstants.SELECTED) {
+                    dismiss()
+                } else if (purpose == AppConstants.DENY) {
+                    RxBus.publish(RxEvent.DenyStorage(true))
+                    dismiss()
+                } else if (purpose == AppConstants.EXPWeek) {
+                    dismiss()
+                } else if (purpose == AppConstants.EXPMonth) {
+                    dismiss()
                 }
             }
         }
+//        }
     }
 
     private fun getModifyDaySlot(
@@ -214,14 +212,18 @@ class DeselectingDialogFragment(
                     callBackToModifyFragments()
                     dismiss()
                 }
-                is ApisResponse.Error -> {
+                is ApisResponse.CustomError -> {
                     Log.d(
                         TAG,
-                        "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
+                        "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
                     )
                 }
-                else -> {
+                is ApisResponse.InternetError -> {
+                    (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                        apiResponse.message
+                    )
                 }
+                else -> {}
             }
         })
     }
@@ -247,10 +249,15 @@ class DeselectingDialogFragment(
                     callBackToModifyFragments()
                     dismiss()
                 }
-                is ApisResponse.Error -> {
+                is ApisResponse.CustomError -> {
                     Log.d(
                         TAG,
-                        "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
+                        "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
+                    )
+                }
+                is ApisResponse.InternetError -> {
+                    (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                        apiResponse.message
                     )
                 }
                 else -> {
@@ -280,14 +287,18 @@ class DeselectingDialogFragment(
                     callBackToModifyFragments()
                     dismiss()
                 }
-                is ApisResponse.Error -> {
+                is ApisResponse.CustomError -> {
                     Log.d(
                         TAG,
-                        "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
+                        "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
                     )
                 }
-                else -> {
+                is ApisResponse.InternetError -> {
+                    (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                        apiResponse.message
+                    )
                 }
+                else -> {}
             }
         })
     }
@@ -506,11 +517,6 @@ class DeselectingDialogFragment(
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
-    }
-
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     override fun onStop() {

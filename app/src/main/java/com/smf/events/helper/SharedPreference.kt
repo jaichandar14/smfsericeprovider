@@ -18,8 +18,8 @@ class SharedPreference @Inject constructor(var application: Application) {
         const val SP_REG_ID = "spRegId"
         const val FIRST_NAME = "userName"
         const val EMAIL_ID = "emailId"
-        var isInternetConnected: Boolean = false
         const val USER_ID = "userId"
+        var isDialogShown: Boolean = false
     }
 
     private var sharedPreference: SharedPreferences =

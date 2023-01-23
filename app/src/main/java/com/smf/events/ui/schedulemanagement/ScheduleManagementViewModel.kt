@@ -9,17 +9,10 @@ import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.smf.events.base.BaseViewModel
 import com.smf.events.databinding.FragmentCalendarBinding
-import com.smf.events.helper.AppConstants
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.LinkedHashMap
 
 class ScheduleManagementViewModel @Inject constructor(
     private val scheduleManagementRepository: ScheduleManagementRepository,
@@ -211,74 +204,24 @@ class ScheduleManagementViewModel @Inject constructor(
 
     // 2458 Method For Getting All Service
     fun getAllServices(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
-        try {
-            emit(scheduleManagementRepository.getAllServices(idToken, spRegId))
-        } catch (e: Exception) {
-            Log.d("TAG", "getBookedEventServices mody: $e")
-            when (e) {
-                is UnknownHostException -> {
-                    Log.d("TAG", "getBookedEventServices when mody called: $e")
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-            }
-        }
+        emit(scheduleManagementRepository.getAllServices(idToken, spRegId))
     }
 
     // 2985 Method For Getting BusinessValidity
     fun getBusinessValiditiy(idToken: String, spRegId: Int) = liveData(Dispatchers.IO) {
-        try {
-            emit(scheduleManagementRepository.getBusinessValiditiy(idToken, spRegId))
-        } catch (e: Exception) {
-            Log.d("TAG", "getBookedEventServices mody: $e")
-            when (e) {
-                is UnknownHostException -> {
-                    Log.d("TAG", "getBookedEventServices when mody called: $e")
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-            }
-        }
+        emit(scheduleManagementRepository.getBusinessValiditiy(idToken, spRegId))
     }
 
     // 2458 Method For Getting Branches
     fun getServicesBranches(idToken: String, spRegId: Int, serviceCategoryId: Int) =
         liveData(Dispatchers.IO) {
-            try {
-                emit(
-                    scheduleManagementRepository.getServicesBranches(
-                        idToken,
-                        spRegId,
-                        serviceCategoryId
-                    )
+            emit(
+                scheduleManagementRepository.getServicesBranches(
+                    idToken,
+                    spRegId,
+                    serviceCategoryId
                 )
-            } catch (e: Exception) {
-                when (e) {
-                    is UnknownHostException -> {
-                        Log.d("TAG", "getBookedEventServices when mody called: $e")
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                    is ConnectException -> {
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                }
-            }
+            )
         }
 
     // 2622 EventDates for Calendar Api
@@ -287,32 +230,15 @@ class ScheduleManagementViewModel @Inject constructor(
         serviceVendorOnboardingId: Int?,
         fromDate: String,
         toDate: String,
-    ) =
-        liveData(Dispatchers.IO) {
-            try {
-                emit(
-                    scheduleManagementRepository.getEventDates(
-                        idToken,
-                        spRegId,
-                        serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate
-                    )
-                )
-            } catch (e: Exception) {
-                when (e) {
-                    is UnknownHostException -> {
-                        Log.d("TAG", "getBookedEventServices when mody called: $e")
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                    is ConnectException -> {
-                        viewModelScope.launch {
-                            callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                        }
-                    }
-                }
-            }
-        }
+    ) = liveData(Dispatchers.IO) {
+        emit(
+            scheduleManagementRepository.getEventDates(
+                idToken,
+                spRegId,
+                serviceCategoryId, serviceVendorOnboardingId, fromDate, toDate
+            )
+        )
+    }
 
     // 2670 - Method For Get Booked Event Services
     fun getBookedEventServices(
@@ -320,42 +246,18 @@ class ScheduleManagementViewModel @Inject constructor(
         serviceVendorOnBoardingId: Int?,
         fromDate: String,
         toDate: String, caller: String
-    ) =
-        liveData(Dispatchers.IO) {
-            try {
-                emit(
-                    scheduleManagementRepository.getBookedEventServices(
-                        idToken,
-                        spRegId,
-                        serviceCategoryId,
-                        serviceVendorOnBoardingId,
-                        fromDate,
-                        toDate
-                    )
-                )
-            } catch (e: Exception) {
-                Log.d("TAG", "getBookedEventServices: $e")
-                when (e) {
-                    is UnknownHostException -> {
-                        Log.d("TAG", "getBookedEventServices when called: $e")
-                        viewModelScope.launch {
-                            callBackExpListInterface?.internetError(
-                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
-                                caller
-                            )
-                        }
-                    }
-                    is ConnectException -> {
-                        viewModelScope.launch {
-                            callBackExpListInterface?.internetError(
-                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
-                                caller
-                            )
-                        }
-                    }
-                }
-            }
-        }
+    ) = liveData(Dispatchers.IO) {
+        emit(
+            scheduleManagementRepository.getBookedEventServices(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnBoardingId,
+                fromDate,
+                toDate
+            )
+        )
+    }
 
     // 2801 - Booked Event Services API For Modify Slots
     fun getModifyBookedEventServices(
@@ -364,42 +266,19 @@ class ScheduleManagementViewModel @Inject constructor(
         isMonth: Boolean,
         fromDate: String,
         toDate: String, caller: String,
-    ) =
-        liveData(Dispatchers.IO) {
-            try {
-                emit(
-                    scheduleManagementRepository.getModifyBookedEventServices(
-                        idToken,
-                        spRegId,
-                        serviceCategoryId,
-                        serviceVendorOnBoardingId,
-                        isMonth,
-                        fromDate,
-                        toDate
-                    )
-                )
-            } catch (e: Exception) {
-                when (e) {
-                    is UnknownHostException -> {
-                        Log.d("TAG", "getBookedEventServices when mody called: $e")
-                        viewModelScope.launch {
-                            callBackExpListInterface?.internetError(
-                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
-                                caller
-                            )
-                        }
-                    }
-                    is ConnectException -> {
-                        viewModelScope.launch {
-                            callBackExpListInterface?.internetError(
-                                AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION,
-                                caller
-                            )
-                        }
-                    }
-                }
-            }
-        }
+    ) = liveData(Dispatchers.IO) {
+        emit(
+            scheduleManagementRepository.getModifyBookedEventServices(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnBoardingId,
+                isMonth,
+                fromDate,
+                toDate
+            )
+        )
+    }
 
     private var callBackInterface: CallBackInterface? = null
 
@@ -416,20 +295,6 @@ class ScheduleManagementViewModel @Inject constructor(
             name: String?,
             allServiceposition: Int?
         )
-
-        fun internetError(exception: String)
-    }
-
-    private var callBackExpListInterface: CallBackExpListInterface? = null
-
-    // 2458 Initializing CallBack Interface Method
-    fun setCallBackExpListInterface(callback: CallBackExpListInterface) {
-        callBackExpListInterface = callback
-    }
-
-    // 3061 CallBack Interface
-    interface CallBackExpListInterface {
-        fun internetError(exception: String, tag: String)
     }
 
 }

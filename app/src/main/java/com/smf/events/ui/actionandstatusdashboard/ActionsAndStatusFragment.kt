@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.smf.events.BR
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
@@ -27,11 +28,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ActionsAndStatusFragment(val internetErrorDialog: InternetErrorDialog) :
+class ActionsAndStatusFragment :
     BaseFragment<FragmentActionsAndStatusBinding, ActionsAndStatusViewModel>(),
     ActionsAdapter.OnActionCardClickListener, StatusAdaptor.OnActionCardClickListener,
-    Tokens.IdTokenCallBackInterface,
-    ActionsAndStatusViewModel.CallBackInterface {
+    Tokens.IdTokenCallBackInterface {
 
     var TAG = "ActionsAndStatusFragment"
     private lateinit var myActionRecyclerView: RecyclerView
@@ -76,8 +76,6 @@ class ActionsAndStatusFragment(val internetErrorDialog: InternetErrorDialog) :
         serviceCategoryIdAndServiceOnBoardingIdSetup()
         // Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        // viewModel CallBack Initialization
-        getViewModel().setCallBackInterface(this)
 
         Log.d(TAG, "onCreate www: $actionAndDetailsVisibility")
         if (actionAndDetailsVisibility == true) {
@@ -151,11 +149,11 @@ class ActionsAndStatusFragment(val internetErrorDialog: InternetErrorDialog) :
 
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            RxBus.publish(RxEvent.QuoteBrief(1, false))
-            bidStatus = cardClicked(myEvents)
-            Log.d(TAG, "actionCardClick: $bidStatus")
-        }
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        RxBus.publish(RxEvent.QuoteBrief(1, false))
+        bidStatus = cardClicked(myEvents)
+        Log.d(TAG, "actionCardClick: $bidStatus")
+//        }
     }
 
     fun cardClicked(myEvents: MyEvents): String {
@@ -243,11 +241,14 @@ class ActionsAndStatusFragment(val internetErrorDialog: InternetErrorDialog) :
                         )
                         recyclerViewListUpdate()
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        hideProgress()
                     }
+                    else -> {}
                 }
             })
     }
@@ -310,7 +311,7 @@ class ActionsAndStatusFragment(val internetErrorDialog: InternetErrorDialog) :
                 it
             )
         }
-        val actionDetailsFragment = ActionDetailsFragment(internetErrorDialog)
+        val actionDetailsFragment = ActionDetailsFragment()
         actionDetailsFragment.arguments = args
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.action_and_status_layout, actionDetailsFragment)
@@ -323,18 +324,6 @@ class ActionsAndStatusFragment(val internetErrorDialog: InternetErrorDialog) :
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
-    }
-
-    override fun internetError(exception: String) {
-        Log.d(TAG, "internetError: inside actionAndDetails")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireActivity())
-        hideProgress()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onDestroy: stop calleddddd")
     }
 
 }
