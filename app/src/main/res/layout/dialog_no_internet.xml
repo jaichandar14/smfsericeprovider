@@ -1,73 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/appCompatImageView"
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"
-        android:src="@drawable/internet_connection"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/appCompatTextView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:fontFamily="@font/mulish_medium"
-        android:gravity="center"
-        android:paddingStart="@dimen/_28sdp"
-        android:paddingEnd="@dimen/_28sdp"
-        android:text="No Internet Connection Available"
-        android:textColor="@color/gray_text"
-        android:textSize="@dimen/_15sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/appCompatTextView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/mulish_regular"
-        android:gravity="center"
-        android:paddingStart="@dimen/_40sdp"
-        android:paddingEnd="@dimen/_40sdp"
-        android:text="Your device is not connected to internet, Please make sure your connection is working."
-        android:textColor="@color/gray_text"
-        android:textSize="@dimen/_11sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
-        app:layout_constraintVertical_bias="0.01" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/appCompatImageView"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:src="@drawable/internet_connection"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_retry"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_30sdp"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:background="@drawable/custom_button_corner_ok"
-        android:fontFamily="@font/mulish_bold"
-        android:gravity="center"
-        android:text="Try Again"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_11sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
-        app:layout_constraintVertical_bias="0.8" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/mulish_medium"
+            android:gravity="center"
+            android:paddingStart="@dimen/_28sdp"
+            android:paddingEnd="@dimen/_28sdp"
+            android:text="No Internet Connection Available"
+            android:textColor="@color/gray_text"
+            android:textSize="@dimen/_15sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
+            app:layout_constraintVertical_bias="0.0" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/mulish_regular"
+            android:gravity="center"
+            android:paddingStart="@dimen/_40sdp"
+            android:paddingEnd="@dimen/_40sdp"
+            android:text="Your device is not connected to internet, Please make sure your connection is working."
+            android:textColor="@color/gray_text"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
+            app:layout_constraintVertical_bias="0.01" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_retry"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:background="@drawable/custom_button_corner_ok"
+            android:fontFamily="@font/mulish_bold"
+            android:gravity="center"
+            android:text="Try Again"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_11sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
+            app:layout_constraintVertical_bias="0.8" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

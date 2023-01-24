@@ -17,11 +17,16 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.QuoteBriefDialogBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.SharedPreference.Companion.isDialogShown
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.quotebrief.model.QuoteBrief
@@ -35,9 +40,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import javax.inject.Inject
 
-class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
-    BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
-    Tokens.IdTokenCallBackInterface, QuoteBriefDialogViewModel.CallBackInterface {
+class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
+    Tokens.IdTokenCallBackInterface {
 
     var TAG = "QuoteBriefDialog"
     var num: Int = 0
@@ -55,11 +59,12 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     var STORAGE_PERMISSION_CODE = 1
     var bidRequestIdUpdated: Int? = 0
     private lateinit var dialogDisposable: Disposable
+    private var currentUI: String? = null
 
     companion object {
         const val TAG = "CustomDialogFragment"
-        fun newInstance(internetErrorDialog: InternetErrorDialog): QuoteBriefDialog {
-            return QuoteBriefDialog(internetErrorDialog)
+        fun newInstance(): QuoteBriefDialog {
+            return QuoteBriefDialog()
         }
     }
 
@@ -86,6 +91,7 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isDialogShown = true
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogTheme)
         // Initialize Local Variables
         setIdTokenAndBidReqId()
@@ -94,8 +100,6 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showProgress()
-        // QuoteBrief ViewModel CallBackInterface
-        getViewModel().setCallBackInterface(this)
         // token CallBackInterface
         tokens.setCallBackInterface(this)
         // Back Button Pressed
@@ -115,7 +119,12 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer QuoteBrief dialog")
-            internetErrorDialog.dismissDialog()
+            if (currentUI == "viewQuotes") {
+                apiTokenValidationQuoteBrief("viewQuotes")
+            } else {
+                // Quote details api call
+                apiTokenValidationQuoteBrief("quoteDetails")
+            }
         }
         // Quote details api call
         apiTokenValidationQuoteBrief("quoteDetails")
@@ -124,23 +133,23 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     // 2962 view Quotes
     private fun viewQuotes() {
         mDataBinding?.viewQuote?.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
-                mDataBinding?.progressBar?.visibility = View.VISIBLE
-                isViewQuoteClicked = true
-                mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
-                mDataBinding?.txCateringViewq?.visibility = View.VISIBLE
-                mDataBinding?.txCatering?.visibility = View.GONE
-                apiTokenValidationQuoteBrief("viewQuotes")
-                mDataBinding?.btnBack?.setOnClickListener {
-                    mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
-                    mDataBinding?.txCateringViewq?.visibility = View.GONE
-                    mDataBinding?.txCatering?.visibility = View.VISIBLE
-                    mDataBinding?.viewQuotes?.visibility = View.GONE
-                    isViewQuoteClicked = false
-                    onResume()
-                }
+//            if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+            mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
+            mDataBinding?.progressBar?.visibility = View.VISIBLE
+            isViewQuoteClicked = true
+            mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
+            mDataBinding?.txCateringViewq?.visibility = View.VISIBLE
+            mDataBinding?.txCatering?.visibility = View.GONE
+            apiTokenValidationQuoteBrief("viewQuotes")
+            mDataBinding?.btnBack?.setOnClickListener {
+                mDataBinding?.quoteBriefDialogLayout?.visibility = View.VISIBLE
+                mDataBinding?.txCateringViewq?.visibility = View.GONE
+                mDataBinding?.txCatering?.visibility = View.VISIBLE
+                mDataBinding?.viewQuotes?.visibility = View.GONE
+                isViewQuoteClicked = false
+                onResume()
             }
+//            }
         }
     }
 
@@ -159,12 +168,15 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                             mDataBinding?.viewQuotes?.visibility = View.VISIBLE
                             mDataBinding?.progressBar?.visibility = View.INVISIBLE
                         }
-                        is ApisResponse.Error -> {
-                            Log.d(TAG, "check token result: ${apiResponse.exception}")
+                        is ApisResponse.CustomError -> {
+                            Log.d(TAG, "check token result: ${apiResponse.message}")
                             mDataBinding?.progressBar?.visibility = View.INVISIBLE
                         }
-                        else -> {
+                        is ApisResponse.InternetError -> {
+                            (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                            hideProgress()
                         }
+                        else -> {}
                     }
                 })
         }
@@ -292,7 +304,7 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
         super.onResume()
         RxBus.publish(RxEvent.ChangingNavDialog(dialog))
         // 2962
-        if (isViewQuoteClicked == true) {
+        if (isViewQuoteClicked) {
             mDataBinding?.viewQuotes?.visibility = View.VISIBLE
             mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
             mDataBinding?.txCateringViewq?.text = "Quote details for $serviceName"
@@ -440,12 +452,15 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
                             }
                             hideProgress()
                         }
-                        is ApisResponse.Error -> {
-                            Log.d(TAG, "check token result: ${apiResponse.exception}")
+                        is ApisResponse.CustomError -> {
+                            Log.d(TAG, "check token result: ${apiResponse.message}")
                             mDataBinding?.progressBar?.visibility = View.INVISIBLE
                         }
-                        else -> {
+                        is ApisResponse.InternetError -> {
+                            (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                            hideProgress()
                         }
+                        else -> {}
                     }
                 })
         }
@@ -518,10 +533,12 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
     override suspend fun tokenCallBack(idToken: String, caller: String) {
         if (caller == "viewQuotes") {
             withContext(Dispatchers.Main) {
+                currentUI = "viewQuotes"
                 getViewQuotes(idToken)
             }
         } else {
             withContext(Dispatchers.Main) {
+                currentUI = "quoteDetails"
                 quoteBriefApiCall(idToken)
             }
         }
@@ -580,11 +597,6 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
         )
     }
 
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
-    }
-
     private fun showProgress() {
         mDataBinding?.quoteBriefDialog?.visibility = View.INVISIBLE
         mDataBinding?.progressBar?.visibility = View.VISIBLE
@@ -597,6 +609,7 @@ class QuoteBriefDialog(private var internetErrorDialog: InternetErrorDialog) :
 
     override fun onDestroy() {
         super.onDestroy()
+        isDialogShown = false
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 }

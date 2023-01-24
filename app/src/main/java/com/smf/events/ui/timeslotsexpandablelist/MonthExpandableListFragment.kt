@@ -12,9 +12,13 @@ import androidx.fragment.app.activityViewModels
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslotsexpandablelist.adapter.CustomExpandableListAdapter
 import com.smf.events.ui.timeslotsexpandablelist.model.BookedEventServiceDto
@@ -32,13 +36,10 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
-class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface,
-    ScheduleManagementViewModel.CallBackExpListInterface {
+class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface {
 
-    private var TAG = "MonthExpandableListFragment"
+    private var TAG = this::class.java.name
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListData>>()
@@ -57,7 +58,6 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface,
     private var monthValue: String = ""
     private var groupPosition: Int = 0
     private lateinit var dialogDisposable: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var sharedPreference: SharedPreference
@@ -90,32 +90,28 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface,
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        // 3061 Scheduled Management  ViewModel CallBackInterface
-        sharedViewModel.setCallBackExpListInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer monthexp")
-            internetErrorDialog.dismissDialog()
             if (activity != null) {
                 init()
             }
         }
         // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getCurrentMonthDate.observe(viewLifecycleOwner,
-            { currentMonthDate ->
-                //  2986 Showing progress based on calender and service selection
-                mDataBinding.modifyProgressBar.visibility = View.VISIBLE
-                mDataBinding.expandableLayout.visibility = View.GONE
-                fromDate = currentMonthDate.fromDate
-                toDate = currentMonthDate.toDate
-                currentDate = currentMonthDate.currentDate
-                monthValue = currentMonthDate.monthValue.toString()
-                serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
-                Log.d("TAG", "onViewCreated monthValue: $monthValue")
-                monthValidation()
-            })
+        sharedViewModel.getCurrentMonthDate.observe(
+            viewLifecycleOwner
+        ) { currentMonthDate ->
+            //  2986 Showing progress based on calender and service selection
+            mDataBinding.modifyProgressBar.visibility = View.VISIBLE
+            mDataBinding.expandableLayout.visibility = View.GONE
+            fromDate = currentMonthDate.fromDate
+            toDate = currentMonthDate.toDate
+            currentDate = currentMonthDate.currentDate
+            monthValue = currentMonthDate.monthValue.toString()
+            serviceCategoryIdAndServiceVendorOnboardingId(currentMonthDate)
+            Log.d("TAG", "onViewCreated monthValue: $monthValue")
+            monthValidation()
+        }
     }
 
     // 2795 - Method For Restrict Previous Month
@@ -123,9 +119,7 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface,
         if (!fromDate.isNullOrEmpty() && !toDate.isNullOrEmpty()) {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                init()
-            }
+            init()
         } else {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.modifyProgressBar.visibility = View.GONE
@@ -163,11 +157,15 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface,
                         )
                         updateExpandableListData(apiResponse)
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiResponse.message
+                        )
                     }
+                    else -> {}
                 }
             })
         }
@@ -350,12 +348,6 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface,
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: monthexp")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-    }
-
-    override fun internetError(exception: String, tag: String) {
-        Log.d(TAG, "internetError: called day")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
 }

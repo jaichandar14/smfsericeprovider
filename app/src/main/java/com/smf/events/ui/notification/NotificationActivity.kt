@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.addCallback
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -15,7 +14,10 @@ import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityNotificationBinding
-import com.smf.events.helper.*
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.notification.activenotification.ActiveNotificationFragment
@@ -28,9 +30,9 @@ import javax.inject.Inject
 
 class NotificationActivity :
     BaseActivity<ActivityNotificationBinding, NotificationViewModel>(),
-    Tokens.IdTokenCallBackInterface, NotificationViewModel.CallBackInterface {
+    Tokens.IdTokenCallBackInterface {
 
-    var TAG = "NotificationActivity"
+    var TAG = this::class.java.name
     lateinit var tabLayout: TabLayout
     var tabSelectedPosition: Int = 0
     var activeNotificationCount: Int = 0
@@ -39,7 +41,6 @@ class NotificationActivity :
     lateinit var userId: String
     private lateinit var internetStatusDisposable: Disposable
     private lateinit var dialogDisposable: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var tokens: Tokens
@@ -53,7 +54,7 @@ class NotificationActivity :
     override fun getContentView(): Int = R.layout.activity_notification
 
     override fun getViewModel(): NotificationViewModel =
-        ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
+        ViewModelProvider(this, factory)[NotificationViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.notificationViewModel
 
@@ -64,16 +65,12 @@ class NotificationActivity :
         setStatusBarColor()
         // Initialize Tabview
         tabLayout = mViewDataBinding!!.tabLayout
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
         // Initialize Local Variables
         setIdTokenAndSpRegId()
         // Back Key Listener
         backKeyListener()
         // Initialize IdTokenCallBackInterface
         tokens.setCallBackInterface(this)
-        // Notification ViewModel CallBackInterface
-        getViewModel().setCallBackInterface(this)
         // Check IdToken Validity
         idTokenValidation(getString(R.string.notification_count))
         // UI Initialization
@@ -83,10 +80,21 @@ class NotificationActivity :
     }
 
     private fun observers() {
+        // Observe & Set Active notification count
+        getViewModel().getActiveNotificationCount.observe(this, Observer {
+            tabLayout.getTabAt(0)?.text = "${AppConstants.ACTIVE}(${it})"
+        })
+        // Observe & Set Old notification count
+        getViewModel().getOldNotificationCount.observe(this, Observer {
+            tabLayout.getTabAt(1)?.text = "${AppConstants.OLD}(${it})"
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
         // Listener For Internet Connectivity
         internetStatusDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer notification activity")
-            internetErrorDialog.dismissDialog()
             // Check IdToken Validity
             idTokenValidation(getString(R.string.notification_count))
             updateNotificationUI()
@@ -96,14 +104,6 @@ class NotificationActivity :
             // Check IdToken Validity
             idTokenValidation(getString(R.string.notification_count))
         }
-        // Observe & Set Active notification count
-        getViewModel().getActiveNotificationCount.observe(this, Observer {
-            tabLayout.getTabAt(0)?.text = "${AppConstants.ACTIVE}(${it})"
-        })
-        // Observe & Set Old notification count
-        getViewModel().getOldNotificationCount.observe(this, Observer {
-            tabLayout.getTabAt(1)?.text = "${AppConstants.OLD}(${it})"
-        })
     }
 
     private fun idTokenValidation(caller: String) {
@@ -140,11 +140,13 @@ class NotificationActivity :
                         activeNotificationCount = apiResponse.response.data.activeCounts
                         clearAllBtnVisibility()
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        showInternetDialog(apiResponse.message)
                     }
+                    else -> {}
                 }
             })
     }
@@ -177,13 +179,13 @@ class NotificationActivity :
         }
         val frg = when (tabSelectedPosition) {
             0 -> {
-                ActiveNotificationFragment(internetErrorDialog)
+                ActiveNotificationFragment()
             }
             1 -> {
-                OldNotificationFragment(internetErrorDialog)
+                OldNotificationFragment()
             }
             else -> {
-                ActiveNotificationFragment(internetErrorDialog)
+                ActiveNotificationFragment()
             }
         }
         val manager: FragmentManager =
@@ -211,9 +213,7 @@ class NotificationActivity :
     }
 
     private fun moveToDashBoard() {
-        if (internetErrorDialog.checkInternetAvailable(this)) {
-            finish()
-        }
+        finish()
     }
 
     private fun clearAllBtnClickListener() {
@@ -253,22 +253,10 @@ class NotificationActivity :
         userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
     }
 
-    override fun internetError(exception: String) {
-        Log.d(TAG, "onViewCreated: observer no inter dialog")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         Log.d(TAG, "onViewCreated: observer NotificationActivity Destroy")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
         if (!internetStatusDisposable.isDisposed) internetStatusDisposable.dispose()
     }
-
-//    private fun setStatusBarColor() {
-//        window.statusBarColor = getColor(R.color.theme_color)
-//        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
-//    }
-
 }

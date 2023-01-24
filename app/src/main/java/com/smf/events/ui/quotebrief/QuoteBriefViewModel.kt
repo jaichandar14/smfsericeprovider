@@ -69,10 +69,6 @@ class QuoteBriefViewModel @Inject constructor(
     fun getQuoteBrief(idToken: String, bidRequestId: Int) = liveData(
         Dispatchers.IO
     ) {
-        try {
-            emit(quoteBriefRepository.getQuoteBrief(idToken, bidRequestId))
-        } catch (e: Exception) {
-            Log.d(TAG, "getQuoteBrief: $e")
-        }
+        emit(quoteBriefRepository.getQuoteBrief(idToken, bidRequestId))
     }
 }

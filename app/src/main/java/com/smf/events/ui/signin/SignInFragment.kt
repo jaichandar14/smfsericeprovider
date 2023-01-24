@@ -24,15 +24,14 @@ import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.SignInFragmentBinding
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
-import com.smf.events.helper.InternetErrorDialog
 import com.smf.events.helper.SharedPreference
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.signup.model.GetUserDetails
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -40,7 +39,7 @@ import javax.inject.Inject
 class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     SignInViewModel.CallBackInterface {
 
-    var TAG = "SignInFragment"
+    var TAG = this::class.java.name
     private lateinit var mobileNumberWithCountryCode: String
     private lateinit var encodedMobileNo: String
     private lateinit var eMail: String
@@ -50,7 +49,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     private lateinit var constraintLayout: ConstraintLayout
     private var userInfo: String = ""
     lateinit var dialogDisposable: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -91,9 +89,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         constraintLayout = mDataBinding?.loginPage!!
         // Initialize CallBackInterface
         getViewModel().setCallBackInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
-
         init()
     }
 
@@ -101,7 +96,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         super.onResume()
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer sign frag called")
-            internetErrorDialog.dismissDialog()
         }
     }
 
@@ -135,12 +129,12 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         Amplify.Auth.signOut(
             AuthSignOutOptions.builder().globalSignOut(true).build(),
             {
-                GlobalScope.launch(Dispatchers.Main) {
+                CoroutineScope(Dispatchers.Main).launch {
                     afterSignOut()
                 }
             },
             {
-                GlobalScope.launch(Dispatchers.Main) {
+                CoroutineScope(Dispatchers.Main).launch {
                     afterSignOut()
                 }
                 Log.e("AuthQuickstart", "Sign out failed", it)
@@ -150,12 +144,9 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     // Method for SignIn Button
     private fun signInClicked() {
-        Log.d(TAG, "signInClicked: ${SharedPreference.isInternetConnected}")
         mDataBinding!!.signinbtn.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                signOut()
-                showProgress()
-            }
+            showProgress()
+            signOut()
         }
     }
 
@@ -258,16 +249,18 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
             }
             is ApisResponse.CustomError -> {
                 hideProgress()
-                //showToast(apiResponse.message)
-                showToastMessage(
-                    apiResponse.message,
-                    Snackbar.LENGTH_LONG,
-                    AppConstants.PLAIN_SNACK_BAR
-                )
-
+                showToast(apiResponse.message)
+//                showToastMessage(
+//                    apiResponse.message,
+//                    Snackbar.LENGTH_LONG,
+//                    AppConstants.PLAIN_SNACK_BAR
+//                )
             }
-            else -> {
+            is ApisResponse.InternetError -> {
+                (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                hideProgress()
             }
+            else -> {}
         }
     }
 
@@ -338,25 +331,17 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     override fun awsErrorResponse(message: String) {
         if (message == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
-            SharedPreference.isInternetConnected = false
-            internetErrorDialog.checkInternetAvailable(requireContext())
+            (requireActivity() as MainActivity).showInternetDialog(AppConstants.SHOW_INTERNET_DIALOG)
             hideProgress()
         } else {
-            // showToast(getViewModel().toastMessage)
-            showToastMessage(
-                getViewModel().toastMessage,
-                Snackbar.LENGTH_LONG,
-                AppConstants.PLAIN_SNACK_BAR
-            )
+            showToast(getViewModel().toastMessage)
+//            showToastMessage(
+//                getViewModel().toastMessage,
+//                Snackbar.LENGTH_LONG,
+//                AppConstants.PLAIN_SNACK_BAR
+//            )
 
         }
-    }
-
-    override fun internetError(exception: String) {
-        Log.d(InternetErrorDialog.TAG, "onViewCreated: observer sign internetError called")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
-        hideProgress()
     }
 
     override fun onStop() {

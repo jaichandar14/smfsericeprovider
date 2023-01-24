@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.net.NetworkRequest
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 
@@ -23,18 +23,24 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
     private val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
     private val validNetworks: MutableSet<Network> = HashSet()
 
-    private fun checkValidNetworks() {
-        Log.d(TAG, "checkValidNetworks: ${validNetworks.size}")
-        postValue(validNetworks.size > 0)
-    }
-
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onActive() {
         networkCallback = createNetworkCallback()
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
             .build()
         cm.registerNetworkCallback(networkRequest, networkCallback)
+
+        postValue(isOnline(cm))
+    }
+
+    private fun isOnline(cm: ConnectivityManager): Boolean {
+        val network = cm.activeNetwork ?: return false
+        val networkCapabilities = cm.getNetworkCapabilities(network) ?: return false
+        return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -50,30 +56,17 @@ class ConnectionLiveData(context: Context) : LiveData<Boolean>() {
           */
         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         override fun onAvailable(network: Network) {
-            Log.d(TAG, "onAvailable: ${network}")
-            val networkCapabilities = cm.getNetworkCapabilities(network)
-            val hasInternetCapability = networkCapabilities?.hasCapability(NET_CAPABILITY_INTERNET)
-            Log.d(TAG, "onAvailable: ${network}, $hasInternetCapability")
-            if (hasInternetCapability == true) {
-                validNetworks.add(network)
-            }
-            if (validNetworks.size <= 1) {
-                Log.d(TAG, "connect onAvailable inside if: ${validNetworks.size}")
-                checkValidNetworks()
-            }
+            postValue(true)
         }
 
         /*
           If the callback was registered with registerNetworkCallback() it will be called for each network which no longer satisfies the criteria of the callback.
          */
         override fun onLost(network: Network) {
-            Log.d(TAG, "onLost: ${network}")
-            validNetworks.remove(network)
-            if (validNetworks.size == 0) {
-                checkValidNetworks()
+            if (!isOnline(cm)) {
+                postValue(false)
             }
         }
-
     }
 
 }

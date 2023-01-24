@@ -36,6 +36,7 @@ import com.smf.events.SMFApp
 import com.smf.events.base.BaseFragment
 import com.smf.events.databinding.FragmentDashBoardBinding
 import com.smf.events.helper.*
+import com.smf.events.helper.SharedPreference.Companion.isDialogShown
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.actionandstatusdashboard.ActionsAndStatusFragment
@@ -47,6 +48,7 @@ import com.smf.events.ui.notification.NotificationActivity
 import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -84,7 +86,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     lateinit var sharedPreference: SharedPreference
 
     override fun getViewModel(): DashBoardViewModel =
-        ViewModelProvider(this, factory).get(DashBoardViewModel::class.java)
+        ViewModelProvider(this, factory)[DashBoardViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.dashBoardViewModel
 
@@ -97,7 +99,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     private lateinit var internetDisposable: Disposable
     private lateinit var quoteBriefDisposable: Disposable
     private lateinit var quoteBriefDisposable1: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     companion object {
         var actionAndDetailsVisibility = true
@@ -126,8 +127,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         tokens.setCallBackInterface(this)
         // DashBoard ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
         // 2888 SideNavBar SetUp
         sideNavBarInitialization()
         // 2839 Invisible the all the layout before api call
@@ -153,8 +152,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
         internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer DashBoard rx")
-            internetErrorDialog.dismissDialog()
-            //   idTokenValidation()
+            if (!isDialogShown) {
+                // Check token validation
+                idTokenValidation()
+            }
         }
 
         quoteBriefDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
@@ -232,23 +233,21 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     private fun onClickCalendar() {
         mDataBinding?.calander?.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                // Declaration for show action and details page
-                actionAndDetailsVisibility = true
-                val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
-                startActivity(intent)
-            }
+            // Declaration for show action and details page
+            actionAndDetailsVisibility = true
+            val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
+            startActivity(intent)
         }
     }
 
     private fun onClickNotification() {
         mDataBinding?.notificationBell?.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                // Declaration for show action and details page
-                actionAndDetailsVisibility = true
-                val intent = Intent(this.requireContext(), NotificationActivity::class.java)
-                startActivity(intent)
-            }
+//            if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+            // Declaration for show action and details page
+            actionAndDetailsVisibility = true
+            val intent = Intent(this.requireContext(), NotificationActivity::class.java)
+            startActivity(intent)
+//            }
         }
     }
 
@@ -314,33 +313,33 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     // All Service spinner view clicked
     override fun itemClick(position: Int) {
         Log.d(TAG, "onItemSelected itemClick: $position called")
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            if (serviceList[position].serviceName == getString(R.string.All_Service)) {
-                var branchSpinner: ArrayList<String> = ArrayList()
-                branchSpinner.add(0, getString(R.string.Branches))
-                serviceCategoryId = 0
-                val branchDataSpinner = branchSpinner
-                getViewModel().branches(
-                    mDataBinding,
-                    branchDataSpinner,
-                    idToken,
-                    spRegId,
-                    serviceCategoryId,
-                    0
-                )
-            }
-            if (serviceList[position].serviceName != getString(R.string.All_Service)) {
-                // Declaration for show action and details page
-                actionAndDetailsVisibility = true
-                showUpComingEvents()
-                serviceCategoryId = (serviceList[position].serviceCategoryId)
-                tokens.checkTokenExpiry(
-                    requireActivity().applicationContext as SMFApp,
-                    getString(R.string.branch), idToken
-                )
-                branchListSpinner.clear()
-            }
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        if (serviceList[position].serviceName == getString(R.string.All_Service)) {
+            var branchSpinner: ArrayList<String> = ArrayList()
+            branchSpinner.add(0, getString(R.string.Branches))
+            serviceCategoryId = 0
+            val branchDataSpinner = branchSpinner
+            getViewModel().branches(
+                mDataBinding,
+                branchDataSpinner,
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                0
+            )
         }
+        if (serviceList[position].serviceName != getString(R.string.All_Service)) {
+            // Declaration for show action and details page
+            actionAndDetailsVisibility = true
+            showUpComingEvents()
+            serviceCategoryId = (serviceList[position].serviceCategoryId)
+            tokens.checkTokenExpiry(
+                requireActivity().applicationContext as SMFApp,
+                getString(R.string.branch), idToken
+            )
+            branchListSpinner.clear()
+        }
+//        }
     }
 
     // Branch spinner view clicked
@@ -350,39 +349,39 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         allServiceposition: Int?,
     ) {
         Log.d(TAG, "onItemSelected itemClick: branch click called")
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
-            var branchesName = name
-            if (branchListSpinner[serviceVendorOnboardingId].branchId == 0) {
-                branchesName = getString(R.string.Branches)
-            }
-            try {
-                // Declaration for show action and details page
-                actionAndDetailsVisibility = true
-                val serviceName = (serviceList[allServiceposition!!].serviceName)
-                if (serviceName == getString(R.string.All_Service) && branchesName == getString(R.string.Branches)) {
-                    actionAndStatusFragmentMethod(
-                        serviceCategoryId,
-                        0
-                    )
-                } else if (serviceName != getString(R.string.All_Service) && branchesName == getString(
-                        R.string.Branches
-                    )
-                ) {
-                    actionAndStatusFragmentMethod(
-                        serviceCategoryId,
-                        0
-                    )
-                } else {
-                    actionAndStatusFragmentMethod(
-                        serviceCategoryId,
-                        branchListSpinner[serviceVendorOnboardingId].branchId
-                    )
-                }
-            } catch (e: Exception) {
-                Log.d(TAG, "branchItemClick: $e")
-            }
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
+        var branchesName = name
+        if (branchListSpinner[serviceVendorOnboardingId].branchId == 0) {
+            branchesName = getString(R.string.Branches)
         }
+        try {
+            // Declaration for show action and details page
+            actionAndDetailsVisibility = true
+            val serviceName = (serviceList[allServiceposition!!].serviceName)
+            if (serviceName == getString(R.string.All_Service) && branchesName == getString(R.string.Branches)) {
+                actionAndStatusFragmentMethod(
+                    serviceCategoryId,
+                    0
+                )
+            } else if (serviceName != getString(R.string.All_Service) && branchesName == getString(
+                    R.string.Branches
+                )
+            ) {
+                actionAndStatusFragmentMethod(
+                    serviceCategoryId,
+                    0
+                )
+            } else {
+                actionAndStatusFragmentMethod(
+                    serviceCategoryId,
+                    branchListSpinner[serviceVendorOnboardingId].branchId
+                )
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "branchItemClick: $e")
+        }
+//        }
     }
 
     // Action And Status UI setUp
@@ -392,7 +391,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         args.putInt(AppConstants.SERVICE_VENDOR_ON_BOARDING_ID, branchId)
         Log.d(TAG, "actionAndDetailsVisibility  dash method $actionAndDetailsVisibility")
         args.putBoolean("actionAndDetailsVisibility", actionAndDetailsVisibility)
-        val actionAndStatusFragment = ActionsAndStatusFragment(internetErrorDialog)
+        val actionAndStatusFragment = ActionsAndStatusFragment()
         actionAndStatusFragment.arguments = args
 
         requireActivity().supportFragmentManager.beginTransaction()
@@ -415,19 +414,21 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         mDataBinding?.serviceCountLayout?.visibility = View.VISIBLE
                         // 2842 Getting All Service
                         getAllServices(idToken)
-
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                         sharedPreference.putString(SharedPreference.ID_Token, "")
-                        GlobalScope.launch(Main) {
+                        CoroutineScope(Main).launch {
                             // Navigate to SignInFragment
                             findNavController().navigate(DashBoardFragmentDirections.actionDashBoardFragmentToSignInFragment())
                             widgetAfter()
                         }
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        widgetAfter()
                     }
+                    else -> {}
                 }
             })
     }
@@ -472,11 +473,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         }
                         setAllService()
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        widgetAfter()
                     }
+                    else -> {}
                 }
             })
     }
@@ -487,7 +491,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-                        var branchTypeItems: List<DatasNew> = apiResponse.response.datas
+                        val branchTypeItems: List<DatasNew> = apiResponse.response.datas
                         branchListSpinner.add(BranchDatas(getString(R.string.Branches), 0))
                         for (i in branchTypeItems.indices) {
                             val branchName: String =
@@ -496,24 +500,27 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                             val branchId: Int = branchTypeItems[i].serviceVendorOnboardingId
                             branchListSpinner.add(BranchDatas(branchName, branchId))
                         }
-                        var branchList: ArrayList<String> = ArrayList()
+                        val branchList: ArrayList<String> = ArrayList()
                         for (i in branchListSpinner.indices) {
                             val branchName: String =
                                 branchListSpinner[i].branchName // I want to show this when Selected
                             branchList.add(branchName)
                         }
-                        val branchData = branchList
                         getViewModel().branches(
                             mDataBinding,
-                            branchData,
+                            branchList,
                             this.idToken,
                             spRegId,
                             serviceCategoryId,
                             0
                         )
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
+                    }
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        widgetAfter()
                     }
                     else -> {
                     }
@@ -546,14 +553,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // 2904 Scroll Refresh Method
     override fun onRefresh() {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
-            ApplicationUtils.fromNotification = false
-            serviceList.clear()
-            // Declaration for show action and details page
-            actionAndDetailsVisibility = true
-            idTokenValidation()
-        }
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
+        ApplicationUtils.fromNotification = false
+        serviceList.clear()
+        // Declaration for show action and details page
+        actionAndDetailsVisibility = true
+        idTokenValidation()
+//        }
         mDataBinding?.refreshLayout?.isRefreshing = false
     }
 
@@ -561,27 +568,19 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_dashboard -> {
-                // Refreshing the dashboard page
-                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                    // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
-                    ApplicationUtils.fromNotification = false
-                    serviceList.clear()
-                    // Declaration for show action and details page
-                    actionAndDetailsVisibility = true
-                    idTokenValidation()
-                }
+                // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
+                ApplicationUtils.fromNotification = false
+                serviceList.clear()
+                // Declaration for show action and details page
+                actionAndDetailsVisibility = true
+                idTokenValidation()
             }
             R.id.nav_availability -> {
-                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                    val intent =
-                        Intent(this.requireContext(), ScheduleManagementActivity::class.java)
-                    startActivity(intent)
-                }
+                val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_logout -> {
-                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                    logOut()
-                }
+                logOut()
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -609,17 +608,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     private fun logOutError() {
         GlobalScope.launch(Main) {
-            SharedPreference.isInternetConnected = false
-            internetErrorDialog.checkInternetAvailable(requireContext())
             widgetAfter()
         }
-    }
-
-    override fun internetError(exception: String) {
-        Log.d(TAG, "internetError: inside dashboard")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireActivity())
-        widgetAfter()
     }
 
     private fun showUpComingEvents() {
@@ -654,11 +644,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                         // Active notification count
                         notificationCount(apiResponse.response.data.activeCounts)
                     }
-                    is ApisResponse.Error -> {
-                        Log.d(TAG, "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d(TAG, "check token result: ${apiResponse.message}")
                     }
-                    else -> {
-                    }
+                    else -> {}
                 }
             })
     }

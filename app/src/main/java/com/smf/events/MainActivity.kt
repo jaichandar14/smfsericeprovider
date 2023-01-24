@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityMainBinding
+import com.smf.events.helper.AppConstants
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import javax.inject.Inject
@@ -65,6 +66,5 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
             Log.d("TAG", "token data $token")
         })
     }
-
 }
 

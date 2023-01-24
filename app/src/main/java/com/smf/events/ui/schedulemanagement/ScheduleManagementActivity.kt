@@ -13,7 +13,6 @@ import com.smf.events.R
 import com.smf.events.base.BaseActivity
 import com.smf.events.databinding.ActivityScheduleManagmentBinding
 import com.smf.events.helper.CalendarUtils
-import com.smf.events.helper.InternetErrorDialog
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.schedulemanagement.calendarfragment.CalendarFragment
@@ -28,7 +27,6 @@ class ScheduleManagementActivity :
 
     var TAG = "ScheduleManagementActivity"
     private var status = false
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -49,8 +47,6 @@ class ScheduleManagementActivity :
         super.onPostCreate(savedInstanceState, null)
         // Set Status bar
         setStatusBarColor()
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
         // 2458 Method for Calendar Ui
         calendarUI()
         // 2458 Method for TimeSlots Ui
@@ -71,7 +67,7 @@ class ScheduleManagementActivity :
 
         internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer scheduled activity")
-            internetErrorDialog.dismissDialog()
+//            internetErrorDialogOld.dismissDialog()
         }
 
         // Observer for visible switch button and text
@@ -92,20 +88,20 @@ class ScheduleManagementActivity :
     fun calendarUI() {
         // 2528 - Toggle Button Logic
         mViewDataBinding?.switchBtn?.setOnClickListener {
-            if (internetErrorDialog.checkInternetAvailable(this)) {
-                if (mViewDataBinding?.switchBtn?.isChecked == false)
-                    mViewDataBinding?.switchBtnTx?.text =
-                        resources.getString(com.smf.events.R.string.switch_to_modify_slots_availability)
-                else mViewDataBinding?.switchBtnTx?.text =
-                    resources.getString(R.string.switch_to_View_Event_List)
+//            if (internetErrorDialogOld.checkInternetAvailable(this)) {
+            if (mViewDataBinding?.switchBtn?.isChecked == false)
+                mViewDataBinding?.switchBtnTx?.text =
+                    resources.getString(com.smf.events.R.string.switch_to_modify_slots_availability)
+            else mViewDataBinding?.switchBtnTx?.text =
+                resources.getString(R.string.switch_to_View_Event_List)
 
-                status = mViewDataBinding?.switchBtn?.isChecked != false
-                Log.d("TAG", "calendarUI: $status")
-                updateTimeSlotsUI(status)
-            } else {
-                mViewDataBinding?.switchBtn?.isChecked =
-                    mViewDataBinding?.switchBtn?.isChecked != true
-            }
+            status = mViewDataBinding?.switchBtn?.isChecked != false
+            Log.d("TAG", "calendarUI: $status")
+            updateTimeSlotsUI(status)
+//            } else {
+//                mViewDataBinding?.switchBtn?.isChecked =
+//                    mViewDataBinding?.switchBtn?.isChecked != true
+//            }
         }
         Log.d("TAG", "calendarUI: $status")
         val frg = CalendarFragment() //create the fragment instance for the middle fragment

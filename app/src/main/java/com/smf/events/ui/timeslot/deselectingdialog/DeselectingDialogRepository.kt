@@ -1,12 +1,12 @@
 package com.smf.events.ui.timeslot.deselectingdialog
 
+import com.smf.events.base.BaseRepo
 import com.smf.events.helper.ApisResponse
 import com.smf.events.network.ApiStories
 import com.smf.events.ui.timeslot.deselectingdialog.model.ModifyDaySlotResponse
-import retrofit2.HttpException
 import javax.inject.Inject
 
-class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories) {
+class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories) : BaseRepo() {
 
     // 2814 - modify-day-slot
     suspend fun getModifyDaySlot(
@@ -18,8 +18,8 @@ class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories
         serviceVendorOnBoardingId: Int,
         toDate: String
     ): ApisResponse<ModifyDaySlotResponse> {
-        return try {
-            val getResponse = apiStories.getModifyDaySlot(
+        return safeApiCall {
+            apiStories.getModifyDaySlot(
                 idToken,
                 spRegId,
                 fromDate,
@@ -28,9 +28,6 @@ class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories
                 serviceVendorOnBoardingId,
                 toDate
             )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
         }
     }
 
@@ -44,8 +41,8 @@ class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories
         serviceVendorOnBoardingId: Int,
         toDate: String
     ): ApisResponse<ModifyDaySlotResponse> {
-        return try {
-            val getResponse = apiStories.getModifyWeekSlot(
+        return safeApiCall {
+            apiStories.getModifyWeekSlot(
                 idToken,
                 spRegId,
                 fromDate,
@@ -54,9 +51,6 @@ class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories
                 serviceVendorOnBoardingId,
                 toDate
             )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
         }
     }
 
@@ -70,8 +64,8 @@ class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories
         serviceVendorOnBoardingId: Int,
         toDate: String
     ): ApisResponse<ModifyDaySlotResponse> {
-        return try {
-            val getResponse = apiStories.getModifyMonthSlot(
+        return safeApiCall {
+            apiStories.getModifyMonthSlot(
                 idToken,
                 spRegId,
                 fromDate,
@@ -80,9 +74,6 @@ class DeselectingDialogRepository @Inject constructor(var apiStories: ApiStories
                 serviceVendorOnBoardingId,
                 toDate
             )
-            ApisResponse.Success(getResponse)
-        } catch (e: HttpException) {
-            ApisResponse.Error(e)
         }
     }
 }

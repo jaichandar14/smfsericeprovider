@@ -1,17 +1,12 @@
 package com.smf.events.ui.actionandstatusdashboard
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.smf.events.base.BaseViewModel
 import com.smf.events.helper.AppConstants
 import com.smf.events.ui.dashboard.model.ActionAndStatusCount
 import com.smf.events.ui.dashboard.model.MyEvents
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ActionsAndStatusViewModel @Inject constructor(
@@ -23,7 +18,7 @@ class ActionsAndStatusViewModel @Inject constructor(
 
     // 2560 Prepare Action List Values
     fun getActionsList(actionAndStatusData: ActionAndStatusCount?): ArrayList<MyEvents> {
-        var list = ArrayList<MyEvents>()
+        val list = ArrayList<MyEvents>()
         list.add(
             MyEvents(
                 actionAndStatusData?.bidRequestedCount.toString(),
@@ -59,7 +54,7 @@ class ActionsAndStatusViewModel @Inject constructor(
 
     // 2560 Prepare Status List Values
     fun getStatusList(actionAndStatusData: ActionAndStatusCount): ArrayList<MyEvents> {
-        var list = ArrayList<MyEvents>()
+        val list = ArrayList<MyEvents>()
         list.add(
             MyEvents(
                 actionAndStatusData.serviceDoneCount.toString(),
@@ -90,43 +85,14 @@ class ActionsAndStatusViewModel @Inject constructor(
         serviceCategoryId: Int?,
         serviceVendorOnboardingId: Int?,
     ) = liveData(Dispatchers.IO) {
-        try {
-            emit(
-                actionsAndStatusRepository.getActionAndStatus(
-                    idToken,
-                    spRegId,
-                    serviceCategoryId,
-                    serviceVendorOnboardingId
-                )
+        emit(
+            actionsAndStatusRepository.getActionAndStatus(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnboardingId
             )
-        } catch (e: Exception) {
-            Log.d("TAG", "getActionAndStatus: $e")
-            when (e) {
-                is UnknownHostException -> {
-                    Log.d("TAG", "getActionAndStatus: UnknownHostException $e")
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                is ConnectException -> {
-                    viewModelScope.launch {
-                        callBackInterface?.internetError(AppConstants.UNKOWNHOSTANDCONNECTEXCEPTION)
-                    }
-                }
-                else -> {}
-            }
-        }
+        )
     }
 
-    private var callBackInterface: CallBackInterface? = null
-
-    // Initializing CallBack Interface Method
-    fun setCallBackInterface(callback: CallBackInterface) {
-        callBackInterface = callback
-    }
-
-    // CallBack Interface
-    interface CallBackInterface {
-        fun internetError(exception: String)
-    }
 }

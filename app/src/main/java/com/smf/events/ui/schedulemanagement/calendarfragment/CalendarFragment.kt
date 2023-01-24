@@ -21,6 +21,7 @@ import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.dashboard.model.BranchDatas
 import com.smf.events.ui.dashboard.model.DatasNew
 import com.smf.events.ui.dashboard.model.ServicesData
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.schedulemanagement.adapter.CalendarAdapter
 import dagger.android.support.AndroidSupportInjection
@@ -36,7 +37,7 @@ import javax.inject.Inject
 class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
     ScheduleManagementViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
-    var TAG = "CalendarFragment"
+    var TAG = this::class.java.name
 
     @Inject
     lateinit var calendarUtils: CalendarUtils
@@ -78,9 +79,9 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
     private var dateList: ArrayList<String> = ArrayList()
     private var businessValidity: LocalDate? = null
     lateinit var dialogDisposable: Disposable
-    private lateinit var internetErrorDialog: InternetErrorDialog
     var toastlevel = true
     var toast: Toast? = null
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -109,8 +110,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         tokens.setCallBackInterface(this)
         // 2458 Scheduled Management  ViewModel CallBackInterface
         sharedViewModel.setCallBackInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
 //        // 2458 Method for initializing
 //        initWidgets()
 //        // 2622 Method for Calendar Format(Day,week,month) Picker
@@ -122,7 +121,9 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer Calendar")
-            internetErrorDialog.dismissDialog()
+            if (activity != null) {
+                init()
+            }
         }
 
         mDataBinding.closeCalendar.setOnClickListener {
@@ -135,20 +136,19 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         }
         Log.d("TAG", "onViewCreated: not observer Calendar")
         init()
-
-//        // 2985
-//        getBusinessValiditiy()
     }
 
     private fun init() {
-        // 2458 Method for initializing
-        initWidgets()
-        // 2622 Method for Calendar Format(Day,week,month) Picker
-        setCalendarFormat()
-        // 2686 Method for Token Validation and Service list ApiCall
-        apiTokenValidationCalendar("AllServices")
-        // 2985
-        getBusinessValiditiy()
+        if (view != null) {
+            // 2458 Method for initializing
+            initWidgets()
+            // 2622 Method for Calendar Format(Day,week,month) Picker
+            setCalendarFormat()
+            // 2686 Method for Token Validation and Service list ApiCall
+            apiTokenValidationCalendar("AllServices")
+            // 2985
+            getBusinessValiditiy()
+        }
     }
 
     fun getBusinessValiditiy() {
@@ -164,8 +164,13 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                         businessValidity = businessValidationDate
                         CalendarUtils.businessValidity = businessValidationDate
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
+                    }
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiResponse.message
+                        )
                     }
                     else -> {
                         Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
@@ -476,22 +481,20 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
 
     // 2458 CallBack for Clicked All Service Items
     override fun itemClick(msg: Int) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            if (serviceList[msg].serviceName == "All Service") {
-                val branchSpinner: ArrayList<String> = ArrayList()
-                // branchSpinner.add(0, "Branches")
-                serviceCategoryId = 0
-                sharedViewModel.branches(
-                    mDataBinding, branchSpinner
-                )
-            }
-            if (serviceList[msg].serviceName != "All Service") {
-                serviceCategoryId = (serviceList[msg].serviceCategoryId)
-                Log.d("TAG", "itemClick services: $serviceCategoryId")
-                apiTokenValidationCalendar("Branches")
-                branchListSpinner.clear()
-                //apiTokenValidationCalendar("EventDateApiAllService")
-            }
+        if (serviceList[msg].serviceName == "All Service") {
+            val branchSpinner: ArrayList<String> = ArrayList()
+            // branchSpinner.add(0, "Branches")
+            serviceCategoryId = 0
+            sharedViewModel.branches(
+                mDataBinding, branchSpinner
+            )
+        }
+        if (serviceList[msg].serviceName != "All Service") {
+            serviceCategoryId = (serviceList[msg].serviceCategoryId)
+            Log.d("TAG", "itemClick services: $serviceCategoryId")
+            apiTokenValidationCalendar("Branches")
+            branchListSpinner.clear()
+            //apiTokenValidationCalendar("EventDateApiAllService")
         }
     }
 
@@ -501,14 +504,11 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         name: String?,
         allServiceposition: Int?,
     ) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            // Log.d(TAG, "branchItemClick: ")
-            this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
-            Log.d("TAG", "branchItemClick: ${this.serviceVendorOnboardingId}")
-            apiTokenValidationCalendar("EventDateApiBranches")
-            //  settingWeekDate()
-            settingMonthDate()
-        }
+        this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
+        Log.d("TAG", "branchItemClick: ${this.serviceVendorOnboardingId}")
+        apiTokenValidationCalendar("EventDateApiBranches")
+        //  settingWeekDate()
+        settingMonthDate()
     }
 
     // 2458 Getting All Service
@@ -519,14 +519,20 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                     is ApisResponse.Success -> {
 //                        serviceList.add(ServicesData("All Service", 0))
 //                        branchListSpinner.add(BranchDatas("Branches", 0))
+                        serviceList.clear()
                         apiResponse.response.data.forEach {
                             serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
                         }
                         // 2458 Setting All Service
                         setAllService()
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
+                    }
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiResponse.message
+                        )
                     }
                     else -> {
                         Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
@@ -569,11 +575,15 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                             mDataBinding, branchList
                         )
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiResponse.message
+                        )
                     }
+                    else -> {}
                 }
             }
     }
@@ -652,8 +662,13 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                         setMonthView(dayinWeek, daysPositon)
                         Log.d("TAG", "Calendar Event:$serviceDate ")
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiresponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiresponse.message}")
+                    }
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiresponse.message
+                        )
                     }
                     else -> {
                         Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
@@ -667,8 +682,8 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                 CalendarUtils.selectedDate!!.format(CalendarUtils.dateFormatter),
                 this.serviceCategoryId,
                 this.serviceVendorOnboardingId,
-                java.util.ArrayList(),
-                java.util.ArrayList(),
+                ArrayList(),
+                ArrayList(),
                 false
             )
             settingWeekDate()
@@ -726,12 +741,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
             }
         }
         return dateList
-    }
-
-    override fun internetError(exception: String) {
-        Log.d("TAG", "internetError: calendar called")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     override fun onDestroy() {

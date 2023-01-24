@@ -17,6 +17,7 @@ import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
 import com.smf.events.helper.*
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.schedulemanagement.ScheduleManagementActivity
 import com.smf.events.ui.schedulemanagement.ScheduleManagementViewModel
 import com.smf.events.ui.timeslot.deselectingdialog.DeselectingDialogFragment
 import com.smf.events.ui.timeslotmodifyexpanablelist.adapter.CustomModifyExpandableListAdapter
@@ -37,10 +38,9 @@ import javax.inject.Inject
 import kotlin.concurrent.schedule
 
 class DayModifyExpandableListFragment : Fragment(),
-    CustomModifyExpandableListAdapter.TimeSlotIconClickListener,
-    Tokens.IdTokenCallBackInterface, ScheduleManagementViewModel.CallBackExpListInterface {
+    CustomModifyExpandableListAdapter.TimeSlotIconClickListener, Tokens.IdTokenCallBackInterface {
 
-    var TAG = "DayModifyExpandableListFragment"
+    var TAG = this::class.java.name
     private var expandableListView: ExpandableListView? = null
     private var adapter: CustomModifyExpandableListAdapter? = null
     private var childData = HashMap<String, List<ListDataModify>>()
@@ -59,7 +59,6 @@ class DayModifyExpandableListFragment : Fragment(),
     private var groupPosition: Int = 0
     private lateinit var dialogDisposable: Disposable
     private var isScroll: Boolean = false
-    private lateinit var internetErrorDialog: InternetErrorDialog
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -96,21 +95,16 @@ class DayModifyExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-        // 2458 Scheduled Management  ViewModel CallBackInterface
-        sharedViewModel.setCallBackExpListInterface(this)
-        // Internet Error Dialog Initialization
-        internetErrorDialog = InternetErrorDialog.newInstance()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer daymody")
-            internetErrorDialog.dismissDialog()
             if (activity != null) {
                 init()
             }
         }
 
         // 2558 - getDate ScheduleManagementViewModel Observer
-        sharedViewModel.getCurrentDate.observe(viewLifecycleOwner, { currentDate ->
+        sharedViewModel.getCurrentDate.observe(viewLifecycleOwner) { currentDate ->
             //  2986 Showing progress based on calender and service selection
             mDataBinding.modifyProgressBar.visibility = View.VISIBLE
             mDataBinding.expandableLayout.visibility = View.GONE
@@ -126,7 +120,7 @@ class DayModifyExpandableListFragment : Fragment(),
                 "onViewCreated day: ${currentDate.isScroll}, ${currentDate.allDaysList} $serviceVendorOnboardingId"
             )
             initializeExpandableViewData()
-        })
+        }
         // Observe Modify Dialog Result
         observeModifyDialogResult()
     }
@@ -151,9 +145,7 @@ class DayModifyExpandableListFragment : Fragment(),
         } else {
             mDataBinding.expendableList.visibility = View.VISIBLE
             mDataBinding.noEventsText.visibility = View.GONE
-            if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                init()
-            }
+            init()
         }
     }
 
@@ -195,17 +187,20 @@ class DayModifyExpandableListFragment : Fragment(),
                             )
                             setDataToExpandableList(apiResponse, groupPosition)
                             adapter!!.notifyDataSetChanged()
-
                         }
                     }
-                    is ApisResponse.Error -> {
+                    is ApisResponse.CustomError -> {
                         Log.d(
                             TAG,
-                            "check token result success ModifyBookedEvent exp: ${apiResponse.exception}"
+                            "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
                         )
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as ScheduleManagementActivity).showInternetDialog(
+                            apiResponse.message
+                        )
                     }
+                    else -> {}
                 }
             })
         }
@@ -321,129 +316,129 @@ class DayModifyExpandableListFragment : Fragment(),
         isExpanded: Boolean,
         businessValidationStatus: Boolean,
     ) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            if (!businessValidationStatus) {
-                this.parent = parent as ExpandableListView
-                this.groupPosition = listPosition
-                fromDate = allDaysList[listPosition]
-                toDate = allDaysList[listPosition]
-                if (isExpanded) {
-                    parent.collapseGroup(listPosition)
-                } else {
-                    // Send Selected Date To ViewModel For Calender UI Display
-                    fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
-                    val bookedEventDetails = ArrayList<ListDataModify>()
-                    bookedEventDetails.add(
-                        ListDataModify(
-                            getString(R.string.empty),
-                            listOf(BookedEventServiceDtoModify("", "", "", "", ""))
-                        )
-                    )
-                    childData[titleDate[groupPosition]] = bookedEventDetails
-                    parent.collapseGroup(lastGroupPosition)
-                    parent.expandGroup(listPosition)
-                    apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE)
-                }
-                lastGroupPosition = listPosition
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        if (!businessValidationStatus) {
+            this.parent = parent as ExpandableListView
+            this.groupPosition = listPosition
+            fromDate = allDaysList[listPosition]
+            toDate = allDaysList[listPosition]
+            if (isExpanded) {
+                parent.collapseGroup(listPosition)
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Your Business registration valid to date is No longer available for the selected date",
-                    Toast.LENGTH_LONG
+                // Send Selected Date To ViewModel For Calender UI Display
+                fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
+                val bookedEventDetails = ArrayList<ListDataModify>()
+                bookedEventDetails.add(
+                    ListDataModify(
+                        getString(R.string.empty),
+                        listOf(BookedEventServiceDtoModify("", "", "", "", ""))
+                    )
                 )
-                    .show()
+                childData[titleDate[groupPosition]] = bookedEventDetails
+                parent.collapseGroup(lastGroupPosition)
+                parent.expandGroup(listPosition)
+                apiTokenValidation(AppConstants.BOOKED_EVENTS_SERVICES_FROM_SELECTED_DATE)
             }
+            lastGroupPosition = listPosition
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Your Business registration valid to date is No longer available for the selected date",
+                Toast.LENGTH_LONG
+            )
+                .show()
         }
+//        }
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-        if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-            val branchName =
-                childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
-            val currentDayFormatter =
-                DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
-            val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
-                TextStyle.FULL,
-                Locale.ENGLISH
-            )
-            val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
-            val onlyBookedList = ArrayList<BookedEventServiceDtoModify>()
-            statusList?.forEach {
-                if (it.bidStatus == AppConstants.WON_BID) {
-                    onlyBookedList.add(it)
-                }
+//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+        val branchName =
+            childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
+        val currentDayFormatter =
+            DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+        val currentMonth = LocalDate.parse(fromDate, currentDayFormatter).month.getDisplayName(
+            TextStyle.FULL,
+            Locale.ENGLISH
+        )
+        val statusList = childData[titleDate[listPosition]]?.get(expandedListPosition)?.status
+        val onlyBookedList = ArrayList<BookedEventServiceDtoModify>()
+        statusList?.forEach {
+            if (it.bidStatus == AppConstants.WON_BID) {
+                onlyBookedList.add(it)
             }
-            Log.d(TAG, "onChildClick: $statusList")
-            when (branchName) {
-                getString(R.string.available_small) -> {
-                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                        fromDate?.let { fromDate ->
-                            toDate?.let { toDate ->
-                                DeselectingDialogFragment.newInstance(
-                                    AppConstants.DAY,
-                                    AppConstants.DESELECTED,
-                                    timeSlot,
-                                    currentMonth,
-                                    serviceVendorOnboardingId,
-                                    fromDate,
-                                    toDate, onlyBookedList, internetErrorDialog
-                                )
-                                    .show(
-                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                        DeselectingDialogFragment.TAG
-                                    )
-                            }
-                        }
-                    }
-                }
-                getString(R.string.null_text) -> {
-                    fromDate?.let { fromDate ->
-                        serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                            toDate?.let { toDate ->
-                                DeselectingDialogFragment.newInstance(
-                                    AppConstants.DAY,
-                                    AppConstants.NULL_TO_SELECT,
-                                    timeSlot,
-                                    currentMonth,
-                                    serviceVendorOnboardingId,
-                                    fromDate,
-                                    toDate, onlyBookedList, internetErrorDialog
-                                )
-                                    .show(
-                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                        DeselectingDialogFragment.TAG
-                                    )
-                            }
-                        }
-                    }
-                }
-                else -> {
-                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
-                        fromDate?.let { fromDate ->
-                            toDate?.let { toDate ->
-                                DeselectingDialogFragment.newInstance(
-                                    AppConstants.DAY,
-                                    AppConstants.SELECTED,
-                                    timeSlot,
-                                    currentMonth,
-                                    serviceVendorOnboardingId,
-                                    fromDate,
-                                    toDate,
-                                    onlyBookedList, internetErrorDialog
-                                )
-                                    .show(
-                                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                        DeselectingDialogFragment.TAG
-                                    )
-                            }
-                        }
-                    }
-                }
-            }
-            // Setting Position From Selected Calender Date
-            this.groupPosition = listPosition
-            lastGroupPosition = listPosition
         }
+        Log.d(TAG, "onChildClick: $statusList")
+        when (branchName) {
+            getString(R.string.available_small) -> {
+                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                    fromDate?.let { fromDate ->
+                        toDate?.let { toDate ->
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.DAY,
+                                AppConstants.DESELECTED,
+                                timeSlot,
+                                currentMonth,
+                                serviceVendorOnboardingId,
+                                fromDate,
+                                toDate, onlyBookedList
+                            )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
+                        }
+                    }
+                }
+            }
+            getString(R.string.null_text) -> {
+                fromDate?.let { fromDate ->
+                    serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                        toDate?.let { toDate ->
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.DAY,
+                                AppConstants.NULL_TO_SELECT,
+                                timeSlot,
+                                currentMonth,
+                                serviceVendorOnboardingId,
+                                fromDate,
+                                toDate, onlyBookedList
+                            )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
+                        }
+                    }
+                }
+            }
+            else -> {
+                serviceVendorOnboardingId?.let { serviceVendorOnboardingId ->
+                    fromDate?.let { fromDate ->
+                        toDate?.let { toDate ->
+                            DeselectingDialogFragment.newInstance(
+                                AppConstants.DAY,
+                                AppConstants.SELECTED,
+                                timeSlot,
+                                currentMonth,
+                                serviceVendorOnboardingId,
+                                fromDate,
+                                toDate,
+                                onlyBookedList
+                            )
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    DeselectingDialogFragment.TAG
+                                )
+                        }
+                    }
+                }
+            }
+        }
+        // Setting Position From Selected Calender Date
+        this.groupPosition = listPosition
+        lastGroupPosition = listPosition
+//        }
     }
 
     // 2815 - Method For Set Null Value
@@ -556,12 +551,6 @@ class DayModifyExpandableListFragment : Fragment(),
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: called DayMody")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-    }
-
-    override fun internetError(exception: String, tag: String) {
-        Log.d(TAG, "internetError: called day")
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
 }

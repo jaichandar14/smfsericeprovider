@@ -7,19 +7,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.smf.events.R
-import com.smf.events.helper.ConnectionLiveData
-import com.smf.events.helper.SharedPreference
-import com.smf.events.helper.SnackBar
+import com.smf.events.helper.*
+import com.smf.events.listeners.DialogTwoButtonListener
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 
-abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCompatActivity() {
+abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCompatActivity(),
+    DialogTwoButtonListener {
 
     protected var mViewDataBinding: T? = null
     private var mViewModel: V? = null
     private lateinit var connectionLiveData: ConnectionLiveData
+    var networkDialog: InternetErrorDialog? = null
 
     abstract fun getContentView(): Int
 
@@ -34,6 +40,8 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         performDataBinding()
+        // Create instance for internet dialog
+        networkDialog = InternetErrorDialog.newInstance(this)
         connectionLiveData = ConnectionLiveData(this)
         observerMethod()
         netWorkObserver()
@@ -44,20 +52,28 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
             when (isNetworkAvailable) {
                 true -> {
                     Log.d("TAG", "onResume network observer: act available $isNetworkAvailable")
-                    SharedPreference.isInternetConnected = true
-                    RxBus.publish(RxEvent.InternetStatus(true))
+                    getViewModel()?.networkState?.value = true
+                    if (networkDialog?.isVisible == true) {
+                        networkDialog?.dismiss()
+                    }
                 }
                 false -> {
                     Log.d("TAG", "onResume network observer: act not available $isNetworkAvailable")
-                    SharedPreference.isInternetConnected = false
+                    getViewModel()?.networkState?.value = false
                 }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            getViewModel()?.networkStateFlow?.filterNotNull()?.filter { it }?.collectLatest {
+                RxBus.publish(RxEvent.InternetStatus(true))
             }
         }
     }
 
     fun observerMethod() {
         Log.d("TAG", "on toast create Base Activity befor")
-        getViewModel()?.getToastMessageG?.observe(this, { toastMessageG ->
+        getViewModel()?.getToastMessageG?.observe(this) { toastMessageG ->
             Log.d("TAG", "on toast create Base Activity $toastMessageG")
             SnackBar.showSnakbarTypeOne(
                 mViewDataBinding?.root,
@@ -65,7 +81,7 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
                 this,
                 toastMessageG.duration
             )
-        })
+        }
     }
 
     fun showToastMessage(message: String, length: Int, property: String) {
@@ -93,4 +109,43 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
     }
 
+    override fun onPositiveClick(dialogFragment: DialogFragment) {
+        when {
+            dialogFragment.tag.equals(AppConstants.INTERNET_DIALOG) -> {
+                dialogFragment.dismiss()
+                Log.d("TAG", "call: called onPositiveClick")
+                RxBus.publish(RxEvent.InternetStatus(true))
+            }
+            else -> {
+                Log.d("TAG", "call: called else onPositiveClick")
+            }
+        }
+    }
+
+    override fun onNegativeClick(dialogFragment: DialogFragment) {}
+
+    fun showInternetDialog(message: String) {
+        when (message) {
+            AppConstants.SHOW_INTERNET_DIALOG -> {
+                if (networkDialog?.isVisible == false &&
+                    networkDialog?.tag != AppConstants.INTERNET_DIALOG
+                ) {
+                    networkDialog!!.show(
+                        supportFragmentManager,
+                        AppConstants.INTERNET_DIALOG
+                    )
+                }
+            }
+            else -> {
+                if (networkDialog?.isVisible == false &&
+                    networkDialog?.tag != AppConstants.INTERNET_DIALOG
+                ) {
+                    networkDialog!!.show(
+                        supportFragmentManager,
+                        message
+                    )
+                }
+            }
+        }
+    }
 }

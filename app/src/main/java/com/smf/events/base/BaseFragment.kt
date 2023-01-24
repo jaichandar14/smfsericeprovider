@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.smf.events.MainActivity
 import com.smf.events.helper.SnackBar
 
 abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragment() {
@@ -22,7 +23,6 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
     abstract fun getBindingVariable(): Int
 
     abstract fun getContentView(): Int
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,11 +46,10 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
 
     fun showToast(msg: String) {
         Toast.makeText(activity?.applicationContext, msg, Toast.LENGTH_LONG).show()
-
     }
 
     private fun toastObserver() {
-        getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner, { toastMessageG ->
+        getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner) { toastMessageG ->
             Log.d("TAG", "onResume Base Fragment $toastMessageG")
             SnackBar.showSnakbarTypeOne(
                 view,
@@ -59,8 +58,7 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
                 toastMessageG.duration
             )
             //Toast(context).showCustomToast(toastMessageG.msg,requireActivity(),"Toast.LENGTH_LONG","fata")
-        })
-
+        }
     }
 
     fun showToastMessage(message: String, length: Int, property: String) {

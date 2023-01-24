@@ -12,16 +12,17 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.smf.events.BR
+import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentBidRejectionDialogBinding
-import com.smf.events.helper.*
-import com.smf.events.rxbus.RxBus
-import com.smf.events.rxbus.RxEvent
+import com.smf.events.helper.ApisResponse
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.SharedPreference
+import com.smf.events.helper.Tokens
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
 import dagger.android.support.AndroidSupportInjection
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -30,15 +31,13 @@ class BidRejectionDialogFragment(
     var bidRequestId: Int?,
     var serviceName: String,
     var code: String,
-    var bidStatus: String,
-    private var internetErrorDialog: InternetErrorDialog
+    var bidStatus: String
 ) : BaseDialogFragment<FragmentBidRejectionDialogBinding, BidRejectionDialogViewModel>(),
     BidRejectionDialogViewModel.CallBackInterface, Tokens.IdTokenCallBackInterface {
 
     lateinit var reason: String
     lateinit var idToken: String
     lateinit var serviceProviderBidRequestDto: ServiceProviderBidRequestDto
-    private lateinit var dialogDisposable: Disposable
 
     @Inject
     lateinit var tokens: Tokens
@@ -57,22 +56,20 @@ class BidRejectionDialogFragment(
             bidRequestId: Int?,
             serviceName: String,
             code: String,
-            bidStatus: String,
-            internetErrorDialog: InternetErrorDialog
+            bidStatus: String
         ): BidRejectionDialogFragment {
 
             return BidRejectionDialogFragment(
                 bidRequestId,
                 serviceName,
                 code,
-                bidStatus,
-                internetErrorDialog
+                bidStatus
             )
         }
     }
 
     override fun getViewModel(): BidRejectionDialogViewModel =
-        ViewModelProvider(this, factory).get(BidRejectionDialogViewModel::class.java)
+        ViewModelProvider(this, factory)[BidRejectionDialogViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.bidRejectionDialogViewModel
 
@@ -85,6 +82,7 @@ class BidRejectionDialogFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SharedPreference.isDialogShown = true
         // Initialize shared preference token
         setIdToken()
     }
@@ -112,9 +110,6 @@ class BidRejectionDialogFragment(
         // Setting Service ID and Service Name
         mDataBinding!!.quoteTitle.text = "You are rejecting a $serviceName #$code"
 
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            dismiss()
-        }
     }
 
     // 2405 - Method for invisible Alert message textView
@@ -131,14 +126,14 @@ class BidRejectionDialogFragment(
                 if (mDataBinding?.etComments?.text.isNullOrEmpty()) {
                     mDataBinding?.alertMsg?.visibility = View.VISIBLE
                 } else {
-                    if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                        apiTokenValidationQuoteDetailsDialog("BidReject")
-                    }
+//                    if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+                    apiTokenValidationQuoteDetailsDialog("BidReject")
+//                    }
                 }
             } else {
-                if (internetErrorDialog.checkInternetAvailable(requireContext())) {
-                    apiTokenValidationQuoteDetailsDialog("BidReject")
-                }
+//                if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
+                apiTokenValidationQuoteDetailsDialog("BidReject")
+//                }
             }
         }
     }
@@ -163,11 +158,13 @@ class BidRejectionDialogFragment(
                         actionDetailsFragmentListUpdate()
                         dismiss()
                     }
-                    is ApisResponse.Error -> {
-                        Log.d("TAG", "check token result: ${apiResponse.exception}")
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
                     }
-                    else -> {
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
                     }
+                    else -> {}
                 }
             })
     }
@@ -188,11 +185,6 @@ class BidRejectionDialogFragment(
             // 2405 - Gone alertMsg Visibility
             mDataBinding?.alertMsg?.visibility = View.GONE
         }
-    }
-
-    override fun internetError(exception: String) {
-        SharedPreference.isInternetConnected = false
-        internetErrorDialog.checkInternetAvailable(requireContext())
     }
 
     // Method For Set setIdToken From Shared Preferences
@@ -224,7 +216,7 @@ class BidRejectionDialogFragment(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        SharedPreference.isDialogShown = false
     }
 
 }
