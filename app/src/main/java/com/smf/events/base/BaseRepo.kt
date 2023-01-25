@@ -1,7 +1,10 @@
 package com.smf.events.base
 
 import android.util.Log
+import com.amplifyframework.util.Casing.capitalize
 import com.google.gson.Gson
+import com.smf.events.R
+import com.smf.events.SMFApp
 import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.ui.signup.model.ErrorResponse
@@ -34,13 +37,13 @@ abstract class BaseRepo {
                 // parsing api own custom json error
                 val errorResponse: String? = errorMessageFromApi(response.errorBody())
                 // Returning api own failure message
-                errorResponse?.let { ApisResponse.CustomError(it) }
-                    ?: ApisResponse.CustomError("Something went wrong")
+                errorResponse?.let { ApisResponse.CustomError(capitalize(it)) }
+                    ?: ApisResponse.CustomError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
             }
         } catch (e: HttpException) {
-            // Returning HttpException's message
+            // Returning HttpException's message(HttpTimeOutException & HandshakeException)
             errorMessageFromApi(e.response()?.errorBody())?.let { ApisResponse.CustomError(it) }
-                ?: ApisResponse.CustomError("Something went wrong")
+                ?: ApisResponse.CustomError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
         } catch (e: IOException) {
             when (e) {
                 is ConnectException -> {
@@ -63,12 +66,13 @@ abstract class BaseRepo {
                 }
                 else -> {
                     Log.d(TAG, "safeApiCall: SocketException")
-                    ApisResponse.InternetError("Something went wrong")
+                    ApisResponse.InternetError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
                 }
             }
         } catch (e: Exception) {
+            Log.d(TAG, "safeApiCall: ${e.cause}, ${e.message}, ${e.printStackTrace()}")
             // Returning 'Something went wrong' in case
-            ApisResponse.CustomError("Something went wrong")
+            ApisResponse.CustomError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
         }
     }
 

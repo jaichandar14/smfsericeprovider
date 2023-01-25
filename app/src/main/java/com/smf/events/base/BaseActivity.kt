@@ -11,7 +11,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.smf.events.R
-import com.smf.events.helper.*
+import com.smf.events.helper.AppConstants
+import com.smf.events.helper.ConnectionLiveData
+import com.smf.events.helper.InternetErrorDialog
+import com.smf.events.helper.SnackBar
 import com.smf.events.listeners.DialogTwoButtonListener
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
@@ -125,27 +128,17 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
     override fun onNegativeClick(dialogFragment: DialogFragment) {}
 
     fun showInternetDialog(message: String) {
-        when (message) {
-            AppConstants.SHOW_INTERNET_DIALOG -> {
-                if (networkDialog?.isVisible == false &&
-                    networkDialog?.tag != AppConstants.INTERNET_DIALOG
-                ) {
-                    networkDialog!!.show(
-                        supportFragmentManager,
-                        AppConstants.INTERNET_DIALOG
-                    )
-                }
+        if (networkDialog?.isVisible == false
+            && networkDialog?.tag != AppConstants.INTERNET_DIALOG
+        ) {
+            val bundle = Bundle().apply {
+                putString(AppConstants.MESSAGE, message)
             }
-            else -> {
-                if (networkDialog?.isVisible == false &&
-                    networkDialog?.tag != AppConstants.INTERNET_DIALOG
-                ) {
-                    networkDialog!!.show(
-                        supportFragmentManager,
-                        message
-                    )
-                }
-            }
+            networkDialog?.arguments = bundle
+            networkDialog!!.show(
+                supportFragmentManager,
+                AppConstants.INTERNET_DIALOG
+            )
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.smf.events
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
@@ -15,14 +16,16 @@ import javax.inject.Inject
 
 class SMFApp : Application(), HasAndroidInjector {
 
-    private var mContext: SMFApp? = null
+    companion object {
+        lateinit var appContext: Context
+    }
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate() {
         super.onCreate()
-        mContext = this
+        appContext = this
         //Dagger Initialization
         DaggerAppComponent.builder()
             .application(this)
@@ -42,10 +45,6 @@ class SMFApp : Application(), HasAndroidInjector {
             Log.e("MyAmplifyApp", "Could not initialize Amplify", error)
         }
 
-    }
-
-    fun getContext(): SMFApp? {
-        return mContext
     }
 
     override fun androidInjector(): AndroidInjector<Any> {
