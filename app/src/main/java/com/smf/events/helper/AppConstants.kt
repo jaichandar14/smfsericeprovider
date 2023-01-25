@@ -141,4 +141,5 @@ object AppConstants {
 
     const val INTERNET_DIALOG = "INTERNET_DIALOG"
     const val SHOW_INTERNET_DIALOG = "Show Internet Dialog"
+    const val MESSAGE = "Message"
 }
