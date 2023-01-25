@@ -17,7 +17,7 @@ abstract class BaseViewModel(application: Application) : AndroidViewModel(applic
 
     data class ToastLayoutParam(var msg: String, var duration: Int, var properties: String)
 
-    private var toastMessageG = MutableLiveData<ToastLayoutParam>()
+     var toastMessageG = MutableLiveData<ToastLayoutParam>()
     val getToastMessageG: LiveData<ToastLayoutParam> = toastMessageG
     fun setToastMessageG(
         msg: String, duration: Int, properties: String

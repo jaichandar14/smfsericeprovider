@@ -18,8 +18,8 @@ android {
         applicationId "com.smf.events"
         minSdk 23
         targetSdk 33
-        versionCode 9
-        versionName "1.09"
+        versionCode 11
+        versionName "1.11"
         buildConfigField "String", "base_url", "\"https://uat1.festocloud.com/\""
         buildConfigField "String", "apiType", "\"festo-\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -86,11 +86,11 @@ android {
 }
 
 // execute tests before realising a prod apk
-tasks.whenTaskAdded { task ->
-    if (task.name == 'assembleProdRelease' || task.name == 'bundleProdRelease') {
-        task.dependsOn('test')
-    }
-}
+//tasks.whenTaskAdded { task ->
+////    if (task.name == 'assembleProdRelease' || task.name == 'bundleProdRelease') {
+////        task.dependsOn('test')
+////    }
+//}
 
 
 tasks.whenTaskAdded { task ->

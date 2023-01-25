@@ -348,5 +348,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         super.onStop()
         Log.d(TAG, "onStop: called signin frag")
         if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        getViewModel().toastMessageG.value?.msg=""
     }
 }
