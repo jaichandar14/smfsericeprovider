@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.MainActivity
 import com.smf.events.R
@@ -243,6 +244,12 @@ class ActionsAndStatusFragment :
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "check token result: ${apiResponse.message}")
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                        hideProgress()
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)

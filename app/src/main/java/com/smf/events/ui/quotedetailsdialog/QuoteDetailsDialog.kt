@@ -267,6 +267,11 @@ class QuoteDetailsDialog(
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)

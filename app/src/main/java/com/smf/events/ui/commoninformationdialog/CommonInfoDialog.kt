@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.MainActivity
 import com.smf.events.R
 import com.smf.events.SMFApp
@@ -159,6 +160,11 @@ class CommonInfoDialog(
                 }
                 is ApisResponse.CustomError -> {
                     Log.d("TAG", "check token result: ${apiResponse.message}")
+                    showToastMessage(
+                        apiResponse.message,
+                        Snackbar.LENGTH_LONG,
+                        AppConstants.PLAIN_SNACK_BAR
+                    )
                 }
                 is ApisResponse.InternetError -> {
                     (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)

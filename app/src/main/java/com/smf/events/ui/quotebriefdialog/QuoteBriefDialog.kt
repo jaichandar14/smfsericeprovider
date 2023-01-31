@@ -170,7 +170,12 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                         }
                         is ApisResponse.CustomError -> {
                             Log.d(TAG, "check token result: ${apiResponse.message}")
-                            mDataBinding?.progressBar?.visibility = View.INVISIBLE
+                            showToastMessage(
+                                apiResponse.message,
+                                Snackbar.LENGTH_LONG,
+                                AppConstants.PLAIN_SNACK_BAR
+                            )
+                            hideProgress()
                         }
                         is ApisResponse.InternetError -> {
                             (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
@@ -455,6 +460,12 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                         is ApisResponse.CustomError -> {
                             Log.d(TAG, "check token result: ${apiResponse.message}")
                             mDataBinding?.progressBar?.visibility = View.INVISIBLE
+                            showToastMessage(
+                                apiResponse.message,
+                                Snackbar.LENGTH_LONG,
+                                AppConstants.PLAIN_SNACK_BAR
+                            )
+                            hideProgress()
                         }
                         is ApisResponse.InternetError -> {
                             (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)

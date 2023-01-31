@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.smf.events.R
@@ -159,6 +160,10 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
+                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT)
+                            .show()
+                        mDataBinding.modifyProgressBar.visibility = View.GONE
+                        mDataBinding.expandableLayout.visibility = View.VISIBLE
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
@@ -220,7 +225,7 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
         val bookedList = ArrayList<BookedEventServiceDto>().apply {
             data.bookedEventServiceDtos.forEach { objectList ->
                 if (objectList.bidStatus == AppConstants.WON_BID) {
-                   this.add(objectList)
+                    this.add(objectList)
                 }
             }
         }

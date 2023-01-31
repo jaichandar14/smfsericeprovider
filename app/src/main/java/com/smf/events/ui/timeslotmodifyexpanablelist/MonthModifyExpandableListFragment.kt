@@ -176,7 +176,9 @@ class MonthModifyExpandableListFragment : Fragment(),
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
-                    }
+                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT).show()
+                        mDataBinding.modifyProgressBar.visibility = View.GONE
+                        mDataBinding.expandableLayout.visibility = View.VISIBLE}
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
                             apiResponse.message

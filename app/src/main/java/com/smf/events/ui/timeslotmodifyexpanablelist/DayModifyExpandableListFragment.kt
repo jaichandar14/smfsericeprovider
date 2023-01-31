@@ -194,6 +194,10 @@ class DayModifyExpandableListFragment : Fragment(),
                             TAG,
                             "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
                         )
+                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT)
+                            .show()
+                        mDataBinding.modifyProgressBar.visibility = View.GONE
+                        mDataBinding.expandableLayout.visibility = View.VISIBLE
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
