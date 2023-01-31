@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.smf.events.BR
 import com.smf.events.R
@@ -142,6 +143,11 @@ class NotificationActivity :
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "check token result: ${apiResponse.message}")
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                     }
                     is ApisResponse.InternetError -> {
                         showInternetDialog(apiResponse.message)

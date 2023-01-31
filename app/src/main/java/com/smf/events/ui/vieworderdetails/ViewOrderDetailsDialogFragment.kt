@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ListView
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.*
 import com.smf.events.base.BaseDialogFragment
 import com.smf.events.databinding.FragmentViewOrderDetailsDialogBinding
@@ -153,6 +154,11 @@ class ViewOrderDetailsDialogFragment(
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
+                        hideProgress()
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR)
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)

@@ -29,6 +29,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.amplifyframework.auth.options.AuthSignOutOptions
 import com.amplifyframework.core.Amplify
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.MainActivity
 import com.smf.events.R
@@ -419,6 +420,11 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "check token result: ${apiResponse.message}")
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                         sharedPreference.putString(SharedPreference.ID_Token, "")
                         CoroutineScope(Main).launch {
                             // Navigate to SignInFragment
@@ -477,6 +483,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "check token result: ${apiResponse.message}")
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                        widgetAfter()
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
@@ -520,6 +532,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "check token result: ${apiResponse.message}")
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                        widgetAfter()
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
@@ -649,6 +667,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "check token result: ${apiResponse.message}")
+                        showToastMessage(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                        widgetAfter()
                     }
                     else -> {}
                 }

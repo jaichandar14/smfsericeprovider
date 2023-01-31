@@ -7,6 +7,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.BR
 import com.smf.events.R
 import com.smf.events.SMFApp
@@ -216,6 +217,11 @@ class DeselectingDialogFragment(
                     Log.d(
                         TAG,
                         "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
+                    )
+                    showToastMessage(
+                        apiResponse.message,
+                        Snackbar.LENGTH_LONG,
+                        AppConstants.PLAIN_SNACK_BAR
                     )
                 }
                 is ApisResponse.InternetError -> {

@@ -166,6 +166,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
+                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT).show()
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
@@ -528,6 +529,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
+                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT).show()
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
