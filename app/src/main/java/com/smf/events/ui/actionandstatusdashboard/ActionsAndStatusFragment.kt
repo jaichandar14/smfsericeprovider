@@ -33,7 +33,7 @@ class ActionsAndStatusFragment :
     ActionsAdapter.OnActionCardClickListener, StatusAdaptor.OnActionCardClickListener,
     Tokens.IdTokenCallBackInterface {
 
-    var TAG = "ActionsAndStatusFragment"
+    var TAG = this::class.java.name
     private lateinit var myActionRecyclerView: RecyclerView
     lateinit var actionAdapter: ActionsAdapter
     private lateinit var myStatusRecyclerView: RecyclerView
@@ -57,7 +57,7 @@ class ActionsAndStatusFragment :
     lateinit var tokens: Tokens
 
     override fun getViewModel(): ActionsAndStatusViewModel =
-        ViewModelProvider(this, factory).get(ActionsAndStatusViewModel::class.java)
+        ViewModelProvider(this, factory)[ActionsAndStatusViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.actionsAndStatusViewModel
 
@@ -216,13 +216,13 @@ class ActionsAndStatusFragment :
 
     // 2560 Method For ApiCall For Action And Status Counts
     fun actionAndStatusApiCall(idToken: String) {
-        getViewModel().getActionAndStatus(
-            idToken,
-            spRegId,
-            serviceCategoryId,
-            serviceVendorOnboardingId
-        )
-            .observe(viewLifecycleOwner, Observer { apiResponse ->
+        view?.let {
+            getViewModel().getActionAndStatus(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnboardingId
+            ).observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
                         // 2560 changed the Api call variable names
@@ -251,6 +251,7 @@ class ActionsAndStatusFragment :
                     else -> {}
                 }
             })
+        }
     }
 
     // Method For Update Action And Status Count To RecyclerView List
@@ -302,17 +303,12 @@ class ActionsAndStatusFragment :
 
     // Method For Calling ActionDetailsFragment With Action Details
     fun goToActionDetailsFragment(bidStatus: String) {
-        val args = Bundle()
-        args.putString(getString(R.string.bidStatus), bidStatus)
+        val args = Bundle().apply { putString(getString(R.string.bidStatus), bidStatus) }
         serviceCategoryId?.let { args.putInt(AppConstants.SERVICE_CATEGORY_ID, it) }
         serviceVendorOnboardingId?.let {
-            args.putInt(
-                AppConstants.SERVICE_VENDOR_ON_BOARDING_ID,
-                it
-            )
+            args.putInt(AppConstants.SERVICE_VENDOR_ON_BOARDING_ID, it)
         }
-        val actionDetailsFragment = ActionDetailsFragment()
-        actionDetailsFragment.arguments = args
+        val actionDetailsFragment = ActionDetailsFragment().apply { arguments = args }
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.action_and_status_layout, actionDetailsFragment)
             .addToBackStack(null)

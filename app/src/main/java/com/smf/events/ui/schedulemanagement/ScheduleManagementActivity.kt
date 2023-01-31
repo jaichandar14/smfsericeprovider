@@ -25,7 +25,7 @@ import javax.inject.Inject
 class ScheduleManagementActivity :
     BaseActivity<ActivityScheduleManagmentBinding, ScheduleManagementViewModel>() {
 
-    var TAG = "ScheduleManagementActivity"
+    var TAG = this::class.java.name
     private var status = false
 
     @Inject
@@ -36,7 +36,7 @@ class ScheduleManagementActivity :
     override fun getContentView(): Int = com.smf.events.R.layout.activity_schedule_managment
 
     override fun getViewModel(): ScheduleManagementViewModel =
-        ViewModelProvider(this, factory).get(ScheduleManagementViewModel::class.java)
+        ViewModelProvider(this, factory)[ScheduleManagementViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.scheduleManagementViewModel
 

@@ -235,8 +235,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         mDataBinding?.calander?.setOnClickListener {
             // Declaration for show action and details page
             actionAndDetailsVisibility = true
-            val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this.requireContext(), ScheduleManagementActivity::class.java))
         }
     }
 
@@ -245,8 +244,8 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 //            if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
             // Declaration for show action and details page
             actionAndDetailsVisibility = true
-            val intent = Intent(this.requireContext(), NotificationActivity::class.java)
-            startActivity(intent)
+//            val intent = Intent(this.requireContext(), NotificationActivity::class.java)
+            startActivity(Intent(this.requireContext(), NotificationActivity::class.java))
 //            }
         }
     }
@@ -266,17 +265,22 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     getNotificationCount(idToken, userId)
                 }
                 getString(R.string.branch) -> getBranches(idToken, serviceCategoryId)
-                else -> {
-                }
+                else -> {}
             }
         }
     }
 
     private fun setAllService() {
-        val allServiceList: ArrayList<String> = ArrayList()
-        Log.d(TAG, "setAllService: $serviceList")
-        serviceList.forEach {
-            allServiceList.add(it.serviceName)
+//        val allServiceList: ArrayList<String> = ArrayList()
+//        Log.d(TAG, "setAllService: $serviceList")
+//        serviceList.forEach {
+//            allServiceList.add(it.serviceName)
+//        }
+        val allServiceList = ArrayList<String>().apply {
+            Log.d(TAG, "setAllService: $serviceList")
+            serviceList.forEach {
+                this.add(it.serviceName)
+            }
         }
         widgetAfter()
         //spinner view for all Services
@@ -386,14 +390,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // Action And Status UI setUp
     fun actionAndStatusFragmentMethod(serviceCategoryId: Int, branchId: Int) {
-        val args = Bundle()
-        args.putInt(AppConstants.SERVICE_CATEGORY_ID, serviceCategoryId)
-        args.putInt(AppConstants.SERVICE_VENDOR_ON_BOARDING_ID, branchId)
-        Log.d(TAG, "actionAndDetailsVisibility  dash method $actionAndDetailsVisibility")
-        args.putBoolean("actionAndDetailsVisibility", actionAndDetailsVisibility)
-        val actionAndStatusFragment = ActionsAndStatusFragment()
-        actionAndStatusFragment.arguments = args
-
+        val args = Bundle().apply {
+            putInt(AppConstants.SERVICE_CATEGORY_ID, serviceCategoryId)
+            putInt(AppConstants.SERVICE_VENDOR_ON_BOARDING_ID, branchId)
+            putBoolean("actionAndDetailsVisibility", actionAndDetailsVisibility)
+        }
+        val actionAndStatusFragment = ActionsAndStatusFragment().apply { arguments = args }
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.action_and_status_layout, actionAndStatusFragment)
             .addToBackStack(null)
@@ -493,18 +495,19 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                     is ApisResponse.Success -> {
                         val branchTypeItems: List<DatasNew> = apiResponse.response.datas
                         branchListSpinner.add(BranchDatas(getString(R.string.Branches), 0))
-                        for (i in branchTypeItems.indices) {
-                            val branchName: String =
-                                branchTypeItems[i].branchName
-                            // I want to show this when Selected
-                            val branchId: Int = branchTypeItems[i].serviceVendorOnboardingId
-                            branchListSpinner.add(BranchDatas(branchName, branchId))
+                        branchListSpinner.apply {
+                            for (i in branchTypeItems.indices) {
+                                val branchName: String = branchTypeItems[i].branchName
+                                // I want to show this when Selected
+                                val branchId: Int = branchTypeItems[i].serviceVendorOnboardingId
+                                this.add(BranchDatas(branchName, branchId))
+                            }
                         }
-                        val branchList: ArrayList<String> = ArrayList()
-                        for (i in branchListSpinner.indices) {
-                            val branchName: String =
-                                branchListSpinner[i].branchName // I want to show this when Selected
-                            branchList.add(branchName)
+                        val branchList = ArrayList<String>().apply {
+                            for (i in branchListSpinner.indices) {
+                                // I want to show this when Selected
+                                this.add(branchListSpinner[i].branchName)
+                            }
                         }
                         getViewModel().branches(
                             mDataBinding,

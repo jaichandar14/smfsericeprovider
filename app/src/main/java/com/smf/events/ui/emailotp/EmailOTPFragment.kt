@@ -351,18 +351,23 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // Method For Set SpRegId And RollID to SharedPreference From Login Api
     private fun setSpRegIdAndRollID(apiResponse: ApisResponse.Success<GetLoginInfo>) {
-        sharedPreference.putInt(
-            SharedPreference.SP_REG_ID,
-            apiResponse.response.data.spRegId
-        )
-        sharedPreference.putInt(
-            SharedPreference.ROLE_ID,
-            apiResponse.response.data.roleId
-        )
-        sharedPreference.putString(
-            SharedPreference.USER_ID,
-            apiResponse.response.data.userName
-        )
+        sharedPreference.apply {
+            putInt(SharedPreference.SP_REG_ID, apiResponse.response.data.spRegId)
+            putInt(SharedPreference.ROLE_ID, apiResponse.response.data.roleId)
+            putString(SharedPreference.USER_ID, apiResponse.response.data.userName)
+        }
+//        sharedPreference.putInt(
+//            SharedPreference.SP_REG_ID,
+//            apiResponse.response.data.spRegId
+//        )
+//        sharedPreference.putInt(
+//            SharedPreference.ROLE_ID,
+//            apiResponse.response.data.roleId
+//        )
+//        sharedPreference.putString(
+//            SharedPreference.USER_ID,
+//            apiResponse.response.data.userName
+//        )
     }
 
     class GenericKeyEvent internal constructor(

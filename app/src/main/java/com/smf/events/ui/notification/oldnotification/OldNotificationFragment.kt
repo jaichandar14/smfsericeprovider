@@ -91,9 +91,11 @@ class OldNotificationFragment :
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            when (caller) {
-                getString(R.string.notification) -> getNotifications(idToken, userId)
+        view?.let {
+            withContext(Dispatchers.Main) {
+                when (caller) {
+                    getString(R.string.notification) -> getNotifications(idToken, userId)
+                }
             }
         }
     }
@@ -126,7 +128,7 @@ class OldNotificationFragment :
 
     private fun createNotificationList(apiResponse: ApisResponse.Success<Notification>) {
         notificationList.clear()
-        if (!apiResponse.response.data.isNullOrEmpty()) {
+        if (apiResponse.response.data.isNotEmpty()) {
             mDataBinding?.noRecordsText?.visibility = View.GONE
             apiResponse.response.data.forEach {
                 val time = getDateAndTime(it)

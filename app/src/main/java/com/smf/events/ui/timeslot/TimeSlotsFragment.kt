@@ -24,7 +24,7 @@ import javax.inject.Inject
 // 2487
 class TimeSlotsFragment : Fragment() {
 
-    private var TAG = "TimeSlotsFragment"
+    private var TAG = this::class.java.name
     lateinit var tabLayout: TabLayout
     private lateinit var mDataBinding: FragmentTimeSlotsBinding
     private lateinit var tabVisibilityDisposable: Disposable
@@ -75,9 +75,11 @@ class TimeSlotsFragment : Fragment() {
 
     private fun tabLayoutAndViewPagerSetUp() {
         // 2527 - Set Data For TabLayout
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day)))
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.week)))
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.month)))
+        tabLayout.apply {
+            addTab(tabLayout.newTab().setText(getString(R.string.day)))
+            addTab(tabLayout.newTab().setText(getString(R.string.week)))
+            addTab(tabLayout.newTab().setText(getString(R.string.month)))
+        }
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {

@@ -37,7 +37,7 @@ class ActionDetailsFragment :
     BaseFragment<FragmentActionDetailsBinding, ActionDetailsViewModel>(),
     Tokens.IdTokenCallBackInterface, CallBackInterface {
 
-    var TAG = "ActionDetailsFragment"
+    var TAG = this::class.java.name
     private lateinit var myActionDetailsRecyclerView: RecyclerView
     lateinit var actionDetailsAdapter: ActionDetailsAdapter
     private var closeBtn: ImageView? = null
@@ -60,7 +60,7 @@ class ActionDetailsFragment :
     lateinit var factory: ViewModelProvider.Factory
 
     override fun getViewModel(): ActionDetailsViewModel =
-        ViewModelProvider(this, factory).get(ActionDetailsViewModel::class.java)
+        ViewModelProvider(this, factory)[ActionDetailsViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.actionDetailsViewModel
 
@@ -165,20 +165,20 @@ class ActionDetailsFragment :
             RxBus.publish(RxEvent.QuoteBrief1(2, true))
             // 3103 - Redirect To ActionAndDetails Fragment
             ApplicationUtils.fromNotification = false
-            val args = Bundle()
-            serviceCategoryId?.let { it1 -> args.putInt("serviceCategoryId", it1) }
-            serviceVendorOnboardingId?.let { it1 ->
-                args.putInt(
-                    "serviceVendorOnboardingId",
-                    it1
+            val args = Bundle().apply {
+                serviceCategoryId?.let { it1 -> this.putInt("serviceCategoryId", it1) }
+                serviceVendorOnboardingId?.let { it1 ->
+                    this.putInt(
+                        "serviceVendorOnboardingId",
+                        it1
+                    )
+                }
+                this.putBoolean(
+                    "actionAndDetailsVisibility",
+                    DashBoardFragment.actionAndDetailsVisibility
                 )
             }
-            args.putBoolean(
-                "actionAndDetailsVisibility",
-                DashBoardFragment.actionAndDetailsVisibility
-            )
-            val actionAndStatusFragment = ActionsAndStatusFragment()
-            actionAndStatusFragment.arguments = args
+            val actionAndStatusFragment = ActionsAndStatusFragment().apply { arguments = args }
             // Replace Fragment
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.action_and_status_layout, actionAndStatusFragment)
@@ -238,29 +238,31 @@ class ActionDetailsFragment :
             null,
             0
         )
-        getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
-            .observe(viewLifecycleOwner, Observer { apiResponse ->
-                when (apiResponse) {
-                    is ApisResponse.Success -> {
-                        //  QuoteBriefDialog.newInstance(bidRequestId)
-                        Log.d("TAG", "showDialog1:$bidRequestId ")
-                        sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
-                        QuoteBriefDialog.newInstance()
-                            .show(
-                                (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                                QuoteBriefDialog.TAG
-                            )
+        view?.let {
+            getViewModel().postQuoteDetails(idToken, bidRequestId, biddingQuote)
+                .observe(viewLifecycleOwner, Observer { apiResponse ->
+                    when (apiResponse) {
+                        is ApisResponse.Success -> {
+                            //  QuoteBriefDialog.newInstance(bidRequestId)
+                            Log.d("TAG", "showDialog1:$bidRequestId ")
+                            sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, bidRequestId)
+                            QuoteBriefDialog.newInstance()
+                                .show(
+                                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                                    QuoteBriefDialog.TAG
+                                )
+                        }
+                        is ApisResponse.CustomError -> {
+                            Log.d("TAG", "check token result: ${apiResponse.message}")
+                        }
+                        is ApisResponse.InternetError -> {
+                            (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                            hideProgress()
+                        }
+                        else -> {}
                     }
-                    is ApisResponse.CustomError -> {
-                        Log.d("TAG", "check token result: ${apiResponse.message}")
-                    }
-                    is ApisResponse.InternetError -> {
-                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
-                        hideProgress()
-                    }
-                    else -> {}
-                }
-            })
+                })
+        }
     }
 
     // Method For AWS Token Validation
@@ -282,27 +284,29 @@ class ActionDetailsFragment :
 
     // Method For New Request Api Call
     fun bidActionsApiCall(idToken: String) {
-        getViewModel().getBidActions(
-            idToken,
-            spRegId,
-            serviceCategoryId,
-            serviceVendorOnboardingId,
-            bidStatus
-        ).observe(viewLifecycleOwner, Observer { apiResponse ->
-            when (apiResponse) {
-                is ApisResponse.Success -> {
-                    recyclerViewListUpdate(apiResponse.response.data.serviceProviderBidRequestDtos)
+        view?.let {
+            getViewModel().getBidActions(
+                idToken,
+                spRegId,
+                serviceCategoryId,
+                serviceVendorOnboardingId,
+                bidStatus
+            ).observe(viewLifecycleOwner, Observer { apiResponse ->
+                when (apiResponse) {
+                    is ApisResponse.Success -> {
+                        recyclerViewListUpdate(apiResponse.response.data.serviceProviderBidRequestDtos)
+                    }
+                    is ApisResponse.CustomError -> {
+                        Log.d("TAG", "check token result: ${apiResponse.message}")
+                    }
+                    is ApisResponse.InternetError -> {
+                        (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
+                        hideProgress()
+                    }
+                    else -> {}
                 }
-                is ApisResponse.CustomError -> {
-                    Log.d("TAG", "check token result: ${apiResponse.message}")
-                }
-                is ApisResponse.InternetError -> {
-                    (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
-                    hideProgress()
-                }
-                else -> {}
-            }
-        })
+            })
+        }
     }
 
     // Method For Action Details RecyclerView List Update
