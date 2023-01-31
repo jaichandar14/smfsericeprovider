@@ -113,7 +113,7 @@ class ActiveNotificationFragment :
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        if (view != null) {
+        view?.let {
             withContext(Dispatchers.Main) {
                 when (caller) {
                     getString(R.string.notification) -> getNotifications(idToken, userId)
@@ -149,7 +149,7 @@ class ActiveNotificationFragment :
 
     private fun createNotificationList(apiResponse: ApisResponse.Success<Notification>) {
         notificationList.clear()
-        if (!apiResponse.response.data.isNullOrEmpty()) {
+        if (apiResponse.response.data.isNotEmpty()) {
             mDataBinding?.noRecordsText?.visibility = View.GONE
             apiResponse.response.data.forEach {
                 val time = getDateAndTime(it)

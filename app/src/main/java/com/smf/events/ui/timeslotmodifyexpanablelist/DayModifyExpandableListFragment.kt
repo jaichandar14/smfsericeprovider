@@ -98,7 +98,7 @@ class DayModifyExpandableListFragment : Fragment(),
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer daymody")
-            if (activity != null) {
+            activity?.let {
                 init()
             }
         }
@@ -162,7 +162,7 @@ class DayModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String,
     ) {
-        if (view != null) {
+        view?.let {
             sharedViewModel.getModifyBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -213,22 +213,22 @@ class DayModifyExpandableListFragment : Fragment(),
         childData.clear()
         titleDate.clear()
         for (i in 0 until allDaysList.size) {
-            val bookedEventDetails =
-                ArrayList<ListDataModify>() // Need to add one variable booked r submitted inside ListData
-            apiResponse.response.data.forEach {
-                if (it.bookedEventServiceDtos == null) {
-                    bookedEventDetails.add(nullListData(it))
-                } else if (it.bookedEventServiceDtos.isEmpty()) {
-                    bookedEventDetails.add(isEmptyAvailableListData(it))
-                } else {
-                    bookedEventDetails.add(
-                        ListDataModify(
-                            it.serviceSlot,
-                            it.bookedEventServiceDtos
+            val bookedEventDetails = ArrayList<ListDataModify>().apply {
+                apiResponse.response.data.forEach {
+                    if (it.bookedEventServiceDtos == null) {
+                        this.add(nullListData(it))
+                    } else if (it.bookedEventServiceDtos.isEmpty()) {
+                        this.add(isEmptyAvailableListData(it))
+                    } else {
+                        this.add(
+                            ListDataModify(
+                                it.serviceSlot,
+                                it.bookedEventServiceDtos
+                            )
                         )
-                    )
+                    }
                 }
-            }
+            } // Need to add one variable booked r submitted inside ListData
             allDaysList[i].let { it -> dateFormat(it).let { titleDate.add(it) } }
             childData[titleDate[i]] = bookedEventDetails
         }
@@ -242,19 +242,20 @@ class DayModifyExpandableListFragment : Fragment(),
         position: Int,
     ) {
         Log.d(TAG, "setDataToExpandableList position: $position")
-        val bookedEventDetails = ArrayList<ListDataModify>()
-        apiResponse.response.data.forEach { data ->
-            if (data.bookedEventServiceDtos == null) {
-                bookedEventDetails.add(nullListData(data))
-            } else if (data.bookedEventServiceDtos.isEmpty()) {
-                bookedEventDetails.add(isEmptyAvailableListData(data))
-            } else {
-                bookedEventDetails.add(
-                    ListDataModify(
-                        data.serviceSlot,
-                        data.bookedEventServiceDtos
+        val bookedEventDetails = ArrayList<ListDataModify>().apply {
+            apiResponse.response.data.forEach { data ->
+                if (data.bookedEventServiceDtos == null) {
+                    this.add(nullListData(data))
+                } else if (data.bookedEventServiceDtos.isEmpty()) {
+                    this.add(isEmptyAvailableListData(data))
+                } else {
+                    this.add(
+                        ListDataModify(
+                            data.serviceSlot,
+                            data.bookedEventServiceDtos
+                        )
                     )
-                )
+                }
             }
         }
         Log.d(TAG, "setDataToExpandableList pos11: $bookedEventDetails")
@@ -316,7 +317,6 @@ class DayModifyExpandableListFragment : Fragment(),
         isExpanded: Boolean,
         businessValidationStatus: Boolean,
     ) {
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         if (!businessValidationStatus) {
             this.parent = parent as ExpandableListView
             this.groupPosition = listPosition
@@ -348,11 +348,9 @@ class DayModifyExpandableListFragment : Fragment(),
             )
                 .show()
         }
-//        }
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         val branchName =
             childData[titleDate[listPosition]]?.get(expandedListPosition)?.status?.get(0)?.branchName
         val currentDayFormatter =
@@ -438,7 +436,6 @@ class DayModifyExpandableListFragment : Fragment(),
         // Setting Position From Selected Calender Date
         this.groupPosition = listPosition
         lastGroupPosition = listPosition
-//        }
     }
 
     // 2815 - Method For Set Null Value
@@ -501,14 +498,16 @@ class DayModifyExpandableListFragment : Fragment(),
 
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            fromDate?.let { fromDate ->
-                toDate?.let { toDate ->
-                    getBookedEventServices(
-                        idToken, spRegId,
-                        serviceCategoryId, serviceVendorOnboardingId,
-                        fromDate, toDate, caller
-                    )
+        view?.let {
+            withContext(Dispatchers.Main) {
+                fromDate?.let { fromDate ->
+                    toDate?.let { toDate ->
+                        getBookedEventServices(
+                            idToken, spRegId,
+                            serviceCategoryId, serviceVendorOnboardingId,
+                            fromDate, toDate, caller
+                        )
+                    }
                 }
             }
         }

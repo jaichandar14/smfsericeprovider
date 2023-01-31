@@ -91,7 +91,7 @@ class MonthModifyExpandableListFragment : Fragment(),
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer monthmody")
-            if (activity != null) {
+            activity?.let {
                 init()
             }
         }
@@ -154,7 +154,7 @@ class MonthModifyExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        if (view != null) {
+        view?.let {
             sharedViewModel.getModifyBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId, true,
@@ -194,20 +194,21 @@ class MonthModifyExpandableListFragment : Fragment(),
         position: Int
     ) {
         Log.d(TAG, "setDataToExpandableList position: $position")
-        val bookedEventDetails = ArrayList<ListDataModify>()
-        apiResponse.response.data.forEach { data ->
-            if (data.bookedEventServiceDtos == null) {
-                bookedEventDetails.add(nullListData(data))
-            } else if (data.bookedEventServiceDtos.isEmpty()) {
-                bookedEventDetails.add(isEmptyAvailableListData(data))
-            } else {
-                val bookedEventServiceDtos = updateUpcomingEvents(data)
-                bookedEventDetails.add(
-                    ListDataModify(
-                        data.serviceSlot,
-                        bookedEventServiceDtos
+        val bookedEventDetails = ArrayList<ListDataModify>().apply {
+            apiResponse.response.data.forEach { data ->
+                if (data.bookedEventServiceDtos == null) {
+                   this.add(nullListData(data))
+                } else if (data.bookedEventServiceDtos.isEmpty()) {
+                    this.add(isEmptyAvailableListData(data))
+                } else {
+                    val bookedEventServiceDtos = updateUpcomingEvents(data)
+                    this.add(
+                        ListDataModify(
+                            data.serviceSlot,
+                            bookedEventServiceDtos
+                        )
                     )
-                )
+                }
             }
         }
         Log.d(TAG, "setDataToExpandableList pos11: $bookedEventDetails")
@@ -216,13 +217,14 @@ class MonthModifyExpandableListFragment : Fragment(),
 
     // 2873 - Restrict Completed Dates
     fun updateUpcomingEvents(data: Data): ArrayList<BookedEventServiceDtoModify> {
-        val bookedEventServiceDtos = ArrayList<BookedEventServiceDtoModify>()
-        data.bookedEventServiceDtos?.forEach { objectList ->
-            val currentDayFormatter =
-                DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
-            val eventDate = LocalDate.parse(objectList.eventDate, currentDayFormatter)
-            if (eventDate >= LocalDate.now()) {
-                bookedEventServiceDtos.add(objectList)
+        val bookedEventServiceDtos = ArrayList<BookedEventServiceDtoModify>().apply {
+            data.bookedEventServiceDtos?.forEach { objectList ->
+                val currentDayFormatter =
+                    DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT, Locale.ENGLISH)
+                val eventDate = LocalDate.parse(objectList.eventDate, currentDayFormatter)
+                if (eventDate >= LocalDate.now()) {
+                    this.add(objectList)
+                }
             }
         }
         return bookedEventServiceDtos
@@ -234,21 +236,22 @@ class MonthModifyExpandableListFragment : Fragment(),
     ) {
         childData.clear()
         titleDate.clear()
-        val bookedEventDetails = ArrayList<ListDataModify>()
         addTitle()
-        apiResponse.response.data.forEach {
-            if (it.bookedEventServiceDtos == null) {
-                bookedEventDetails.add(nullListData(it))
-            } else if (it.bookedEventServiceDtos.isEmpty()) {
-                bookedEventDetails.add(isEmptyAvailableListData(it))
-            } else {
-                val bookedEventServiceDtos = updateUpcomingEvents(it)
-                bookedEventDetails.add(
-                    ListDataModify(
-                        it.serviceSlot,
-                        bookedEventServiceDtos
+        val bookedEventDetails = ArrayList<ListDataModify>().apply {
+            apiResponse.response.data.forEach {
+                if (it.bookedEventServiceDtos == null) {
+                    this.add(nullListData(it))
+                } else if (it.bookedEventServiceDtos.isEmpty()) {
+                    this.add(isEmptyAvailableListData(it))
+                } else {
+                    val bookedEventServiceDtos = updateUpcomingEvents(it)
+                    this.add(
+                        ListDataModify(
+                            it.serviceSlot,
+                            bookedEventServiceDtos
+                        )
                     )
-                )
+                }
             }
         }
         childData[titleDate[0]] = bookedEventDetails
@@ -289,7 +292,6 @@ class MonthModifyExpandableListFragment : Fragment(),
     }
 
     override fun onChildClick(listPosition: Int, expandedListPosition: Int, timeSlot: String) {
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         val businessExpDate =
             CalendarUtils.businessValidity?.plusDays(1)?.format(CalendarUtils.dateFormatter)
         if (CalendarUtils.allDaysListForMonth.contains(businessExpDate)) {
@@ -388,7 +390,6 @@ class MonthModifyExpandableListFragment : Fragment(),
                 }
             }
         }
-//        }
     }
 
     override fun onGroupClick(
@@ -397,7 +398,6 @@ class MonthModifyExpandableListFragment : Fragment(),
         isExpanded: Boolean,
         businessValidationStatus: Boolean
     ) {
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         if (businessValidationStatus) {
             Toast.makeText(
                 requireContext(),
@@ -405,7 +405,6 @@ class MonthModifyExpandableListFragment : Fragment(),
                 Toast.LENGTH_LONG
             ).show()
         }
-//        }
     }
 
     // 2697 - Method For Add ExpandableList Title Group
@@ -482,15 +481,17 @@ class MonthModifyExpandableListFragment : Fragment(),
 
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            Log.d(TAG, "tokenCallBack month: $fromDate")
-            fromDate?.let { currentDate ->
-                toDate?.let { toDate ->
-                    getBookedEventServices(
-                        idToken, spRegId,
-                        serviceCategoryId, serviceVendorOnboardingId,
-                        currentDate, toDate, caller
-                    )
+        view?.let {
+            withContext(Dispatchers.Main) {
+                Log.d(TAG, "tokenCallBack month: $fromDate")
+                fromDate?.let { currentDate ->
+                    toDate?.let { toDate ->
+                        getBookedEventServices(
+                            idToken, spRegId,
+                            serviceCategoryId, serviceVendorOnboardingId,
+                            currentDate, toDate, caller
+                        )
+                    }
                 }
             }
         }
@@ -528,13 +529,14 @@ class MonthModifyExpandableListFragment : Fragment(),
 
     // 2952 - Visible Progress bar during Modify Availability
     private fun showProgress() {
-        val bookedEventDetails = ArrayList<ListDataModify>()
-        bookedEventDetails.add(
-            ListDataModify(
-                getString(R.string.empty),
-                listOf(BookedEventServiceDtoModify("", "", "", "", ""))
+        val bookedEventDetails = ArrayList<ListDataModify>().apply {
+            this.add(
+                ListDataModify(
+                    getString(R.string.empty),
+                    listOf(BookedEventServiceDtoModify("", "", "", "", ""))
+                )
             )
-        )
+        }
         childData[titleDate[groupPosition]] = bookedEventDetails
         adapter!!.notifyDataSetChanged()
     }

@@ -96,7 +96,7 @@ class DayExpandableListFragment : Fragment(),
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer dayexp")
-            if (activity != null) {
+            activity?.let {
                 init()
             }
         }
@@ -124,7 +124,7 @@ class DayExpandableListFragment : Fragment(),
 
     // 2776 - Method For set Dates ArrayList
     fun setListOfDatesArrayList(currentDate: ScheduleManagementViewModel.SelectedDate) {
-        if (currentDate.listOfDays.isNullOrEmpty()) {
+        if (currentDate.listOfDays.isEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE
@@ -147,7 +147,7 @@ class DayExpandableListFragment : Fragment(),
         toDate: String,
         caller: String
     ) {
-        if (view != null) {
+        view?.let {
             sharedViewModel.getBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -230,7 +230,6 @@ class DayExpandableListFragment : Fragment(),
     }
 
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         this.parent = parent as ExpandableListView
         this.groupPosition = listPosition
         fromDate = listOfDates?.get(listPosition)
@@ -240,20 +239,20 @@ class DayExpandableListFragment : Fragment(),
         } else {
             // Send Selected Date To ViewModel For Calender UI Display
             fromDate?.let { sharedViewModel.setExpCurrentDate(it) }
-            val bookedEventDetails = ArrayList<ListData>()
-            bookedEventDetails.add(
-                ListData(
-                    getString(R.string.empty),
-                    listOf(BookedEventServiceDto("", "", "", "", ""))
+            val bookedEventDetails = ArrayList<ListData>().apply {
+                add(
+                    ListData(
+                        getString(R.string.empty),
+                        listOf(BookedEventServiceDto("", "", "", "", ""))
+                    )
                 )
-            )
+            }
             childData[titleDate[groupPosition]] = bookedEventDetails
             parent.collapseGroup(lastGroupPosition)
             parent.expandGroup(listPosition)
             apiTokenValidation("bookedEventServicesFromSelectedDate")
         }
         lastGroupPosition = listPosition
-//        }
     }
 
     // 2773 - Method For Update SelectedDate To ExpandableList
@@ -266,7 +265,7 @@ class DayExpandableListFragment : Fragment(),
         for (i in 0 until listOfDates!!.size) {
             Log.d("TAG", "eventsOnSelectedDateApiValueUpdate for: ${listOfDates!![i]}")
             val bookedEventDetails = ArrayList<ListData>()
-            if (apiResponse.response.data.isNullOrEmpty()) {
+            if (apiResponse.response.data.isEmpty()) {
                 bookedEventDetails.add(
                     ListData(
                         "",
@@ -277,7 +276,7 @@ class DayExpandableListFragment : Fragment(),
                 apiResponse.response.data.forEach { it ->
                     Log.d("TAG", "setDataToExpandableList: else called $groupPosition")
                     val bookedEventServiceDtos = getOnlyBookedEvents(it)
-                    if (!bookedEventServiceDtos.isNullOrEmpty()) {
+                    if (bookedEventServiceDtos.isNotEmpty()) {
                         bookedEventDetails.add(
                             ListData(
                                 it.serviceSlot,
@@ -287,7 +286,7 @@ class DayExpandableListFragment : Fragment(),
                     }
                 }
             }
-            if (bookedEventDetails.isNullOrEmpty()) {
+            if (bookedEventDetails.isEmpty()) {
                 bookedEventDetails.add(
                     ListData(
                         "",
@@ -305,10 +304,11 @@ class DayExpandableListFragment : Fragment(),
     fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         Log.d("TAG", "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
-        val bookedList = ArrayList<BookedEventServiceDto>()
-        data.bookedEventServiceDtos.forEach { objectList ->
-            if (objectList.bidStatus == AppConstants.WON_BID) {
-                bookedList.add(objectList)
+        val bookedList = ArrayList<BookedEventServiceDto>().apply {
+            data.bookedEventServiceDtos.forEach { objectList ->
+                if (objectList.bidStatus == AppConstants.WON_BID) {
+                    this.add(objectList)
+                }
             }
         }
         Log.d("TAG", "updateUpcomingEvents week: ${bookedList}")
@@ -322,7 +322,7 @@ class DayExpandableListFragment : Fragment(),
         position: Int
     ) {
         val bookedEventDetails = ArrayList<ListData>()
-        if (apiResponse.response.data.isNullOrEmpty()) {
+        if (apiResponse.response.data.isEmpty()) {
             bookedEventDetails.add(
                 ListData(
                     "",
@@ -333,7 +333,7 @@ class DayExpandableListFragment : Fragment(),
             apiResponse.response.data.forEach { it ->
                 Log.d("TAG", "setDataToExpandableList: else called $groupPosition")
                 val bookedEventServiceDtos = getOnlyBookedEvents(it)
-                if (!bookedEventServiceDtos.isNullOrEmpty()) {
+                if (bookedEventServiceDtos.isNotEmpty()) {
                     bookedEventDetails.add(
                         ListData(
                             it.serviceSlot,
@@ -343,7 +343,7 @@ class DayExpandableListFragment : Fragment(),
                 }
             }
         }
-        if (bookedEventDetails.isNullOrEmpty()) {
+        if (bookedEventDetails.isEmpty()) {
             bookedEventDetails.add(
                 ListData(
                     "",
@@ -392,14 +392,16 @@ class DayExpandableListFragment : Fragment(),
 
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            fromDate?.let { fromDate ->
-                toDate?.let { toDate ->
-                    getBookedEventServices(
-                        idToken, spRegId,
-                        serviceCategoryId, serviceVendorOnboardingId,
-                        fromDate, toDate, caller
-                    )
+        view?.let {
+            withContext(Dispatchers.Main) {
+                fromDate?.let { fromDate ->
+                    toDate?.let { toDate ->
+                        getBookedEventServices(
+                            idToken, spRegId,
+                            serviceCategoryId, serviceVendorOnboardingId,
+                            fromDate, toDate, caller
+                        )
+                    }
                 }
             }
         }

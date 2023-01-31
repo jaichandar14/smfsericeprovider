@@ -93,7 +93,7 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer monthexp")
-            if (activity != null) {
+            activity?.let {
                 init()
             }
         }
@@ -139,7 +139,7 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
         fromDate: String,
         toDate: String,
     ) {
-        if (view != null) {
+        view?.let {
             sharedViewModel.getBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -176,7 +176,7 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
         childData.clear()
         titleDate.clear()
         val bookedEventDetails = ArrayList<ListData>()
-        if (apiResponse.response.data.isNullOrEmpty()) {
+        if (apiResponse.response.data.isEmpty()) {
             bookedEventDetails.add(
                 ListData(
                     "",
@@ -187,7 +187,7 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
             apiResponse.response.data.forEach { it ->
                 Log.d("TAG", "setDataToExpandableList: else called $groupPosition")
                 val bookedEventServiceDtos = getOnlyBookedEvents(it)
-                if (!bookedEventServiceDtos.isNullOrEmpty()) {
+                if (bookedEventServiceDtos.isNotEmpty()) {
                     bookedEventDetails.add(
                         ListData(
                             it.serviceSlot,
@@ -197,7 +197,7 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
                 }
             }
 
-            if (bookedEventDetails.isNullOrEmpty()) {
+            if (bookedEventDetails.isEmpty()) {
                 bookedEventDetails.add(
                     ListData(
                         "",
@@ -217,10 +217,11 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
     fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         Log.d("TAG", "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
-        val bookedList = ArrayList<BookedEventServiceDto>()
-        data.bookedEventServiceDtos.forEach { objectList ->
-            if (objectList.bidStatus == AppConstants.WON_BID) {
-                bookedList.add(objectList)
+        val bookedList = ArrayList<BookedEventServiceDto>().apply {
+            data.bookedEventServiceDtos.forEach { objectList ->
+                if (objectList.bidStatus == AppConstants.WON_BID) {
+                   this.add(objectList)
+                }
             }
         }
         Log.d("TAG", "updateUpcomingEvents week: ${bookedList}")
@@ -288,27 +289,28 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
 
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            when (caller) {
-                AppConstants.BOOKED_EVENT_SERVICES -> {
-                    val currentMonthValue = LocalDateTime.now().monthValue.toString()
-                    currentDate = if (monthValue == currentMonthValue) {
-                        val currentDay = LocalDateTime.now().format(currentDayFormatter)
-                        currentDay
-                    } else {
-                        fromDate
-                    }
-                    currentDate?.let { currentDate ->
-                        toDate?.let { toDate ->
-                            getBookedEventServices(
-                                idToken, spRegId,
-                                serviceCategoryId, serviceVendorOnboardingId,
-                                currentDate, toDate
-                            )
+        view?.let {
+            withContext(Dispatchers.Main) {
+                when (caller) {
+                    AppConstants.BOOKED_EVENT_SERVICES -> {
+                        val currentMonthValue = LocalDateTime.now().monthValue.toString()
+                        currentDate = if (monthValue == currentMonthValue) {
+                            val currentDay = LocalDateTime.now().format(currentDayFormatter)
+                            currentDay
+                        } else {
+                            fromDate
+                        }
+                        currentDate?.let { currentDate ->
+                            toDate?.let { toDate ->
+                                getBookedEventServices(
+                                    idToken, spRegId,
+                                    serviceCategoryId, serviceVendorOnboardingId,
+                                    currentDate, toDate
+                                )
+                            }
                         }
                     }
-                }
-                else -> {
+                    else -> {}
                 }
             }
         }

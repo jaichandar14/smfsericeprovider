@@ -18,7 +18,6 @@ import com.smf.events.ui.timeslotsexpandablelist.model.ListDataModify
 import java.time.LocalDate
 import java.time.Month
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CustomModifyExpandableListAdapter internal constructor(
     private val context: Context,
@@ -27,7 +26,7 @@ class CustomModifyExpandableListAdapter internal constructor(
     private val childData: HashMap<String, List<ListDataModify>>,
 ) : BaseExpandableListAdapter() {
 
-    private val TAG = "CustomModifyExpandableL"
+    private val TAG = this::class.java.name
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         return this.childData[this.titleDate[listPosition]]!![expandedListPosition]
     }
@@ -113,17 +112,18 @@ class CustomModifyExpandableListAdapter internal constructor(
             }
         } else {
             val list = ArrayList<BookedEventsList>()
-            val statusList = ArrayList<String>()
-            for (i in expandedListData.status.indices) {
-                Log.d(TAG, "getChildView loop: ${expandedListData.status[i]}")
-                list.add(
-                    BookedEventsList(
-                        dateFormat(expandedListData.status[i].eventDate),
-                        expandedListData.status[i].eventName,
-                        expandedListData.status[i].bidStatus
+            val statusList = ArrayList<String>().apply {
+                for (i in expandedListData.status.indices) {
+                    Log.d(TAG, "getChildView loop: ${expandedListData.status[i]}")
+                    list.add(
+                        BookedEventsList(
+                            dateFormat(expandedListData.status[i].eventDate),
+                            expandedListData.status[i].eventName,
+                            expandedListData.status[i].bidStatus
+                        )
                     )
-                )
-                statusList.add(expandedListData.status[i].bidStatus)
+                    this.add(expandedListData.status[i].bidStatus)
+                }
             }
             Log.d(TAG, "getChildView expandedListData: $expandedListData")
             Log.d(TAG, "getChildView: $list")

@@ -67,14 +67,15 @@ class CustomExpandableListAdapter internal constructor(
             textNoEventsAvailable?.visibility = View.INVISIBLE
             progressBar?.visibility = View.VISIBLE
         } else {
-            val list = ArrayList<BookedEventsList>()
-            for (i in expandedListData.status.indices) {
-                list.add(
-                    BookedEventsList(
-                        dateFormat(expandedListData.status[i].eventDate),
-                        expandedListData.status[i].eventName, expandedListData.status[i].bidStatus
+            val list = ArrayList<BookedEventsList>().apply {
+                for (i in expandedListData.status.indices) {
+                    this.add(
+                        BookedEventsList(
+                            dateFormat(expandedListData.status[i].eventDate),
+                            expandedListData.status[i].eventName, expandedListData.status[i].bidStatus
+                        )
                     )
-                )
+                }
             }
             recyclerViewBookedSlot?.layoutManager = LinearLayoutManager(context)
             val bookedSlotsRecyclerViewAdapter = BookedSlotsRecyclerViewAdapter(list)

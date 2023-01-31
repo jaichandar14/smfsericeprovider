@@ -165,6 +165,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         // Sedding log event to the adb shell setprop debug.firebase.analytics.app com.smf.events.qafirebase
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.METHOD, eMail)
+//        Bundle().apply { putString(FirebaseAnalytics.Param.METHOD, eMail) }
         firebaseAnalytics.logEvent("userdetails") {
             param("email", eMail)
             param("mobileen", encodedMobileNo)

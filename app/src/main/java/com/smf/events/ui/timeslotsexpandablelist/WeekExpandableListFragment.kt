@@ -103,7 +103,7 @@ class WeekExpandableListFragment : Fragment(),
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer weekexp")
-            if (activity != null) {
+            activity?.let {
                 init()
             }
         }
@@ -164,7 +164,7 @@ class WeekExpandableListFragment : Fragment(),
         toDate: String,
         caller: String,
     ) {
-        if (view != null) {
+        view?.let {
             sharedViewModel.getBookedEventServices(
                 idToken, spRegId, serviceCategoryId,
                 serviceVendorOnBoardingId,
@@ -212,7 +212,7 @@ class WeekExpandableListFragment : Fragment(),
         for (i in 0 until listOfDatesArray.size) {
             Log.d(TAG, "eventsOnSelectedDateApiValueUpdate for: ${listOfDatesArray[i]}")
             val bookedEventDetails = ArrayList<ListData>()
-            if (apiResponse.response.data.isNullOrEmpty()) {
+            if (apiResponse.response.data.isEmpty()) {
                 bookedEventDetails.add(
                     ListData(
                         "",
@@ -223,7 +223,7 @@ class WeekExpandableListFragment : Fragment(),
                 apiResponse.response.data.forEach { it ->
                     Log.d(TAG, "setDataToExpandableList: else called $groupPosition")
                     val bookedEventServiceDtos = getOnlyBookedEvents(it)
-                    if (!bookedEventServiceDtos.isNullOrEmpty()) {
+                    if (bookedEventServiceDtos.isNotEmpty()) {
                         bookedEventDetails.add(
                             ListData(
                                 it.serviceSlot,
@@ -234,7 +234,7 @@ class WeekExpandableListFragment : Fragment(),
                 }
             }
 
-            if (bookedEventDetails.isNullOrEmpty()) {
+            if (bookedEventDetails.isEmpty()) {
                 bookedEventDetails.add(
                     ListData(
                         "",
@@ -258,7 +258,7 @@ class WeekExpandableListFragment : Fragment(),
     ) {
         Log.d(TAG, "setDataToExpandableList: loop method $groupPosition")
         val bookedEventDetails = ArrayList<ListData>()
-        if (apiResponse.response.data.isNullOrEmpty()) {
+        if (apiResponse.response.data.isEmpty()) {
             bookedEventDetails.add(
                 ListData(
                     "",
@@ -269,7 +269,7 @@ class WeekExpandableListFragment : Fragment(),
             apiResponse.response.data.forEach { it ->
                 Log.d(TAG, "setDataToExpandableList: else called $groupPosition")
                 val bookedEventServiceDtos = getOnlyBookedEvents(it)
-                if (!bookedEventServiceDtos.isNullOrEmpty()) {
+                if (bookedEventServiceDtos.isNotEmpty()) {
                     bookedEventDetails.add(
                         ListData(
                             it.serviceSlot,
@@ -280,7 +280,7 @@ class WeekExpandableListFragment : Fragment(),
             }
         }
 
-        if (bookedEventDetails.isNullOrEmpty()) {
+        if (bookedEventDetails.isEmpty()) {
             bookedEventDetails.add(
                 ListData(
                     "",
@@ -295,10 +295,11 @@ class WeekExpandableListFragment : Fragment(),
     fun getOnlyBookedEvents(data: Data): ArrayList<BookedEventServiceDto> {
         val bookedEventServiceDtos = ArrayList<BookedEventServiceDto>()
         Log.d(TAG, "updateUpcomingEvents week: ${data.bookedEventServiceDtos}")
-        val bookedList = ArrayList<BookedEventServiceDto>()
-        data.bookedEventServiceDtos.forEach { objectList ->
-            if (objectList.bidStatus == AppConstants.WON_BID) {
-                bookedList.add(objectList)
+        val bookedList = ArrayList<BookedEventServiceDto>().apply {
+            data.bookedEventServiceDtos.forEach { objectList ->
+                if (objectList.bidStatus == AppConstants.WON_BID) {
+                    this.add(objectList)
+                }
             }
         }
         Log.d(TAG, "updateUpcomingEvents week: ${bookedList}")
@@ -347,7 +348,6 @@ class WeekExpandableListFragment : Fragment(),
     // 2776 -  Method For Perform Group Click Events
     override fun onGroupClick(parent: ViewGroup, listPosition: Int, isExpanded: Boolean) {
         Log.d("TAG", "onGroupClick week: called ${listOfDatesArray[listPosition]}")
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         this.parent = parent as ExpandableListView
         this.groupPosition = listPosition
         this.weekList = listOfDatesArray[listPosition]
@@ -371,7 +371,6 @@ class WeekExpandableListFragment : Fragment(),
             apiTokenValidation("bookedEventServicesFromSelectedDate")
         }
         lastGroupPosition = listPosition
-//        }
     }
 
     // 2670 - Method For AWS Token Validation
@@ -386,20 +385,22 @@ class WeekExpandableListFragment : Fragment(),
 
     // 2670 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            weekList?.forEach {
-                if (it.format(dateFormatter) == LocalDate.now().format(dateFormatter)) {
-                    fromDate = it.format(dateFormatter)
+        view?.let {
+            withContext(Dispatchers.Main) {
+                weekList?.forEach {
+                    if (it.format(dateFormatter) == LocalDate.now().format(dateFormatter)) {
+                        fromDate = it.format(dateFormatter)
+                    }
                 }
-            }
-            Log.d("TAG", "tokenCallBack: $fromDate $toDate")
-            fromDate?.let { fromDate ->
-                toDate?.let { toDate ->
-                    getBookedEventServices(
-                        idToken, spRegId,
-                        serviceCategoryId, serviceVendorOnboardingId,
-                        fromDate, toDate, caller
-                    )
+                Log.d("TAG", "tokenCallBack: $fromDate $toDate")
+                fromDate?.let { fromDate ->
+                    toDate?.let { toDate ->
+                        getBookedEventServices(
+                            idToken, spRegId,
+                            serviceCategoryId, serviceVendorOnboardingId,
+                            fromDate, toDate, caller
+                        )
+                    }
                 }
             }
         }
@@ -453,10 +454,11 @@ class WeekExpandableListFragment : Fragment(),
         currentWeekDate.weekListMapOfMonth.forEach {
             Log.d("TAG", "getWeekListMap: ${it.key}")
             val weekFromDate = currentWeekDate.weekListMapOfMonth[it.key]?.fromDate
-            val weekList = ArrayList<String>()
-            for (a in 0 until 7) {
-                if (weekFromDate != null) {
-                    weekList.add(weekFromDate.plusDays(a.toLong()).format(dateFormatter))
+            val weekList = ArrayList<String>().apply {
+                for (a in 0 until 7) {
+                    if (weekFromDate != null) {
+                        this.add(weekFromDate.plusDays(a.toLong()).format(dateFormatter))
+                    }
                 }
             }
             weekMap[it.key] = weekList

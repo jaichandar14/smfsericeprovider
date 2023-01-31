@@ -412,11 +412,13 @@ class DeselectingDialogFragment(
 
     // 2814 - Callback From Token Class
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            if (caller == AppConstants.DESELECTED) {
-                callDeSelectedApi()
-            } else if (caller == AppConstants.NULL_TO_SELECT) {
-                callNullToSelectApi()
+        view?.let {
+            withContext(Dispatchers.Main) {
+                if (caller == AppConstants.DESELECTED) {
+                    callDeSelectedApi()
+                } else if (caller == AppConstants.NULL_TO_SELECT) {
+                    callNullToSelectApi()
+                }
             }
         }
     }
