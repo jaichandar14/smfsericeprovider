@@ -33,7 +33,7 @@ class ScheduleManagementActivity :
     private lateinit var changingNavDisposable: Disposable
     private lateinit var internetDisposable: Disposable
     private lateinit var toggleBtnVisibilityDisposable: Disposable
-    override fun getContentView(): Int = com.smf.events.R.layout.activity_schedule_managment
+    override fun getContentView(): Int = R.layout.activity_schedule_managment
 
     override fun getViewModel(): ScheduleManagementViewModel =
         ViewModelProvider(this, factory)[ScheduleManagementViewModel::class.java]
@@ -67,7 +67,6 @@ class ScheduleManagementActivity :
 
         internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer scheduled activity")
-//            internetErrorDialogOld.dismissDialog()
         }
 
         // Observer for visible switch button and text
@@ -88,7 +87,6 @@ class ScheduleManagementActivity :
     fun calendarUI() {
         // 2528 - Toggle Button Logic
         mViewDataBinding?.switchBtn?.setOnClickListener {
-//            if (internetErrorDialogOld.checkInternetAvailable(this)) {
             if (mViewDataBinding?.switchBtn?.isChecked == false)
                 mViewDataBinding?.switchBtnTx?.text =
                     resources.getString(com.smf.events.R.string.switch_to_modify_slots_availability)

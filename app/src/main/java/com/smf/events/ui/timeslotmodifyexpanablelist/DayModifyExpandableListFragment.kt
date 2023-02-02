@@ -96,14 +96,6 @@ class DayModifyExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer daymody")
-            activity?.let {
-                init()
-            }
-        }
-
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(viewLifecycleOwner) { currentDate ->
             //  2986 Showing progress based on calender and service selection
@@ -139,7 +131,7 @@ class DayModifyExpandableListFragment : Fragment(),
 
     // 2776 - Method For set Dates ArrayList
     private fun initializeExpandableViewData() {
-        if (allDaysList.isNullOrEmpty()) {
+        if (allDaysList.isEmpty()) {
             mDataBinding.expendableList.visibility = View.GONE
             mDataBinding.modifyProgressBar.visibility = View.GONE
             mDataBinding.noEventsText.visibility = View.VISIBLE

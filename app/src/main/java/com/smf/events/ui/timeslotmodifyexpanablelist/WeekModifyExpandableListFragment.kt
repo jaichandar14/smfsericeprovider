@@ -101,13 +101,6 @@ class WeekModifyExpandableListFragment : Fragment(),
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
 
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer weekMody")
-            activity?.let {
-                init()
-            }
-        }
-
         sharedViewModel.getCurrentWeekDate.observe(
             viewLifecycleOwner
         ) { currentWeekDate ->

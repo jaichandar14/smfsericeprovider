@@ -89,14 +89,6 @@ class MonthModifyExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer monthmody")
-            activity?.let {
-                init()
-            }
-        }
-
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentMonthDate.observe(
             viewLifecycleOwner

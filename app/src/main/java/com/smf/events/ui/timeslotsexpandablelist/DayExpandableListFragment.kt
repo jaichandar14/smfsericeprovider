@@ -57,7 +57,6 @@ class DayExpandableListFragment : Fragment(),
     private var listOfDates: ArrayList<String>? = ArrayList()
     private var groupPosition: Int = 0
     private var isScroll: Boolean = false
-    private lateinit var dialogDisposable: Disposable
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -94,14 +93,6 @@ class DayExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer dayexp")
-            activity?.let {
-                init()
-            }
-        }
-
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentDate.observe(viewLifecycleOwner) { currentDate ->
             serviceCategoryIdAndServiceVendorOnboardingId(currentDate)
@@ -434,12 +425,6 @@ class DayExpandableListFragment : Fragment(),
             Locale.ENGLISH
         )
         return "$month  $date - $currentDay"
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onViewCreated: observe onDestroy: dayexp")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 
 }
