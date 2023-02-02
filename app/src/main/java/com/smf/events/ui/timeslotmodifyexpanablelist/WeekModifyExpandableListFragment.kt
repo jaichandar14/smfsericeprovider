@@ -640,7 +640,7 @@ class WeekModifyExpandableListFragment : Fragment(),
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: weekmody")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 
 }

@@ -125,7 +125,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
 
         mDataBinding.closeCalendar.setOnClickListener {
             // Clear internet dialog observer when close button clicked
-            if (!internetDisposable.isDisposed) internetDisposable.dispose()
+            if (internetDisposable.isDisposed.not()) internetDisposable.dispose()
             RxBus.publish(RxEvent.ChangingNav(1))
         }
 
@@ -779,7 +779,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
     override fun onDestroy() {
         super.onDestroy()
         Log.d("TAG", "onDestroy: called calendar frag")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-        if (!internetDisposable.isDisposed) internetDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
+        if (internetDisposable.isDisposed.not()) internetDisposable.dispose()
     }
 }

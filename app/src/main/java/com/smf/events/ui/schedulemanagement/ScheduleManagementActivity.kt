@@ -136,9 +136,9 @@ class ScheduleManagementActivity :
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: called scheduled activity")
-        if (!changingNavDisposable.isDisposed) changingNavDisposable.dispose()
-        if (!internetDisposable.isDisposed) internetDisposable.dispose()
-        if (!toggleBtnVisibilityDisposable.isDisposed) toggleBtnVisibilityDisposable.dispose()
+        if (changingNavDisposable.isDisposed.not()) changingNavDisposable.dispose()
+        if (internetDisposable.isDisposed.not()) internetDisposable.dispose()
+        if (toggleBtnVisibilityDisposable.isDisposed.not()) toggleBtnVisibilityDisposable.dispose()
     }
 
 }

@@ -548,7 +548,7 @@ class DayModifyExpandableListFragment : Fragment(),
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy: called DayMody")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 
 }
