@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentCalendarBinding
 import com.smf.events.helper.*
@@ -166,7 +167,11 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
-                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT).show()
+                        sharedViewModel.setToastMessageG(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
@@ -446,33 +451,33 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         weekSelectedListAll = weekMapList
     }
 
-    override fun onClickBusinessExpDate(valid: Boolean) {
-        if (valid) {
-            if (toast != null) {
-                toast?.cancel()
-                toast = Toast.makeText(
-                    requireContext(),
-                    "Your Business registration valid to date is No longer available for the selected date",
-                    Toast.LENGTH_SHORT
-                )
-                toast?.show()
-            } else {
-                toast = Toast.makeText(
-                    requireContext(),
-                    "Your Business registration valid to date is No longer available for the selected date",
-                    Toast.LENGTH_SHORT
-                )
-                toast?.show()
-            }
-
-
-        } else {
-            Toast.makeText(
-                requireContext(), "Your Last Business registration Date", Toast.LENGTH_SHORT
-            ).show()
-        }
-        CalendarUtils.toastCount = 0
-    }
+//    override fun onClickBusinessExpDate(valid: Boolean) {
+//        if (valid) {
+//            if (toast != null) {
+//                toast?.cancel()
+//                toast = Toast.makeText(
+//                    requireContext(),
+//                    "Your Business registration valid to date is No longer available for the selected date",
+//                    Toast.LENGTH_SHORT
+//                )
+//                toast?.show()
+//            } else {
+//                toast = Toast.makeText(
+//                    requireContext(),
+//                    "Your Business registration valid to date is No longer available for the selected date",
+//                    Toast.LENGTH_SHORT
+//                )
+//                toast?.show()
+//            }
+//
+//
+//        } else {
+//            Toast.makeText(
+//                requireContext(), "Your Last Business registration Date", Toast.LENGTH_SHORT
+//            ).show()
+//        }
+//        CalendarUtils.toastCount = 0
+//    }
 
     // 2458 Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
@@ -529,16 +534,18 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
-                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT).show()
+                        sharedViewModel.setToastMessageG(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
                             apiResponse.message
                         )
                     }
-                    else -> {
-                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
-                    }
+                    else -> {}
                 }
             }
     }
@@ -579,6 +586,11 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
+                        sharedViewModel.setToastMessageG(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
@@ -665,16 +677,18 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                         Log.d("TAG", "Calendar Event:$serviceDate ")
                     }
                     is ApisResponse.CustomError -> {
-                        Log.d("TAG", "check token result: ${apiresponse.message}")
+                        sharedViewModel.setToastMessageG(
+                            apiresponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as ScheduleManagementActivity).showInternetDialog(
                             apiresponse.message
                         )
                     }
-                    else -> {
-                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
-                    }
+                    else -> {}
                 }
             }
         }
@@ -725,7 +739,11 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                     getAllServices()
                 }
                 else -> {
-                    Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
+                    sharedViewModel.setToastMessageG(
+                        "Timeout",
+                        Snackbar.LENGTH_LONG,
+                        AppConstants.PLAIN_SNACK_BAR
+                    )
                 }
             }
         }

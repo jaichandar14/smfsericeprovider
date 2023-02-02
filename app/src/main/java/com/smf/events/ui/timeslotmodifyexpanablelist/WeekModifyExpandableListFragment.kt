@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
@@ -195,7 +196,11 @@ class WeekModifyExpandableListFragment : Fragment(),
                             TAG,
                             "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
                         )
-                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT).show()
+                        sharedViewModel.setToastMessageG(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                         mDataBinding.modifyProgressBar.visibility = View.GONE
                         mDataBinding.expandableLayout.visibility = View.VISIBLE
                     }
@@ -415,12 +420,11 @@ class WeekModifyExpandableListFragment : Fragment(),
 //                        .show()
 //                }
             } else {
-                Toast.makeText(
-                    requireContext(),
+                sharedViewModel.setToastMessageG(
                     "Business validation date expired",
-                    Toast.LENGTH_SHORT
+                    Snackbar.LENGTH_SHORT,
+                    AppConstants.PLAIN_SNACK_BAR
                 )
-                    .show()
                 return
             }
         }
