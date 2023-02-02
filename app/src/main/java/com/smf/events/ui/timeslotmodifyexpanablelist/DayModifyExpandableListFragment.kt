@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
@@ -194,8 +195,11 @@ class DayModifyExpandableListFragment : Fragment(),
                             TAG,
                             "check token result success ModifyBookedEvent exp: ${apiResponse.message}"
                         )
-                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT)
-                            .show()
+                        sharedViewModel.setToastMessageG(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                         mDataBinding.modifyProgressBar.visibility = View.GONE
                         mDataBinding.expandableLayout.visibility = View.VISIBLE
                     }
@@ -345,12 +349,11 @@ class DayModifyExpandableListFragment : Fragment(),
             }
             lastGroupPosition = listPosition
         } else {
-            Toast.makeText(
-                requireContext(),
+            sharedViewModel.setToastMessageG(
                 "Your Business registration valid to date is No longer available for the selected date",
-                Toast.LENGTH_LONG
+                Snackbar.LENGTH_LONG,
+                AppConstants.PLAIN_SNACK_BAR
             )
-                .show()
         }
     }
 

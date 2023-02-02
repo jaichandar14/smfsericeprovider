@@ -10,6 +10,7 @@ import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentTimeSlotsExpandableListBinding
@@ -176,7 +177,11 @@ class MonthModifyExpandableListFragment : Fragment(),
                     }
                     is ApisResponse.CustomError -> {
                         Log.d("TAG", "check token result: ${apiResponse.message}")
-                        Toast.makeText(requireContext(), apiResponse.message, Toast.LENGTH_SHORT).show()
+                        sharedViewModel.setToastMessageG(
+                            apiResponse.message,
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
                         mDataBinding.modifyProgressBar.visibility = View.GONE
                         mDataBinding.expandableLayout.visibility = View.VISIBLE}
                     is ApisResponse.InternetError -> {
@@ -401,11 +406,16 @@ class MonthModifyExpandableListFragment : Fragment(),
         businessValidationStatus: Boolean
     ) {
         if (businessValidationStatus) {
-            Toast.makeText(
-                requireContext(),
+//            Toast.makeText(
+//                requireContext(),
+//                "Your Business registration valid to date is No longer available for the selected date",
+//                Toast.LENGTH_LONG
+//            ).show()
+            sharedViewModel.setToastMessageG(
                 "Your Business registration valid to date is No longer available for the selected date",
-                Toast.LENGTH_LONG
-            ).show()
+                Snackbar.LENGTH_LONG,
+                AppConstants.PLAIN_SNACK_BAR
+            )
         }
     }
 
