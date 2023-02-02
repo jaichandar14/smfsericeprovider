@@ -122,7 +122,7 @@ class TimeSlotsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!tabVisibilityDisposable.isDisposed) tabVisibilityDisposable.dispose()
+        if (tabVisibilityDisposable.isDisposed.not()) tabVisibilityDisposable.dispose()
     }
 
 }

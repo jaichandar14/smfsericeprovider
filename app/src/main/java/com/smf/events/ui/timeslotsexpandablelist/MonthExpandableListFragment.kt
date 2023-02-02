@@ -59,7 +59,6 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
     private var currentDate: String? = null
     private var monthValue: String = ""
     private var groupPosition: Int = 0
-    private lateinit var dialogDisposable: Disposable
 
     @Inject
     lateinit var sharedPreference: SharedPreference
@@ -92,13 +91,6 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer monthexp")
-            activity?.let {
-                init()
-            }
-        }
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentMonthDate.observe(
             viewLifecycleOwner
@@ -353,12 +345,6 @@ class MonthExpandableListFragment : Fragment(), Tokens.IdTokenCallBackInterface 
                 .lowercase(Locale.getDefault())
         }
         return month
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onViewCreated: observe onDestroy: monthexp")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 
 }

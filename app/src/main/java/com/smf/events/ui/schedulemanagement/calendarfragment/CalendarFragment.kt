@@ -81,6 +81,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
     private var dateList: ArrayList<String> = ArrayList()
     private var businessValidity: LocalDate? = null
     lateinit var dialogDisposable: Disposable
+    private lateinit var internetDisposable: Disposable
     var toastlevel = true
     var toast: Toast? = null
 
@@ -115,7 +116,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         // 2458 Method for initializing
         selectedEXPDateObserver()
 
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
+        internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer Calendar")
             if (activity != null) {
                 init()
@@ -123,6 +124,8 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         }
 
         mDataBinding.closeCalendar.setOnClickListener {
+            // Clear internet dialog observer when close button clicked
+            if (internetDisposable.isDisposed.not()) internetDisposable.dispose()
             RxBus.publish(RxEvent.ChangingNav(1))
         }
 
@@ -177,7 +180,8 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                             SMFApp.appContext.resources.getString(R.string.something_went_wrong),
                             Snackbar.LENGTH_LONG,
                             AppConstants.PLAIN_SNACK_BAR
-                        )                    }
+                        )
+                    }
                 }
             }
     }
@@ -685,34 +689,46 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
     }
 
     override suspend fun tokenCallBack(idToken: String, caller: String) {
-        withContext(Dispatchers.Main) {
-            when (caller) {
-                "EventDateApiPreviousActionAndNextMonth" -> {
-                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken, false)
-                }
-                "EventDateApiAllService" -> {
-                    Log.d("TAG", "tokenCallBack:$serviceCategoryId ")
-                    eventDateAndCounts(
-                        serviceCategoryId, 0, idToken, true
-                    )
-                }
-                "EventDateApiBranches" -> {
-                    eventDateAndCounts(serviceCategoryId, serviceVendorOnboardingId, idToken, false)
-                }
-                "Branches" -> {
-                    // 2458 Branch ApiCall
-                    getBranches(idToken, serviceCategoryId)
-                }
-                "AllServices" -> {
-                    // 2458 Method for All Service API call
-                    getAllServices()
-                }
-                else -> {
-                    sharedViewModel.setToastMessageG(
-                        "Timeout",
-                        Snackbar.LENGTH_LONG,
-                        AppConstants.PLAIN_SNACK_BAR
-                    )
+        view?.let {
+            withContext(Dispatchers.Main) {
+                when (caller) {
+                    "EventDateApiPreviousActionAndNextMonth" -> {
+                        eventDateAndCounts(
+                            serviceCategoryId,
+                            serviceVendorOnboardingId,
+                            idToken,
+                            false
+                        )
+                    }
+                    "EventDateApiAllService" -> {
+                        Log.d("TAG", "tokenCallBack:$serviceCategoryId ")
+                        eventDateAndCounts(
+                            serviceCategoryId, 0, idToken, true
+                        )
+                    }
+                    "EventDateApiBranches" -> {
+                        eventDateAndCounts(
+                            serviceCategoryId,
+                            serviceVendorOnboardingId,
+                            idToken,
+                            false
+                        )
+                    }
+                    "Branches" -> {
+                        // 2458 Branch ApiCall
+                        getBranches(idToken, serviceCategoryId)
+                    }
+                    "AllServices" -> {
+                        // 2458 Method for All Service API call
+                        getAllServices()
+                    }
+                    else -> {
+                        sharedViewModel.setToastMessageG(
+                            "Timeout",
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                    }
                 }
             }
         }
@@ -731,6 +747,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         }
         return dateList
     }
+
     override fun onClickBusinessExpDate(valid: Boolean) {
         if (valid) {
             if (toast != null) {
@@ -758,9 +775,11 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         }
         CalendarUtils.toastCount = 0
     }
+
     override fun onDestroy() {
         super.onDestroy()
         Log.d("TAG", "onDestroy: called calendar frag")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
+        if (internetDisposable.isDisposed.not()) internetDisposable.dispose()
     }
 }

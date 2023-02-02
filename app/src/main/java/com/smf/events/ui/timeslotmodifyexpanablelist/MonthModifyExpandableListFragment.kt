@@ -89,14 +89,6 @@ class MonthModifyExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer monthmody")
-            activity?.let {
-                init()
-            }
-        }
-
         // 2558 - getDate ScheduleManagementViewModel Observer
         sharedViewModel.getCurrentMonthDate.observe(
             viewLifecycleOwner
@@ -556,7 +548,7 @@ class MonthModifyExpandableListFragment : Fragment(),
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onViewCreated: observe onDestroy:moth mody")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 
 }

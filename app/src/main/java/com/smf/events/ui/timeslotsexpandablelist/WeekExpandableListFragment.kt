@@ -63,7 +63,6 @@ class WeekExpandableListFragment : Fragment(),
     private var weekMap: LinkedHashMap<Int, ArrayList<String>>? = null
     private var listOfDatesArray: ArrayList<ArrayList<String>> = ArrayList()
     private var isScroll: Boolean = false
-    private lateinit var dialogDisposable: Disposable
 
     companion object {
         private var lastGroupPosition: Int = 0
@@ -102,13 +101,6 @@ class WeekExpandableListFragment : Fragment(),
         setIdTokenAndSpRegId()
         // 2670 - Token Class CallBack Initialization
         tokens.setCallBackInterface(this)
-
-        dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
-            Log.d(TAG, "onViewCreated: observer weekexp")
-            activity?.let {
-                init()
-            }
-        }
 
         sharedViewModel.getCurrentWeekDate.observe(
             viewLifecycleOwner
@@ -480,12 +472,6 @@ class WeekExpandableListFragment : Fragment(),
         spRegId = sharedPreference.getInt(SharedPreference.SP_REG_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         roleId = sharedPreference.getInt(SharedPreference.ROLE_ID)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onViewCreated: observe onDestroy: weekexp")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
     }
 
 }
