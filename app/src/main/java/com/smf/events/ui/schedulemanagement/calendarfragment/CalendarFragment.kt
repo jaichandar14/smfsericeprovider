@@ -731,7 +731,33 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         }
         return dateList
     }
+    override fun onClickBusinessExpDate(valid: Boolean) {
+        if (valid) {
+            if (toast != null) {
+                toast?.cancel()
+                toast = Toast.makeText(
+                    requireContext(),
+                    "Your Business registration valid to date is No longer available for the selected date",
+                    Toast.LENGTH_SHORT
+                )
+                toast?.show()
+            } else {
+                toast = Toast.makeText(
+                    requireContext(),
+                    "Your Business registration valid to date is No longer available for the selected date",
+                    Toast.LENGTH_SHORT
+                )
+                toast?.show()
+            }
 
+
+        } else {
+            Toast.makeText(
+                requireContext(), "Your Last Business registration Date", Toast.LENGTH_SHORT
+            ).show()
+        }
+        CalendarUtils.toastCount = 0
+    }
     override fun onDestroy() {
         super.onDestroy()
         Log.d("TAG", "onDestroy: called calendar frag")
