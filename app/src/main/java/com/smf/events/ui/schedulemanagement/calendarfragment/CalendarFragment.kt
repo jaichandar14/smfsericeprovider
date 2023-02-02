@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.smf.events.R
 import com.smf.events.SMFApp
 import com.smf.events.databinding.FragmentCalendarBinding
 import com.smf.events.helper.*
@@ -111,13 +112,7 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
         tokens.setCallBackInterface(this)
         // 2458 Scheduled Management  ViewModel CallBackInterface
         sharedViewModel.setCallBackInterface(this)
-//        // 2458 Method for initializing
-//        initWidgets()
-//        // 2622 Method for Calendar Format(Day,week,month) Picker
-//        setCalendarFormat()
-////        // 2686 Method for Token Validation and Service list ApiCall
-//        apiTokenValidationCalendar("AllServices")
-        // 2796 Method for observing Exp View Date
+        // 2458 Method for initializing
         selectedEXPDateObserver()
 
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
@@ -135,7 +130,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
             mDataBinding.progressBar.visibility = View.GONE
             mDataBinding.calendarLayout.visibility = View.VISIBLE
         }
-        Log.d("TAG", "onViewCreated: not observer Calendar")
         init()
     }
 
@@ -179,8 +173,11 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                         )
                     }
                     else -> {
-                        Toast.makeText(requireContext(), "Timeout", Toast.LENGTH_SHORT).show()
-                    }
+                        sharedViewModel.setToastMessageG(
+                            SMFApp.appContext.resources.getString(R.string.something_went_wrong),
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )                    }
                 }
             }
     }
@@ -368,15 +365,8 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.minusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            //  settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
-// 2803 CustomDialog Fragment
-//            DeselectingDialogFragment.newInstance("sele")
-//                .show(
-//                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-//                    DeselectingDialogFragment.TAG
-//                )
         }
     }
 
@@ -387,14 +377,8 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
             CalendarUtils.selectedDate = CalendarUtils.selectedDate?.plusMonths(1)
             daysPositon = null
             setMonthView(dayinWeek, daysPositon)
-            //  settingWeekDate()
             settingMonthDate()
             apiTokenValidationCalendar("EventDateApiPreviousActionAndNextMonth")
-//            DeselectingDialogFragment.newInstance("Deselected")
-//                .show(
-//                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-//                    DeselectingDialogFragment.TAG
-//                )
         }
     }
 
@@ -443,41 +427,12 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
             daysPositon = pos
             this.absoluteAdapterPosition = absoluteAdapterPosition
         }
-        //setMonthView(dayinWeek, daysPositon)
     }
 
     override fun weekMapList(weekMapList: HashMap<LocalDate, Int>?) {
         Log.d("TAG", "weekMapList: $weekMapList")
         weekSelectedListAll = weekMapList
     }
-
-//    override fun onClickBusinessExpDate(valid: Boolean) {
-//        if (valid) {
-//            if (toast != null) {
-//                toast?.cancel()
-//                toast = Toast.makeText(
-//                    requireContext(),
-//                    "Your Business registration valid to date is No longer available for the selected date",
-//                    Toast.LENGTH_SHORT
-//                )
-//                toast?.show()
-//            } else {
-//                toast = Toast.makeText(
-//                    requireContext(),
-//                    "Your Business registration valid to date is No longer available for the selected date",
-//                    Toast.LENGTH_SHORT
-//                )
-//                toast?.show()
-//            }
-//
-//
-//        } else {
-//            Toast.makeText(
-//                requireContext(), "Your Last Business registration Date", Toast.LENGTH_SHORT
-//            ).show()
-//        }
-//        CalendarUtils.toastCount = 0
-//    }
 
     // 2458 Setting IdToken, SpRegId And RollId
     private fun setIdTokenAndSpRegId() {
@@ -489,7 +444,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
     override fun itemClick(msg: Int) {
         if (serviceList[msg].serviceName == "All Service") {
             val branchSpinner: ArrayList<String> = ArrayList()
-            // branchSpinner.add(0, "Branches")
             serviceCategoryId = 0
             sharedViewModel.branches(
                 mDataBinding, branchSpinner
@@ -500,7 +454,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
             Log.d("TAG", "itemClick services: $serviceCategoryId")
             apiTokenValidationCalendar("Branches")
             branchListSpinner.clear()
-            //apiTokenValidationCalendar("EventDateApiAllService")
         }
     }
 
@@ -523,8 +476,6 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
             .observe(viewLifecycleOwner) { apiResponse ->
                 when (apiResponse) {
                     is ApisResponse.Success -> {
-//                        serviceList.add(ServicesData("All Service", 0))
-//                        branchListSpinner.add(BranchDatas("Branches", 0))
                         serviceList.clear()
                         apiResponse.response.data.forEach {
                             serviceList.add(ServicesData(it.serviceName, it.serviceCategoryId))
@@ -545,7 +496,13 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                             apiResponse.message
                         )
                     }
-                    else -> {}
+                    else -> {
+                        sharedViewModel.setToastMessageG(
+                            SMFApp.appContext.resources.getString(R.string.something_went_wrong),
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                    }
                 }
             }
     }
@@ -597,7 +554,13 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                             apiResponse.message
                         )
                     }
-                    else -> {}
+                    else -> {
+                        sharedViewModel.setToastMessageG(
+                            SMFApp.appContext.resources.getString(R.string.something_went_wrong),
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                    }
                 }
             }
     }
@@ -688,7 +651,13 @@ class CalendarFragment : Fragment(), CalendarAdapter.OnItemListener,
                             apiresponse.message
                         )
                     }
-                    else -> {}
+                    else -> {
+                        sharedViewModel.setToastMessageG(
+                            SMFApp.appContext.resources.getString(R.string.something_went_wrong),
+                            Snackbar.LENGTH_LONG,
+                            AppConstants.PLAIN_SNACK_BAR
+                        )
+                    }
                 }
             }
         }
