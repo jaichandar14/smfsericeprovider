@@ -71,7 +71,7 @@ class ViewOrderDetailsDialogFragment(
     private lateinit var dialogDisposable: Disposable
 
     override fun getViewModel(): ViewOrderDetailsViewModel =
-        ViewModelProvider(this, factory).get(ViewOrderDetailsViewModel::class.java)
+        ViewModelProvider(this, factory)[ViewOrderDetailsViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.viewOrderDetailsViewModel
 
@@ -248,6 +248,6 @@ class ViewOrderDetailsDialogFragment(
     override fun onDestroy() {
         super.onDestroy()
         isDialogShown = false
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 }

@@ -144,16 +144,11 @@ class QuoteDetailsDialog(
         getViewModel().getCurrencyType(mDataBinding, currencyTypeList)
         // Quote ViewModel CallBackInterface
         getViewModel().setCallBackInterface(this)
-//        // Internet Error Dialog Initialization
-//        internetErrorDialog = InternetErrorDialog.newInstance()
         mDataBinding?.btnCancel?.setOnClickListener {
             btnCancel()
         }
         dialogDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(CommonInfoDialog.TAG, "onViewCreated: observer QuoteDetails dialog")
-//            internetErrorDialog.dismissDialog()
-            // 3328 upload file issue
-            //   dismiss()
         }
         // file uploader
         fileUploader()
@@ -182,7 +177,6 @@ class QuoteDetailsDialog(
     // Call back from Quote Details Dialog View Model
     override fun callBack(status: String) {
         mDataBinding?.btnOk?.setOnClickListener {
-//            if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
             when (status) {
                 "iHaveQuote" ->
                     if (mDataBinding?.costEstimationAmount?.text.isNullOrEmpty()) {
@@ -192,7 +186,6 @@ class QuoteDetailsDialog(
                     }
                 "quoteLater" -> apiTokenValidationQuoteDetailsDialog("quoteLater")
             }
-//            }
         }
     }
 
@@ -485,7 +478,7 @@ class QuoteDetailsDialog(
     override fun onStop() {
         super.onStop()
         Log.d(CommonInfoDialog.TAG, "onStop: called Quote details dialog")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
         isDialogShown = false
     }
 }

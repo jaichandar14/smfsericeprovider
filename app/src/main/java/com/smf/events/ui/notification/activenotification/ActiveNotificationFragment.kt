@@ -274,7 +274,7 @@ class ActiveNotificationFragment :
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onViewCreated: observer ActiveNotificationFragment stop")
-        if (!clearAllDisposable.isDisposed) clearAllDisposable.dispose()
+        if (clearAllDisposable.isDisposed.not()) clearAllDisposable.dispose()
     }
 
 }

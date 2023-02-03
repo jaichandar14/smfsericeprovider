@@ -74,7 +74,7 @@ abstract class BaseActivity<T : ViewDataBinding, out V : BaseViewModel> : AppCom
         }
     }
 
-    fun observerMethod() {
+    private fun observerMethod() {
         Log.d("TAG", "on toast create Base Activity befor")
         getViewModel()?.getToastMessageG?.observe(this) { toastMessageG ->
             Log.d("TAG", "on toast create Base Activity $toastMessageG")

@@ -262,7 +262,7 @@ class NotificationActivity :
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onViewCreated: observer NotificationActivity Destroy")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
-        if (!internetStatusDisposable.isDisposed) internetStatusDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
+        if (internetStatusDisposable.isDisposed.not()) internetStatusDisposable.dispose()
     }
 }

@@ -51,7 +51,7 @@ abstract class BaseFragment<V : ViewDataBinding, out T : BaseViewModel> : Fragme
     private fun toastObserver() {
         getViewModel()?.getToastMessageG?.observe(viewLifecycleOwner) { toastMessageG ->
             Log.d("TAG", "onResume Base Fragment $toastMessageG")
-            if (!toastMessageG.msg.isNullOrEmpty()) {
+            if (toastMessageG.msg.isNotEmpty()) {
                 SnackBar.showSnakbarTypeOne(
                     view,
                     toastMessageG.msg,

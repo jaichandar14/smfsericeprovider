@@ -395,7 +395,7 @@ class ActionDetailsFragment :
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: called ActionDetails")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 
 }

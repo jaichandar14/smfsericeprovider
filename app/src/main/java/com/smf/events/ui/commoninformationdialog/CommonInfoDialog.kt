@@ -61,7 +61,7 @@ class CommonInfoDialog(
     @Inject
     lateinit var sharedPreference: SharedPreference
     override fun getViewModel(): CommonInfoDialogViewModel =
-        ViewModelProvider(this, factory).get(CommonInfoDialogViewModel::class.java)
+        ViewModelProvider(this, factory)[CommonInfoDialogViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.commonInfoDialogViewModel
 
@@ -101,20 +101,16 @@ class CommonInfoDialog(
             // 2904 Changes made for Intitate closer flow in Won Bid
             mDataBinding?.textInformation?.text = getText(R.string.initiate_closer_text)
             mDataBinding?.btnOk?.setOnClickListener {
-//                if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
                 apiTokenValidationBidActions(AppConstants.SERVICE_DONE)
                 Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
-//                }
             }
             mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
         } else {
             // 2904 Changes made for Start Service flow in Won Bid
             mDataBinding?.textInformation?.text = getText(R.string.start_service_text)
             mDataBinding?.btnOk?.setOnClickListener {
-//                if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
                 apiTokenValidationBidActions(AppConstants.SERVICE_IN_PROGRESS)
                 Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
-//                }
             }
             mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
         }
@@ -223,6 +219,6 @@ class CommonInfoDialog(
         super.onStop()
         Log.d(TAG, "onStop: called Common dialog")
         isDialogShown = false
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 }

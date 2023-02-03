@@ -58,7 +58,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun getViewModel(): SignInViewModel =
-        ViewModelProvider(this, factory).get(SignInViewModel::class.java)
+        ViewModelProvider(this, factory)[SignInViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.signinViewModel
 
@@ -83,7 +83,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(
-            "TAG",
+            TAG,
             "TokenExpiry signin ${sharedPreference.getString(SharedPreference.ID_Token)}"
         )
         constraintLayout = mDataBinding?.loginPage!!
@@ -144,7 +144,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
 
     // Method for SignIn Button
     private fun signInClicked() {
-        mDataBinding!!.signinbtn.setOnClickListener {
+        mDataBinding?.signinbtn?.setOnClickListener {
             showProgress()
             signOut()
         }
@@ -165,7 +165,6 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
         // Sedding log event to the adb shell setprop debug.firebase.analytics.app com.smf.events.qafirebase
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.METHOD, eMail)
-//        Bundle().apply { putString(FirebaseAnalytics.Param.METHOD, eMail) }
         firebaseAnalytics.logEvent("userdetails") {
             param("email", eMail)
             param("mobileen", encodedMobileNo)
@@ -348,7 +347,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: called signin frag")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
         getViewModel().toastMessageG.value?.msg=""
     }
 }

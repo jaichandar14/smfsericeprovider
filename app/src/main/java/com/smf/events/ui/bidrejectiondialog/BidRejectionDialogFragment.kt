@@ -22,8 +22,12 @@ import com.smf.events.helper.ApisResponse
 import com.smf.events.helper.AppConstants
 import com.smf.events.helper.SharedPreference
 import com.smf.events.helper.Tokens
+import com.smf.events.rxbus.RxBus
+import com.smf.events.rxbus.RxEvent
 import com.smf.events.ui.bidrejectiondialog.model.ServiceProviderBidRequestDto
+import com.smf.events.ui.vieworderdetails.ViewOrderDetailsDialogFragment
 import dagger.android.support.AndroidSupportInjection
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -127,14 +131,10 @@ class BidRejectionDialogFragment(
                 if (mDataBinding?.etComments?.text.isNullOrEmpty()) {
                     mDataBinding?.alertMsg?.visibility = View.VISIBLE
                 } else {
-//                    if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
                     apiTokenValidationQuoteDetailsDialog("BidReject")
-//                    }
                 }
             } else {
-//                if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
                 apiTokenValidationQuoteDetailsDialog("BidReject")
-//                }
             }
         }
     }

@@ -153,7 +153,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
         internetDisposable = RxBus.listen(RxEvent.InternetStatus::class.java).subscribe {
             Log.d(TAG, "onViewCreated: observer DashBoard rx")
-            if (!isDialogShown) {
+            if (isDialogShown.not()) {
                 // Check token validation
                 idTokenValidation()
             }
@@ -162,7 +162,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         quoteBriefDisposable = RxBus.listen(RxEvent.QuoteBrief::class.java).subscribe {
             // Declaration for show action and details page
             actionAndDetailsVisibility = it.status
-            if (!actionAndDetailsVisibility) {
+            if (actionAndDetailsVisibility.not()) {
                 hideUpComingEvents()
                 valueweget = it.bidReqId
             }
@@ -242,12 +242,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     private fun onClickNotification() {
         mDataBinding?.notificationBell?.setOnClickListener {
-//            if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
             // Declaration for show action and details page
             actionAndDetailsVisibility = true
-//            val intent = Intent(this.requireContext(), NotificationActivity::class.java)
             startActivity(Intent(this.requireContext(), NotificationActivity::class.java))
-//            }
         }
     }
 
@@ -272,11 +269,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     }
 
     private fun setAllService() {
-//        val allServiceList: ArrayList<String> = ArrayList()
-//        Log.d(TAG, "setAllService: $serviceList")
-//        serviceList.forEach {
-//            allServiceList.add(it.serviceName)
-//        }
         val allServiceList = ArrayList<String>().apply {
             Log.d(TAG, "setAllService: $serviceList")
             serviceList.forEach {
@@ -317,8 +309,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // All Service spinner view clicked
     override fun itemClick(position: Int) {
-        Log.d(TAG, "onItemSelected itemClick: $position called")
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         if (serviceList[position].serviceName == getString(R.string.All_Service)) {
             var branchSpinner: ArrayList<String> = ArrayList()
             branchSpinner.add(0, getString(R.string.Branches))
@@ -344,7 +334,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             )
             branchListSpinner.clear()
         }
-//        }
     }
 
     // Branch spinner view clicked
@@ -353,8 +342,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         name: String?,
         allServiceposition: Int?,
     ) {
-        Log.d(TAG, "onItemSelected itemClick: branch click called")
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         this.serviceVendorOnboardingId = branchListSpinner[serviceVendorOnboardingId].branchId
         var branchesName = name
         if (branchListSpinner[serviceVendorOnboardingId].branchId == 0) {
@@ -386,7 +373,6 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         } catch (e: Exception) {
             Log.d(TAG, "branchItemClick: $e")
         }
-//        }
     }
 
     // Action And Status UI setUp
@@ -574,14 +560,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
 
     // 2904 Scroll Refresh Method
     override fun onRefresh() {
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         // 3103 Displaying ActionDetails refresh the dashboard redirect to ActionAndStatus Page
         ApplicationUtils.fromNotification = false
         serviceList.clear()
         // Declaration for show action and details page
         actionAndDetailsVisibility = true
         idTokenValidation()
-//        }
         mDataBinding?.refreshLayout?.isRefreshing = false
     }
 
@@ -649,9 +633,9 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onStop: Destroy called dash onpause")
-        if (!internetDisposable.isDisposed) internetDisposable.dispose()
-        if (!quoteBriefDisposable.isDisposed) quoteBriefDisposable.dispose()
-        if (!quoteBriefDisposable1.isDisposed) quoteBriefDisposable1.dispose()
+        if (internetDisposable.isDisposed.not()) internetDisposable.dispose()
+        if (quoteBriefDisposable.isDisposed.not()) quoteBriefDisposable.dispose()
+        if (quoteBriefDisposable1.isDisposed.not()) quoteBriefDisposable1.dispose()
     }
 
     private fun getNotificationCount(

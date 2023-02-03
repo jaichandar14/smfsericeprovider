@@ -356,18 +356,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             putInt(SharedPreference.ROLE_ID, apiResponse.response.data.roleId)
             putString(SharedPreference.USER_ID, apiResponse.response.data.userName)
         }
-//        sharedPreference.putInt(
-//            SharedPreference.SP_REG_ID,
-//            apiResponse.response.data.spRegId
-//        )
-//        sharedPreference.putInt(
-//            SharedPreference.ROLE_ID,
-//            apiResponse.response.data.roleId
-//        )
-//        sharedPreference.putString(
-//            SharedPreference.USER_ID,
-//            apiResponse.response.data.userName
-//        )
     }
 
     class GenericKeyEvent internal constructor(
@@ -420,6 +408,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: called email otp")
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 }
