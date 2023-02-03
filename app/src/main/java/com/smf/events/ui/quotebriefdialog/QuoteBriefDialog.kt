@@ -43,7 +43,7 @@ import javax.inject.Inject
 class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
     Tokens.IdTokenCallBackInterface {
 
-    var TAG = "QuoteBriefDialog"
+    var TAG = this::class.java.name
     var num: Int = 0
     var bidRequestId: Int? = 0
     lateinit var idToken: String
@@ -133,7 +133,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     // 2962 view Quotes
     private fun viewQuotes() {
         mDataBinding?.viewQuote?.setOnClickListener {
-//            if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
             mDataBinding?.quoteBriefDialogLayout?.visibility = View.GONE
             mDataBinding?.progressBar?.visibility = View.VISIBLE
             isViewQuoteClicked = true
@@ -149,7 +148,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                 isViewQuoteClicked = false
                 onResume()
             }
-//            }
         }
     }
 
@@ -228,7 +226,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
                     currencyType + data.latestBidValue
             } else mDataBinding?.costEstimationAmount?.text = "$ " + data.cost
         }
-        if (!data.comment.isNullOrEmpty()) {
+        if (data.comment.isNullOrEmpty().not()) {
             mDataBinding?.etComments?.text = data.comment
         }
 
@@ -273,7 +271,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         val myFile = File("/storage/emulated/0/Download", filename)
         Log.d(TAG, "saveFileNew: ${myFile.absoluteFile.name}")
         try {
-            if (!myFile.exists()) {
+            if (myFile.exists().not()) {
                 if (num == 0) {
                     filename = "$prefix$fileTypepath"
                 } else {
@@ -621,6 +619,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     override fun onDestroy() {
         super.onDestroy()
         isDialogShown = false
-        if (!dialogDisposable.isDisposed) dialogDisposable.dispose()
+        if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
     }
 }

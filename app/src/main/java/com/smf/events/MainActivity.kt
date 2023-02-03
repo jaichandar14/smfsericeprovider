@@ -22,12 +22,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     override fun getContentView(): Int = R.layout.activity_main
-    override fun getViewModel(): MainViewModel? =
-        ViewModelProvider(this).get(MainViewModel::class.java)
-
+    override fun getViewModel(): MainViewModel =
+        ViewModelProvider(this)[MainViewModel::class.java]
 
     override fun getBindingVariable(): Int = BR.mainViewModel
-
 
     @SuppressLint("NewApi")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -57,7 +55,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     // 3104 Firebase get payload data om background Method
     private fun notificationFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
+            if (task.isSuccessful.not()) {
                 Log.w("TAG", "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }

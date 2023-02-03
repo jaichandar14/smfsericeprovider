@@ -150,11 +150,9 @@ class ActionsAndStatusFragment :
 
     // Action Card Click Listener Interface Method
     override fun actionCardClick(myEvents: MyEvents) {
-//        if (internetErrorDialogOld.checkInternetAvailable(requireContext())) {
         RxBus.publish(RxEvent.QuoteBrief(1, false))
         bidStatus = cardClicked(myEvents)
         Log.d(TAG, "actionCardClick: $bidStatus")
-//        }
     }
 
     fun cardClicked(myEvents: MyEvents): String {
