@@ -153,7 +153,7 @@ class ScheduleManagementViewModel @Inject constructor(
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
-                    view: View,
+                    view: View?,
                     position: Int,
                     id: Long,
                 ) {
@@ -179,11 +179,11 @@ class ScheduleManagementViewModel @Inject constructor(
         mDataBinding: FragmentCalendarBinding?,
         branchData: ArrayList<String>,
     ) {
-        val spinner = mDataBinding!!.spnBranches
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        val spinner = mDataBinding?.spnBranches
+        spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
-                view: View,
+                view: View?,
                 position: Int,
                 id: Long,
             ) {
@@ -199,7 +199,7 @@ class ScheduleManagementViewModel @Inject constructor(
         )
         arrayAdapter.setDropDownViewResource(com.smf.events.R.layout.spinners_list)
         arrayAdapter.notifyDataSetChanged()
-        mDataBinding.spnBranches.adapter = arrayAdapter
+        spinner?.adapter = arrayAdapter
     }
 
     // 2458 Method For Getting All Service
