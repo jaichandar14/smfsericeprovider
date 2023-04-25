@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="signinViewModel"
             type="com.smf.events.ui.signin.SignInViewModel" />
@@ -14,17 +16,24 @@
         android:id="@+id/login_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".signup.SignUp">
+        tools:context="com.smf.events.MainActivity">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout4"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_120sdp"
             android:background="@color/theme_color"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline_top"
             app:layout_constraintVertical_bias="0.0">
 
             <ImageView
@@ -44,10 +53,10 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/_100sdp"
             android:background="@drawable/theme_corner_radius_white_bacground"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline_top"
             app:layout_constraintVertical_bias="0.0">
 
             <TextView
@@ -82,62 +91,63 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView4"
                 app:layout_constraintVertical_bias="0.030" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/phnumerlayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_36sdp"
-                android:layout_marginStart="@dimen/_18sdp"
-                android:layout_marginEnd="@dimen/_18sdp"
-                android:background="@drawable/box_login_text"
-                android:orientation="horizontal"
-                android:padding="@dimen/_2sdp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_18sdp"
+                android:background="@drawable/event_details_et_background"
+                android:padding="@dimen/_1sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
-                app:layout_constraintVertical_bias="0.008">
+                app:layout_constraintVertical_bias="0.0">
 
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/cppSignIn"
-                    android:layout_width="@dimen/_105sdp"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/mulish_bold"
-                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/mulish_medium"
+                    android:gravity="end"
                     app:ccpDialog_backgroundColor="@color/white"
                     app:ccpDialog_textColor="@color/fade_black"
                     app:ccp_arrowColor="@color/black"
-                    app:ccp_arrowSize="@dimen/_80sdp"
+                    app:ccp_arrowSize="@dimen/_22sdp"
                     app:ccp_autoDetectCountry="true"
+                    app:ccp_contentColor="@color/black"
                     app:ccp_showNameCode="true"
-                    app:ccp_textSize="@dimen/_12sdp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_36sdp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:text="@string/colonen"
-                    android:textColor="@color/buttoncolor"
-                    android:textSize="@dimen/_20sdp" />
+                    app:ccp_textSize="@dimen/_14ssp"
+                    app:layout_constraintBottom_toBottomOf="@+id/phnumerlayout"
+                    app:layout_constraintEnd_toEndOf="@id/phnumerlayout"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@id/phnumerlayout"
+                    app:layout_constraintTop_toTopOf="@+id/phnumerlayout"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <EditText
                     android:id="@+id/editTextMobileNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_32sdp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_2sdp"
-                    android:background="@drawable/empty_shapes"
-                    android:fontFamily="@font/mulish_bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/mulish_medium"
                     android:hint="@string/phonenumber"
-                    android:inputType="numberDecimal"
-                    android:maxLength="10"
-                    android:text="@={signinViewModel.mobileNumber}"
-                    android:textColor="@color/fade_black"
+                    android:inputType="number"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
                     android:textColorHint="@color/buttoncolor"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textCursorDrawable="@drawable/text_cursor"
+                    android:textSize="@dimen/_14ssp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="@+id/cppSignIn"
+                    app:layout_constraintEnd_toEndOf="@id/phnumerlayout"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/cppSignIn"
+                    app:layout_constraintTop_toTopOf="@+id/cppSignIn"
+                    app:layout_constraintVertical_bias="0.0" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/login_message_text"
@@ -168,7 +178,7 @@
                     android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/login_message"
                     android:textColor="@color/thumbs_down_red"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_12ssp" />
 
             </LinearLayout>
 
@@ -178,11 +188,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
-                android:fontFamily="@font/mulish_bold"
+                android:fontFamily="@font/mulish_semi_bold"
                 android:gravity="center"
                 android:text="@string/or"
                 android:textColor="@color/gray_text"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -206,38 +216,38 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView6"
                 app:layout_constraintVertical_bias="0.010" />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/mailidLayout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_36sdp"
-                android:layout_marginStart="@dimen/_18sdp"
-                android:layout_marginEnd="@dimen/_18sdp"
-                android:background="@drawable/box_login_text"
-                android:orientation="vertical"
-                android:padding="@dimen/_3sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_18sdp"
+                android:background="@drawable/event_details_et_background"
+                android:padding="@dimen/_1sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView7"
-                app:layout_constraintVertical_bias="0.008">
+                app:layout_constraintVertical_bias="0.0">
 
                 <EditText
                     android:id="@+id/editTextEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_30sdp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/empty_shapes"
-                    android:fontFamily="@font/mulish_bold"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_33sdp"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/mulish_medium"
                     android:hint="@string/perter_gmail_com"
                     android:inputType="textEmailAddress"
-                    android:paddingStart="@dimen/_2sdp"
-                    android:text="@={signinViewModel.emailId}"
-                    android:textColor="@color/fade_black"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
                     android:textColorHint="@color/buttoncolor"
-                    android:textSize="@dimen/_12ssp"
-                    tools:ignore="RtlSymmetry" />
+                    android:textCursorDrawable="@drawable/text_cursor"
+                    android:textSize="@dimen/_14ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/login_email_message_text"
@@ -268,74 +278,40 @@
                     android:fontFamily="@font/mulish_semi_bold"
                     android:text="@string/login_email_message"
                     android:textColor="@color/thumbs_down_red"
-                    android:textSize="@dimen/_11ssp" />
+                    android:textSize="@dimen/_12ssp" />
 
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/signinbtn"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_33sdp"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_height="@dimen/_34sdp"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_55sdp"
                 android:background="@drawable/custom_button_corner_ok"
                 android:fontFamily="@font/mulish_bold"
-                android:gravity="center"
                 android:text="@string/sign_in"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/login_email_message_text"
-                app:layout_constraintVertical_bias="0.75" />
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <include
+            layout="@layout/progressbar"
+            app:visibility="@{signinViewModel.showLoading.booleanValue ? View.VISIBLE : View.GONE}" />
 
-        <!--                <LinearLayout-->
-        <!--                    android:id="@+id/linearLayout3"-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:orientation="horizontal"-->
-        <!--                    android:visibility="invisible"-->
-        <!--                    android:weightSum="2"-->
-        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-        <!--                    app:layout_constraintStart_toStartOf="parent"-->
-        <!--                    app:layout_constraintTop_toBottomOf="@+id/signinbtn">-->
-
-        <!--                    <TextView-->
-        <!--                        android:layout_width="match_parent"-->
-        <!--                        android:layout_height="match_parent"-->
-        <!--                        android:layout_gravity="center"-->
-        <!--                        android:layout_weight="1"-->
-        <!--                        android:gravity="end"-->
-        <!--                        android:text="@string/new_user" />-->
-
-        <!--                    <TextView-->
-        <!--                        android:id="@+id/signupaccbtn"-->
-        <!--                        android:layout_width="match_parent"-->
-        <!--                        android:layout_height="match_parent"-->
-        <!--                        android:layout_gravity="center"-->
-        <!--                        android:layout_weight="1"-->
-        <!--                        android:gravity="start"-->
-        <!--                        android:text="@string/sign_upsmall"-->
-        <!--                        android:textColor="@color/lightblue" />-->
-
-        <!--                </LinearLayout>-->
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:indeterminateDrawable="@drawable/custom_progrss_bar"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

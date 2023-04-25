@@ -145,8 +145,10 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     // Method for SignIn Button
     private fun signInClicked() {
         mDataBinding?.signinbtn?.setOnClickListener {
-            showProgress()
-            signOut()
+            if (getViewModel().getProgressValue().not()) {
+                getViewModel().showProgress()
+                signOut()
+            }
         }
     }
 
@@ -193,7 +195,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                     true
                 }
             } else {
-                hideProgress()
+                getViewModel().hideProgress()
                 if (context != null) {
                     showToastMessage(
                         resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),
@@ -210,7 +212,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 return false
             }
         } else {
-            hideProgress()
+            getViewModel().hideProgress()
             if (context != null) {
                 showToastMessage(
                     resources.getString(R.string.Please_Enter_Email_or_MobileNumber),
@@ -239,7 +241,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                     getViewModel().signIn(apiResponse.response.data.userName, requireContext())
                     firebaseAnalytics.setUserId(apiResponse.response.data.userName)
                 } else {
-                    hideProgress()
+                    getViewModel().hideProgress()
                     if (userInfo == AppConstants.EMAIL) {
                         mDataBinding?.loginEmailMessageText?.visibility = View.VISIBLE
                     } else {
@@ -248,42 +250,15 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                 }
             }
             is ApisResponse.CustomError -> {
-                hideProgress()
+                getViewModel().hideProgress()
                 showToast(apiResponse.message)
-//                showToastMessage(
-//                    apiResponse.message,
-//                    Snackbar.LENGTH_LONG,
-//                    AppConstants.PLAIN_SNACK_BAR
-//                )
             }
             is ApisResponse.InternetError -> {
                 (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
-                hideProgress()
+                getViewModel().hideProgress()
             }
             else -> {}
         }
-    }
-
-    private fun showProgress() {
-        mDataBinding?.textView4?.visibility = View.GONE
-        mDataBinding?.textView5?.visibility = View.GONE
-        mDataBinding?.phnumerlayout?.visibility = View.GONE
-        mDataBinding?.textView7?.visibility = View.GONE
-        mDataBinding?.textView6?.visibility = View.GONE
-        mDataBinding?.mailidLayout?.visibility = View.GONE
-        mDataBinding?.signinbtn?.visibility = View.GONE
-        mDataBinding?.progressBar?.visibility = View.VISIBLE
-    }
-
-    private fun hideProgress() {
-        mDataBinding?.textView4?.visibility = View.VISIBLE
-        mDataBinding?.textView5?.visibility = View.VISIBLE
-        mDataBinding?.phnumerlayout?.visibility = View.VISIBLE
-        mDataBinding?.textView7?.visibility = View.VISIBLE
-        mDataBinding?.textView6?.visibility = View.VISIBLE
-        mDataBinding?.mailidLayout?.visibility = View.VISIBLE
-        mDataBinding?.signinbtn?.visibility = View.VISIBLE
-        mDataBinding?.progressBar?.visibility = View.GONE
     }
 
     // Method for SignUp Button
@@ -307,7 +282,7 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                         userName!!, firstName!!, emailId!!
                     )
                 )
-                mDataBinding?.progressBar?.visibility = View.GONE
+                getViewModel().showLoading.value = false
             }
             AppConstants.SIGN_IN_COMPLETED_GOTO_DASH_BOARD -> {
                 Log.i(TAG, "Sign in succeeded frag")
@@ -332,22 +307,16 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
     override fun awsErrorResponse(message: String) {
         if (message == resources.getString(R.string.Failed_to_connect_to_cognito_idp)) {
             (requireActivity() as MainActivity).showInternetDialog(AppConstants.SHOW_INTERNET_DIALOG)
-            hideProgress()
         } else {
             showToast(getViewModel().toastMessage)
-//            showToastMessage(
-//                getViewModel().toastMessage,
-//                Snackbar.LENGTH_LONG,
-//                AppConstants.PLAIN_SNACK_BAR
-//            )
-
         }
+        getViewModel().hideProgress()
     }
 
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop: called signin frag")
         if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
-        getViewModel().toastMessageG.value?.msg=""
+        getViewModel().toastMessageG.value?.msg = ""
     }
 }

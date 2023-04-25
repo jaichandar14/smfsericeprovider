@@ -132,10 +132,12 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     // For confirmSignIn aws
     private fun submitBtnClicked() {
         mDataBinding!!.submitBtn.setOnClickListener {
-            otpValidation(
-                otp0.text.toString(), otp1.text.toString(),
-                otp2.text.toString(), otp3.text.toString()
-            )
+            if (getViewModel().getProgressValue().not()) {
+                otpValidation(
+                    otp0.text.toString(), otp1.text.toString(),
+                    otp2.text.toString(), otp3.text.toString()
+                )
+            }
         }
     }
 
@@ -154,7 +156,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             }
             false
         } else {
-            showProgress()
+            getViewModel().showProgress()
             if (::factory.isInitialized) {
                 Log.d(TAG, "submitBtnClicked: ${otp0 + otp1 + otp2 + otp3}")
                 getViewModel().confirmSignIn(
@@ -164,36 +166,6 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             }
             true
         }
-    }
-
-    private fun showProgress() {
-        mDataBinding?.textView8?.visibility = View.GONE
-        mDataBinding?.textView9?.visibility = View.GONE
-        mDataBinding?.textView10?.visibility = View.GONE
-        mDataBinding?.otp1ed?.visibility = View.GONE
-        mDataBinding?.otp2ed?.visibility = View.GONE
-        mDataBinding?.otp3ed?.visibility = View.GONE
-        mDataBinding?.otp4ed?.visibility = View.GONE
-        mDataBinding?.linearLayout4?.visibility = View.GONE
-        mDataBinding?.textView11?.visibility = View.GONE
-        mDataBinding?.otpResend?.visibility = View.GONE
-        mDataBinding?.submitBtn?.visibility = View.GONE
-        mDataBinding?.progressBar?.visibility = View.VISIBLE
-    }
-
-    private fun hideProgress() {
-        mDataBinding?.textView8?.visibility = View.VISIBLE
-        mDataBinding?.textView9?.visibility = View.VISIBLE
-        mDataBinding?.textView10?.visibility = View.VISIBLE
-        mDataBinding?.otp1ed?.visibility = View.VISIBLE
-        mDataBinding?.otp2ed?.visibility = View.VISIBLE
-        mDataBinding?.otp3ed?.visibility = View.VISIBLE
-        mDataBinding?.otp4ed?.visibility = View.VISIBLE
-        mDataBinding?.linearLayout4?.visibility = View.VISIBLE
-        mDataBinding?.textView11?.visibility = View.VISIBLE
-        mDataBinding?.otpResend?.visibility = View.VISIBLE
-        mDataBinding?.submitBtn?.visibility = View.VISIBLE
-        mDataBinding?.progressBar?.visibility = View.INVISIBLE
     }
 
     // CallBackInterface Override Method
@@ -214,17 +186,17 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             Log.e(TAG, "Failed to fetch user attributes inside")
             (requireActivity() as MainActivity).showInternetDialog(AppConstants.SHOW_INTERNET_DIALOG)
             isInternetError = true
-            hideProgress()
+            getViewModel().hideProgress()
         } else if (num == resources.getString(R.string.Operation_requires_a_signed_in_state)) {
             (requireActivity() as MainActivity).showInternetDialog(AppConstants.SHOW_INTERNET_DIALOG)
             isInternetError = true
-            hideProgress()
+            getViewModel().hideProgress()
             showToastMessage(
                 resources.getString(R.string.Network_Error__Please_Sign_in_again),
                 Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
             )
         } else {
-            showProgress()
+            getViewModel().showProgress()
             getOtpValidation(false)
             if (num.toInt() >= 3) {
             } else {
@@ -255,7 +227,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                         // Navigate to DashBoardFragment
                         if (isValid) {
                             Log.d(TAG, "getLoginApiCallaaa: getOtpValidation isvalid called")
-                            showProgress()
+                            getViewModel().showProgress()
                             CoroutineScope(Dispatchers.Main).launch {
                                 getLoginApiCall(
                                     "${AppConstants.BEARER} ${
@@ -266,12 +238,12 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                                 )
                             }
                         } else {
-                            hideProgress()
+                            getViewModel().hideProgress()
                         }
                     }
                     is ApisResponse.CustomError -> {
                         Log.d(TAG, "error response: ${apiResponse.message}")
-                        showProgress()
+                        getViewModel().showProgress()
                         if (apiResponse.message.isNotEmpty()) {
                             showToastMessage(
                                 apiResponse.message,
@@ -283,7 +255,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                     is ApisResponse.InternetError -> {
                         (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
                         isInternetError = true
-                        hideProgress()
+                        getViewModel().hideProgress()
                     }
                     else -> {}
                 }
@@ -313,7 +285,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
     }
 
     override fun otpValidation(b: Boolean) {
-        hideProgress()
+        getViewModel().hideProgress()
         showToastMessage(
             AppConstants.ENTER_OTP,
             Snackbar.LENGTH_SHORT, AppConstants.PLAIN_SNACK_BAR
@@ -322,7 +294,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
 
     // Login api call to Fetch RollId and SpRegId
     private fun getLoginApiCall(idToken: String) {
-        showProgress()
+        getViewModel().showProgress()
         getViewModel().getLoginInfo(idToken)
             .observe(this@EmailOTPFragment, Observer { apiResponse ->
                 when (apiResponse) {
@@ -342,7 +314,7 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
                     is ApisResponse.InternetError -> {
                         (requireActivity() as MainActivity).showInternetDialog(apiResponse.message)
                         isInternetError = true
-                        hideProgress()
+                        getViewModel().hideProgress()
                     }
                     else -> {}
                 }

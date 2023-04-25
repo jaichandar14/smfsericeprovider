@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="oldnotificationViewModel"
             type="com.smf.events.ui.notification.oldnotification.OldNotificationViewModel" />
@@ -42,16 +44,9 @@
             app:layout_constraintTop_toTopOf="@+id/old_notification_recycler"
             app:layout_constraintVertical_bias="0.3" />
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:indeterminateDrawable="@drawable/custom_progrss_bar"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <include
+            layout="@layout/progressbar"
+            app:visibility="@{oldnotificationViewModel.showLoading.booleanValue ? View.VISIBLE : View.GONE}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
