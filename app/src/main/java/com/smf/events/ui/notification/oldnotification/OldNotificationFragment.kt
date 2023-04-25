@@ -106,7 +106,7 @@ class OldNotificationFragment :
         userId: String
     ) {
         // Showing Progressbar
-        showProgress()
+        getViewModel().showProgress()
         getViewModel().getNotifications(idToken, userId, false)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -121,15 +121,14 @@ class OldNotificationFragment :
                             Snackbar.LENGTH_LONG,
                             AppConstants.PLAIN_SNACK_BAR
                         )
-                        hideProgress()
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as NotificationActivity)
                             .showInternetDialog(apiResponse.message)
-                        hideProgress()
                     }
                     else -> {}
                 }
+                getViewModel().hideProgress()
             })
     }
 
@@ -152,8 +151,6 @@ class OldNotificationFragment :
         } else {
             mDataBinding?.noRecordsText?.visibility = View.VISIBLE
         }
-        // Hiding Progressbar
-        hideProgress()
     }
 
     private fun getDateAndTime(data: Data): String {
@@ -184,16 +181,6 @@ class OldNotificationFragment :
     private fun setIdTokenAndSpRegId() {
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
         userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
-    }
-
-    private fun showProgress() {
-        mDataBinding?.progressBar?.visibility = View.VISIBLE
-        mDataBinding?.oldNotificationRecycler?.visibility = View.INVISIBLE
-    }
-
-    private fun hideProgress() {
-        mDataBinding?.progressBar?.visibility = View.GONE
-        mDataBinding?.oldNotificationRecycler?.visibility = View.VISIBLE
     }
 
 }

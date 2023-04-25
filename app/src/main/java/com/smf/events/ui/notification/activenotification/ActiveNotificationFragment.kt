@@ -128,7 +128,7 @@ class ActiveNotificationFragment :
         idToken: String, userId: String
     ) {
         // Showing Progressbar
-        showProgress()
+        getViewModel().showProgress()
         getViewModel().getNotifications(idToken, userId, true)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -143,14 +143,14 @@ class ActiveNotificationFragment :
                             Snackbar.LENGTH_LONG,
                             AppConstants.PLAIN_SNACK_BAR
                         )
-                        hideProgress()
                     }
                     is ApisResponse.InternetError -> {
                         (requireActivity() as NotificationActivity).showInternetDialog(apiResponse.message)
-                        hideProgress()
                     }
                     else -> {}
                 }
+                // Hide Progressbar
+                getViewModel().hideProgress()
             })
     }
 
@@ -173,10 +173,9 @@ class ActiveNotificationFragment :
             }
             adapter.refreshItems(notificationList)
         } else {
-            mDataBinding?.noRecordsText?.visibility = View.VISIBLE
+            // Show no record text
+            showNoRecordsText()
         }
-        // Hiding Progressbar
-        hideProgress()
     }
 
     private fun getDateAndTime(data: Data): String {
@@ -217,28 +216,21 @@ class ActiveNotificationFragment :
         userId = "${sharedPreference.getString(SharedPreference.USER_ID)}"
     }
 
-    private fun showProgress() {
-        mDataBinding?.progressBar?.visibility = View.VISIBLE
-        mDataBinding?.activeNotificationRecycler?.visibility = View.INVISIBLE
-    }
-
-    private fun hideProgress() {
-        mDataBinding?.progressBar?.visibility = View.GONE
-        mDataBinding?.activeNotificationRecycler?.visibility = View.VISIBLE
-    }
-
     override fun onClearButtonClicked(position: Int) {
         Log.d(TAG, "clearButtonClicked: $position")
-        clearBtnClickedPosition = position
-        val notificationId = notificationIdsList[position]
-        removeNotificationIdsList.clear()
-        removeNotificationIdsList.add(notificationId)
-        // Check IdToken Validity
-        idTokenValidation(getString(R.string.delete))
+        if (getViewModel().getProgressValue().not()) {
+            clearBtnClickedPosition = position
+            val notificationId = notificationIdsList[position]
+            removeNotificationIdsList.clear()
+            removeNotificationIdsList.add(notificationId)
+            // Check IdToken Validity
+            idTokenValidation(getString(R.string.delete))
+        }
     }
 
     // 3212 - Method For move the notifications active to old page
     private fun moveToOldNotification(idToken: String) {
+        getViewModel().showProgress()
         getViewModel().moveToOldNotification(idToken, removeNotificationIdsList)
             .observe(viewLifecycleOwner, Observer { apiResponse ->
                 when (apiResponse) {
@@ -264,11 +256,20 @@ class ActiveNotificationFragment :
                     is ApisResponse.InternetError -> {
                         (requireActivity() as NotificationActivity)
                             .showInternetDialog(apiResponse.message)
-                        hideProgress()
                     }
                     else -> {}
                 }
+                // Check and show no record text
+                showNoRecordsText()
+                // Hide progress bar after deleted one notification
+                getViewModel().hideProgress()
             })
+    }
+
+    private fun showNoRecordsText() {
+        if (notificationList.isEmpty()) {
+            mDataBinding?.noRecordsText?.visibility = View.VISIBLE
+        }
     }
 
     override fun onStop() {
