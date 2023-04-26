@@ -198,8 +198,13 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         if (iend != -1) {
             subString = iend?.let { fileName!!.substring(0, it) }.toString() //this will give abc
         }
-        var fileTypepath = fileName?.substring(fileName!!.lastIndexOf("."))
-        mDataBinding?.filenameTx?.text = subString.take(10) + "..." + fileTypepath
+        //3473 String out of bound exception in file name
+        try {
+            var fileTypepath = fileName?.substring(fileName!!.lastIndexOf("."))
+            mDataBinding?.filenameTx?.text = subString.take(10) + "..." + fileTypepath
+        } catch (e: Exception) {
+            mDataBinding?.filenameTx?.text = AppConstants.INVALIDDOC
+        }
         // Visible the Documents
         if (!data.fileContent.isNullOrEmpty()) {
             mDataBinding?.txQuoteDetails?.visibility = View.VISIBLE
@@ -253,9 +258,16 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
             if (iend != -1) {
                 subString = fileName.substring(0, iend) //this will give abc
             }
-            var fileTypepath = fileName.substring(fileName.lastIndexOf("."))
-            createFile(subString, fileTypepath, newContent)
-
+            //3473 String out of bound exception in file name
+            try {
+                var fileTypepath = fileName.substring(fileName.lastIndexOf("."))
+                createFile(subString, fileTypepath, newContent)
+            } catch (e: Exception) {
+                showToastMessage(
+                    getString(R.string.invaild_file_download),
+                    Snackbar.LENGTH_LONG, AppConstants.PLAIN_SNACK_BAR
+                )
+            }
         }
 
     }
