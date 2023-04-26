@@ -282,12 +282,14 @@ class ActionDetailsAdapter(
         private fun updateTimeLeftProgressBar(actionDetails: ActionDetails) {
 //           Not trigger if the same value is passed again. so need to refresh progressbar value.
 //           Set dummy value before set original value to avoid mismatch progress value.
-            timeLeftProgressBar.max = 100
-            timeLeftProgressBar.progress = 20
-            timeLeftProgressBar.progress = 0
-            timeLeftProgressBar.max = 100
-            // Update original progress value
-            timeLeftProgressBar.progress = actionDetails.timeLeft.toInt()
+            timeLeftProgressBar.apply {
+                max = 100
+                progress = 20
+                progress = 0
+                max = 100
+                // Update original progress value
+                progress = actionDetails.timeLeft.toInt()
+            }
         }
 
         // Rejecting the Bids
