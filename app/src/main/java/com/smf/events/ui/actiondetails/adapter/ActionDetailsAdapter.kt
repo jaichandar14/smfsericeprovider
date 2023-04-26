@@ -67,7 +67,7 @@ class ActionDetailsAdapter(
         var likeButton: ImageView = view.findViewById(R.id.like_imageView)
         var rightArrowButton: ImageView = view.findViewById(R.id.imageView)
         var cutoffMonthText: TextView = view.findViewById(R.id.cutoff_month_text)
-        var progressBar: ProgressBar = view.findViewById(R.id.time_left_progress_bar)
+        var timeLeftProgressBar: ProgressBar = view.findViewById(R.id.time_left_progress_bar)
         var progressDateNumber: TextView = view.findViewById(R.id.progress_date_number)
         var changeOfMind: TextView = view.findViewById(R.id.change_of_mind)
         var startserviceBtn: TextView = view.findViewById(R.id.btn_start_service)
@@ -81,7 +81,7 @@ class ActionDetailsAdapter(
             eventName.text = actionDetails.eventName
             eventType.text = "${actionDetails.branchName} - ${actionDetails.serviceName}"
             code.text = actionDetails.eventServiceDescriptionId.toString()
-            progressBar.progress = actionDetails.timeLeft.toInt()
+            updateTimeLeftProgressBar(actionDetails)
             eventDate.text = (actionDetails.eventDate)
             serviceDate.text = (actionDetails.serviceDate)
             cutoffMonthText.text = dateFormat(actionDetails.serviceDate).substring(3, 6)
@@ -277,6 +277,19 @@ class ActionDetailsAdapter(
                 }
             }
             return currencyType
+        }
+
+        private fun updateTimeLeftProgressBar(actionDetails: ActionDetails) {
+//           Not trigger if the same value is passed again. so need to refresh progressbar value.
+//           Set dummy value before set original value to avoid mismatch progress value.
+            timeLeftProgressBar.apply {
+                max = 100
+                progress = 20
+                progress = 0
+                max = 100
+                // Update original progress value
+                progress = actionDetails.timeLeft.toInt()
+            }
         }
 
         // Rejecting the Bids
