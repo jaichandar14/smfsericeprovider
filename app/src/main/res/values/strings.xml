@@ -281,4 +281,5 @@
     <string name="no_internet_connection_available">No Internet Connection Available</string>
     <string name="your_device_is_not_connected_to_internet_please_make_sure_your_connection_is_working">Your device is not connected to internet, Please make sure your connection is working.</string>
     <string name="try_again">Try Again</string>
+    <string name="invaild_file_download">Invalid File Format can\'t able to download</string>
 </resources>
