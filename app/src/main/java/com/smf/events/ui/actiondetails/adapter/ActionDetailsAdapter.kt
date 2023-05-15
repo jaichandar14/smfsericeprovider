@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -71,6 +72,9 @@ class ActionDetailsAdapter(
         var progressDateNumber: TextView = view.findViewById(R.id.progress_date_number)
         var changeOfMind: TextView = view.findViewById(R.id.change_of_mind)
         var startserviceBtn: TextView = view.findViewById(R.id.btn_start_service)
+        var initiateCloserBtn: TextView = view.findViewById(R.id.initiate_closer_btn)
+        var startserviceBtnLayout: LinearLayout = view.findViewById(R.id.start_service_layout)
+        var startserviceBtnLineView: View = view.findViewById(R.id.line_view)
         var quote_status_tx: TextView = view.findViewById(R.id.quote_status)
 
         @SuppressLint("SetTextI18n")
@@ -155,6 +159,8 @@ class ActionDetailsAdapter(
             // Restricting the start service flow based previous and today service Date
             if (position.serviceDate <= formattedDay) {
                 holder.startserviceBtn.visibility = View.VISIBLE
+                holder.startserviceBtnLineView.visibility = View.VISIBLE
+                holder.startserviceBtnLayout.visibility = View.VISIBLE
             }
             holder.quote_status_tx.text = AppConstants.WON_BID_SMALL
             holder.quote_status_tx.setOnClickListener {
@@ -196,9 +202,9 @@ class ActionDetailsAdapter(
             holder.quote_status_tx.setOnClickListener {
                 callBackInterface?.showDialog(position)
             }
-            holder.startserviceBtn.visibility = View.VISIBLE
-            holder.startserviceBtn.text = AppConstants.INITIATE_CLOSER
-            holder.startserviceBtn.setOnClickListener {
+            holder.initiateCloserBtn.visibility = View.VISIBLE
+            holder.initiateCloserBtn.text = AppConstants.INITIATE_CLOSER
+            holder.initiateCloserBtn.setOnClickListener {
                 // 2904 Dialog to For confirmation of Start service
                 CommonInfoDialog.newInstance(position, AppConstants.SERVICE_DONE).show(
                     (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,

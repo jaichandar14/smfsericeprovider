@@ -282,4 +282,9 @@
     <string name="your_device_is_not_connected_to_internet_please_make_sure_your_connection_is_working">Your device is not connected to internet, Please make sure your connection is working.</string>
     <string name="try_again">Try Again</string>
     <string name="invaild_file_download">Invalid File Format can\'t able to download</string>
+    <string name="reject_service"> Reject service</string>
+    <string name="confirm_service">Confirm service</string>
+    <string name="status_txt">Status:</string>
+    <string name="initiate_close_txt">Initiate closure</string>
+    <string name="write_review_txt">Write review</string>
 </resources>

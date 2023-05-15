@@ -205,6 +205,8 @@ class ActionDetailsFragment :
         //QuoteBriefDialog.newInstance(status.bidRequestId)
         Log.d("TAG", "showDialog: ${status.bidRequestId}")
         sharedPreference.putInt(SharedPreference.BID_REQUEST_ID, status.bidRequestId)
+        sharedPreference.putInt(SharedPreference.EVENT_ID, status.eventId)
+        sharedPreference.putInt(SharedPreference.EVENT_DESCRIPTION_ID, status.eventServiceDescriptionId)
         QuoteBriefDialog.newInstance().show(
             (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
             QuoteBriefDialog.TAG
