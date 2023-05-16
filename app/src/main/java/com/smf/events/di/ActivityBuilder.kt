@@ -12,10 +12,12 @@ import com.smf.events.ui.businessregistration.BusinessRegistrationFragment
 import com.smf.events.ui.businessregistration.BusinessRegistrationModule
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialog
 import com.smf.events.ui.commoninformationdialog.CommonInfoDialogModule
+import com.smf.events.ui.intiateservicedialog.InitiateServiceDialog
 import com.smf.events.ui.dashboard.DashBoardFragment
 import com.smf.events.ui.dashboard.DashBoardModule
 import com.smf.events.ui.emailotp.EmailOTPFragment
 import com.smf.events.ui.emailotp.EmailOTPModule
+import com.smf.events.ui.intiateservicedialog.InitiateServiceDialogModule
 import com.smf.events.ui.notification.NotificationActivity
 import com.smf.events.ui.notification.NotificationModule
 import com.smf.events.ui.notification.activenotification.ActiveNotificationFragment
@@ -97,6 +99,9 @@ abstract class ActivityBuilder {
     // 2401 - Common Information Dialog Injection
     @ContributesAndroidInjector(modules = [CommonInfoDialogModule::class])
     abstract fun provideCommonInfoDialog(): CommonInfoDialog
+
+    @ContributesAndroidInjector(modules = [InitiateServiceDialogModule::class])
+    abstract fun provideInitiateServiceDialog(): InitiateServiceDialog
 
     // 2402 - View Order Details Injection
     @ContributesAndroidInjector(modules = [ViewOrderDetailsModule::class])

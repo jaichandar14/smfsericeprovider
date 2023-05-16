@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -29,6 +30,7 @@ import com.smf.events.helper.SharedPreference.Companion.isDialogShown
 import com.smf.events.helper.Tokens
 import com.smf.events.rxbus.RxBus
 import com.smf.events.rxbus.RxEvent
+import com.smf.events.ui.intiateservicedialog.InitiateServiceDialog
 import com.smf.events.ui.quotebrief.model.QuoteBrief
 import com.smf.events.ui.quotebriefdialog.model.Datas
 import dagger.android.support.AndroidSupportInjection
@@ -41,11 +43,13 @@ import java.io.IOException
 import javax.inject.Inject
 
 class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
-    Tokens.IdTokenCallBackInterface {
+    Tokens.IdTokenCallBackInterface, InitiateServiceDialog.CallBackInterface {
 
     var TAG = this::class.java.name
     var num: Int = 0
     var bidRequestId: Int? = 0
+    var eventId: Int? = 0
+    var eventDescriptionId: Int? = 0
     lateinit var idToken: String
     var expand = false
     lateinit var bidStatus: String
@@ -128,6 +132,10 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         }
         // Quote details api call
         apiTokenValidationQuoteBrief("quoteDetails")
+
+        parentFragmentManager.setFragmentResultListener("5", viewLifecycleOwner,
+            FragmentResultListener { _: String, _: Bundle -> apiTokenValidationQuoteBrief("quoteDetails")
+            })
     }
 
     // 2962 view Quotes
@@ -435,7 +443,10 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     private fun setIdTokenAndBidReqId() {
         bidRequestIdUpdated = sharedPreference.getInt(SharedPreference.BID_REQUEST_ID_UPDATED)
         bidRequestId = sharedPreference.getInt(SharedPreference.BID_REQUEST_ID)
+        eventId = sharedPreference.getInt(SharedPreference.EVENT_ID)
+        eventDescriptionId = sharedPreference.getInt(SharedPreference.EVENT_DESCRIPTION_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
+
     }
 
     // 2904 Get Api Call for getting the Quote Brief
@@ -491,6 +502,27 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     fun widgetWonBid(apiResponse: ApisResponse.Success<QuoteBrief>) {
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = AppConstants.BID_WON_SMALL
+        mDataBinding?.apply {
+            btnStartService.apply {
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    InitiateServiceDialog.newInstance(
+                        bidRequestId,
+                        eventId,
+                        eventDescriptionId,
+                        AppConstants.WON_BID
+                    ).show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        InitiateServiceDialog.TAG
+                    )
+                }
+            }
+            btnRejectService.apply {
+                visibility = View.VISIBLE
+            }
+        }
+        mDataBinding?.btnStartService?.visibility = View.VISIBLE
+        mDataBinding?.btnRejectService?.visibility = View.VISIBLE
         mDataBinding?.txWonBid?.setTextColor(
             ContextCompat.getColor(
                 context?.applicationContext!!, R.color.dark_font
@@ -519,6 +551,23 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = AppConstants.SERVICE_IN_PROGRESS_SMALL
+        mDataBinding?.apply {
+            btnStartService.apply {
+                visibility = View.VISIBLE
+                text = context.getString(R.string.initiate_close_txt)
+                setOnClickListener {
+                    InitiateServiceDialog.newInstance(
+                        bidRequestId,
+                        eventId,
+                        eventDescriptionId,
+                        AppConstants.SERVICE_DONE
+                    ).show(
+                        requireActivity().supportFragmentManager,
+                        InitiateServiceDialog.TAG
+                    )
+                }
+            }
+        }
         setBidSubmitQuoteBrief(apiResponse.response)
     }
 
@@ -546,6 +595,10 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.processflow5?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = AppConstants.SERVICE_COMPLETED
+        mDataBinding?.apply {
+            btnStartService.text=getString(R.string.write_review_txt)
+
+        }
         setBidSubmitQuoteBrief(apiResponse.response)
     }
 
@@ -632,5 +685,15 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         super.onDestroy()
         isDialogShown = false
         if (dialogDisposable.isDisposed.not()) dialogDisposable.dispose()
+    }
+
+    override fun showDialog(status: Boolean) {
+        if (status == true) {
+            dismiss()
+            newInstance().show(
+                (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                QuoteBriefDialog.TAG
+            )
+        }
     }
 }

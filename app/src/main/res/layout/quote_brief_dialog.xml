@@ -216,7 +216,7 @@
                                         android:layout_marginTop="@dimen/_3sdp"
                                         android:fontFamily="@font/mulish_semi_bold"
                                         android:gravity="start"
-                                        android:text="Status:"
+                                        android:text="@string/status_txt"
                                         android:textSize="@dimen/_11sdp" />
 
                                     <TextView
@@ -234,16 +234,55 @@
 
                                 </LinearLayout>
 
+
+                                <androidx.appcompat.widget.AppCompatButton
+                                    android:id="@+id/btn_reject_service"
+                                    android:layout_marginStart="@dimen/_2sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/_24sdp"
+                                    android:background="@drawable/custom_button_corner_cancel"
+                                    android:fontFamily="@font/mulish_semi_bold"
+                                    android:paddingStart="@dimen/_8sdp"
+                                    android:paddingEnd="@dimen/_8sdp"
+                                    android:text="@string/reject_service"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:visibility="gone"
+                                    android:layout_marginTop="@dimen/_8sdp"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/linear_spn_layout" />
+
+                                    <androidx.appcompat.widget.AppCompatButton
+                                        android:layout_marginTop="@dimen/_8sdp"
+                                        android:id="@+id/btn_start_service"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/_24sdp"
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:background="@drawable/custom_button_corner_ok"
+                                        android:fontFamily="@font/mulish_semi_bold"
+                                        android:paddingStart="@dimen/_8sdp"
+                                        android:paddingEnd="@dimen/_8sdp"
+                                        android:text="@string/confirm_service"
+                                        android:textAllCaps="false"
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:visibility="gone"
+                                        app:layout_constraintStart_toEndOf="@id/btn_reject_service"
+                                        app:layout_constraintTop_toBottomOf="@+id/linear_spn_layout"
+                                        />
+
+
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/expandable_view"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/_6sdp"
+                                    android:layout_marginTop="@dimen/_12sdp"
                                     android:background="@color/quote_details_blue"
                                     android:paddingBottom="@dimen/_8sdp"
                                     android:visibility="visible"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/linear_spn_layout">
+                                    app:layout_constraintTop_toBottomOf="@+id/btn_start_service">
 
                                     <ImageView
                                         android:id="@+id/check1"

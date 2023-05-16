@@ -304,7 +304,7 @@
             app:layout_constraintVertical_bias="0.50" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_start_service"
+            android:id="@+id/initiate_closer_btn"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_27sdp"
             android:background="@drawable/custom_button_corner_ok"
@@ -322,6 +322,69 @@
             app:layout_constraintStart_toEndOf="@+id/quote_status"
             app:layout_constraintTop_toTopOf="@+id/quote_status"
             app:layout_constraintVertical_bias="0.437" />
+
+        <View
+            android:id="@+id/line_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="9dp"
+            android:background="@color/view_line_gray"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quote_status" />
+
+        <LinearLayout
+            android:id="@+id/start_service_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:visibility="gone"
+            android:weightSum="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line_view"
+            app:layout_constraintVertical_bias="0.0">
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_reject_service"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:background="@drawable/custom_button_corner_cancel"
+                android:fontFamily="@font/mulish_semi_bold"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/reject_service"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sdp"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_start_service"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:background="@drawable/custom_button_corner_ok"
+                android:fontFamily="@font/mulish_semi_bold"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/confirm_service"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sdp"
+                android:visibility="visible" />
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
