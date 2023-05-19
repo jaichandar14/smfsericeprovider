@@ -156,8 +156,8 @@ class EmailOTPFragment : BaseFragment<FragmentEmailOtpBinding, EmailOTPViewModel
             }
             false
         } else {
-            getViewModel().showProgress()
             if (::factory.isInitialized) {
+                getViewModel().showProgress()
                 Log.d(TAG, "submitBtnClicked: ${otp0 + otp1 + otp2 + otp3}")
                 getViewModel().confirmSignIn(
                     requireContext(),
