@@ -3,11 +3,13 @@ package com.smf.events.ui.commoninformationdialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.Observer
@@ -65,7 +67,14 @@ class CommonInfoDialog(
 
     override fun getBindingVariable(): Int = BR.commonInfoDialogViewModel
 
-    override fun getContentView(): Int = R.layout.common_information_dialog
+    override fun getContentView(): Int =
+        if (status==AppConstants.WRITE_REVIEW){
+            R.layout.write_review_dialog
+        }else{
+            R.layout.common_information_dialog
+        }
+
+
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -105,7 +114,10 @@ class CommonInfoDialog(
                 Log.d(TAG, "onViewCreated: ${position.eventServiceDescriptionId}")
             }
             mDataBinding?.btnCancel?.setOnClickListener { dismiss() }
-        } else {
+        } else if (status == AppConstants.WRITE_REVIEW){
+            Toast.makeText(requireContext(), "WriteReview", Toast.LENGTH_SHORT).show()
+        }
+        else {
             // 2904 Changes made for Start Service flow in Won Bid
             mDataBinding?.textInformation?.text = getText(R.string.start_service_text)
             mDataBinding?.btnOk?.setOnClickListener {

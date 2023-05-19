@@ -158,22 +158,28 @@ class ActionDetailsAdapter(
             val formattedDay: String = currentDateValue.format(formatterDay)
             // Restricting the start service flow based previous and today service Date
             if (position.serviceDate <= formattedDay) {
-                holder.startserviceBtn.visibility = View.VISIBLE
-                holder.startserviceBtnLineView.visibility = View.VISIBLE
-                holder.startserviceBtnLayout.visibility = View.VISIBLE
+                holder.apply {
+                    startserviceBtn.visibility = View.VISIBLE
+                    startserviceBtnLineView.visibility = View.VISIBLE
+                    startserviceBtnLayout.visibility = View.VISIBLE
+                }
             }
-            holder.quote_status_tx.text = AppConstants.WON_BID_SMALL
-            holder.quote_status_tx.setOnClickListener {
-                callBackInterface?.showDialog(position)
+            holder.apply {
+                quote_status_tx.text = AppConstants.WON_BID_SMALL
+                quote_status_tx.setOnClickListener {
+                    callBackInterface?.showDialog(position)
+                }
+                startserviceBtn.setOnClickListener {
+                    // 2904 Dialog to For confirmation of Start service
+                    CommonInfoDialog.newInstance(position, AppConstants.WON_BID).show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        CommonInfoDialog.TAG
+                    )
+                }
+                rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
             }
-            holder.startserviceBtn.setOnClickListener {
-                // 2904 Dialog to For confirmation of Start service
-                CommonInfoDialog.newInstance(position, AppConstants.WON_BID).show(
-                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    CommonInfoDialog.TAG
-                )
-            }
-            holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
+
+
         }
 
         // 2922
@@ -181,13 +187,21 @@ class ActionDetailsAdapter(
             holder: ActionDetailsViewHolder,
             position: ActionDetails,
         ) {
-            holder.likeButton.visibility = View.INVISIBLE
-            holder.unlikeButton.visibility = View.INVISIBLE
-            holder.quote_status_tx.text = AppConstants.SERVICE_COMPLETED
-            holder.quote_status_tx.setOnClickListener {
-                callBackInterface?.showDialog(position)
-            }
-            holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
+            holder.apply { likeButton.visibility = View.INVISIBLE
+                unlikeButton.visibility = View.INVISIBLE
+                initiateCloserBtn.visibility = View.VISIBLE
+                initiateCloserBtn.text = AppConstants.WRITE_REVIEW
+                quote_status_tx.text = AppConstants.SERVICE_COMPLETED
+                initiateCloserBtn.setOnClickListener {
+                    CommonInfoDialog.newInstance(position, AppConstants.WRITE_REVIEW).show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        CommonInfoDialog.TAG
+                    )
+                }
+                quote_status_tx.setOnClickListener {
+                    callBackInterface?.showDialog(position)
+                }
+                rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) } }
         }
 
 
@@ -196,22 +210,25 @@ class ActionDetailsAdapter(
             holder: ActionDetailsViewHolder,
             position: ActionDetails,
         ) {
-            holder.likeButton.visibility = View.INVISIBLE
-            holder.unlikeButton.visibility = View.INVISIBLE
-            holder.quote_status_tx.text = AppConstants.SERVICE_IN_PROGRESS_SMALL
-            holder.quote_status_tx.setOnClickListener {
-                callBackInterface?.showDialog(position)
+            holder.apply {
+                likeButton.visibility = View.INVISIBLE
+                unlikeButton.visibility = View.INVISIBLE
+                quote_status_tx.text = AppConstants.SERVICE_IN_PROGRESS_SMALL
+                quote_status_tx.setOnClickListener {
+                    callBackInterface?.showDialog(position)
+                }
+                initiateCloserBtn.visibility = View.VISIBLE
+                initiateCloserBtn.text = AppConstants.INITIATE_CLOSER
+                initiateCloserBtn.setOnClickListener {
+                    // 2904 Dialog to For confirmation of Start service
+                    CommonInfoDialog.newInstance(position, AppConstants.SERVICE_DONE).show(
+                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
+                        CommonInfoDialog.TAG
+                    )
+                }
+                rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
             }
-            holder.initiateCloserBtn.visibility = View.VISIBLE
-            holder.initiateCloserBtn.text = AppConstants.INITIATE_CLOSER
-            holder.initiateCloserBtn.setOnClickListener {
-                // 2904 Dialog to For confirmation of Start service
-                CommonInfoDialog.newInstance(position, AppConstants.SERVICE_DONE).show(
-                    (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                    CommonInfoDialog.TAG
-                )
-            }
-            holder.rightArrowButton.setOnClickListener { callBackInterface?.showDialog(position) }
+
         }
 
         // 2904

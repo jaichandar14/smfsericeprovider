@@ -145,4 +145,7 @@ object AppConstants {
 
     //3473
     const val INVALIDDOC = "Invaliddoc"
+
+    //3500
+    const val WRITE_REVIEW = "Write review"
 }
