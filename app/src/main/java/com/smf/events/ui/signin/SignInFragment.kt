@@ -195,7 +195,9 @@ class SignInFragment : BaseFragment<SignInFragmentBinding, SignInViewModel>(),
                     true
                 }
             } else {
-                getViewModel().hideProgress()
+                if (::factory.isInitialized) {
+                    getViewModel().hideProgress()
+                }
                 if (context != null) {
                     showToastMessage(
                         resources.getString(R.string.Please_Enter_Any_EMail_or_Phone_Number),

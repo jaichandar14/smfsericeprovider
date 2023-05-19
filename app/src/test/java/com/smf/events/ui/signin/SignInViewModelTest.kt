@@ -1,8 +1,10 @@
 package com.smf.events.ui.signin
 
 import android.app.Application
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.smf.events.network.ApiStories
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -12,6 +14,9 @@ import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
 class SignInViewModelTest {
+
+    @get:Rule
+    var instantExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var signInRepository: SignInRepository
 
