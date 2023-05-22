@@ -31,18 +31,17 @@
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_35sdp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/corner_radius_background"
-                android:backgroundTint="@color/light_gray_background">
+                android:backgroundTint="@color/light_gray_background"
+                android:padding="@dimen/_4sdp">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_29sdp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/_3sdp"
                     android:background="@color/white"
-                    android:textSize="@dimen/_13sdp"
                     app:tabBackground="@drawable/tab_selector"
                     app:tabGravity="fill"
                     app:tabIndicatorAnimationMode="elastic"
