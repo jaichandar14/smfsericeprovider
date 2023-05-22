@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/image_view_12_3am"
-                android:layout_width="@dimen/_22sdp"
-                android:layout_height="@dimen/_22sdp"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
                 android:contentDescription="@string/icon"
                 android:src="@drawable/booked"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -54,14 +54,14 @@
 
                 <TextView
                     android:id="@+id/time_slot_12_3am"
-                    android:layout_width="@dimen/_100sdp"
+                    android:layout_width="@dimen/_110sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_3sdp"
-                    android:fontFamily="@font/mulish_medium"
+                    android:fontFamily="@font/mulish_regular"
                     android:text="@string/_12am_3am"
-                    android:textColor="@color/text_gray_color"
-                    android:textSize="@dimen/_10sdp" />
+                    android:textColor="@color/dark_gray_text"
+                    android:textSize="@dimen/_13ssp" />
 
                 <TextView
                     android:id="@+id/address_12_3am"
@@ -69,10 +69,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_3sdp"
-                    android:fontFamily="@font/mulish_medium"
+                    android:fontFamily="@font/mulish_bold"
                     android:text="@string/available"
-                    android:textColor="@color/text_gray_color"
-                    android:textSize="@dimen/_10sdp" />
+                    android:textColor="@color/gray_text"
+                    android:textSize="@dimen/_11ssp" />
 
             </LinearLayout>
 
@@ -94,9 +94,9 @@
         android:paddingTop="@dimen/_40sdp"
         android:paddingBottom="@dimen/_40sdp"
         android:text="@string/no_events_available"
-        android:textSize="@dimen/_11sdp"
+        android:textColor="@color/gray_text"
+        android:textSize="@dimen/_12ssp"
         android:visibility="gone"
-        android:textColor="@color/text_gray_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,8 +106,8 @@
         android:id="@+id/progress_bar_child"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:indeterminateDrawable="@drawable/custom_progrss_bar"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -55,7 +55,11 @@
     <color name="title_background_blue">#2846B3</color>
     <color name="theme_color">#556CD4</color>
     <color name="gray_text">#707070</color>
-
+    <color name="dark_gray_text">#4B4B4B</color>
     <color name="quote_details_check_black">#B5232323</color>
+    <color name="text_gray_color">#A6171313</color>
+    <color name="snack_background">#F3F0F0</color>
+    <color name="view_line_gray">#E1E0E0</color>
+    <color name="rating_bar_orange">#FA693B</color>
 
 </resources>
