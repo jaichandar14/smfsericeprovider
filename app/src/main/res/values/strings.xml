@@ -261,6 +261,7 @@
     <string name="you_have_won_bid_for_catering_service_fork_spoon_catering">You have won bid for catering service - Fork Spoon catering</string>
     <string name="moved_to_old">Moved to old</string>
     <string name="event_type">event type</string>
+    <string name="event_type_with_notification">event type with notification</string>
     <string name="branch">branches</string>
     <string name="All_Service">All Service</string>
     <string name="Branches">Branches</string>
