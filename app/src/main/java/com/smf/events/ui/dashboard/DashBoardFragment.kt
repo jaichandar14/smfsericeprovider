@@ -142,8 +142,14 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         onClickNotification()
         if (args.fromEmailOtp == AppConstants.TRUE) {
             // Check token validation
-            idTokenValidation()
+            idTokenValidation(getString(R.string.event_type))
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Refresh the notification count when navigating to the dashboard page
+        idTokenValidation(getString(R.string.notification))
     }
 
     override fun onResume() {
@@ -155,7 +161,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             Log.d(TAG, "onViewCreated: observer DashBoard rx")
             if (isDialogShown.not()) {
                 // Check token validation
-                idTokenValidation()
+                idTokenValidation(getString(R.string.event_type_with_notification))
             }
         }
 
@@ -248,10 +254,10 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         }
     }
 
-    private fun idTokenValidation() {
+    private fun idTokenValidation(caller: String) {
         tokens.checkTokenExpiry(
             requireActivity().applicationContext as SMFApp,
-            getString(R.string.event_type), idToken
+            caller, idToken
         )
     }
 
@@ -260,6 +266,12 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
             when (caller) {
                 getString(R.string.event_type) -> {
                     getAllServiceAndCounts(idToken)
+                }
+                getString(R.string.event_type_with_notification) -> {
+                    getAllServiceAndCounts(idToken)
+                    getNotificationCount(idToken, userId)
+                }
+                getString(R.string.notification) ->{
                     getNotificationCount(idToken, userId)
                 }
                 getString(R.string.branch) -> getBranches(idToken, serviceCategoryId)
@@ -565,7 +577,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
         serviceList.clear()
         // Declaration for show action and details page
         actionAndDetailsVisibility = true
-        idTokenValidation()
+        idTokenValidation(getString(R.string.event_type_with_notification))
         mDataBinding?.refreshLayout?.isRefreshing = false
     }
 
@@ -578,7 +590,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 serviceList.clear()
                 // Declaration for show action and details page
                 actionAndDetailsVisibility = true
-                idTokenValidation()
+                idTokenValidation(getString(R.string.event_type_with_notification))
             }
             R.id.nav_availability -> {
                 val intent = Intent(this.requireContext(), ScheduleManagementActivity::class.java)
@@ -677,6 +689,7 @@ class DashBoardFragment : BaseFragment<FragmentDashBoardBinding, DashBoardViewMo
                 mDataBinding?.notificationCountSingle?.visibility = View.INVISIBLE
             }
         } else {
+            mDataBinding?.notificationBell?.setImageResource(R.drawable.notification_bell)
             mDataBinding?.notificationCountSingle?.visibility = View.INVISIBLE
             mDataBinding?.notificationCount?.visibility = View.INVISIBLE
             mDataBinding?.notificationPlus?.visibility = View.INVISIBLE
