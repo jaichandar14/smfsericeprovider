@@ -122,7 +122,7 @@
                                     android:fontFamily="@font/mulish_bold"
                                     android:text="@string/saras_birthday"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/_14sdp"
+                                    android:textSize="@dimen/_14ssp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +136,7 @@
                                     android:fontFamily="@font/mulish_semi_bold"
                                     android:text="@string/_2500"
                                     android:textColor="@color/black_event_title"
-                                    android:textSize="@dimen/_14sdp"
+                                    android:textSize="@dimen/_14ssp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_bias="1.0"
@@ -152,7 +152,7 @@
                                     android:fontFamily="@font/poppins_regular"
                                     android:text="@string/ca457845264162"
                                     android:textColor="@color/blue_event_id"
-                                    android:textSize="@dimen/_13sdp"
+                                    android:textSize="@dimen/_13ssp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -166,7 +166,7 @@
                                     android:fontFamily="@font/mulish_regular"
                                     android:text="@string/view_quote"
                                     android:textColor="@color/blue_event_id"
-                                    android:textSize="@dimen/_11sdp"
+                                    android:textSize="@dimen/_11ssp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_bias="1.0"
                                     app:layout_constraintStart_toEndOf="@+id/tx_job_idnum"
@@ -179,7 +179,7 @@
                                     android:layout_marginTop="@dimen/_12sdp"
                                     android:fontFamily="@font/mulish_semi_bold"
                                     android:text="@string/fork_amp_spoon"
-                                    android:textSize="@dimen/_12sdp"
+                                    android:textSize="@dimen/_12ssp"
                                     app:layout_constraintEnd_toEndOf="@+id/tx_job_idnum"
                                     app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -193,7 +193,7 @@
                                     android:fontFamily="@font/mulish_bold"
                                     android:text="@string/fork_amp_spoon"
                                     android:textColor="@color/dark_font"
-                                    android:textSize="@dimen/_12sdp"
+                                    android:textSize="@dimen/_12ssp"
                                     app:layout_constraintEnd_toEndOf="@+id/service_name"
                                     app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -217,7 +217,7 @@
                                         android:fontFamily="@font/mulish_semi_bold"
                                         android:gravity="start"
                                         android:text="@string/status_txt"
-                                        android:textSize="@dimen/_11sdp" />
+                                        android:textSize="@dimen/_11ssp" />
 
                                     <TextView
                                         android:id="@+id/spn_Bid_accepted"
@@ -225,11 +225,11 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_3sdp"
                                         android:layout_marginTop="@dimen/_3sdp"
-                                        android:fontFamily="@font/mulish_regular"
+                                        android:fontFamily="@font/mulish_bold"
                                         android:gravity="start"
                                         android:text="@string/bid_accepted"
                                         android:textColor="@color/pairing_theme"
-                                        android:textSize="@dimen/_11sdp"
+                                        android:textSize="@dimen/_11ssp"
                                         app:layout_constraintTop_toBottomOf="@+id/tx_job_idnum" />
 
                                 </LinearLayout>
@@ -472,7 +472,7 @@
                                     android:fontFamily="@font/mulish_bold"
                                     android:text="@string/event_details__"
                                     android:textColor="@color/darkblue_smf_font"
-                                    android:textSize="@dimen/_13sdp" />
+                                    android:textSize="@dimen/_13ssp" />
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -490,14 +490,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/event_date"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/tx_eventdate_value"
                                         android:layout_width="0dp"
@@ -506,7 +506,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -524,14 +524,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/bid_proposal_date"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/tx_bid_proposal_date_value"
                                         android:layout_width="0dp"
@@ -540,7 +540,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2021"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -558,14 +558,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/cut_off_date"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/tx_cut_off_date_value"
                                         android:layout_width="0dp"
@@ -574,7 +574,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
 
                                 </LinearLayout>
 
@@ -593,14 +593,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/service_date_"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/service_date_value"
                                         android:layout_width="0dp"
@@ -609,7 +609,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -627,14 +627,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/payment_status"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/payment_status_value"
                                         android:layout_width="0dp"
@@ -643,7 +643,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/_9_aug_2022"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
 
                                 </LinearLayout>
 
@@ -661,14 +661,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/serviced_by"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/serviced_by"
                                         android:layout_width="0dp"
@@ -677,7 +677,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/na"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -694,7 +694,7 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/address"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -702,7 +702,7 @@
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/address"
                                         android:layout_width="0dp"
@@ -711,7 +711,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:lines="3"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
 
                                 </LinearLayout>
 
@@ -729,14 +729,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/customer_rating"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/customer_rating"
                                         android:layout_width="0dp"
@@ -746,7 +746,7 @@
                                         android:lines="2"
                                         android:text="@string/_9_aug_2021"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
 
                                 </LinearLayout>
 
@@ -765,14 +765,14 @@
                                         android:layout_weight="2"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/review_comment"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight=".10"
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/colon_space"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                     <TextView
                                         android:id="@+id/review_comment"
                                         android:layout_width="0dp"
@@ -781,7 +781,7 @@
                                         android:fontFamily="@font/mulish_regular"
                                         android:text="@string/na"
                                         android:textColor="@color/dark_font"
-                                        android:textSize="@dimen/_12sdp" />
+                                        android:textSize="@dimen/_12ssp" />
                                 </LinearLayout>
 
                             </LinearLayout>
@@ -847,7 +847,7 @@
                                 android:fontFamily="@font/mulish_bold"
                                 android:text="@string/saras_birthday"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/_14sdp"
+                                android:textSize="@dimen/_14ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -863,7 +863,7 @@
                                 android:fontFamily="@font/poppins_regular"
                                 android:text="@string/ca457845264162"
                                 android:textColor="@color/blue_event_id"
-                                android:textSize="@dimen/_14sdp"
+                                android:textSize="@dimen/_14ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -879,7 +879,7 @@
                                 android:layout_marginTop="@dimen/_13sdp"
                                 android:fontFamily="@font/mulish_semi_bold"
                                 android:text="@string/fork_amp_spoon"
-                                android:textSize="@dimen/_13sdp"
+                                android:textSize="@dimen/_13ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="@+id/tx_job_idnum_vo"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -895,7 +895,7 @@
                                 android:fontFamily="@font/mulish_bold"
                                 android:text="@string/fork_amp_spoon"
                                 android:textColor="@color/dark_font"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_12ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="@+id/service_name_vo"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -909,7 +909,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_medium"
                                 android:text="@string/bidding_"
-                                android:textSize="@dimen/_14sdp"
+                                android:textSize="@dimen/_14ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -925,7 +925,7 @@
                                 android:layout_marginTop="@dimen/_3sdp"
                                 android:fontFamily="@font/mulish_medium"
                                 android:text="@string/cost_estimation"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_12ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -939,7 +939,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/mulish_medium"
                                 android:text="@string/post_any_discount"
-                                android:textSize="@dimen/_12sdp"
+                                android:textSize="@dimen/_12ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -956,7 +956,7 @@
                                 android:hint="@string/amount"
                                 android:inputType="number"
                                 android:paddingStart="@dimen/_6sdp"
-                                android:textSize="@dimen/_15sdp"
+                                android:textSize="@dimen/_15ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -970,7 +970,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/mulish_bold"
                                 android:text="@string/quote_details__"
-                                android:textSize="@dimen/_14sdp"
+                                android:textSize="@dimen/_14ssp"
                                 android:visibility="gone"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -1000,7 +1000,7 @@
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:text="@string/quotesite_pdf"
                                 android:textColor="@color/calendar_border_darl_gray"
-                                android:textSize="@dimen/_14sdp"
+                                android:textSize="@dimen/_14ssp"
                                 android:visibility="gone"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -1031,7 +1031,7 @@
                                 android:layout_marginTop="@dimen/_8sdp"
                                 android:fontFamily="@font/mulish_bold"
                                 android:text="@string/comments"
-                                android:textSize="@dimen/_14sdp"
+                                android:textSize="@dimen/_14ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
