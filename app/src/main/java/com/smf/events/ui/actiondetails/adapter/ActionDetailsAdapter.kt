@@ -158,10 +158,11 @@ class ActionDetailsAdapter(
             val formattedDay: String = currentDateValue.format(formatterDay)
             // Restricting the start service flow based previous and today service Date
             if (position.serviceDate <= formattedDay) {
+                //  Hiding  Conform service feature later we need to implement
                 holder.apply {
-                    startserviceBtn.visibility = View.VISIBLE
-                    startserviceBtnLineView.visibility = View.VISIBLE
-                    startserviceBtnLayout.visibility = View.VISIBLE
+                    startserviceBtn.visibility = View.GONE
+                    startserviceBtnLineView.visibility = View.GONE
+                    startserviceBtnLayout.visibility = View.GONE
                 }
             }
             holder.apply {
@@ -189,7 +190,8 @@ class ActionDetailsAdapter(
         ) {
             holder.apply { likeButton.visibility = View.INVISIBLE
                 unlikeButton.visibility = View.INVISIBLE
-                initiateCloserBtn.visibility = View.VISIBLE
+                //  Hiding  Initiatecloser feature later we need to implement
+                initiateCloserBtn.visibility = View.GONE
                 initiateCloserBtn.text = AppConstants.WRITE_REVIEW
                 quote_status_tx.text = AppConstants.SERVICE_COMPLETED
                 initiateCloserBtn.setOnClickListener {
@@ -217,7 +219,8 @@ class ActionDetailsAdapter(
                 quote_status_tx.setOnClickListener {
                     callBackInterface?.showDialog(position)
                 }
-                initiateCloserBtn.visibility = View.VISIBLE
+                //  Hiding  WriteReview feature later we need to implement
+                initiateCloserBtn.visibility = View.GONE
                 initiateCloserBtn.text = AppConstants.INITIATE_CLOSER
                 initiateCloserBtn.setOnClickListener {
                     // 2904 Dialog to For confirmation of Start service

@@ -30,7 +30,7 @@
             android:fontFamily="@font/mulish_bold"
             android:text="@string/saras_birthday"
             android:textColor="@color/black_event_title"
-            android:textSize="@dimen/_15sdp"
+            android:textSize="@dimen/_14ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.03"

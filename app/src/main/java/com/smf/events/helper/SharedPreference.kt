@@ -21,6 +21,7 @@ class SharedPreference @Inject constructor(var application: Application) {
         const val FIRST_NAME = "userName"
         const val EMAIL_ID = "emailId"
         const val USER_ID = "userId"
+        const val SERVICE_DATE="serviceDate"
         var isDialogShown: Boolean = false
     }
 

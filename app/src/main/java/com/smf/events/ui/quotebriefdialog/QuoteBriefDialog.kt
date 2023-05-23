@@ -40,9 +40,12 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
 
-class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
+class QuoteBriefDialog() : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefDialogViewModel>(),
     Tokens.IdTokenCallBackInterface, InitiateServiceDialog.CallBackInterface {
 
     var TAG = this::class.java.name
@@ -446,7 +449,6 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         eventId = sharedPreference.getInt(SharedPreference.EVENT_ID)
         eventDescriptionId = sharedPreference.getInt(SharedPreference.EVENT_DESCRIPTION_ID)
         idToken = "${AppConstants.BEARER} ${sharedPreference.getString(SharedPreference.ID_Token)}"
-
     }
 
     // 2904 Get Api Call for getting the Quote Brief
@@ -499,30 +501,37 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     }
 
     // 2904 Method for won bid service start flow
-    fun widgetWonBid(apiResponse: ApisResponse.Success<QuoteBrief>) {
+    private fun widgetWonBid(apiResponse: ApisResponse.Success<QuoteBrief>) {
         mDataBinding?.processflow2?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = AppConstants.BID_WON_SMALL
-        mDataBinding?.apply {
-            btnStartService.apply {
-                visibility = View.VISIBLE
-                setOnClickListener {
-                    InitiateServiceDialog.newInstance(
-                        bidRequestId,
-                        eventId,
-                        eventDescriptionId,
-                        AppConstants.WON_BID
-                    ).show(
-                        (context as androidx.fragment.app.FragmentActivity).supportFragmentManager,
-                        InitiateServiceDialog.TAG
-                    )
-                }
-            }
-            btnRejectService.apply {
-                visibility = View.VISIBLE
-            }
-        }
-        mDataBinding?.btnStartService?.visibility = View.VISIBLE
-        mDataBinding?.btnRejectService?.visibility = View.VISIBLE
+        val currentDateValue = LocalDateTime.now()
+        val formatterDay = DateTimeFormatter.ofPattern("MM/dd/yyyy")
+        val formattedDay: String = currentDateValue.format(formatterDay)
+        // Restricting the start service flow based previous and today service Date
+       if (apiResponse.response.data.serviceDate <= formattedDay) {
+           mDataBinding?.apply {
+               btnStartService.apply {
+                   Log.d(TAG, "widgetWonBid:$serviceDate")
+                   //  Hiding  Confirm service feature later we need to Visible implement
+                   visibility = View.GONE
+                   setOnClickListener {
+                       InitiateServiceDialog.newInstance(
+                           bidRequestId,
+                           eventId,
+                           eventDescriptionId,
+                           AppConstants.WON_BID
+                       ).show(
+                           requireActivity().supportFragmentManager,
+                           InitiateServiceDialog.TAG
+                       )
+                   }
+               }
+               btnRejectService.apply {
+                   //  Hiding  Confirm service feature later we need to Visible implement
+                   visibility = View.GONE
+               }
+           }
+       }
         mDataBinding?.txWonBid?.setTextColor(
             ContextCompat.getColor(
                 context?.applicationContext!!, R.color.dark_font
@@ -534,7 +543,7 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
     }
 
     // 2904 Method for Initiate closer flow
-    fun widgetServiceProgress(apiResponse: ApisResponse.Success<QuoteBrief>) {
+    private fun widgetServiceProgress(apiResponse: ApisResponse.Success<QuoteBrief>) {
         mDataBinding?.check2?.setImageResource(R.drawable.green_check)
         mDataBinding?.check3?.setImageResource(R.drawable.green_check)
         mDataBinding?.check4?.setImageResource(R.drawable.inprogress)
@@ -552,8 +561,9 @@ class QuoteBriefDialog : BaseDialogFragment<QuoteBriefDialogBinding, QuoteBriefD
         mDataBinding?.processflow3?.setBackgroundResource(R.color.blue_event_id)
         mDataBinding?.spnBidAccepted?.text = AppConstants.SERVICE_IN_PROGRESS_SMALL
         mDataBinding?.apply {
+            //  Hiding  Initiate Closer feature later we need to Visible implement
             btnStartService.apply {
-                visibility = View.VISIBLE
+                visibility = View.GONE
                 text = context.getString(R.string.initiate_close_txt)
                 setOnClickListener {
                     InitiateServiceDialog.newInstance(
