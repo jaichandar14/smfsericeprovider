@@ -148,4 +148,5 @@ object AppConstants {
 
     //3500
     const val WRITE_REVIEW = "Write review"
+    const val SOMETHING_WENT_WRONG = "Something went wrong"
 }

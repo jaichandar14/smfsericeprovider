@@ -38,12 +38,12 @@ abstract class BaseRepo {
                 val errorResponse: String? = errorMessageFromApi(response.errorBody())
                 // Returning api own failure message
                 errorResponse?.let { ApisResponse.CustomError(capitalize(it)) }
-                    ?: ApisResponse.CustomError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
+                    ?: ApisResponse.CustomError(AppConstants.SOMETHING_WENT_WRONG)
             }
         } catch (e: HttpException) {
             // Returning HttpException's message(HttpTimeOutException & HandshakeException)
             errorMessageFromApi(e.response()?.errorBody())?.let { ApisResponse.CustomError(it) }
-                ?: ApisResponse.CustomError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
+                ?: ApisResponse.CustomError(AppConstants.SOMETHING_WENT_WRONG)
         } catch (e: IOException) {
             when (e) {
                 is ConnectException -> {
@@ -66,13 +66,13 @@ abstract class BaseRepo {
                 }
                 else -> {
                     Log.d(TAG, "safeApiCall: SocketException")
-                    ApisResponse.InternetError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
+                    ApisResponse.InternetError(AppConstants.SOMETHING_WENT_WRONG)
                 }
             }
         } catch (e: Exception) {
             Log.d(TAG, "safeApiCall: ${e.cause}, ${e.message}, ${e.printStackTrace()}")
             // Returning 'Something went wrong' in case
-            ApisResponse.CustomError(SMFApp.appContext.resources.getString(R.string.something_went_wrong))
+            ApisResponse.CustomError(AppConstants.SOMETHING_WENT_WRONG)
         }
     }
 
@@ -82,11 +82,13 @@ abstract class BaseRepo {
         try {
             val adapter = Gson().getAdapter(ErrorResponse::class.java)
             val errorParser = adapter.fromJson(errorBody?.string())
-            Log.d(TAG, "errorMessageApi: ${errorParser.errorMessage} ${errorParser.message}")
-            errorMessage = if (errorParser.errorMessage != null) {
-                errorParser.errorMessage
-            } else {
-                errorParser.message
+            errorParser?.let {
+                Log.d(TAG, "errorMessageApi: ${errorParser.errorMessage} ${errorParser.message}")
+                errorMessage = if (errorParser.errorMessage != null) {
+                    errorParser.errorMessage
+                } else {
+                    errorParser.message
+                }
             }
         } catch (e: IOException) {
             e.printStackTrace()
